@@ -1,0 +1,21 @@
+html, body{
+  margin: 0;
+  padding: 0;
+}
+
+body > *{
+  padding: 1em;
+}
+
+section#social{
+  text-align: center;
+}
+
+section#social nav li{
+  display: inline-block;
+  margin: 0.5em;
+}
+
+nav ul{
+  padding: 0;
+}

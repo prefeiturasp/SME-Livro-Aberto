@@ -1,0 +1,27 @@
+header{
+  background-color: #277fcd;
+  color: #fff;
+}
+
+section#budget-over-time{
+  background-color: #f9faf9;
+}
+
+section#data-table{
+  background-color: #255754;
+  color: #fff;
+}
+
+section#social{
+  background-color: #222b34;
+  color: #fff;
+}
+
+footer{
+  background-color: #171717;
+  color: #fff;
+}
+
+a{
+  color: inherit;
+}
