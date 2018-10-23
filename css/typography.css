@@ -1,3 +1,12 @@
 body{
   font-family: 'Nunito', 'Ubuntu', sans-serif;
 }
+
+h2{
+  font-weight: normal;
+}
+
+h2 > em{
+  text-decoration: none;
+  font-weight: bold;
+}
