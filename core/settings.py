@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = config('STATICFILES_STORAGE', 'whitenoise.storage.CompressedManifestStaticFilesStorage')
 
 if 'whitenoise' in STATICFILES_STORAGE:
