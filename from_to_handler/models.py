@@ -11,7 +11,7 @@ class FonteDeRecursoFromTo(models.Model):
 
 class SubelementoFromTo(models.Model):
     """ Adds a friendly name to Subelementos """
-    code = models.CharField(max_length=20)
+    code = models.CharField(max_length=28)
     description = models.CharField(max_length=100, blank=True, null=True)
     new_code = models.IntegerField()
     new_name = models.CharField(max_length=100)
