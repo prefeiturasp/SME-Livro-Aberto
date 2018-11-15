@@ -24,3 +24,16 @@ class DotacaoFromTo(models.Model):
     group_description = models.CharField(max_length=100)
     subgroup_code = models.IntegerField()
     subgroup_description = models.CharField(max_length=100)
+
+
+class GNDFromTo(models.Model):
+    """
+    Adds a new name to Grupo de Natureza de Despesa based on the original name
+    and the Elemento de Despesa
+    """
+    gnd_code = models.IntegerField()
+    gnd_description = models.CharField(max_length=100)
+    elemento_code = models.IntegerField()
+    elemento_description = models.CharField(max_length=100)
+    new_gnd_code = models.IntegerField()
+    new_gnd_description = models.CharField(max_length=100)
