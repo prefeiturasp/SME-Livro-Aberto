@@ -15,3 +15,12 @@ class SubelementoFromTo(models.Model):
     description = models.CharField(max_length=100, blank=True, null=True)
     new_code = models.IntegerField()
     new_name = models.CharField(max_length=100)
+
+
+class DotacaoFromTo(models.Model):
+    """ Aggregates dotações in groups and subgroups """
+    indexer = models.CharField(max_length=28)
+    group_code = models.IntegerField()
+    group_description = models.CharField(max_length=100)
+    subgroup_code = models.IntegerField()
+    subgroup_description = models.CharField(max_length=100)
