@@ -37,3 +37,10 @@ class GNDFromTo(models.Model):
     elemento_description = models.CharField(max_length=100)
     new_gnd_code = models.IntegerField()
     new_gnd_description = models.CharField(max_length=100)
+
+
+class Deflator(models.Model):
+    """ Applies the inflation correction to the values """
+    year = models.DateField()
+    index_number = models.DecimalField(max_digits=4, decimal_places=3)
+    variation_percent = models.DecimalField(max_digits=5, decimal_places=2)
