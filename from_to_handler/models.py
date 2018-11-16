@@ -8,6 +8,10 @@ class FonteDeRecursoFromTo(models.Model):
     group_code = models.IntegerField()
     group_name = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = 'De-Para: Fontes de Recurso'
+        verbose_name_plural = 'De-Para: Fontes de Recurso'
+
 
 class SubelementoFromTo(models.Model):
     """ Adds a friendly name to Subelementos """
@@ -15,6 +19,10 @@ class SubelementoFromTo(models.Model):
     description = models.CharField(max_length=100, blank=True, null=True)
     new_code = models.IntegerField()
     new_name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'De-Para: Sub-elementos'
+        verbose_name_plural = 'De-Para: Sub-elementos'
 
 
 class DotacaoFromTo(models.Model):
@@ -24,6 +32,10 @@ class DotacaoFromTo(models.Model):
     group_description = models.CharField(max_length=100)
     subgroup_code = models.IntegerField()
     subgroup_description = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'De-Para: Dotações Subgrupos Grupos'
+        verbose_name_plural = 'De-Para: Dotações Subgrupos Grupos'
 
 
 class GNDFromTo(models.Model):
@@ -38,9 +50,17 @@ class GNDFromTo(models.Model):
     new_gnd_code = models.IntegerField()
     new_gnd_description = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = 'De-Para: Grupos de Despesa e Elementos (GND)'
+        verbose_name_plural = 'De-Para: Grupos de Despesa e Elementos (GND)'
+
 
 class Deflator(models.Model):
     """ Applies the inflation correction to the values """
     year = models.DateField()
     index_number = models.DecimalField(max_digits=4, decimal_places=3)
     variation_percent = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'Deflator'
+        verbose_name_plural = 'Deflator'
