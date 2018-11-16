@@ -1,3 +1,29 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import (Deflator, DotacaoFromTo, GNDFromTo, FonteDeRecursoFromTo,
+                     SubelementoFromTo)
+
+
+@admin.register(Deflator)
+class DeflatorAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(DotacaoFromTo)
+class DotacaoFromToAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(GNDFromTo)
+class GNDFromToAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(FonteDeRecursoFromTo)
+class FonteDeRecursoFromToAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(SubelementoFromTo)
+class SubelementoFromToAdmin(admin.ModelAdmin):
+    pass
