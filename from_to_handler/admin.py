@@ -21,7 +21,7 @@ class GNDFromToAdmin(admin.ModelAdmin):
 
 @admin.register(FonteDeRecursoFromTo)
 class FonteDeRecursoFromToAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('code',)
 
 
 @admin.register(SubelementoFromTo)

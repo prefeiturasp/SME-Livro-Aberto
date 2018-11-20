@@ -12,6 +12,10 @@ class FonteDeRecursoFromTo(models.Model):
         verbose_name = 'De-Para: Fontes de Recurso'
         verbose_name_plural = 'De-Para: Fontes de Recurso'
 
+    def __str__(self):
+        return (f'{self.code}: {self.name} | '
+                f'{self.group_code}: {self.group_name}')
+
 
 class SubelementoFromTo(models.Model):
     """ Adds a friendly name to Subelementos """
