@@ -11,6 +11,7 @@ whitenoise = "*"
 "psycopg2-binary" = "*"
 dj-database-url = "*"
 openpyxl = "*"
+django-extensions = "*"
 
 [dev-packages]
 ipdb = "*"
