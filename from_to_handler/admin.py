@@ -26,4 +26,4 @@ class FonteDeRecursoFromToAdmin(admin.ModelAdmin):
 
 @admin.register(SubelementoFromTo)
 class SubelementoFromToAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('code',)

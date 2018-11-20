@@ -29,6 +29,10 @@ class SubelementoFromTo(models.Model):
         verbose_name = 'De-Para: Sub-elementos'
         verbose_name_plural = 'De-Para: Sub-elementos'
 
+    def __str__(self):
+        return (f'{self.code}: {self.description} | '
+                f'{self.new_code}: {self.new_name}')
+
 
 class DotacaoFromTo(models.Model):
     """ Aggregates dotações in groups and subgroups """
