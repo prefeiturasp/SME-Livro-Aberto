@@ -1,6 +1,7 @@
 from openpyxl import load_workbook
 
 from from_to_handler.models import (
+    DotacaoFromTo,
     FonteDeRecursoFromTo,
     SubelementoFromTo,
 )
@@ -59,6 +60,36 @@ def import_subelementos():
         row += 1
 
 
+def import_dotacoes():
+    filepath = ('./from_to_handler/de-paras/'
+                'DE-PARA Dotações Subgrupos Grupos.xlsx')
+    wb = load_workbook(filepath)
+    ws = wb['De Para Final']
+
+    row = 2
+    row_is_valid = True
+    while row_is_valid:
+        indexer = ws['b' + str(row)].value
+        if not indexer:
+            row_is_valid = False
+            continue
+        group_code = int(ws['f' + str(row)].value)
+        group_description = ws['g' + str(row)].value
+        subgroup_code = int(ws['d' + str(row)].value.split('.')[1])
+        subgroup_description = ws['e' + str(row)].value
+
+        dot = DotacaoFromTo()
+        dot.indexer = indexer
+        dot.group_code = group_code
+        dot.group_description = group_description
+        dot.subgroup_code = subgroup_code
+        dot.subgroup_description = subgroup_description
+        dot.save()
+
+        row += 1
+
+
 def run():
     # import_fontes_de_recurso()
-    import_subelementos()
+    # import_subelementos()
+    import_dotacoes()

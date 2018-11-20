@@ -11,7 +11,7 @@ class DeflatorAdmin(admin.ModelAdmin):
 
 @admin.register(DotacaoFromTo)
 class DotacaoFromToAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('indexer',)
 
 
 @admin.register(GNDFromTo)

@@ -47,6 +47,10 @@ class DotacaoFromTo(models.Model):
         verbose_name = 'De-Para: Dotações Subgrupos Grupos'
         verbose_name_plural = 'De-Para: Dotações Subgrupos Grupos'
 
+    def __str__(self):
+        return (f'{self.indexer} - {self.group_code}.{self.subgroup_code} - '
+                f'{self.subgroup_description} ({self.group_description})')
+
 
 class GNDFromTo(models.Model):
     """
