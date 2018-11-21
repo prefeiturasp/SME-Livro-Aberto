@@ -1,3 +1,9 @@
+# # This script was meant to be runned only once during the development.
+# # It shouldn't be used anymore. The data gathered by this script is in
+# # a json file (from_to_handler/migrations/data/from_to.py) that is loaded
+# # by a datamigration (migration 0009 in from_to_handler).
+
+
 import datetime
 
 from openpyxl import load_workbook
@@ -155,4 +161,5 @@ def run():
     # import_subelementos()
     # import_dotacoes()
     # import_gnd()
-    import_deflator()
+    # import_deflator()
+    pass
