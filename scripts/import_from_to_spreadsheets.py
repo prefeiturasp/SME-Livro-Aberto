@@ -1,6 +1,9 @@
+import datetime
+
 from openpyxl import load_workbook
 
 from from_to_handler.models import (
+    Deflator,
     DotacaoFromTo,
     FonteDeRecursoFromTo,
     GNDFromTo,
@@ -122,8 +125,34 @@ def import_gnd():
         row += 1
 
 
+def import_deflator():
+    filepath = ('./from_to_handler/de-paras/'
+                'Deflator Setembro 2018.xlsx')
+    wb = load_workbook(filepath, data_only=True)
+    ws = wb['Anual']
+
+    row = 2
+    row_is_valid = True
+    while row_is_valid:
+        year = ws['a' + str(row)].value
+        if not year:
+            row_is_valid = False
+            continue
+        index_number = ws['b' + str(row)].value
+        variation_percent = ws['c' + str(row)].value
+
+        defl = Deflator()
+        defl.year = datetime.date(int(year), 1, 1)
+        defl.index_number = index_number
+        defl.variation_percent = variation_percent * 100
+        defl.save()
+
+        row += 1
+
+
 def run():
     # import_fontes_de_recurso()
     # import_subelementos()
     # import_dotacoes()
-    import_gnd()
+    # import_gnd()
+    import_deflator()

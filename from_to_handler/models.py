@@ -89,3 +89,7 @@ class Deflator(models.Model):
     class Meta:
         verbose_name = 'Deflator'
         verbose_name_plural = 'Deflator'
+
+    def __str__(self):
+        return (f'{self.year.strftime("%Y")}: {self.index_number} - '
+                f'{self.variation_percent}%')

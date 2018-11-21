@@ -6,7 +6,7 @@ from .models import (Deflator, DotacaoFromTo, GNDFromTo, FonteDeRecursoFromTo,
 
 @admin.register(Deflator)
 class DeflatorAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('year',)
 
 
 @admin.register(DotacaoFromTo)
