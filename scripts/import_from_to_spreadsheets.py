@@ -3,6 +3,7 @@ from openpyxl import load_workbook
 from from_to_handler.models import (
     DotacaoFromTo,
     FonteDeRecursoFromTo,
+    GNDFromTo,
     SubelementoFromTo,
 )
 
@@ -89,7 +90,40 @@ def import_dotacoes():
         row += 1
 
 
+def import_gnd():
+    filepath = ('./from_to_handler/de-paras/'
+                'DE-PARA Grupos de Despesa e Elementos.xlsx')
+    wb = load_workbook(filepath)
+    ws = wb['Plan1']
+
+    row = 2
+    row_is_valid = True
+    while row_is_valid:
+        try:
+            gnd_code = int(ws['e' + str(row)].value)
+        except TypeError:
+            row_is_valid = False
+            continue
+        gnd_description = ws['a' + str(row)].value
+        elemento_code = int(ws['d' + str(row)].value)
+        elemento_description = ws['c' + str(row)].value
+        new_gnd_code = int(ws['f' + str(row)].value)
+        new_gnd_description = ws['b' + str(row)].value
+
+        gnd = GNDFromTo()
+        gnd.gnd_code = gnd_code
+        gnd.gnd_description = gnd_description
+        gnd.elemento_code = elemento_code
+        gnd.elemento_description = elemento_description
+        gnd.new_gnd_code = new_gnd_code
+        gnd.new_gnd_description = new_gnd_description
+        gnd.save()
+
+        row += 1
+
+
 def run():
     # import_fontes_de_recurso()
     # import_subelementos()
-    import_dotacoes()
+    # import_dotacoes()
+    import_gnd()

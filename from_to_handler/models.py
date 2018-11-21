@@ -71,6 +71,11 @@ class GNDFromTo(models.Model):
         verbose_name = 'De-Para: Grupos de Despesa e Elementos (GND)'
         verbose_name_plural = 'De-Para: Grupos de Despesa e Elementos (GND)'
 
+    def __str__(self):
+        return (f'{self.gnd_code}: {self.gnd_description} - '
+                f'{self.elemento_code}: {self.elemento_description} | '
+                f'{self.new_gnd_code}: {self.gnd_description}')
+
 
 class Deflator(models.Model):
     """ Applies the inflation correction to the values """

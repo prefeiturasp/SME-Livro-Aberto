@@ -16,7 +16,7 @@ class DotacaoFromToAdmin(admin.ModelAdmin):
 
 @admin.register(GNDFromTo)
 class GNDFromToAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('gnd_code',)
 
 
 @admin.register(FonteDeRecursoFromTo)
