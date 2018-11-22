@@ -26,6 +26,12 @@ class Modalidade(models.Model):
     description = models.CharField(max_length=100)
 
 
+class Orgao(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+    initials = models.CharField(max_length=10)
+
+
 class Programa(models.Model):
     id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=100)
