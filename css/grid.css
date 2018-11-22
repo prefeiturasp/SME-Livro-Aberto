@@ -34,3 +34,9 @@ section#social nav li{
 nav ul{
   padding: 0;
 }
+
+svg.icon{
+  vertical-align: middle;
+  height: 1em;
+  padding-bottom: .2em;
+}
