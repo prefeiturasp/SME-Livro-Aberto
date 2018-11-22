@@ -10,8 +10,11 @@ gunicorn = "*"
 whitenoise = "*"
 "psycopg2-binary" = "*"
 dj-database-url = "*"
+openpyxl = "*"
+django-extensions = "*"
 
 [dev-packages]
+ipdb = "*"
 
 [requires]
 python_version = "3.7"

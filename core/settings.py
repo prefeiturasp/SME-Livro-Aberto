@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'from_to_handler',
+    'django_extensions',
+    'from_to_handler.apps.FromToHandlerConfig',
 ]
 
 MIDDLEWARE = [
