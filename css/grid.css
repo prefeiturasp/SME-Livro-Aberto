@@ -40,6 +40,13 @@ section#social nav li{
   margin: 0.5em;
 }
 
+section#social nav li a,
+section#social svg.icon{
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+}
+
 nav ul{
   padding: 0;
 }
