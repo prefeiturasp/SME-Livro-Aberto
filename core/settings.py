@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'from_to_handler.apps.FromToHandlerConfig',
+    'budget_execution.apps.BudgetExecutionConfig',
 ]
 
 MIDDLEWARE = [
