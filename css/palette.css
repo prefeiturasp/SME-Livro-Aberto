@@ -42,3 +42,12 @@ h2 > em:after{
   bottom: 0;
   left: 0;
 }
+
+
+header nav a.methodology{
+  background-image: url('../img/icon-info.svg');
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-size: auto 100%;
+  padding-left: 2em;
+}
