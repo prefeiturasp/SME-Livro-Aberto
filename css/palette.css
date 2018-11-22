@@ -1,6 +1,13 @@
 header{
   background-color: #277fcd;
+  background-image: url('../img/bkg-mosaico-header.svg');
+  background-repeat: no-repeat;
+  background-position: center;
   color: #fff;
+}
+
+header h1 + p {
+  color: #b1d51b;
 }
 
 section#budget-over-time{

@@ -14,6 +14,11 @@ header h1 + p{
   text-transform: uppercase;
 }
 
+header nav{
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 h2{
   font-weight: normal;
   font-size: 2.375em;
@@ -30,4 +35,8 @@ p{
   font-size: 0.8em;
   letter-spacing: 0.1em;
   line-height: 1rem;
+}
+
+header nav a{
+  text-decoration: none;
 }
