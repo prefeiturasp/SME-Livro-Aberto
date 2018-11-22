@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Camada_1"
+   viewBox="0 0 1920 534"
+   version="1.1"
+   inkscape:version="0.92.2 2405546, 2018-03-11">
+  <defs
+     id="defs7">
+    <style
+       id="style2">.cls-1,.cls-15,.cls-5{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-12,.cls-13,.cls-14,.cls-16,.cls-17,.cls-3{fill:#fff;}.cls-4{fill:#277fcd;}.cls-10,.cls-11,.cls-12,.cls-13,.cls-14,.cls-16,.cls-17,.cls-4,.cls-6,.cls-7,.cls-8,.cls-9{isolation:isolate;}.cls-15,.cls-5{stroke:#7db2e1;stroke-miterlimit:10;}.cls-10,.cls-11,.cls-7,.cls-8,.cls-9{font-size:33.4px;fill:#b1d51b;font-family:Ubuntu-Bold, Ubuntu;font-weight:700;}.cls-7{letter-spacing:0.18em;}.cls-8{letter-spacing:0.16em;}.cls-9{letter-spacing:0.21em;}.cls-10{letter-spacing:0.16em;}.cls-11{letter-spacing:0.15em;}.cls-12,.cls-13,.cls-14{font-size:18.09px;font-family:Nunito-Black, Nunito;font-weight:800;}.cls-12{letter-spacing:0.06em;}.cls-13{letter-spacing:0.08em;}.cls-14{letter-spacing:0.02em;}.cls-15{stroke-width:1.35px;}.cls-16,.cls-17{font-size:111.33px;font-family:Nunito-Light, Nunito;font-weight:300;}.cls-16{letter-spacing:0.03em;}.cls-17{letter-spacing:0.02em;}</style>
+    <clipPath
+       id="clip-path">
+      <rect
+         class="cls-1"
+         x="3.75"
+         y="1.39"
+         width="1916.25"
+         height="531.62"
+         id="rect4" />
+    </clipPath>
+  </defs>
+  <title
+     id="title9">header_mosaico</title>
+  <g
+     class="cls-2"
+     clip-path="url(#clip-path)"
+     id="g13">
+    <rect
+       class="cls-3"
+       x="599.37"
+       y="-69.58"
+       width="1327.61"
+       height="640.85"
+       id="rect11" />
+  </g>
+  <rect
+     class="cls-4"
+     x="-7.5"
+     y="-7.08"
+     width="1934.49"
+     height="550.29"
+     id="rect15" />
+  <rect
+     class="cls-5"
+     x="1225.23"
+     y="143.3"
+     width="181.75"
+     height="181.75"
+     id="rect17" />
+  <polyline
+     class="cls-5"
+     points="1919.22 0 1919.22 143.3 1406.99 143.3 1406.99 0"
+     id="polyline19" />
+  <rect
+     class="cls-5"
+     x="1406.99"
+     y="325.04"
+     width="122.53"
+     height="127.67"
+     id="rect21" />
+  <rect
+     class="cls-5"
+     x="1529.52"
+     y="143.3"
+     width="389.7"
+     height="389.7"
+     id="rect23" />
+  <rect
+     class="cls-15"
+     x="514.65"
+     y="208.81"
+     width="328.3"
+     height="181.27"
+     id="rect79" />
+  <rect
+     class="cls-5"
+     x="392.44"
+     y="390.07"
+     width="122.21"
+     height="142.92"
+     id="rect81" />
+  <rect
+     class="cls-5"
+     x="392.44"
+     y="1.39"
+     width="122.21"
+     height="207.41"
+     id="rect83" />
+  <rect
+     class="cls-5"
+     x="3.75"
+     y="208.81"
+     width="388.68"
+     height="324.19"
+     id="rect85" />
+</svg>
