@@ -1,12 +1,28 @@
 from django.db import models
 
 
+class Execucao(models.Model):
+    year = models.DateField()
+    orgao = models.ForeignKey('Orgao', models.PROTECT)
+    projeto = models.ForeignKey('ProjetoAtividade', models.PROTECT)
+    categoria = models.ForeignKey('Categoria', models.PROTECT)
+    gnd = models.ForeignKey('Gnd', models.PROTECT)
+    modalidade = models.ForeignKey('Modalidade', models.PROTECT)
+    elemento = models.ForeignKey('Elemento', models.PROTECT)
+    fonte = models.ForeignKey('FonteDeRecurso', models.PROTECT)
+    subelemento = models.ForeignKey('Subelemento', models.PROTECT, null=True)
+    subfuncao = models.ForeignKey('Subfuncao', models.PROTECT)
+    programa = models.ForeignKey('Programa', models.PROTECT)
+    orcado_atualizadao = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+
+
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=100)
 
 
-class GND(models.Model):
+class Gnd(models.Model):
     id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=100)
 
