@@ -2,3 +2,5 @@
 db.sqlite3
 *.swp
 *.xlsx
+*.xlsx#
+*.csv
