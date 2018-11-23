@@ -1,5 +1,6 @@
 import datetime
 
+from decimal import Decimal
 from typing import NamedTuple
 
 from django.apps import apps
@@ -95,18 +96,43 @@ def import_orcamento_csv():
 
         orcado = ws['ai' + str(row)].value
 
-        execucao = Execucao()
-        execucao.year = datetime.date(year, 1, 1)
-        execucao.orgao_id = orgao_id
-        execucao.projeto_id = projeto_id
-        execucao.categoria_id = categoria_id
-        execucao.gnd_id = gnd_id
-        execucao.modalidade_id = modalidade_id
-        execucao.elemento_id = elemento_id
-        execucao.fonte_id = fonte_id
+        try:
+            execucao = Execucao.objects.get(
+                year=datetime.date(year, 1, 1),
+                orgao_id=orgao_id,
+                projeto_id=projeto_id,
+                categoria_id=categoria_id,
+                gnd_id=gnd_id,
+                modalidade_id=modalidade_id,
+                elemento_id=elemento_id,
+                fonte_id=fonte_id)
+        except Execucao.DoesNotExist:
+            execucao = Execucao()
+            execucao.year = datetime.date(year, 1, 1)
+            execucao.orgao_id = orgao_id
+            execucao.projeto_id = projeto_id
+            execucao.categoria_id = categoria_id
+            execucao.gnd_id = gnd_id
+            execucao.modalidade_id = modalidade_id
+            execucao.elemento_id = elemento_id
+            execucao.fonte_id = fonte_id
+
+        # if execucao.subfuncao_id and execucao.subfuncao_id != subfuncao_id:
+        #     import ipdb
+        #     ipdb.set_trace()
+        #     pass
+        # if execucao.programa_id and execucao.programa_id != programa_id:
+        #     import ipdb
+        #     ipdb.set_trace()
+        #     pass
+
         execucao.subfuncao_id = subfuncao_id
         execucao.programa_id = programa_id
-        execucao.orcado_atualizado = orcado
+
+        if execucao.orcado_atualizado:
+            execucao.orcado_atualizado += Decimal(orcado)
+        else:
+            execucao.orcado_atualizado = orcado
 
         execucao.save()
         print("Saved execução " + str(execucao.id))
@@ -115,4 +141,5 @@ def import_orcamento_csv():
 
 
 def run():
-    import_orcamento_csv()
+    # import_orcamento_csv()
+    pass
