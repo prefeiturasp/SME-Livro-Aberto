@@ -56,6 +56,7 @@ class Programa(models.Model):
 class ProjetoAtividade(models.Model):
     id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=255)
+    type = models.CharField(max_length=50)
 
 
 class Subelemento(models.Model):
