@@ -13,22 +13,22 @@ class OtherColumn(NamedTuple):
     column: str
 
 
-class OrcamentoColumns(NamedTuple):
+class ColumnsLetters(NamedTuple):
     id: str
     description: str = None
     other_col: OtherColumn = None
 
 
 MODELS = {
-    "Orgao": OrcamentoColumns('H', 'J', OtherColumn('initials', 'I')),
-    "ProjetoAtividade": OrcamentoColumns('U', 'V', OtherColumn('type', 'S')),
-    "Categoria": OrcamentoColumns('Y', 'Z'),
-    "Gnd": OrcamentoColumns('AA', 'AB'),
-    "Modalidade": OrcamentoColumns('AC', 'AD'),
-    "Elemento": OrcamentoColumns('AE'),
-    "FonteDeRecurso": OrcamentoColumns('AF', 'AG'),
-    "Subfuncao": OrcamentoColumns('O', 'P'),
-    "Programa": OrcamentoColumns('Q', 'R'),
+    "Orgao": ColumnsLetters('H', 'J', OtherColumn('initials', 'I')),
+    "ProjetoAtividade": ColumnsLetters('U', 'V', OtherColumn('type', 'S')),
+    "Categoria": ColumnsLetters('Y', 'Z'),
+    "Gnd": ColumnsLetters('AA', 'AB'),
+    "Modalidade": ColumnsLetters('AC', 'AD'),
+    "Elemento": ColumnsLetters('AE'),
+    "FonteDeRecurso": ColumnsLetters('AF', 'AG'),
+    "Subfuncao": ColumnsLetters('O', 'P'),
+    "Programa": ColumnsLetters('Q', 'R'),
 }
 
 
@@ -39,6 +39,8 @@ def import_fk_object(ws, row, name):
 
     row = str(row)
     id = int(ws[id_col + row].value)
+    if name == "Orgao" and id != 16:
+        return None
 
     Model = apps.get_model('budget_execution', name)
     if Model.objects.filter(id=id).exists():
@@ -78,6 +80,10 @@ def import_orcamento_csv():
             continue
 
         orgao_id = import_fk_object(ws, row, 'Orgao')
+        if not orgao_id:
+            row += 1
+            continue
+
         projeto_id = import_fk_object(ws, row, 'ProjetoAtividade')
         categoria_id = import_fk_object(ws, row, 'Categoria')
         gnd_id = import_fk_object(ws, row, 'Gnd')
@@ -109,5 +115,4 @@ def import_orcamento_csv():
 
 
 def run():
-    # import_orcamento_csv()
-    pass
+    import_orcamento_csv()
