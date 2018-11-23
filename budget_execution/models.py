@@ -14,7 +14,8 @@ class Execucao(models.Model):
     subfuncao = models.ForeignKey('Subfuncao', models.PROTECT)
     programa = models.ForeignKey('Programa', models.PROTECT)
     orcado_atualizadao = models.DecimalField(max_digits=17, decimal_places=2)
-    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
+                                            null=True)
 
 
 class Categoria(models.Model):
@@ -29,7 +30,7 @@ class Gnd(models.Model):
 
 class Elemento(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=100, null=True)
 
 
 class FonteDeRecurso(models.Model):
