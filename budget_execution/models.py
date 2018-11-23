@@ -13,7 +13,7 @@ class Execucao(models.Model):
     subelemento = models.ForeignKey('Subelemento', models.PROTECT, null=True)
     subfuncao = models.ForeignKey('Subfuncao', models.PROTECT)
     programa = models.ForeignKey('Programa', models.PROTECT)
-    orcado_atualizadao = models.DecimalField(max_digits=17, decimal_places=2)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
 
