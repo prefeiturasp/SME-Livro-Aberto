@@ -20,7 +20,7 @@ class ColumnsLetters(NamedTuple):
     other_col: OtherColumn = None
 
 
-MODELS = {
+ORCAMENTO_COLS = {
     "Orgao": ColumnsLetters('H', 'J', OtherColumn('initials', 'I')),
     "ProjetoAtividade": ColumnsLetters('U', 'V', OtherColumn('type', 'S')),
     "Categoria": ColumnsLetters('Y', 'Z'),
@@ -30,13 +30,28 @@ MODELS = {
     "FonteDeRecurso": ColumnsLetters('AF', 'AG'),
     "Subfuncao": ColumnsLetters('O', 'P'),
     "Programa": ColumnsLetters('Q', 'R'),
+
+    # empenhos spreadsheet
+    "Subelemento": ColumnsLetters('O', 'AE'),
+}
+
+EMPENHOS_COLS = {
+    "Orgao": 'L',
+    "ProjetoAtividade": 'N',
+    "Categoria": 'C',
+    "Gnd": 'I',
+    "Modalidade": 'K',
+    "Elemento": 'D',
+    "FonteDeRecurso": 'G',
+    # "Subfuncao": 'P',
+    # "Programa": 'M',
 }
 
 
 def import_fk_object(ws, row, name):
-    id_col = MODELS[name].id
-    desc_col = MODELS[name].description
-    other_col_tuple = MODELS[name].other_col
+    id_col = ORCAMENTO_COLS[name].id
+    desc_col = ORCAMENTO_COLS[name].description
+    other_col_tuple = ORCAMENTO_COLS[name].other_col
 
     row = str(row)
     id = int(ws[id_col + row].value)
@@ -63,6 +78,101 @@ def import_fk_object(ws, row, name):
     obj.save()
 
     return id
+
+
+def get_fk_object_id(ws, row, name):
+    return int(ws[EMPENHOS_COLS[name] + str(row)].value)
+
+
+def import_empenhos_csv():
+    filepath = ('./budget_execution/data/'
+                'empenhos-1541109573297.xlsx')
+    wb = load_workbook(filepath)
+    ws = wb['data']
+
+    row = 2
+    row_is_valid = True
+    dotacoes_not_found = 0
+    subelemento_added_count = 0
+    empenho_updated_count = 0
+    new_dotacoes = 0
+    while row_is_valid:
+        print(row)
+        try:
+            year = int(ws['b' + str(row)].value)
+        except TypeError:
+            row_is_valid = False
+            continue
+
+        year = datetime.date(year, 1, 1)
+
+        orgao_id = get_fk_object_id(ws, row, 'Orgao')
+        projeto_id = get_fk_object_id(ws, row, 'ProjetoAtividade')
+        categoria_id = get_fk_object_id(ws, row, 'Categoria')
+        gnd_id = get_fk_object_id(ws, row, 'Gnd')
+        modalidade_id = get_fk_object_id(ws, row, 'Modalidade')
+        elemento_id = get_fk_object_id(ws, row, 'Elemento')
+        fonte_id = get_fk_object_id(ws, row, 'FonteDeRecurso')
+
+        subelemento_id = import_fk_object(ws, row, 'Subelemento')
+        empenhado = ws['al' + str(row)].value
+        empenhado = Decimal(empenhado)
+
+        execs = Execucao.objects.filter(
+                year=year,
+                orgao_id=orgao_id,
+                projeto_id=projeto_id,
+                categoria_id=categoria_id,
+                gnd_id=gnd_id,
+                modalidade_id=modalidade_id,
+                elemento_id=elemento_id,
+                fonte_id=fonte_id)
+
+        if len(execs) == 0:
+            print("dotação not found")
+            dotacoes_not_found += 1
+            row += 1
+            continue
+
+        try:
+            execucao = execs.get(subelemento_id=subelemento_id)
+        except Execucao.DoesNotExist:
+            execucao = None
+
+        if execucao:
+            execucao.empenhado_liquido += empenhado
+            empenho_updated_count += 1
+            print("empenhado updated")
+            execucao.save()
+            row += 1
+            continue
+
+        try:
+            execucao = execs.get(subelemento_id=None)
+        except Execucao.DoesNotExist:
+            execucao = None
+
+        if execucao:
+            execucao.subelemento_id = subelemento_id
+            subelemento_added_count += 1
+            print("subelemento added")
+        else:
+            execucao = execs[0]
+            execucao.pk = None
+            execucao.subelemento_id = subelemento_id
+            new_dotacoes += 1
+            print("new execution")
+
+        execucao.empenhado_liquido = empenhado
+
+        execucao.save()
+        row += 1
+
+    # TODO: verify this:
+    # len(Execucao.objects.filter(subelemento_id=None)) == 66
+    print(f'new dotacoes: {new_dotacoes}')
+    print(f'subelemento_added_count: {subelemento_added_count}')
+    print(f'empenho_updated_count: {empenho_updated_count}')
 
 
 def import_orcamento_csv():
@@ -142,4 +252,5 @@ def import_orcamento_csv():
 
 def run():
     # import_orcamento_csv()
+    # import_empenhos_csv()
     pass
