@@ -17,6 +17,11 @@ class Execucao(models.Model):
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
 
+    class Meta:
+        unique_together = (
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte', 'subelemento')
+
 
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)
