@@ -56,3 +56,17 @@ svg.icon{
   height: 1em;
   padding-bottom: .2em;
 }
+
+legend{
+  margin-bottom: 1em;
+}
+
+fieldset{
+  padding: 0;
+  border: none;
+}
+
+.form-item{
+  display: inline-block;
+  margin-right: 3em;
+}
