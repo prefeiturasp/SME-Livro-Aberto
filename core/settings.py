@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'mosaico',
     'from_to_handler.apps.FromToHandlerConfig',
 ]
 
