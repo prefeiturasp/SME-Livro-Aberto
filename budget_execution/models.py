@@ -1,4 +1,23 @@
+from datetime import date
+
 from django.db import models
+
+
+class ExecucaoQuerySet(models.QuerySet):
+    def get_by_indexer(self, indexer):
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        return self.get(
+                year=date(info[0], 1, 1),
+                orgao_id=info[1],
+                projeto_id=info[2],
+                categoria_id=info[3],
+                gnd_id=info[4],
+                modalidade_id=info[5],
+                elemento_id=info[6],
+                fonte_id=info[7],
+                subelemento_id=info[8])
 
 
 class Execucao(models.Model):
@@ -16,6 +35,8 @@ class Execucao(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+
+    objects = ExecucaoQuerySet.as_manager()
 
     class Meta:
         unique_together = (
