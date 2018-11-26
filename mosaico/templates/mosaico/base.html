@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{% static 'css/typography.css' %}">
   <link rel="stylesheet" href="{% static 'css/palette.css' %}">
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
 </head>
 <body>
   <header>
@@ -33,11 +34,11 @@
         <legend>
           Visualizar
         </legend>
-        <div class="form-item">
-          <input class="radio" type="radio" name="break" value="">
-          <label>Por órgão</label>
-          <input class="radio" type="radio" name="break" value="">
-          <label>Por área</label>
+        <div class="form-item switch">
+          <input class="radio" type="radio" name="break" checked id="by-orgao">
+          <label for="by-orgao">Por órgão</label>
+          <input class="radio" type="radio" name="break" value="" id="by-area">
+          <label for="by-area">Por área</label>
         </div>
         <div class="form-item">
           <input class="radio" type="radio" name="universe" value="">
