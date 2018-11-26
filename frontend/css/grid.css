@@ -1,0 +1,58 @@
+html, body{
+  margin: 0;
+  padding: 0;
+}
+
+body > *{
+  padding: 1em;
+}
+
+.wrapper{
+  margin: auto;
+  max-width: 1200px;
+}
+
+header{
+  padding: 7em 1em 3em;
+  height: 15em;
+}
+
+header h1,
+header h1 + p{
+  text-align: center;
+  margin: 1rem;
+}
+
+header nav{
+  margin-top: 7rem;
+}
+
+h2:first-child{
+  margin-top: 0;
+}
+
+section#social{
+  text-align: center;
+}
+
+section#social nav li{
+  display: inline-block;
+  margin: 0.5em;
+}
+
+section#social nav li a,
+section#social svg.icon{
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+}
+
+nav ul{
+  padding: 0;
+}
+
+svg.icon{
+  vertical-align: middle;
+  height: 1em;
+  padding-bottom: .2em;
+}
