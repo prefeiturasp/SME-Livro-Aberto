@@ -18,6 +18,7 @@ form.query input[type=radio] + label:first-of-type:before{
   border-radius: 0.5em;
   position: absolute;
   top: 0.1em;
+  pointer-events: none;
 }
 
 form.query input[type=radio] + label:first-of-type:before{
