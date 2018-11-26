@@ -53,3 +53,11 @@ h2 > em:after{
 svg.icon{
   fill: currentColor;
 }
+
+form.query{
+  color: #80a684;
+}
+
+form.query input[type=radio]:not(:checked) + label{
+  color: #c6d7c8;
+}
