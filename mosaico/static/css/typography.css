@@ -40,3 +40,8 @@ p{
 header nav a{
   text-decoration: none;
 }
+
+form.query label{
+  text-transform: uppercase;
+  font-weight: 700;
+}

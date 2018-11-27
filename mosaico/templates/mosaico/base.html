@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,10 @@
   <meta name="viewport" content="width=device-width, user-scalable=no">
   <title>Mosaico • Transparência Orçamentária</title>
   <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700,800,900|Ubuntu:400,700" rel="stylesheet">
-  <link rel="stylesheet" href="css/typography.css">
-  <link rel="stylesheet" href="css/palette.css">
-  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="{% static 'css/typography.css' %}">
+  <link rel="stylesheet" href="{% static 'css/palette.css' %}">
+  <link rel="stylesheet" href="{% static 'css/grid.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
 </head>
 <body>
   <header>
@@ -17,7 +19,7 @@
       <nav>
         <a class="methodology" href="">
           <svg viewBox="0 0 320 320" height="32" class="icon">
-            <use xlink:href="img/icon-info.svg#icon-info"></use>
+            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
           </svg>
           Metodologia
         </a>
@@ -26,15 +28,17 @@
   </header>
   <section id="mosaic">
     <div class="wrapper">
+
+      <form action="" method="get" class="query">
       <fieldset>
         <legend>
           Visualizar
         </legend>
-        <div class="form-item">
-          <input class="radio" type="radio" name="break" value="">
-          <label>Por órgão</label>
-          <input class="radio" type="radio" name="break" value="">
-          <label>Por área</label>
+        <div class="form-item switch">
+          <input class="radio" type="radio" name="break" checked id="by-orgao">
+          <label for="by-orgao">Por órgão</label>
+          <input class="radio" type="radio" name="break" value="" id="by-area">
+          <label for="by-area">Por área</label>
         </div>
         <div class="form-item">
           <input class="radio" type="radio" name="universe" value="">
@@ -50,6 +54,7 @@
           <option value="2014">2014</option>
         </select>
       </fieldset>
+      </form>
     </div>
   </section>
   <section id="budget-over-time">
@@ -72,28 +77,28 @@
           <li>
             <a href="">
               <svg class="icon">
-                <use xlink:href="img/icon-facebook.svg#icon-facebook"></use>
+                <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
               </svg>
             </a>
           </li>
           <li>
             <a href="">
               <svg class="icon">
-                <use xlink:href="img/icon-twitter.svg#icon-twitter"></use>
+                <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
               </svg>
             </a>
           </li>
           <li>
             <a href="">
               <svg class="icon">
-                <use xlink:href="img/icon-linkedin.svg#icon-linkedin"></use>
+                <use xlink:href="{% static 'img/icon-linkedin.svg' %}#icon-linkedin"></use>
               </svg>
             </a>
           </li>
           <li>
             <a href="">
               <svg class="icon">
-                <use xlink:href="img/icon-whatsapp.svg#icon-whatsapp"></use>
+                <use xlink:href="{% static 'img/icon-whatsapp.svg' %}#icon-whatsapp"></use>
               </svg>
             </a>
           </li>
