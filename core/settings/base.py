@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'mosaico',
     'from_to_handler.apps.FromToHandlerConfig',
+    'budget_execution.apps.BudgetExecutionConfig',
 ]
 
 MIDDLEWARE = [

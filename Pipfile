@@ -15,6 +15,9 @@ django-extensions = "*"
 
 [dev-packages]
 ipdb = "*"
+model-mommy = "*"
+pytest = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.7"
