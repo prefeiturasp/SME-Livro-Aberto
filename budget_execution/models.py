@@ -4,6 +4,7 @@ from django.db import models
 
 
 class ExecucaoQuerySet(models.QuerySet):
+
     def get_by_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)
@@ -18,6 +19,23 @@ class ExecucaoQuerySet(models.QuerySet):
                 elemento_id=info[6],
                 fonte_id=info[7],
                 subelemento_id=info[8])
+
+    def filter_by_indexer(self, indexer):
+        """Uses indexer without subelemento_id to return a queryset of
+        Execucao containing all that matches the indexer."""
+
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        return self.filter(
+                year=date(info[0], 1, 1),
+                orgao_id=info[1],
+                projeto_id=info[2],
+                categoria_id=info[3],
+                gnd_id=info[4],
+                modalidade_id=info[5],
+                elemento_id=info[6],
+                fonte_id=info[7])
 
 
 class Execucao(models.Model):
