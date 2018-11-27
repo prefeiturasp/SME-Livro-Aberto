@@ -61,6 +61,14 @@ class Execucao(models.Model):
             'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
             'elemento', 'fonte', 'subelemento')
 
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.year.strftime("%Y")}.{s.orgao_id}.{s.projeto_id}.'
+            f'{s.categoria_id}.{s.gnd_id}.{s.modalidade_id}.{s.elemento_id}.'
+            f'{s.fonte_id}.{s.subelemento_id}')
+
 
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)

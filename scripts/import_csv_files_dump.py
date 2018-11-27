@@ -1,3 +1,8 @@
+# # This script was meant to be runned only once during the development.
+# # It shouldn't be used anymore. The data gathered by this script is in
+# # a json file (budget_execution/data/budget_execution_models_data.json) that
+# # needs to be loaded manually with `manage.py loaddata`
+
 import datetime
 
 from decimal import Decimal
@@ -20,7 +25,8 @@ class ColumnsLetters(NamedTuple):
     other_col: OtherColumn = None
 
 
-ORCAMENTO_COLS = {
+FK_OBJECTS_COLS = {
+    # orcamento spreadsheet
     "Orgao": ColumnsLetters('H', 'J', OtherColumn('initials', 'I')),
     "ProjetoAtividade": ColumnsLetters('U', 'V', OtherColumn('type', 'S')),
     "Categoria": ColumnsLetters('Y', 'Z'),
@@ -49,9 +55,9 @@ EMPENHOS_COLS = {
 
 
 def import_fk_object(ws, row, name):
-    id_col = ORCAMENTO_COLS[name].id
-    desc_col = ORCAMENTO_COLS[name].description
-    other_col_tuple = ORCAMENTO_COLS[name].other_col
+    id_col = FK_OBJECTS_COLS[name].id
+    desc_col = FK_OBJECTS_COLS[name].description
+    other_col_tuple = FK_OBJECTS_COLS[name].other_col
 
     row = str(row)
     id = int(ws[id_col + row].value)
@@ -80,7 +86,7 @@ def import_fk_object(ws, row, name):
     return id
 
 
-def get_fk_object_id(ws, row, name):
+def get_empenho_fk_object_id(ws, row, name):
     return int(ws[EMPENHOS_COLS[name] + str(row)].value)
 
 
@@ -96,6 +102,7 @@ def import_empenhos_csv():
     subelemento_added_count = 0
     empenho_updated_count = 0
     new_dotacoes = 0
+
     while row_is_valid:
         print(row)
         try:
@@ -104,29 +111,21 @@ def import_empenhos_csv():
             row_is_valid = False
             continue
 
-        year = datetime.date(year, 1, 1)
-
-        orgao_id = get_fk_object_id(ws, row, 'Orgao')
-        projeto_id = get_fk_object_id(ws, row, 'ProjetoAtividade')
-        categoria_id = get_fk_object_id(ws, row, 'Categoria')
-        gnd_id = get_fk_object_id(ws, row, 'Gnd')
-        modalidade_id = get_fk_object_id(ws, row, 'Modalidade')
-        elemento_id = get_fk_object_id(ws, row, 'Elemento')
-        fonte_id = get_fk_object_id(ws, row, 'FonteDeRecurso')
+        orgao_id = get_empenho_fk_object_id(ws, row, 'Orgao')
+        projeto_id = get_empenho_fk_object_id(ws, row, 'ProjetoAtividade')
+        categoria_id = get_empenho_fk_object_id(ws, row, 'Categoria')
+        gnd_id = get_empenho_fk_object_id(ws, row, 'Gnd')
+        modalidade_id = get_empenho_fk_object_id(ws, row, 'Modalidade')
+        elemento_id = get_empenho_fk_object_id(ws, row, 'Elemento')
+        fonte_id = get_empenho_fk_object_id(ws, row, 'FonteDeRecurso')
 
         subelemento_id = import_fk_object(ws, row, 'Subelemento')
         empenhado = ws['al' + str(row)].value
         empenhado = Decimal(empenhado)
 
-        execs = Execucao.objects.filter(
-                year=year,
-                orgao_id=orgao_id,
-                projeto_id=projeto_id,
-                categoria_id=categoria_id,
-                gnd_id=gnd_id,
-                modalidade_id=modalidade_id,
-                elemento_id=elemento_id,
-                fonte_id=fonte_id)
+        execs = Execucao.objects.filter_by_indexer((
+            f'{year}.{orgao_id}.{projeto_id}.{categoria_id}.{gnd_id}.'
+            f'{modalidade_id}.{elemento_id}.{fonte_id}'))
 
         if len(execs) == 0:
             print("dotação not found")
@@ -136,23 +135,19 @@ def import_empenhos_csv():
 
         try:
             execucao = execs.get(subelemento_id=subelemento_id)
-        except Execucao.DoesNotExist:
-            execucao = None
-
-        if execucao:
             execucao.empenhado_liquido += empenhado
             empenho_updated_count += 1
             print("empenhado updated")
             execucao.save()
             row += 1
             continue
-
-        try:
-            execucao = execs.get(subelemento_id=None)
         except Execucao.DoesNotExist:
-            execucao = None
+            pass
 
-        if execucao:
+        execs_without_subelemento = execs.filter(subelemento_id=None)
+
+        if execs_without_subelemento:
+            execucao = execs_without_subelemento[0]
             execucao.subelemento_id = subelemento_id
             subelemento_added_count += 1
             print("subelemento added")
@@ -168,8 +163,6 @@ def import_empenhos_csv():
         execucao.save()
         row += 1
 
-    # TODO: verify this:
-    # len(Execucao.objects.filter(subelemento_id=None)) == 66
     print(f'new dotacoes: {new_dotacoes}')
     print(f'subelemento_added_count: {subelemento_added_count}')
     print(f'empenho_updated_count: {empenho_updated_count}')
@@ -226,15 +219,6 @@ def import_orcamento_csv():
             execucao.modalidade_id = modalidade_id
             execucao.elemento_id = elemento_id
             execucao.fonte_id = fonte_id
-
-        # if execucao.subfuncao_id and execucao.subfuncao_id != subfuncao_id:
-        #     import ipdb
-        #     ipdb.set_trace()
-        #     pass
-        # if execucao.programa_id and execucao.programa_id != programa_id:
-        #     import ipdb
-        #     ipdb.set_trace()
-        #     pass
 
         execucao.subfuncao_id = subfuncao_id
         execucao.programa_id = programa_id
