@@ -130,10 +130,21 @@ class Grupo(models.Model):
     description = models.CharField(max_length=100)
 
 
+class SubgrupoQuerySet(models.QuerySet):
+
+    def get_by_code(self, code):
+        info = map(int, code.split('.'))
+        info = list(info)
+
+        return self.get(grupo_id=info[0], _code=info[1])
+
+
 class Subgrupo(models.Model):
     _code = models.IntegerField()
     grupo = models.ForeignKey("Grupo", models.CASCADE)
     description = models.CharField(max_length=100)
+
+    objects = SubgrupoQuerySet.as_manager()
 
     class Meta:
         unique_together = ('_code', 'grupo')

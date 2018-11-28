@@ -76,6 +76,18 @@ class TestExecucaoQuerySet:
 
 
 @pytest.mark.django_db
+class TestSubgrupoQueryset:
+
+    def test_get_by_code(self):
+        grupo = mommy.make(Grupo, id=10)
+        expected = mommy.make(Subgrupo, _code=5, grupo=grupo)
+        # not expected
+        mommy.make(Subgrupo, _code=4, grupo=grupo)
+
+        assert expected == Subgrupo.objects.get_by_code('10.5')
+
+
+@pytest.mark.django_db
 class TestSubgrupoModel:
 
     def test_code_property(self):
