@@ -36,7 +36,7 @@ class SubelementoFromTo(models.Model):
 
 class DotacaoFromTo(models.Model):
     """ Aggregates dotações in groups and subgroups """
-    indexer = models.CharField('Indexador', max_length=28)
+    indexer = models.CharField('Indexador', max_length=28, unique=True)
     group_code = models.IntegerField('Código do grupo')
     group_description = models.CharField('Descrição do grupo', max_length=100)
     subgroup_code = models.IntegerField('Código do subgrupo')
