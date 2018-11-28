@@ -53,6 +53,9 @@ class Execucao(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+    # FROM-TO Fields
+    grupo = models.ForeignKey('Grupo', models.PROTECT, null=True)
+    subgrupo = models.ForeignKey('Subgrupo', models.PROTECT, null=True)
 
     objects = ExecucaoQuerySet.as_manager()
 
@@ -118,5 +121,16 @@ class Subelemento(models.Model):
 
 
 class Subfuncao(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+
+
+# FROM-TO Models
+class Grupo(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+
+
+class Subgrupo(models.Model):
     id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=100)
