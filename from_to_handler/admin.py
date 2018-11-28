@@ -11,26 +11,26 @@ class DeflatorAdmin(admin.ModelAdmin):
 
     def year_str(self, obj):
         return f'{obj.year.strftime("%Y")}'
-    year_str.short_description = 'Ano'
+    year_str.short_desc = 'Ano'
 
 
 @admin.register(DotacaoFromTo)
 class DotacaoFromToAdmin(admin.ModelAdmin):
     ordering = ('indexer',)
-    list_display = ('indexer', 'group_code', 'group_description',
-                    'subgroup_full_code', 'subgroup_description')
+    list_display = ('indexer', 'group_code', 'group_desc',
+                    'subgroup_full_code', 'subgroup_desc')
 
     def subgroup_full_code(self, obj):
         return f'{obj.subgroup_code} ({obj.group_code}.{obj.subgroup_code})'
-    subgroup_full_code.short_description = 'Código do Subgrupo'
+    subgroup_full_code.short_desc = 'Código do Subgrupo'
 
 
 @admin.register(GNDFromTo)
 class GNDFromToAdmin(admin.ModelAdmin):
     ordering = ('gnd_code',)
-    list_display = ('gnd_code', 'gnd_description', 'elemento_code',
-                    'elemento_description', 'new_gnd_code',
-                    'new_gnd_description')
+    list_display = ('gnd_code', 'gnd_desc', 'elemento_code',
+                    'elemento_desc', 'new_gnd_code',
+                    'new_gnd_desc')
 
 
 @admin.register(FonteDeRecursoFromTo)
@@ -42,4 +42,4 @@ class FonteDeRecursoFromToAdmin(admin.ModelAdmin):
 @admin.register(SubelementoFromTo)
 class SubelementoFromToAdmin(admin.ModelAdmin):
     ordering = ('code',)
-    list_display = ('code', 'description', 'new_code', 'new_name')
+    list_display = ('code', 'desc', 'new_code', 'new_name')

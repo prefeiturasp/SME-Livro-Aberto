@@ -74,60 +74,60 @@ class Execucao(models.Model):
 
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class Gnd(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class Elemento(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100, null=True)
+    desc = models.CharField(max_length=100, null=True)
 
 
 class FonteDeRecurso(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class Modalidade(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class Orgao(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
     initials = models.CharField(max_length=10)
 
 
 class Programa(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class ProjetoAtividade(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=255)
+    desc = models.CharField(max_length=255)
     type = models.CharField(max_length=50)
 
 
 class Subelemento(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class Subfuncao(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 # FROM-TO Models
 class Grupo(models.Model):
     id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
 
 class SubgrupoQuerySet(models.QuerySet):
@@ -142,7 +142,7 @@ class SubgrupoQuerySet(models.QuerySet):
 class Subgrupo(models.Model):
     _code = models.IntegerField()
     grupo = models.ForeignKey("Grupo", models.CASCADE)
-    description = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
     objects = SubgrupoQuerySet.as_manager()
 

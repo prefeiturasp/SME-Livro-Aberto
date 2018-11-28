@@ -56,13 +56,13 @@ def import_subelementos():
         if not code:
             row_is_valid = False
             continue
-        description = ws['b' + str(row)].value
+        desc = ws['b' + str(row)].value
         new_code = int(ws['c' + str(row)].value)
         new_name = ws['d' + str(row)].value
 
         se = SubelementoFromTo()
         se.code = code
-        se.description = description
+        se.desc = desc
         se.new_code = new_code
         se.new_name = new_name
         se.save()
@@ -84,16 +84,16 @@ def import_dotacoes():
             row_is_valid = False
             continue
         group_code = int(ws['f' + str(row)].value)
-        group_description = ws['g' + str(row)].value
+        group_desc = ws['g' + str(row)].value
         subgroup_code = int(ws['d' + str(row)].value.split('.')[1])
-        subgroup_description = ws['e' + str(row)].value
+        subgroup_desc = ws['e' + str(row)].value
 
         dot = DotacaoFromTo()
         dot.indexer = indexer
         dot.group_code = group_code
-        dot.group_description = group_description
+        dot.group_desc = group_desc
         dot.subgroup_code = subgroup_code
-        dot.subgroup_description = subgroup_description
+        dot.subgroup_desc = subgroup_desc
         dot.save()
 
         row += 1
@@ -113,19 +113,19 @@ def import_gnd():
         except TypeError:
             row_is_valid = False
             continue
-        gnd_description = ws['a' + str(row)].value
+        gnd_desc = ws['a' + str(row)].value
         elemento_code = int(ws['d' + str(row)].value)
-        elemento_description = ws['c' + str(row)].value
+        elemento_desc = ws['c' + str(row)].value
         new_gnd_code = int(ws['f' + str(row)].value)
-        new_gnd_description = ws['b' + str(row)].value
+        new_gnd_desc = ws['b' + str(row)].value
 
         gnd = GNDFromTo()
         gnd.gnd_code = gnd_code
-        gnd.gnd_description = gnd_description
+        gnd.gnd_desc = gnd_desc
         gnd.elemento_code = elemento_code
-        gnd.elemento_description = elemento_description
+        gnd.elemento_desc = elemento_desc
         gnd.new_gnd_code = new_gnd_code
-        gnd.new_gnd_description = new_gnd_description
+        gnd.new_gnd_desc = new_gnd_desc
         gnd.save()
 
         row += 1
