@@ -54,8 +54,7 @@ class Execucao(models.Model):
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
     # FROM-TO Fields
-    grupo = models.ForeignKey('Grupo', models.PROTECT, null=True)
-    subgrupo = models.ForeignKey('Subgrupo', models.PROTECT, null=True)
+    subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
 
     objects = ExecucaoQuerySet.as_manager()
 
@@ -132,5 +131,9 @@ class Grupo(models.Model):
 
 
 class Subgrupo(models.Model):
-    id = models.IntegerField(primary_key=True)
+    _code = models.IntegerField()
+    grupo = models.ForeignKey("Grupo", models.CASCADE)
     description = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ('_code', 'grupo')
