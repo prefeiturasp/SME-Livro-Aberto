@@ -2,11 +2,11 @@ from django.db import models
 
 
 class FonteDeRecursoFromTo(models.Model):
-    """ Creates groups of Fontes de Recurso """
+    """ Creates grupos of Fontes de Recurso """
     code = models.IntegerField('Código')
     name = models.CharField('Nome', max_length=100)
-    group_code = models.IntegerField('Código do agrupamento')
-    group_name = models.CharField('Nome do agrupamento', max_length=100)
+    grupo_code = models.IntegerField('Código do agrupamento')
+    grupo_name = models.CharField('Nome do agrupamento', max_length=100)
 
     class Meta:
         verbose_name = 'De-Para: Fontes de Recurso'
@@ -14,7 +14,7 @@ class FonteDeRecursoFromTo(models.Model):
 
     def __str__(self):
         return (f'{self.code}: {self.name} | '
-                f'{self.group_code}: {self.group_name}')
+                f'{self.grupo_code}: {self.grupo_name}')
 
 
 class SubelementoFromTo(models.Model):
@@ -34,20 +34,20 @@ class SubelementoFromTo(models.Model):
 
 
 class DotacaoFromTo(models.Model):
-    """ Aggregates dotações in groups and subgroups """
+    """ Aggregates dotações in grupos and subgrupos """
     indexer = models.CharField('Indexador', max_length=28, unique=True)
-    group_code = models.IntegerField('Código do grupo')
-    group_desc = models.CharField('Descrição do grupo', max_length=100)
-    subgroup_code = models.IntegerField('Código do subgrupo')
-    subgroup_desc = models.CharField('Descrição do subgrupo', max_length=100)
+    grupo_code = models.IntegerField('Código do grupo')
+    grupo_desc = models.CharField('Descrição do grupo', max_length=100)
+    subgrupo_code = models.IntegerField('Código do subgrupo')
+    subgrupo_desc = models.CharField('Descrição do subgrupo', max_length=100)
 
     class Meta:
         verbose_name = 'De-Para: Dotações Subgrupos Grupos'
         verbose_name_plural = 'De-Para: Dotações Subgrupos Grupos'
 
     def __str__(self):
-        return (f'{self.indexer} - {self.group_code}.{self.subgroup_code} - '
-                f'{self.subgroup_desc} ({self.group_desc})')
+        return (f'{self.indexer} - {self.grupo_code}.{self.subgrupo_code} - '
+                f'{self.subgrupo_desc} ({self.grupo_desc})')
 
 
 class GNDFromTo(models.Model):

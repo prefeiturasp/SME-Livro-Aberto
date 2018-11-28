@@ -17,12 +17,12 @@ class DeflatorAdmin(admin.ModelAdmin):
 @admin.register(DotacaoFromTo)
 class DotacaoFromToAdmin(admin.ModelAdmin):
     ordering = ('indexer',)
-    list_display = ('indexer', 'group_code', 'group_desc',
-                    'subgroup_full_code', 'subgroup_desc')
+    list_display = ('indexer', 'grupo_code', 'grupo_desc',
+                    'subgrupo_full_code', 'subgrupo_desc')
 
-    def subgroup_full_code(self, obj):
-        return f'{obj.subgroup_code} ({obj.group_code}.{obj.subgroup_code})'
-    subgroup_full_code.short_desc = 'Código do Subgrupo'
+    def subgrupo_full_code(self, obj):
+        return f'{obj.subgrupo_code} ({obj.grupo_code}.{obj.subgrupo_code})'
+    subgrupo_full_code.short_desc = 'Código do Subgrupo'
 
 
 @admin.register(GNDFromTo)
@@ -36,7 +36,7 @@ class GNDFromToAdmin(admin.ModelAdmin):
 @admin.register(FonteDeRecursoFromTo)
 class FonteDeRecursoFromToAdmin(admin.ModelAdmin):
     ordering = ('code',)
-    list_display = ('code', 'name', 'group_code', 'group_name')
+    list_display = ('code', 'name', 'grupo_code', 'grupo_name')
 
 
 @admin.register(SubelementoFromTo)

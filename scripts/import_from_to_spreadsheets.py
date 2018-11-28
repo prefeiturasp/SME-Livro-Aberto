@@ -31,14 +31,14 @@ def import_fontes_de_recurso():
             row_is_valid = False
             continue
         name = ws['b' + str(row)].value
-        group_code = int(ws['c' + str(row)].value)
-        group_name = ws['d' + str(row)].value
+        grupo_code = int(ws['c' + str(row)].value)
+        grupo_name = ws['d' + str(row)].value
 
         fdr = FonteDeRecursoFromTo()
         fdr.code = code
         fdr.name = name
-        fdr.group_code = group_code
-        fdr.group_name = group_name
+        fdr.grupo_code = grupo_code
+        fdr.grupo_name = grupo_name
         fdr.save()
 
         row += 1
@@ -83,17 +83,17 @@ def import_dotacoes():
         if not indexer:
             row_is_valid = False
             continue
-        group_code = int(ws['f' + str(row)].value)
-        group_desc = ws['g' + str(row)].value
-        subgroup_code = int(ws['d' + str(row)].value.split('.')[1])
-        subgroup_desc = ws['e' + str(row)].value
+        grupo_code = int(ws['f' + str(row)].value)
+        grupo_desc = ws['g' + str(row)].value
+        subgrupo_code = int(ws['d' + str(row)].value.split('.')[1])
+        subgrupo_desc = ws['e' + str(row)].value
 
         dot = DotacaoFromTo()
         dot.indexer = indexer
-        dot.group_code = group_code
-        dot.group_desc = group_desc
-        dot.subgroup_code = subgroup_code
-        dot.subgroup_desc = subgroup_desc
+        dot.grupo_code = grupo_code
+        dot.grupo_desc = grupo_desc
+        dot.subgrupo_code = subgrupo_code
+        dot.subgrupo_desc = subgrupo_desc
         dot.save()
 
         row += 1
