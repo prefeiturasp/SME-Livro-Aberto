@@ -137,3 +137,7 @@ class Subgrupo(models.Model):
 
     class Meta:
         unique_together = ('_code', 'grupo')
+
+    @property
+    def code(self):
+        return f'{self.grupo.id}.{self._code}'
