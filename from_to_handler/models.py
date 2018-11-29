@@ -3,7 +3,7 @@ from django.db import models
 
 class FonteDeRecursoFromTo(models.Model):
     """ Creates grupos of Fontes de Recurso """
-    code = models.IntegerField('Código')
+    code = models.IntegerField('Código', unique=True)
     name = models.CharField('Nome', max_length=100)
     grupo_code = models.IntegerField('Código do agrupamento')
     grupo_name = models.CharField('Nome do agrupamento', max_length=100)

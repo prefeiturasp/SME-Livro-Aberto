@@ -55,6 +55,8 @@ class Execucao(models.Model):
                                             null=True)
     # FROM-TO Fields
     subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
+    fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
+                                    null=True)
 
     objects = ExecucaoQuerySet.as_manager()
 
@@ -152,3 +154,8 @@ class Subgrupo(models.Model):
     @property
     def full_code(self):
         return f'{self.grupo.id}.{self.code}'
+
+
+class FonteDeRecursoGrupo(models.Model):
+    id = models.IntegerField(primary_key=True)
+    desc = models.CharField(max_length=100)
