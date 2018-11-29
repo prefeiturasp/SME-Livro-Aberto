@@ -64,11 +64,11 @@ class TestDotacaoGrupoSubgrupoFromTo:
         assert not_expected.subgrupo_id is None
 
     @patch('from_to_handler.services.apply_dotacao_fromto')
-    def test_apply_dotacoes_applies_every_dotacao_fromto_existent(
+    def test_apply_all_dotacoes_grupo_subgrupo_fromto_existent(
             self, mock_fromto):
         fts = mommy.make(DotacaoFromTo, _quantity=3)
 
-        services.apply_dotacoes_grupo_subgrupo_fromto()
+        services.apply_all_dotacoes_grupo_subgrupo_fromto()
 
         for ft in fts:
             assert call(ft) in mock_fromto.call_args_list
@@ -120,3 +120,13 @@ class TestFonteDeRecursoFromToApplier:
             assert fonte_grupo == ex.fonte_grupo
 
         assert not_expected.fonte_grupo is None
+
+    @patch('from_to_handler.services.apply_fonte_de_recurso_fromto')
+    def test_apply_all_fontes_de_recurso_fromto_existent(
+            self, mock_fromto):
+        fts = mommy.make(FonteDeRecursoFromTo, _quantity=3)
+
+        services.apply_all_fontes_de_recurso_grupos_fromto()
+
+        for ft in fts:
+            assert call(ft) in mock_fromto.call_args_list
