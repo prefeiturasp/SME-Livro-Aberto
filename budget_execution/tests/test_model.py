@@ -4,7 +4,7 @@ import pytest
 
 from model_mommy import mommy
 
-from budget_execution.models import Execucao
+from budget_execution.models import Execucao, Grupo, Subgrupo
 
 
 @pytest.mark.django_db
@@ -73,3 +73,25 @@ class TestExecucaoQuerySet:
         assert 2 == len(ret)
         for e in expected:
             assert e in ret
+
+
+@pytest.mark.django_db
+class TestSubgrupoQueryset:
+
+    def test_get_by_code(self):
+        grupo = mommy.make(Grupo, id=10)
+        expected = mommy.make(Subgrupo, code=5, grupo=grupo)
+        # not expected
+        mommy.make(Subgrupo, code=4, grupo=grupo)
+
+        assert expected == Subgrupo.objects.get_by_code('10.5')
+
+
+@pytest.mark.django_db
+class TestSubgrupoModel:
+
+    def test_full_code_property(self):
+        grupo = mommy.make(Grupo, id=10)
+        subgrupo = mommy.make(Subgrupo, code=5, grupo=grupo)
+
+        assert '10.5' == subgrupo.full_code
