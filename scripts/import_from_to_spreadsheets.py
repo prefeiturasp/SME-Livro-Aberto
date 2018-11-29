@@ -6,6 +6,7 @@
 
 import datetime
 
+from django.db import IntegrityError
 from openpyxl import load_workbook
 
 from from_to_handler.models import (
@@ -94,7 +95,10 @@ def import_dotacoes():
         dot.grupo_desc = grupo_desc
         dot.subgrupo_code = subgrupo_code
         dot.subgrupo_desc = subgrupo_desc
-        dot.save()
+        try:
+            dot.save()
+        except IntegrityError:
+            pass
 
         row += 1
 
