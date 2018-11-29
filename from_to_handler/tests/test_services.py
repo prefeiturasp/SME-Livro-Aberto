@@ -1,6 +1,7 @@
 import pytest
 
 from datetime import date
+from unittest.mock import call, patch
 
 from model_mommy import mommy
 
@@ -12,7 +13,7 @@ from from_to_handler.models import DotacaoFromTo
 @pytest.mark.django_db
 class TestDotacaoGrupoSubgrupoFromTo:
 
-    def test_apply_from_to(self):
+    def test_apply_dotacao_fromto(self):
         assert 0 == Grupo.objects.count()
         assert 0 == Subgrupo.objects.count()
 
@@ -44,7 +45,7 @@ class TestDotacaoGrupoSubgrupoFromTo:
         ft = mommy.make(DotacaoFromTo,
                         indexer='2018.16.1011.3.3.9.10.10')
 
-        services.apply_dotacoes_grupo_subgrupo_fromto()
+        services.apply_dotacao_fromto(ft)
 
         assert 1 == Grupo.objects.count()
         assert 1 == Subgrupo.objects.count()
@@ -61,3 +62,13 @@ class TestDotacaoGrupoSubgrupoFromTo:
             assert ft.subgrupo_code == ex.subgrupo.code
 
         assert not_expected.subgrupo_id is None
+
+    @patch('from_to_handler.services.apply_dotacao_fromto')
+    def test_apply_dotacoes_applies_every_dotacao_fromto_existent(
+            self, mock_fromto):
+        fts = mommy.make(DotacaoFromTo, _quantity=3)
+
+        services.apply_dotacoes_grupo_subgrupo_fromto()
+
+        for ft in fts:
+            assert call(ft) in mock_fromto.call_args_list
