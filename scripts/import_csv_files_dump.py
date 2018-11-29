@@ -21,7 +21,7 @@ class OtherColumn(NamedTuple):
 
 class ColumnsLetters(NamedTuple):
     id: str
-    description: str = None
+    desc: str = None
     other_col: OtherColumn = None
 
 
@@ -56,7 +56,7 @@ EMPENHOS_COLS = {
 
 def import_fk_object(ws, row, name):
     id_col = FK_OBJECTS_COLS[name].id
-    desc_col = FK_OBJECTS_COLS[name].description
+    desc_col = FK_OBJECTS_COLS[name].desc
     other_col_tuple = FK_OBJECTS_COLS[name].other_col
 
     row = str(row)
@@ -72,8 +72,8 @@ def import_fk_object(ws, row, name):
     obj.id = id
 
     if desc_col:
-        description = ws[desc_col + row].value
-        obj.description = description.strip()
+        desc = ws[desc_col + row].value
+        obj.desc = desc.strip()
 
     if other_col_tuple:
         other_col = other_col_tuple.column
