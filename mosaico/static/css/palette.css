@@ -54,6 +54,7 @@ svg.icon{
   fill: currentColor;
 }
 
+button, input[type=submit], .btn,
 form.query label{
   color: #80a684;
 }

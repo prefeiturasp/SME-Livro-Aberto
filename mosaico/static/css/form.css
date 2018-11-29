@@ -43,3 +43,15 @@ form.query input[type=radio]:not(:checked) + label:first-of-type:after{
 form.query input[type=radio]:checked + label:first-of-type:after{
   right: -1.5em;
 }
+
+button, input[type=submit], .btn{
+  border-radius: .2em;
+  border-style: solid;
+  border-width: .15em;
+  border-color: currentColor;
+  display: inline-block;
+  background-color: transparent;
+  padding: 1em;
+  margin: 0.5em;
+  box-sizing: border-box;
+}

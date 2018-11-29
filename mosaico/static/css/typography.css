@@ -41,7 +41,12 @@ header nav a{
   text-decoration: none;
 }
 
+a.btn,
 form.query label{
   text-transform: uppercase;
   font-weight: 700;
+}
+
+a.btn{
+  text-decoration: none;
 }
