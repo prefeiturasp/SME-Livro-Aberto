@@ -1,4 +1,5 @@
-from budget_execution.models import Execucao, Grupo, Subgrupo
+from budget_execution.models import (Execucao, FonteDeRecursoGrupo, Grupo,
+                                     Subgrupo)
 from from_to_handler.models import DotacaoFromTo
 
 
@@ -35,3 +36,22 @@ def get_or_create_subgrupo(subgrupo_code, grupo, subgrupo_desc):
     subgrupo, _ = Subgrupo.objects.get_or_create(
         code=subgrupo_code, grupo=grupo, defaults={'desc': subgrupo_desc})
     return subgrupo
+
+
+def apply_fonte_de_recurso_fromto(fonte_fromto):
+    ft = fonte_fromto
+    execucoes = Execucao.objects.filter(fonte_id=ft.code)
+    if not execucoes:
+        return
+
+    fonte_grupo = get_or_create_fonte_grupo(ft.grupo_code, ft.grupo_name)
+
+    for ex in execucoes:
+        ex.fonte_grupo = fonte_grupo
+        ex.save()
+
+
+def get_or_create_fonte_grupo(fonte_grupo_id, fonte_grupo_name):
+    fonte_grupo, _ = FonteDeRecursoGrupo.objects.get_or_create(
+        id=fonte_grupo_id, defaults={'desc': fonte_grupo_name})
+    return fonte_grupo
