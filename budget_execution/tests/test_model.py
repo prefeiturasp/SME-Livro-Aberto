@@ -80,9 +80,9 @@ class TestSubgrupoQueryset:
 
     def test_get_by_code(self):
         grupo = mommy.make(Grupo, id=10)
-        expected = mommy.make(Subgrupo, _code=5, grupo=grupo)
+        expected = mommy.make(Subgrupo, code=5, grupo=grupo)
         # not expected
-        mommy.make(Subgrupo, _code=4, grupo=grupo)
+        mommy.make(Subgrupo, code=4, grupo=grupo)
 
         assert expected == Subgrupo.objects.get_by_code('10.5')
 
@@ -90,8 +90,8 @@ class TestSubgrupoQueryset:
 @pytest.mark.django_db
 class TestSubgrupoModel:
 
-    def test_code_property(self):
+    def test_full_code_property(self):
         grupo = mommy.make(Grupo, id=10)
-        subgrupo = mommy.make(Subgrupo, _code=5, grupo=grupo)
+        subgrupo = mommy.make(Subgrupo, code=5, grupo=grupo)
 
-        assert '10.5' == subgrupo.code
+        assert '10.5' == subgrupo.full_code

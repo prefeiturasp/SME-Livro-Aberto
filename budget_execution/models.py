@@ -136,19 +136,19 @@ class SubgrupoQuerySet(models.QuerySet):
         info = map(int, code.split('.'))
         info = list(info)
 
-        return self.get(grupo_id=info[0], _code=info[1])
+        return self.get(grupo_id=info[0], code=info[1])
 
 
 class Subgrupo(models.Model):
-    _code = models.IntegerField()
+    code = models.IntegerField()
     grupo = models.ForeignKey("Grupo", models.CASCADE)
     desc = models.CharField(max_length=100)
 
     objects = SubgrupoQuerySet.as_manager()
 
     class Meta:
-        unique_together = ('_code', 'grupo')
+        unique_together = ('code', 'grupo')
 
     @property
-    def code(self):
-        return f'{self.grupo.id}.{self._code}'
+    def full_code(self):
+        return f'{self.grupo.id}.{self.code}'
