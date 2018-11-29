@@ -24,7 +24,7 @@ section#social{
   color: #fff;
 }
 
-footer{
+body > footer{
   background-color: #171717;
   color: #fff;
 }
@@ -54,6 +54,7 @@ svg.icon{
   fill: currentColor;
 }
 
+.breadcrumb a,
 button, input[type=submit], .btn,
 form.query label{
   color: #80a684;

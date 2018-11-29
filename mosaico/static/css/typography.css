@@ -47,6 +47,18 @@ form.query label{
   font-weight: 700;
 }
 
+.breadcrumb a,
 a.btn{
   text-decoration: none;
+}
+
+.breadcrumb{
+  font-size: 2em;
+}
+
+.breadcrumb > li > ::before{
+  display: inline-block;
+  padding-right: .5rem;
+  padding-left: .5rem;
+  content: "/";
 }
