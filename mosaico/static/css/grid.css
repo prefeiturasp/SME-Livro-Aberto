@@ -70,3 +70,21 @@ fieldset{
   display: inline-block;
   margin-right: 3em;
 }
+
+footer nav *{
+  display: block;
+}
+
+footer ul{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3em;
+}
+
+footer li{
+  list-style: none;
+}
+
+footer img{
+  height: 12em;
+}
