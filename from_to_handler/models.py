@@ -4,7 +4,7 @@ from budget_execution.models import (
     Execucao, FonteDeRecursoGrupo, Grupo, GndGealogia, Subgrupo)
 
 
-class FromTo(models.Model):
+class FromTo:
 
     @classmethod
     def apply_all(cls):
@@ -14,7 +14,7 @@ class FromTo(models.Model):
             fromto.apply()
 
 
-class FonteDeRecursoFromTo(FromTo):
+class FonteDeRecursoFromTo(models.Model, FromTo):
     """ Creates grupos of Fontes de Recurso """
     code = models.IntegerField('Código', unique=True)
     name = models.CharField('Nome', max_length=100)
@@ -58,7 +58,7 @@ class SubelementoFromTo(models.Model):
                 f'{self.new_code}: {self.new_name}')
 
 
-class DotacaoFromTo(FromTo):
+class DotacaoFromTo(models.Model, FromTo):
     """ Aggregates dotações in grupos and subgrupos """
     indexer = models.CharField('Indexador', max_length=28, unique=True)
     grupo_code = models.IntegerField('Código do grupo')
@@ -90,7 +90,7 @@ class DotacaoFromTo(FromTo):
             ex.save()
 
 
-class GNDFromTo(FromTo):
+class GNDFromTo(models.Model, FromTo):
     """
     Adds a new name to Grupo de Natureza de Despesa based on the original name
     and the Elemento de Despesa
