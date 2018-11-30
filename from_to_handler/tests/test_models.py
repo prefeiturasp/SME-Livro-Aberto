@@ -6,9 +6,10 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from budget_execution.models import (
-    Execucao, FonteDeRecursoGrupo, GndGealogia, Grupo, Subgrupo)
+    Execucao, FonteDeRecursoGrupo, GndGealogia, Grupo, SubelementoFriendly,
+    Subgrupo)
 from from_to_handler.models import (
-    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo)
+    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo, SubelementoFromTo)
 
 
 @pytest.mark.django_db
@@ -174,3 +175,47 @@ class TestGndFromToApplier:
 
     def test_class_is_instance_of_fromto_model(self):
         assert issubclass(GNDFromTo, FromTo)
+
+
+@pytest.mark.django_db
+class TestSubelementoFromToApplier:
+
+    def test_apply_subelemento_fromto(self):
+        assert 0 == SubelementoFriendly.objects.count()
+
+        expected = mommy.make(
+            Execucao,
+            categoria_id=1,
+            gnd_id=1,
+            modalidade_id=10,
+            elemento_id=10,
+            subelemento_id=1,
+            subelemento_friendly_id=None,
+            _quantity=2)
+
+        # not expected
+        not_expected = mommy.make(
+            Execucao,
+            categoria_id=1,
+            gnd_id=1,
+            modalidade_id=10,
+            elemento_id=10,
+            subelemento_id=55,
+            subelemento_friendly_id=None)
+
+        ft = mommy.make(SubelementoFromTo, code='1.1.10.10.1')
+        ft.apply()
+
+        assert 1 == SubelementoFriendly.objects.count()
+
+        subel_friendly = SubelementoFriendly.objects.get(id=ft.new_code)
+        assert ft.new_name == subel_friendly.desc
+
+        for ex in expected:
+            ex.refresh_from_db()
+            assert subel_friendly == ex.subelemento_friendly
+
+        assert not_expected.subelemento_friendly is None
+
+    def test_class_is_instance_of_fromto_model(self):
+        assert issubclass(SubelementoFromTo, FromTo)
