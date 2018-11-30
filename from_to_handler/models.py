@@ -4,7 +4,17 @@ from budget_execution.models import (Execucao, FonteDeRecursoGrupo,
                                      Grupo, Subgrupo)
 
 
-class FonteDeRecursoFromTo(models.Model):
+class FromTo(models.Model):
+
+    @classmethod
+    def apply_all(cls):
+        fts = cls.objects.all()
+
+        for fromto in fts:
+            fromto.apply()
+
+
+class FonteDeRecursoFromTo(FromTo):
     """ Creates grupos of Fontes de Recurso """
     code = models.IntegerField('Código', unique=True)
     name = models.CharField('Nome', max_length=100)
@@ -18,13 +28,6 @@ class FonteDeRecursoFromTo(models.Model):
     def __str__(self):
         return (f'{self.code}: {self.name} | '
                 f'{self.grupo_code}: {self.grupo_name}')
-
-    @classmethod
-    def apply_all(cls):
-        fts = cls.objects.all()
-
-        for fromto in fts:
-            fromto.apply()
 
     def apply(self):
         execucoes = Execucao.objects.filter(fonte_id=self.code)
@@ -55,7 +58,7 @@ class SubelementoFromTo(models.Model):
                 f'{self.new_code}: {self.new_name}')
 
 
-class DotacaoFromTo(models.Model):
+class DotacaoFromTo(FromTo):
     """ Aggregates dotações in grupos and subgrupos """
     indexer = models.CharField('Indexador', max_length=28, unique=True)
     grupo_code = models.IntegerField('Código do grupo')
@@ -70,13 +73,6 @@ class DotacaoFromTo(models.Model):
     def __str__(self):
         return (f'{self.indexer} - {self.grupo_code}.{self.subgrupo_code} - '
                 f'{self.subgrupo_desc} ({self.grupo_desc})')
-
-    @classmethod
-    def apply_all(cls):
-        fts = cls.objects.all()
-
-        for fromto in fts:
-            fromto.apply()
 
     def apply(self):
         execucoes = Execucao.objects.filter_by_indexer(self.indexer)
