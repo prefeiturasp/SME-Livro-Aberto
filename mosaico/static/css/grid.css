@@ -79,6 +79,12 @@ fieldset{
   list-style: none;
 }
 
+section footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 footer nav *{
   display: block;
 }

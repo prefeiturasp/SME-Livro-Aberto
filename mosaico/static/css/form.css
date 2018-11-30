@@ -55,3 +55,7 @@ button, input[type=submit], .btn{
   margin: 0.5em;
   box-sizing: border-box;
 }
+
+button:last-child, input[type=submit]:last-child, .btn:last-child{
+  margin: 0;
+}
