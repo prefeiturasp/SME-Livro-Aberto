@@ -1,7 +1,8 @@
 from django.db import models
 
 from budget_execution.models import (
-    Execucao, FonteDeRecursoGrupo, Grupo, GndGealogia, Subgrupo)
+    Execucao, FonteDeRecursoGrupo, Grupo, GndGealogia, SubelementoFriendly,
+    Subgrupo)
 
 
 class FromTo:
@@ -42,7 +43,7 @@ class FonteDeRecursoFromTo(models.Model, FromTo):
             ex.save()
 
 
-class SubelementoFromTo(models.Model):
+class SubelementoFromTo(models.Model, FromTo):
     """ Adds a friendly name to Subelementos """
     code = models.CharField('Código', max_length=28)
     desc = models.CharField('Descrição', max_length=100, blank=True, null=True)
@@ -56,6 +57,19 @@ class SubelementoFromTo(models.Model):
     def __str__(self):
         return (f'{self.code}: {self.desc} | '
                 f'{self.new_code}: {self.new_name}')
+
+    def apply(self):
+        execucoes = Execucao.objects.filter_by_subelemento_fromto_code(
+            self.code)
+        if not execucoes:
+            return
+
+        subel_friendly, _ = SubelementoFriendly.objects.get_or_create(
+            id=self.new_code, defaults={'desc': self.new_name})
+
+        for ex in execucoes:
+            ex.subelemento_friendly = subel_friendly
+            ex.save()
 
 
 class DotacaoFromTo(models.Model, FromTo):

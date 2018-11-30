@@ -74,6 +74,33 @@ class TestExecucaoQuerySet:
         for e in expected:
             assert e in ret
 
+    def test_filter_by_subelemento_fromto_code(self):
+        expected = mommy.make(
+            Execucao,
+            categoria_id=1,
+            gnd_id=1,
+            modalidade_id=10,
+            elemento_id=10,
+            subelemento_id=1,
+            _quantity=2)
+
+        # not expected
+        mommy.make(
+            Execucao,
+            categoria_id=1,
+            gnd_id=1,
+            modalidade_id=10,
+            elemento_id=10,
+            subelemento_id=55)
+
+        # using indexer without subelemento_id
+        ret = Execucao.objects.filter_by_subelemento_fromto_code(
+            '1.1.10.10.01')
+
+        assert 2 == len(ret)
+        for e in expected:
+            assert e in ret
+
 
 @pytest.mark.django_db
 class TestSubgrupoQueryset:
