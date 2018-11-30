@@ -62,22 +62,22 @@
         </ol>
       </nav>
       <ol class="treemap">
-          <li data-execution="0.05">
+          <li data-execution="0.05" data-value="1000.00">
               <div class="name">Pessoal e Benefícios</div>
               <div class="value">R$ 1000,00</div>
               <div class="execution">5%</div>
           </li>
-          <li data-execution="0.25">
+          <li data-execution="0.25" data-value="600.00">
               <div class="name">Convênios</div>
               <div class="value">R$ 600,00</div>
               <div class="execution">25%</div>
           </li>
-          <li data-execution="0.8">
+          <li data-execution="0.8" data-value="910.00">
               <div class="name">Administração</div>
               <div class="value">R$ 910,00</div>
               <div class="execution">80%</div>
           </li>
-          <li data-execution="1">
+          <li data-execution="1" data-value="100.00">
               <div class="name">Obras</div>
               <div class="value">R$ 100,00</div>
               <div class="execution">100%</div>
@@ -111,6 +111,7 @@
       <script>
 
         let px = v => v + 'px';
+        let value = d => d.dataset.value;
 
         var color = d3.scaleQuantize()
             .domain([0, 1])
@@ -125,19 +126,6 @@
             let els = [];
             each(el => { if(el.tagName == 'LI') els.push(el)}, d.children)
             return els;
-        }
-
-        function parseCurrency(text){
-            return parseFloat((text || '')
-                              .replace(/,/g, '.')
-                              .replace('R$', ''));
-        }
-
-        function value(d){
-            console.log(d)
-            let valueEl = d.querySelector('.value');
-            let parent = valueEl.parentNode;
-            return parent == d? parseCurrency(valueEl.innerText): 0;
         }
 
         function setNodeStyle(node){
