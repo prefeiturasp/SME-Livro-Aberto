@@ -70,3 +70,35 @@ fieldset{
   display: inline-block;
   margin-right: 3em;
 }
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+section footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer nav *{
+  display: block;
+}
+
+footer ul{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3em;
+}
+
+footer li{
+  list-style: none;
+}
+
+footer img{
+  height: 12em;
+}

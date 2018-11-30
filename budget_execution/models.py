@@ -37,6 +37,20 @@ class ExecucaoQuerySet(models.QuerySet):
                 elemento_id=info[6],
                 fonte_id=info[7])
 
+    def filter_by_subelemento_fromto_code(self, code):
+        """Uses subelemento fromto code to return a queryset of
+        Execucao containing all that matches the code."""
+
+        info = map(int, code.split('.'))
+        info = list(info)
+
+        return self.filter(
+                categoria_id=info[0],
+                gnd_id=info[1],
+                modalidade_id=info[2],
+                elemento_id=info[3],
+                subelemento_id=info[4])
+
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -57,6 +71,9 @@ class Execucao(models.Model):
     subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
     fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
                                     null=True)
+    gnd_gealogia = models.ForeignKey('GndGealogia', models.SET_NULL, null=True)
+    subelemento_friendly = models.ForeignKey(
+        'SubelementoFriendly', models.SET_NULL, null=True)
 
     objects = ExecucaoQuerySet.as_manager()
 
@@ -157,5 +174,15 @@ class Subgrupo(models.Model):
 
 
 class FonteDeRecursoGrupo(models.Model):
+    id = models.IntegerField(primary_key=True)
+    desc = models.CharField(max_length=100)
+
+
+class GndGealogia(models.Model):
+    id = models.IntegerField(primary_key=True)
+    desc = models.CharField(max_length=100)
+
+
+class SubelementoFriendly(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=100)
