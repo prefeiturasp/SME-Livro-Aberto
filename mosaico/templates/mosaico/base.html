@@ -116,16 +116,11 @@
         var color = d3.scaleQuantize()
             .domain([0, 1])
             .range(['#e94363', '#f09564', '#edb93b', '#66d2b4', '#277fcd']);
+
         function each(f, iterable){
             for(let i = 0; i < iterable.length; i++){
                 f(iterable[i]);
             }
-        }
-
-        function children(d){
-            let els = [];
-            each(el => { if(el.tagName == 'LI') els.push(el)}, d.children)
-            return els;
         }
 
         function setNodeStyle(node){
@@ -137,7 +132,7 @@
         }
 
         let rootEl = document.querySelector('.treemap');
-        let root = d3.hierarchy(rootEl, children);
+        let root = d3.hierarchy(rootEl, d => d.children);
         let width = parseInt(getComputedStyle(rootEl)['width']);
         let height = parseInt(getComputedStyle(rootEl)['height']);
 
