@@ -58,6 +58,8 @@ class Execucao(models.Model):
     fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
                                     null=True)
     gnd_gealogia = models.ForeignKey('GndGealogia', models.SET_NULL, null=True)
+    subelemento_friendly = models.ForeignKey(
+        'SubelementoFriendly', models.SET_NULL, null=True)
 
     objects = ExecucaoQuerySet.as_manager()
 
@@ -163,5 +165,10 @@ class FonteDeRecursoGrupo(models.Model):
 
 
 class GndGealogia(models.Model):
+    id = models.IntegerField(primary_key=True)
+    desc = models.CharField(max_length=100)
+
+
+class SubelementoFriendly(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=100)
