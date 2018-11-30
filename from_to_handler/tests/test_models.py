@@ -1,14 +1,14 @@
 import pytest
 
 from datetime import date
-from unittest.mock import call, patch
+from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import (Execucao, FonteDeRecursoGrupo, Grupo,
-                                     Subgrupo)
-from from_to_handler import services
-from from_to_handler.models import DotacaoFromTo, FonteDeRecursoFromTo
+from budget_execution.models import (
+    Execucao, FonteDeRecursoGrupo, GndGealogia, Grupo, Subgrupo)
+from from_to_handler.models import (
+    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo)
 
 
 @pytest.mark.django_db
@@ -46,7 +46,7 @@ class TestDotacaoGrupoSubgrupoFromTo:
         ft = mommy.make(DotacaoFromTo,
                         indexer='2018.16.1011.3.3.9.10.10')
 
-        services.apply_dotacao_fromto(ft)
+        ft.apply()
 
         assert 1 == Grupo.objects.count()
         assert 1 == Subgrupo.objects.count()
@@ -63,15 +63,17 @@ class TestDotacaoGrupoSubgrupoFromTo:
 
         assert not_expected.subgrupo_id is None
 
-    @patch('from_to_handler.services.apply_dotacao_fromto')
-    def test_apply_all_dotacoes_grupo_subgrupo_fromto_existent(
-            self, mock_fromto):
+    def test_apply_all_dotacoes_grupo_subgrupo_fromto_existent(self):
         fts = mommy.make(DotacaoFromTo, _quantity=3)
+        for ft in fts:
+            ft.apply = Mock()
 
-        services.apply_all_dotacoes_grupo_subgrupo_fromto()
+        with patch.object(DotacaoFromTo.objects, 'all',
+                          return_value=fts):
+            DotacaoFromTo.apply_all()
 
         for ft in fts:
-            assert call(ft) in mock_fromto.call_args_list
+            ft.apply.assert_called_once_with()
 
 
 @pytest.mark.django_db
@@ -107,8 +109,7 @@ class TestFonteDeRecursoFromToApplier:
 
         ft = mommy.make(
             FonteDeRecursoFromTo, code=4, grupo_code=3)
-
-        services.apply_fonte_de_recurso_fromto(ft)
+        ft.apply()
 
         assert 1 == FonteDeRecursoGrupo.objects.count()
 
@@ -121,12 +122,55 @@ class TestFonteDeRecursoFromToApplier:
 
         assert not_expected.fonte_grupo is None
 
-    @patch('from_to_handler.services.apply_fonte_de_recurso_fromto')
-    def test_apply_all_fontes_de_recurso_fromto_existent(
-            self, mock_fromto):
+    def test_apply_all_fontes_de_recurso_fromto_existent(self):
         fts = mommy.make(FonteDeRecursoFromTo, _quantity=3)
+        for ft in fts:
+            ft.apply = Mock()
 
-        services.apply_all_fontes_de_recurso_grupos_fromto()
+        with patch.object(FonteDeRecursoFromTo.objects, 'all',
+                          return_value=fts):
+            FonteDeRecursoFromTo.apply_all()
 
         for ft in fts:
-            assert call(ft) in mock_fromto.call_args_list
+            ft.apply.assert_called_once_with()
+
+
+@pytest.mark.django_db
+class TestGndFromToApplier:
+
+    def test_apply_gnd_fromto(self):
+        assert 0 == GndGealogia.objects.count()
+
+        gnd_id = 1
+        elemento_id = 11
+
+        expected = mommy.make(
+            Execucao,
+            gnd_id=gnd_id,
+            elemento_id=elemento_id,
+            gnd_gealogia_id=None,
+            _quantity=2)
+
+        not_expected = mommy.make(
+            Execucao,
+            gnd_id=5,
+            elemento_id=55,
+            gnd_gealogia_id=None)
+
+        ft = mommy.make(
+            GNDFromTo, gnd_code=gnd_id, elemento_code=elemento_id)
+        ft.apply()
+
+        assert 1 == GndGealogia.objects.count()
+
+        gnd_gealogia = GndGealogia.objects.get(id=ft.new_gnd_code)
+        assert ft.new_gnd_desc == gnd_gealogia.desc
+
+        for ex in expected:
+            ex.refresh_from_db()
+            assert gnd_gealogia == ex.gnd_gealogia
+
+        assert not_expected.fonte_grupo is None
+
+    def test_class_is_instance_of_fromto_model(self):
+        assert issubclass(GNDFromTo, FromTo)
