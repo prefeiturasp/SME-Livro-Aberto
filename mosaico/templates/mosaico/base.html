@@ -92,7 +92,6 @@
         }
         .treemap > li{
             position: absolute;
-            background-color: #f0f0f0;
             overflow: hidden;
             box-sizing: border-box;
         }
@@ -104,12 +103,14 @@
             white-space: nowrap;
             text-overflow: clip;
         }
+        .treemap > li .name{
+            font-weight: 700;
+        }
       </style>
       <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
       <script src="https://d3js.org/d3-array.v1.min.js"></script>
       <script src="https://d3js.org/d3-scale.v2.min.js"></script>
       <script>
-
         let px = v => v + 'px';
         let value = d => d.dataset.value;
 
@@ -129,6 +130,7 @@
             node.data.style.left = px(node.x0);
             node.data.style.top = px(node.y0);
             node.data.style.backgroundColor = color(node.data.dataset.execution);
+            node.data.style.color = '#fff';
         }
 
         let rootEl = document.querySelector('.treemap');
