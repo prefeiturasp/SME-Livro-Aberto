@@ -132,3 +132,39 @@ class TestFonteDeRecursoFromToApplier:
 
         for ft in fts:
             ft.apply.assert_called_once_with()
+@pytest.mark.django_db
+class TestGndFromToApplier:
+
+    def test_apply_gnd_fromto(self):
+        assert 0 == GndGealogia.objects.count()
+
+        gnd_id = 1
+        elemento_id = 11
+
+        expected = mommy.make(
+            Execucao,
+            gnd_id=gnd_id,
+            elemento_id=elemento_id,
+            gnd_gealogia_id=None,
+            _quantity=2)
+
+        not_expected = mommy.make(
+            Execucao,
+            gnd_id=5,
+            elemento_id=55,
+            gnd_gealogia_id=None)
+
+        ft = mommy.make(
+            GNDFromTo, gnd_code=gnd_id, elemento_code=elemento_id)
+        ft.apply()
+
+        assert 1 == GndGealogia.objects.count()
+
+        gnd_gealogia = GndGealogia.objects.get(id=ft.new_gnd_code)
+        assert ft.new_gnd_desc == gnd_gealogia.desc
+
+        for ex in expected:
+            ex.refresh_from_db()
+            assert gnd_gealogia == ex.gnd_gealogia
+
+        assert not_expected.fonte_grupo is None

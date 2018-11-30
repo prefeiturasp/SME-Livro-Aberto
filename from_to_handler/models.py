@@ -113,6 +113,19 @@ class GNDFromTo(models.Model):
                 f'{self.elemento_code}: {self.elemento_desc} | '
                 f'{self.new_gnd_code}: {self.gnd_desc}')
 
+    def apply(self):
+        execucoes = Execucao.objects.filter(
+            gnd_id=self.gnd_code, elemento_id=self.elemento_code)
+        if not execucoes:
+            return
+
+        gnd_gealogia, _ = GndGealogia.objects.get_or_create(
+            id=self.new_gnd_code, defaults={'desc': self.new_gnd_desc})
+
+        for ex in execucoes:
+            ex.gnd_gealogia = gnd_gealogia
+            ex.save()
+
 
 class Deflator(models.Model):
     """ Applies the inflation correction to the values """
