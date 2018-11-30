@@ -1,7 +1,7 @@
 from django.db import models
 
-from budget_execution.models import (Execucao, FonteDeRecursoGrupo,
-                                     Grupo, Subgrupo)
+from budget_execution.models import (
+    Execucao, FonteDeRecursoGrupo, Grupo, GndGealogia, Subgrupo)
 
 
 class FromTo(models.Model):
@@ -90,7 +90,7 @@ class DotacaoFromTo(FromTo):
             ex.save()
 
 
-class GNDFromTo(models.Model):
+class GNDFromTo(FromTo):
     """
     Adds a new name to Grupo de Natureza de Despesa based on the original name
     and the Elemento de Despesa

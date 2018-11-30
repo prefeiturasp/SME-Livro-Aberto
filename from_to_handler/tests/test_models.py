@@ -5,9 +5,10 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import (Execucao, FonteDeRecursoGrupo, Grupo,
-                                     Subgrupo)
-from from_to_handler.models import DotacaoFromTo, FonteDeRecursoFromTo
+from budget_execution.models import (
+    Execucao, FonteDeRecursoGrupo, GndGealogia, Grupo, Subgrupo)
+from from_to_handler.models import (
+    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo)
 
 
 @pytest.mark.django_db
@@ -132,6 +133,8 @@ class TestFonteDeRecursoFromToApplier:
 
         for ft in fts:
             ft.apply.assert_called_once_with()
+
+
 @pytest.mark.django_db
 class TestGndFromToApplier:
 
@@ -168,3 +171,6 @@ class TestGndFromToApplier:
             assert gnd_gealogia == ex.gnd_gealogia
 
         assert not_expected.fonte_grupo is None
+
+    def test_class_is_instance_of_fromto_model(self):
+        assert issubclass(GNDFromTo, FromTo)
