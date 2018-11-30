@@ -1,5 +1,8 @@
 from django.db import models
 
+from budget_execution.models import (Execucao, FonteDeRecursoGrupo,
+                                     Grupo, Subgrupo)
+
 
 class FonteDeRecursoFromTo(models.Model):
     """ Creates grupos of Fontes de Recurso """
@@ -15,6 +18,25 @@ class FonteDeRecursoFromTo(models.Model):
     def __str__(self):
         return (f'{self.code}: {self.name} | '
                 f'{self.grupo_code}: {self.grupo_name}')
+
+    @classmethod
+    def apply_all(cls):
+        fts = cls.objects.all()
+
+        for fromto in fts:
+            fromto.apply()
+
+    def apply(self):
+        execucoes = Execucao.objects.filter(fonte_id=self.code)
+        if not execucoes:
+            return
+
+        fonte_grupo, _ = FonteDeRecursoGrupo.objects.get_or_create(
+            id=self.grupo_code, defaults={'desc': self.grupo_name})
+
+        for ex in execucoes:
+            ex.fonte_grupo = fonte_grupo
+            ex.save()
 
 
 class SubelementoFromTo(models.Model):
@@ -48,6 +70,28 @@ class DotacaoFromTo(models.Model):
     def __str__(self):
         return (f'{self.indexer} - {self.grupo_code}.{self.subgrupo_code} - '
                 f'{self.subgrupo_desc} ({self.grupo_desc})')
+
+    @classmethod
+    def apply_all(cls):
+        fts = cls.objects.all()
+
+        for fromto in fts:
+            fromto.apply()
+
+    def apply(self):
+        execucoes = Execucao.objects.filter_by_indexer(self.indexer)
+        if not execucoes:
+            return
+
+        grupo, _ = Grupo.objects.get_or_create(
+            id=self.grupo_code, defaults={'desc': self.grupo_desc})
+        subgrupo, _ = Subgrupo.objects.get_or_create(
+            code=self.subgrupo_code, grupo=grupo,
+            defaults={'desc': self.subgrupo_desc})
+
+        for ex in execucoes:
+            ex.subgrupo = subgrupo
+            ex.save()
 
 
 class GNDFromTo(models.Model):
