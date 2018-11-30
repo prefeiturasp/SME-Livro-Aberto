@@ -37,6 +37,20 @@ class ExecucaoQuerySet(models.QuerySet):
                 elemento_id=info[6],
                 fonte_id=info[7])
 
+    def filter_by_subelemento_fromto_code(self, code):
+        """Uses subelemento fromto code to return a queryset of
+        Execucao containing all that matches the code."""
+
+        info = map(int, code.split('.'))
+        info = list(info)
+
+        return self.filter(
+                categoria_id=info[0],
+                gnd_id=info[1],
+                modalidade_id=info[2],
+                elemento_id=info[3],
+                subelemento_id=info[4])
+
 
 class Execucao(models.Model):
     year = models.DateField()
