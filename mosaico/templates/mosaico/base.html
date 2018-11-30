@@ -61,6 +61,104 @@
           <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
         </ol>
       </nav>
+      <ol class="treemap">
+          <li>
+              <div class="name">Pessoal e Benefícios</div>
+              <div class="value">R$ 1000,00</div>
+              <div class="execution">5%</div>
+          </li>
+          <li>
+              <div class="name">Convênios</div>
+              <div class="value">R$ 600,00</div>
+              <div class="execution">25%</div>
+          </li>
+          <li>
+              <div class="name">Administração</div>
+              <div class="value">R$ 910,00</div>
+              <div class="execution">80%</div>
+          </li>
+          <li>
+              <div class="name">Obras</div>
+              <div class="value">R$ 100,00</div>
+              <div class="execution">100%</div>
+          </li>
+      </ol>
+      <style type="text/css">
+        .treemap{
+            position: relative;
+            padding: 0;
+            width: 100%;
+            height: 50vh;
+        }
+        .treemap > li{
+            position: absolute;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .treemap > li > div:first-child{
+            padding-top: 1em;
+        }
+        .treemap > li > div{
+            padding-left: 1em;
+            white-space: nowrap;
+            text-overflow: clip;
+        }
+      </style>
+      <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
+      <script>
+
+        let px = v => v + 'px';
+
+        function each(f, iterable){
+            for(let i = 0; i < iterable.length; i++){
+                f(iterable[i]);
+            }
+        }
+
+        function children(d){
+            let els = [];
+            each(el => { if(el.tagName == 'LI') els.push(el)}, d.children)
+            return els;
+        }
+
+        function parseCurrency(text){
+            return parseFloat((text || '')
+                              .replace(/,/g, '.')
+                              .replace('R$', ''));
+        }
+
+        function value(d){
+            console.log(d)
+            let valueEl = d.querySelector('.value');
+            let parent = valueEl.parentNode;
+            return parent == d? parseCurrency(valueEl.innerText): 0;
+        }
+
+        function setNodeStyle(node){
+            node.data.style.width = px(node.x1 - node.x0);
+            node.data.style.height = px(node.y1 - node.y0)
+            node.data.style.left = px(node.x0);
+            node.data.style.top = px(node.y0);
+        }
+
+        let rootEl = document.querySelector('.treemap');
+        let root = d3.hierarchy(rootEl, children);
+        let width = parseInt(getComputedStyle(rootEl)['width']);
+        let height = parseInt(getComputedStyle(rootEl)['height']);
+
+        var treemap = d3.treemap()
+            .tile(d3.treemapSquarify)
+            .size([width, height])
+            .padding(2);
+
+        var nodes = treemap(root.sum(value)
+                                .sort((a, b) => b.value - a.value));
+
+        each(setNodeStyle, nodes.children)
+
+
+      </script>
       <footer>
           <div class="legend"></div>
           <div class="actions">
