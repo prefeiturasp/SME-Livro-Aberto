@@ -149,7 +149,10 @@
         each(setNodeStyle, nodes.children)
       </script>
       <footer>
-          <div class="legend"></div>
+          <div class="legend">
+              {# TODO: think on a progressive strategy of loading legend #}
+              <img src="{% static 'img/escala_cor_mosaico.svg' %}" width="400" alt="">
+          </div>
           <div class="actions">
               <a class="btn" href="">Dados do gráfico</a>
               <a class="btn" href="">Dados da tela</a>
