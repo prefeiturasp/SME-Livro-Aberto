@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="{% static 'css/palette.css' %}">
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
+  <script src="https://d3js.org/d3-array.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale.v2.min.js"></script>
+  <script src="{% static 'js/treemap.js' %}"></script>
 </head>
 <body>
   <header>
@@ -55,6 +59,68 @@
         </select>
       </fieldset>
       </form>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li><a href="#">Ano 2019</a></li>
+          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
+        </ol>
+      </nav>
+      <ol class="treemap">
+          <li data-execution="0.05" data-value="1000.00">
+              <div class="name">Pessoal e Benefícios</div>
+              <div class="value">R$ 1000,00</div>
+              <div class="execution">5%</div>
+          </li>
+          <li data-execution="0.25" data-value="600.00">
+              <div class="name">Convênios</div>
+              <div class="value">R$ 600,00</div>
+              <div class="execution">25%</div>
+          </li>
+          <li data-execution="0.8" data-value="910.00">
+              <div class="name">Administração</div>
+              <div class="value">R$ 910,00</div>
+              <div class="execution">80%</div>
+          </li>
+          <li data-execution="1" data-value="100.00">
+              <div class="name">Obras</div>
+              <div class="value">R$ 100,00</div>
+              <div class="execution">100%</div>
+          </li>
+      </ol>
+      <style type="text/css">
+        .treemap{
+            position: relative;
+            padding: 0;
+            width: 100%;
+            height: 35rem;
+        }
+        .treemap > li{
+            position: absolute;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .treemap > li > div:first-child{
+            padding-top: 1em;
+        }
+        .treemap > li > div{
+            padding-left: 1em;
+            white-space: nowrap;
+            text-overflow: clip;
+        }
+        .treemap > li .name{
+            font-weight: 700;
+        }
+      </style>
+      <footer>
+          <div class="legend">
+              {# TODO: think on a progressive strategy of loading legend #}
+              <img src="{% static 'img/escala_cor_mosaico.svg' %}" width="400" alt="">
+          </div>
+          <div class="actions">
+              <a class="btn" href="">Dados do gráfico</a>
+              <a class="btn" href="">Dados da tela</a>
+          </div>
+      </footer>
     </div>
   </section>
   <section id="budget-over-time">
@@ -112,12 +178,12 @@
         <ul>
           <li>
             <a href="">
-              <img src="" alt="Unesco">
+              <img src="{% static 'img/logo-unesco.svg' %}" alt="Unesco">
             </a>
           </li>
           <li>
             <a href="">
-              <img src="" alt="Prefeitura de São Paulo - Educação">
+              <img src="{% static 'img/logo-sme.svg' %}" alt="Prefeitura de São Paulo - Educação">
             </a>
           </li>
         </ul>
