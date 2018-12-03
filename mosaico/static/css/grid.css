@@ -31,6 +31,10 @@ h2:first-child{
   margin-top: 0;
 }
 
+section{
+  padding-bottom: 2em;
+}
+
 section#social{
   text-align: center;
 }
