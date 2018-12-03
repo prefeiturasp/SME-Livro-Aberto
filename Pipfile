@@ -12,6 +12,7 @@ whitenoise = "*"
 dj-database-url = "*"
 openpyxl = "*"
 django-extensions = "*"
+django-rest-framework = "*"
 
 [dev-packages]
 ipdb = "*"
