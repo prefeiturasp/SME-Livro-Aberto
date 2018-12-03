@@ -62,3 +62,12 @@ section.mosaic .breadcrumb{
   padding-left: .5rem;
   content: "/";
 }
+
+th{
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+thead th{
+  font-weight: 700;
+}
