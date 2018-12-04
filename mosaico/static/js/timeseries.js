@@ -20,9 +20,9 @@ window.addEventListener('load', function(){
 
     let container = d3.select(".timeseries").append("svg");
     let parentWidth = parseInt(getComputedStyle(container.node())['width']);
-    var margin = {top: 40, right: 40, bottom: 40, left: 40},
+    var margin = {top: 40, right: 80, bottom: 40, left: 40},
     width = parentWidth - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = 400 - margin.top - margin.bottom;
 
     let year = d => d[0];
     let serie1 = d => d[1];
@@ -53,12 +53,12 @@ window.addEventListener('load', function(){
 
     svg.append("g")
         .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+        .attr("transform", "translate(" + margin.left + "," + height + ")")
+        .call(d3.axisBottom(x).ticks(15));
 
     svg.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).tickSize(-width).tickValues(yTicks));
+        .call(d3.axisLeft(y).tickSize(-parentWidth + margin.left).tickValues(yTicks));
 
     [serie1, serie2].forEach(function(serie, i){
         var line = d3.line()
@@ -70,6 +70,7 @@ window.addEventListener('load', function(){
 
         let g = svg.append("g")
             .attr("class", "serie_" + i)
+            .attr("transform", "translate(" + margin.left + ",0)")
 
         g.append("path")
             .attr("class", "line")
