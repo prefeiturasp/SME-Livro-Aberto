@@ -18,6 +18,10 @@ window.addEventListener('load', function(){
     let serie1 = d => d[1];
     let serie2 = d => d[2];
 
+    var color = d3.scaleQuantize()
+        .domain([0, 1])
+        .range(['#277fcd', '#693d89']);
+
     var x = d3.scaleLinear()
         .domain(d3.extent(data, year))
         .range([0, width]);
@@ -48,7 +52,7 @@ window.addEventListener('load', function(){
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).tickSize(-width).tickValues(yTicks));
 
-    [serie1, serie2].forEach(function(serie){
+    [serie1, serie2].forEach(function(serie, i){
         var line = d3.line()
             .defined(defined)
             .curve(d3.curveMonotoneX)
@@ -57,12 +61,14 @@ window.addEventListener('load', function(){
 
         svg.append("path")
             .attr("class", "line")
+            .attr('stroke', color(i))
             .attr("d", line);
 
         svg.selectAll(".dot")
           .data(data.filter(defined))
           .enter().append("circle")
             .attr("class", "dot")
+            .attr('fill', color(i))
             .attr("cx", line.x())
             .attr("cy", line.y())
             .attr("r", 3.5);
