@@ -5,6 +5,7 @@ from mosaico.views import (
     ElementosListView,
     GruposListView,
     ProgramasListView,
+    ProjetosAtividadesListView,
     SubelementosListView,
     SubfuncoesListView,
     SubgruposListView
@@ -37,4 +38,8 @@ urlpatterns = [
     path('treemap/tecnico/<int:year>/subfuncao/<int:subfuncao_id>/',
          ProgramasListView.as_view(),
          name='programas'),
+    path(('treemap/tecnico/<int:year>/subfuncao/<int:subfuncao_id>/'
+          'programa/<int:programa_id>/'),
+         ProjetosAtividadesListView.as_view(),
+         name='projetos'),
 ]

@@ -7,6 +7,7 @@ from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
     ProgramaSerializer,
+    ProjetoAtividadeSerializer,
     SubelementoSerializer,
     SubfuncaoSerializer,
     SubgrupoSerializer,
@@ -79,3 +80,16 @@ class ProgramasListView(generics.ListAPIView):
         return Execucao.objects \
             .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id) \
             .distinct('programa')
+
+
+class ProjetosAtividadesListView(generics.ListAPIView):
+    serializer_class = ProjetoAtividadeSerializer
+
+    def get_queryset(self):
+        year = self.kwargs['year']
+        subfuncao_id = self.kwargs['subfuncao_id']
+        programa_id = self.kwargs['programa_id']
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id,
+                    programa_id=programa_id) \
+            .distinct('projeto')

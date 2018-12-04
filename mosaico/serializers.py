@@ -145,3 +145,24 @@ class ProgramaSerializer(BaseSerializer):
         return Execucao.objects.filter(
             year=obj.year, subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id)
+
+
+class ProjetoAtividadeSerializer(BaseSerializer):
+
+    projeto_nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Execucao
+        fields = ('id', 'projeto_id', 'projeto_nome', 'orcado_total',
+                  'empenhado_total', 'percentual_empenhado')
+
+    def get_projeto_nome(self, obj):
+        return obj.projeto.desc
+
+    @lru_cache(maxsize=10)
+    def _execucoes(self, obj):
+        return Execucao.objects.filter(
+            year=obj.year,
+            subfuncao_id=obj.subfuncao_id,
+            programa_id=obj.programa_id,
+            projeto_id=obj.projeto_id)
