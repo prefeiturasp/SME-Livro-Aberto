@@ -91,3 +91,16 @@ class ElementoSerializer(BaseSerializer):
         return Execucao.objects.filter(
             year=obj.year, subgrupo_id=obj.subgrupo_id,
             elemento_id=obj.elemento_id)
+
+
+class SubelementoSerializer(ElementoSerializer):
+
+    subelemento_nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Execucao
+        fields = ('id', 'subelemento_id', 'subelemento_nome', 'orcado_total',
+                  'empenhado_total', 'percentual_empenhado')
+
+    def get_subelemento_nome(self, obj):
+        return obj.subelemento.desc
