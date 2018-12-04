@@ -72,3 +72,22 @@ class SubgrupoSerializer(BaseSerializer):
     def _execucoes(self, obj):
         return Execucao.objects.filter(
             year=obj.year, subgrupo_id=obj.subgrupo_id)
+
+
+class ElementoSerializer(BaseSerializer):
+
+    elemento_nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Execucao
+        fields = ('id', 'elemento_id', 'elemento_nome', 'orcado_total',
+                  'empenhado_total', 'percentual_empenhado')
+
+    def get_elemento_nome(self, obj):
+        return obj.elemento.desc
+
+    @lru_cache(maxsize=10)
+    def _execucoes(self, obj):
+        return Execucao.objects.filter(
+            year=obj.year, subgrupo_id=obj.subgrupo_id,
+            elemento_id=obj.elemento_id)
