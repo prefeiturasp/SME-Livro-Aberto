@@ -25,7 +25,12 @@ class BaseListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response({'execucoes': serializer.data})
+        return Response({'breadcrumb': self.breadcrumb,
+                         'execucoes': serializer.data})
+
+    @property
+    def breadcrumb(self):
+        raise NotImplemented
 
 
 class GruposListView(BaseListView):
@@ -36,40 +41,82 @@ class GruposListView(BaseListView):
         return Execucao.objects.filter(year=date(year, 1, 1)) \
             .distinct('subgrupo__grupo')
 
+    @property
+    def breadcrumb(self):
+        return f'Ano {self.kwargs["year"]}'
+
 
 class SubgruposListView(BaseListView):
     serializer_class = SubgrupoSerializer
+    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         grupo_id = self.kwargs['grupo_id']
-        return Execucao.objects \
+        ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id) \
             .distinct('subgrupo')
+        if ret:
+            self._breadcrumb = self.create_breadcrumb(ret[0])
+        return ret
+
+    def create_breadcrumb(self, obj):
+        return (
+            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}')
+
+    @property
+    def breadcrumb(self):
+        return self._breadcrumb
 
 
 class ElementosListView(BaseListView):
     serializer_class = ElementoSerializer
+    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subgrupo_id = self.kwargs['subgrupo_id']
-        return Execucao.objects \
+        ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id) \
             .distinct('elemento')
+        if ret:
+            self._breadcrumb = self.create_breadcrumb(ret[0])
+        return ret
+
+    def create_breadcrumb(self, obj):
+        return (
+            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
+            f'{obj.subgrupo.desc}')
+
+    @property
+    def breadcrumb(self):
+        return self._breadcrumb
 
 
 class SubelementosListView(BaseListView):
     serializer_class = SubelementoSerializer
+    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subgrupo_id = self.kwargs['subgrupo_id']
         elemento_id = self.kwargs['elemento_id']
-        return Execucao.objects \
+        ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id,
                     elemento_id=elemento_id) \
             .distinct('subelemento')
+        if ret:
+            self._breadcrumb = self.create_breadcrumb(ret[0])
+        return ret
+
+    def create_breadcrumb(self, obj):
+        return (
+            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
+            f'{obj.subgrupo.desc}/{obj.elemento.desc}')
+
+    @property
+    def breadcrumb(self):
+        return self._breadcrumb
 
 
 # `Técnico` visualization views
