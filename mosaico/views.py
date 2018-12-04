@@ -4,10 +4,10 @@ from rest_framework import generics
 
 from budget_execution.models import Execucao
 from mosaico.serializers import ElementoSerializer, GrupoSerializer, \
-    SubgrupoSerializer
+    SubelementoSerializer, SubgrupoSerializer
 
 
-class GrupoList(generics.ListAPIView):
+class GruposList(generics.ListAPIView):
     serializer_class = GrupoSerializer
 
     def get_queryset(self):
@@ -37,3 +37,15 @@ class ElementosList(generics.ListAPIView):
             .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id) \
             .distinct('elemento')
 
+
+class SubelementosList(generics.ListAPIView):
+    serializer_class = SubelementoSerializer
+
+    def get_queryset(self):
+        year = self.kwargs['year']
+        subgrupo_id = self.kwargs['subgrupo_id']
+        elemento_id = self.kwargs['elemento_id']
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id,
+                    elemento_id=elemento_id) \
+            .distinct('subelemento')
