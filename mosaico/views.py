@@ -1,6 +1,8 @@
 from datetime import date
 
 from rest_framework import generics
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.response import Response
 
 from budget_execution.models import Execucao
 from mosaico.serializers import (
@@ -16,7 +18,17 @@ from mosaico.serializers import (
 
 # `Simples` visualization views
 
-class GruposListView(generics.ListAPIView):
+class BaseListView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    template_name = 'mosaico/base.html'
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'execucoes': serializer.data})
+
+
+class GruposListView(BaseListView):
     serializer_class = GrupoSerializer
 
     def get_queryset(self):
@@ -25,7 +37,7 @@ class GruposListView(generics.ListAPIView):
             .distinct('subgrupo__grupo')
 
 
-class SubgruposListView(generics.ListAPIView):
+class SubgruposListView(BaseListView):
     serializer_class = SubgrupoSerializer
 
     def get_queryset(self):
@@ -36,7 +48,7 @@ class SubgruposListView(generics.ListAPIView):
             .distinct('subgrupo')
 
 
-class ElementosListView(generics.ListAPIView):
+class ElementosListView(BaseListView):
     serializer_class = ElementoSerializer
 
     def get_queryset(self):
@@ -47,7 +59,7 @@ class ElementosListView(generics.ListAPIView):
             .distinct('elemento')
 
 
-class SubelementosListView(generics.ListAPIView):
+class SubelementosListView(BaseListView):
     serializer_class = SubelementoSerializer
 
     def get_queryset(self):
@@ -62,7 +74,7 @@ class SubelementosListView(generics.ListAPIView):
 
 # `Técnico` visualization views
 
-class SubfuncoesListView(generics.ListAPIView):
+class SubfuncoesListView(BaseListView):
     serializer_class = SubfuncaoSerializer
 
     def get_queryset(self):
@@ -71,7 +83,7 @@ class SubfuncoesListView(generics.ListAPIView):
             .distinct('subfuncao')
 
 
-class ProgramasListView(generics.ListAPIView):
+class ProgramasListView(BaseListView):
     serializer_class = ProgramaSerializer
 
     def get_queryset(self):
@@ -82,7 +94,7 @@ class ProgramasListView(generics.ListAPIView):
             .distinct('programa')
 
 
-class ProjetosAtividadesListView(generics.ListAPIView):
+class ProjetosAtividadesListView(BaseListView):
     serializer_class = ProjetoAtividadeSerializer
 
     def get_queryset(self):
