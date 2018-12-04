@@ -61,4 +61,5 @@ class SubfuncoesListView(generics.ListAPIView):
     def get_queryset(self):
         year = self.kwargs['year']
         return Execucao.objects.filter(year=date(year, 1, 1)) \
-            .distinct('subgrupo__grupo')
+            .distinct('subfuncao')
+
