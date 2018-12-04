@@ -10,8 +10,10 @@ window.addEventListener('load', function(){
     let row = x => toArray(x.children).map(cell)
     let data = toArray(rows).map(row);
 
+    let container = d3.select(".timeseries").append("svg");
+    let parentWidth = parseInt(getComputedStyle(container.node())['width']);
     var margin = {top: 40, right: 40, bottom: 40, left: 40},
-    width = 960 - margin.left - margin.right,
+    width = parentWidth - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
     let year = d => d[0];
@@ -36,9 +38,7 @@ window.addEventListener('load', function(){
 
     let defined = d => d[0] && d[1] && d[2];
 
-    var svg = d3.select(".timeseries").append("svg")
-        .datum(data)
-        .attr("width", width + margin.left + margin.right)
+    let svg = container.datum(data)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
