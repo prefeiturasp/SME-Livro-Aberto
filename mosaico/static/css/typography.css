@@ -52,7 +52,7 @@ a.btn{
   text-decoration: none;
 }
 
-.breadcrumb{
+section.mosaic .breadcrumb{
   font-size: 2em;
 }
 
@@ -61,4 +61,13 @@ a.btn{
   padding-right: .5rem;
   padding-left: .5rem;
   content: "/";
+}
+
+th{
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+thead th{
+  font-weight: 700;
 }
