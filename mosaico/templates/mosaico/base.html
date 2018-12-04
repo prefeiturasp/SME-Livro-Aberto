@@ -9,10 +9,9 @@
   <link rel="stylesheet" href="{% static 'css/palette.css' %}">
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
-  <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
-  <script src="https://d3js.org/d3-array.v1.min.js"></script>
-  <script src="https://d3js.org/d3-scale.v2.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="{% static 'js/treemap.js' %}"></script>
+  <script src="{% static 'js/timeseries.js' %}"></script>
 </head>
 <body>
   <header>
@@ -144,6 +143,30 @@
         </ol>
       </nav>
       <div class="timeseries">
+          <style type="text/css">
+            .timeseries svg{
+                width: 100%;
+            }
+            path.line{
+                fill: transparent;
+                stroke: blue;
+                stroke-width: 2;
+            }
+
+            .axis--y path {
+                stroke: none;
+            }
+
+            .axis line {
+                fill: none;
+                stroke: #000;
+                shape-rendering: crispEdges;
+            }
+
+            .axis--y line {
+                stroke-opacity: 0.2;
+            }
+          </style>
           <table>
               <thead>
                   <tr>
@@ -165,17 +188,17 @@
                   </tr>
                   <tr>
                       <th data-year="2005">2005</th>
-                      <td data-updated="12000">R$12.000,00</td>
+                      <td data-updated="1000">R$1.000,00</td>
                       <td data-paid="10000">R$10.000,00</td>
                   </tr>
                   <tr>
                       <th data-year="2006">2006</th>
-                      <td data-updated="12000">R$12.000,00</td>
+                      <td data-updated="2000">R$2.000,00</td>
                       <td data-paid="10000">R$10.000,00</td>
                   </tr>
                   <tr>
                       <th data-year="2007">2007</th>
-                      <td data-updated="12000">R$12.000,00</td>
+                      <td data-updated="5000">R$5.000,00</td>
                       <td data-paid="10000">R$10.000,00</td>
                   </tr>
                   <tr>
