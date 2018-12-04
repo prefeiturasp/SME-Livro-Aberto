@@ -103,4 +103,4 @@ class SubelementoSerializer(ElementoSerializer):
                   'empenhado_total', 'percentual_empenhado')
 
     def get_subelemento_nome(self, obj):
-        return obj.subelemento.desc
+        return obj.subelemento_friendly.desc
