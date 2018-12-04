@@ -3,8 +3,14 @@ from datetime import date
 from rest_framework import generics
 
 from budget_execution.models import Execucao
-from mosaico.serializers import ElementoSerializer, GrupoSerializer, \
-    SubelementoSerializer, SubfuncaoSerializer, SubgrupoSerializer
+from mosaico.serializers import (
+    ElementoSerializer,
+    GrupoSerializer,
+    ProgramaSerializer,
+    SubelementoSerializer,
+    SubfuncaoSerializer,
+    SubgrupoSerializer,
+)
 
 
 # `Simples` visualization views
@@ -63,3 +69,13 @@ class SubfuncoesListView(generics.ListAPIView):
         return Execucao.objects.filter(year=date(year, 1, 1)) \
             .distinct('subfuncao')
 
+
+class ProgramasListView(generics.ListAPIView):
+    serializer_class = ProgramaSerializer
+
+    def get_queryset(self):
+        year = self.kwargs['year']
+        subfuncao_id = self.kwargs['subfuncao_id']
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id) \
+            .distinct('programa')

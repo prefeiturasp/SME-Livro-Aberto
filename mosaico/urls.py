@@ -4,6 +4,7 @@ from django.views.generic.base import TemplateView
 from mosaico.views import (
     ElementosListView,
     GruposListView,
+    ProgramasListView,
     SubelementosListView,
     SubfuncoesListView,
     SubgruposListView
@@ -33,4 +34,7 @@ urlpatterns = [
     # `Tecnico` visualization urls
     path('treemap/tecnico/<int:year>/', SubfuncoesListView.as_view(),
          name='subfuncoes'),
+    path('treemap/tecnico/<int:year>/subfuncao/<int:subfuncao_id>/',
+         ProgramasListView.as_view(),
+         name='programas'),
 ]
