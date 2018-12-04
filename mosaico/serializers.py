@@ -6,29 +6,11 @@ from rest_framework import serializers
 from budget_execution.models import Execucao
 
 
-class GrupoSerializer(serializers.ModelSerializer):
+class BaseSerializer(serializers.ModelSerializer):
 
-    grupo_id = serializers.SerializerMethodField()
-    grupo_nome = serializers.SerializerMethodField()
     orcado_total = serializers.SerializerMethodField()
     empenhado_total = serializers.SerializerMethodField()
     percentual_empenhado = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Execucao
-        fields = ('id', 'grupo_id', 'grupo_nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
-
-    def get_grupo_id(self, obj):
-        return obj.subgrupo.grupo_id
-
-    def get_grupo_nome(self, obj):
-        return obj.subgrupo.grupo.desc
-
-    @lru_cache(maxsize=10)
-    def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subgrupo__grupo_id=obj.subgrupo.grupo_id)
 
     @lru_cache(maxsize=10)
     def get_orcado_total(self, obj):
@@ -50,3 +32,43 @@ class GrupoSerializer(serializers.ModelSerializer):
             return (empenhado * 100) / orcado
         else:
             return 0
+
+
+class GrupoSerializer(BaseSerializer):
+
+    grupo_id = serializers.SerializerMethodField()
+    grupo_nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Execucao
+        fields = ('id', 'grupo_id', 'grupo_nome', 'orcado_total',
+                  'empenhado_total', 'percentual_empenhado')
+
+    def get_grupo_id(self, obj):
+        return obj.subgrupo.grupo_id
+
+    def get_grupo_nome(self, obj):
+        return obj.subgrupo.grupo.desc
+
+    @lru_cache(maxsize=10)
+    def _execucoes(self, obj):
+        return Execucao.objects.filter(
+            year=obj.year, subgrupo__grupo_id=obj.subgrupo.grupo_id)
+
+
+class SubgrupoSerializer(BaseSerializer):
+
+    subgrupo_nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Execucao
+        fields = ('id', 'subgrupo_id', 'subgrupo_nome', 'orcado_total',
+                  'empenhado_total', 'percentual_empenhado')
+
+    def get_subgrupo_nome(self, obj):
+        return obj.subgrupo.desc
+
+    @lru_cache(maxsize=10)
+    def _execucoes(self, obj):
+        return Execucao.objects.filter(
+            year=obj.year, subgrupo_id=obj.subgrupo_id)
