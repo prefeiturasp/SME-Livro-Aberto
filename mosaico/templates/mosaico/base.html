@@ -69,7 +69,7 @@
           <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
                   <div class="value">R$ {{ execucao.orcado_total }} </div>
                   <div class="name">{{ execucao.grupo_nome }}</div>
-                  <div class="execution">{{ execucao.percentual_empenhado }}%</div>
+                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
               </li>
           {% endfor %}
       </ol>

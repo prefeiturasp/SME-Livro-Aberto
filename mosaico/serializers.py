@@ -29,7 +29,7 @@ class BaseSerializer(serializers.ModelSerializer):
         empenhado = self.get_empenhado_total(obj)
 
         if empenhado:
-            return (empenhado * 100) / orcado
+            return empenhado / orcado
         else:
             return 0
 
