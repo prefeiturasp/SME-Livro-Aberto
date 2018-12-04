@@ -151,36 +151,14 @@
               </tr>
           </thead>
           <tbody>
+          {% for execucao in execucoes %}
               <tr>
-                  <th>Pessoal e benefícios</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
+                  <th>{{ execucao.grupo_nome }}</th>
+                  <td>R$ {{ execucao.orcado_total }} </td>
+                  <td>R$ {{ execucao.empenhado_total}} </td>
+                  <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
               </tr>
-              <tr>
-                  <th>Convênios</th>
-                  <td data-updated="14000">R$14.000,00</td>
-                  <td data-paid="9000">R$9.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Apoio ao aluno</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Apoio e manutenção  de unidades escolares</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Obras e reformass</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
+          {% endfor %}
           </tbody>
       </table>
     </div>
