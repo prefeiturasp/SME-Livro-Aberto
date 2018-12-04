@@ -59,12 +59,16 @@ window.addEventListener('load', function(){
             .x(d => x(year(d)))
             .y(d => y(serie(d)));
 
-        svg.append("path")
+
+        let g = svg.append("g")
+            .attr("class", "serie_" + i)
+
+        g.append("path")
             .attr("class", "line")
             .attr('stroke', color(i))
             .attr("d", line);
 
-        svg.selectAll(".dot")
+        g.selectAll(".dot")
           .data(data.filter(defined))
           .enter().append("circle")
             .attr("class", "dot")
