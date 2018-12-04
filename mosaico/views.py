@@ -129,26 +129,54 @@ class SubfuncoesListView(BaseListView):
         return Execucao.objects.filter(year=date(year, 1, 1)) \
             .distinct('subfuncao')
 
+    @property
+    def breadcrumb(self):
+        return f'Ano {self.kwargs["year"]}'
+
 
 class ProgramasListView(BaseListView):
     serializer_class = ProgramaSerializer
+    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subfuncao_id = self.kwargs['subfuncao_id']
-        return Execucao.objects \
+        ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id) \
             .distinct('programa')
+        if ret:
+            self._breadcrumb = self.create_breadcrumb(ret[0])
+        return ret
+
+    def create_breadcrumb(self, obj):
+        return f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}'
+
+    @property
+    def breadcrumb(self):
+        return self._breadcrumb
 
 
 class ProjetosAtividadesListView(BaseListView):
     serializer_class = ProjetoAtividadeSerializer
+    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subfuncao_id = self.kwargs['subfuncao_id']
         programa_id = self.kwargs['programa_id']
-        return Execucao.objects \
+        ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id,
                     programa_id=programa_id) \
             .distinct('projeto')
+        if ret:
+            self._breadcrumb = self.create_breadcrumb(ret[0])
+        return ret
+
+    def create_breadcrumb(self, obj):
+        return (
+            f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}/'
+            f'{obj.programa.desc}')
+
+    @property
+    def breadcrumb(self):
+        return self._breadcrumb
