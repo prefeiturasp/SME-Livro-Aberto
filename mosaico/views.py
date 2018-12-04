@@ -13,3 +13,14 @@ class GrupoList(generics.ListAPIView):
         year = self.kwargs['year']
         return Execucao.objects.filter(year=date(year, 1, 1)) \
             .distinct('subgrupo__grupo')
+
+
+class SubgruposList(generics.ListAPIView):
+    serializer_class = SubgrupoSerializer
+
+    def get_queryset(self):
+        year = self.kwargs['year']
+        grupo_id = self.kwargs['grupo_id']
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id) \
+            .distinct('subgrupo')
