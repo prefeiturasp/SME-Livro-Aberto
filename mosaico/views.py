@@ -9,7 +9,7 @@ from mosaico.serializers import ElementoSerializer, GrupoSerializer, \
 
 # `Simples` visualization views
 
-class GruposList(generics.ListAPIView):
+class GruposListView(generics.ListAPIView):
     serializer_class = GrupoSerializer
 
     def get_queryset(self):
@@ -18,7 +18,7 @@ class GruposList(generics.ListAPIView):
             .distinct('subgrupo__grupo')
 
 
-class SubgruposList(generics.ListAPIView):
+class SubgruposListView(generics.ListAPIView):
     serializer_class = SubgrupoSerializer
 
     def get_queryset(self):
@@ -29,7 +29,7 @@ class SubgruposList(generics.ListAPIView):
             .distinct('subgrupo')
 
 
-class ElementosList(generics.ListAPIView):
+class ElementosListView(generics.ListAPIView):
     serializer_class = ElementoSerializer
 
     def get_queryset(self):
@@ -40,7 +40,7 @@ class ElementosList(generics.ListAPIView):
             .distinct('elemento')
 
 
-class SubelementosList(generics.ListAPIView):
+class SubelementosListView(generics.ListAPIView):
     serializer_class = SubelementoSerializer
 
     def get_queryset(self):
@@ -55,7 +55,7 @@ class SubelementosList(generics.ListAPIView):
 
 # `Técnico` visualization views
 
-class SubfuncoesList(generics.ListAPIView):
+class SubfuncoesListView(generics.ListAPIView):
     serializer_class = SubfuncaoSerializer
 
     def get_queryset(self):

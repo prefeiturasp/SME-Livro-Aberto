@@ -34,6 +34,8 @@ class BaseSerializer(serializers.ModelSerializer):
             return 0
 
 
+# `Simples` visualization serializers
+
 class GrupoSerializer(BaseSerializer):
 
     grupo_id = serializers.SerializerMethodField()

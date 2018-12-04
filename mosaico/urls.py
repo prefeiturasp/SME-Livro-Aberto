@@ -2,11 +2,11 @@ from django.urls import path
 from django.views.generic.base import TemplateView
 
 from mosaico.views import (
-    ElementosList,
-    GruposList,
-    SubelementosList,
-    SubfuncoesList,
-    SubgruposList
+    ElementosListView,
+    GruposListView,
+    SubelementosListView,
+    SubfuncoesListView,
+    SubgruposListView
 )
 
 
@@ -15,19 +15,22 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='mosaico/base.html'),
          name='home'),
 
-    path('treemap/simples/<int:year>/', GruposList.as_view(), name='grupos'),
+    # `Simples` visualization urls
+    path('treemap/simples/<int:year>/', GruposListView.as_view(),
+         name='grupos'),
     path('treemap/simples/<int:year>/grupo/<int:grupo_id>/',
-         SubgruposList.as_view(),
+         SubgruposListView.as_view(),
          name='subgrupos'),
     path(('treemap/simples/<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/'),
-         ElementosList.as_view(),
+         ElementosListView.as_view(),
          name='elementos'),
     path(('treemap/simples/<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/elemento/<int:elemento_id>/'),
-         SubelementosList.as_view(),
+         SubelementosListView.as_view(),
          name='subelementos'),
 
-    path('treemap/tecnico/<int:year>/', SubfuncoesList.as_view(),
+    # `Tecnico` visualization urls
+    path('treemap/tecnico/<int:year>/', SubfuncoesListView.as_view(),
          name='subfuncoes'),
 ]
