@@ -14,9 +14,15 @@ section#budget-over-time{
   background-color: #f9faf9;
 }
 
+thead th,
 section#data-table{
   background-color: #255754;
   color: #fff;
+}
+
+section#data-table thead th{
+  color: #255754;
+  background-color: #c3f570;
 }
 
 section#social{
@@ -60,6 +66,12 @@ form.query label{
   color: #80a684;
 }
 
+form.query input[type=checkbox]:not(:checked) + label,
+form.query input[type=checkbox]:checked + label + label,
 form.query input[type=radio]:not(:checked) + label{
   color: #c6d7c8;
+}
+
+tbody tr:nth-child(2n) > *{
+  background-color: rgba(255, 255, 255, 0.2);
 }

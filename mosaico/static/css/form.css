@@ -2,15 +2,19 @@ label[for]{
   cursor: pointer;
 }
 
+form.query input[type=checkbox],
 form.query input[type=radio]{
   display: none;
 }
 
+form.query input[type=checkbox] + label,
 form.query input[type=radio] + label:first-of-type{
   margin-right: 3em;
   position: relative;
 }
 
+form.query input[type=checkbox] + label:first-of-type:after,
+form.query input[type=checkbox] + label:first-of-type:before,
 form.query input[type=radio] + label:first-of-type:after,
 form.query input[type=radio] + label:first-of-type:before{
   content: '';
@@ -18,9 +22,14 @@ form.query input[type=radio] + label:first-of-type:before{
   border-radius: 0.5em;
   position: absolute;
   top: 0.1em;
+}
+
+form.query input[type=radio] + label:first-of-type:after,
+form.query input[type=radio] + label:first-of-type:before{
   pointer-events: none;
 }
 
+form.query input[type=checkbox] + label:first-of-type:before,
 form.query input[type=radio] + label:first-of-type:before{
   background-color: currentColor;
   height: 1em;
@@ -28,6 +37,7 @@ form.query input[type=radio] + label:first-of-type:before{
   right: -2.5em;
 }
 
+form.query input[type=checkbox] + label:first-of-type:after,
 form.query input[type=radio] + label:first-of-type:after{
   background-color: white;
   width: 0.7em;
@@ -36,10 +46,12 @@ form.query input[type=radio] + label:first-of-type:after{
   transition: right .3s;
 }
 
+form.query input[type=checkbox]:not(:checked) + label:first-of-type:after,
 form.query input[type=radio]:not(:checked) + label:first-of-type:after{
   right: -2.5em;
 }
 
+form.query input[type=checkbox]:checked + label:first-of-type:after,
 form.query input[type=radio]:checked + label:first-of-type:after{
   right: -1.5em;
 }
