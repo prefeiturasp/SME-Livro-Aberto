@@ -3,6 +3,14 @@ function toArray(nodeList){
 }
 
 window.addEventListener('load', function(){
+    let pt_BR = {
+      "decimal": ",",
+      "thousands": ".",
+      "grouping": [3],
+      "currency": ["R$", ""]
+    }
+
+    d3.formatDefaultLocale(pt_BR);
     let rows = document.querySelectorAll('.timeseries tr');
     let thSeries= rows[0].querySelectorAll('.serie')
     // let serieNames = toArray(thSeries).map(th => th.textContent);
