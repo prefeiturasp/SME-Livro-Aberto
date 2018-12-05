@@ -27,9 +27,11 @@ class BaseListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
 
+        breadcrumb = self.create_breadcrumb(queryset[0])
+
         tseries_qs = self.get_timeseries_queryset()
         tseries_data = self.prepare_timeseries_data(tseries_qs)
-        return Response({'breadcrumb': self.create_breadcrumb(),
+        return Response({'breadcrumb': breadcrumb,
                          'execucoes': serializer.data,
                          'timeseries': tseries_data})
 
@@ -51,7 +53,7 @@ class BaseListView(generics.ListAPIView):
     def get_timeseries_queryset(self):
         raise NotImplemented
 
-    def create_breadcrumb(self):
+    def create_breadcrumb(self, obj):
         raise NotImplemented
 
 
@@ -69,8 +71,10 @@ class GruposListView(BaseListView):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self):
-        return [{"name": f'Ano {self.kwargs["year"]}', 'url': 'url'}]
+    def create_breadcrumb(self, obj):
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'}
+        ]
 
 
 class SubgruposListView(BaseListView):
@@ -171,7 +175,7 @@ class SubfuncoesListView(BaseListView):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self):
+    def create_breadcrumb(self, obj):
         return [{"name": f'Ano {self.kwargs["year"]}', 'url': 'url'}]
 
 
