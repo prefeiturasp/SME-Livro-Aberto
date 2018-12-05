@@ -35,8 +35,7 @@ class BaseListView(generics.ListAPIView):
     template_name = 'mosaico/base.html'
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        queryset = self.filter_queryset(queryset)
+        queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
 
         tseries_qs = self.get_timeseries_queryset()
@@ -70,8 +69,11 @@ class GruposListView(BaseListView):
 
     def get_queryset(self):
         year = self.kwargs['year']
-        return Execucao.objects.filter(year=date(year, 1, 1)) \
-            .distinct('subgrupo__grupo')
+        return Execucao.objects.filter(year=date(year, 1, 1))
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subgrupo__grupo_id')
 
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
@@ -89,11 +91,14 @@ class SubgruposListView(BaseListView):
         year = self.kwargs['year']
         grupo_id = self.kwargs['grupo_id']
         ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id) \
-            .distinct('subgrupo')
+            .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id)
         if ret:
             self._breadcrumb = self.create_breadcrumb(ret[0])
         return ret
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subgrupo')
 
     def get_timeseries_queryset(self):
         grupo_id = self.kwargs['grupo_id']
@@ -117,11 +122,14 @@ class ElementosListView(BaseListView):
         year = self.kwargs['year']
         subgrupo_id = self.kwargs['subgrupo_id']
         ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id) \
-            .distinct('elemento')
+            .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id)
         if ret:
             self._breadcrumb = self.create_breadcrumb(ret[0])
         return ret
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('elemento')
 
     def get_timeseries_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
@@ -148,11 +156,14 @@ class SubelementosListView(BaseListView):
         elemento_id = self.kwargs['elemento_id']
         ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id,
-                    elemento_id=elemento_id) \
-            .distinct('subelemento')
+                    elemento_id=elemento_id)
         if ret:
             self._breadcrumb = self.create_breadcrumb(ret[0])
         return ret
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subelemento')
 
     def get_timeseries_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
@@ -178,8 +189,11 @@ class SubfuncoesListView(BaseListView):
 
     def get_queryset(self):
         year = self.kwargs['year']
-        return Execucao.objects.filter(year=date(year, 1, 1)) \
-            .distinct('subfuncao')
+        return Execucao.objects.filter(year=date(year, 1, 1))
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subfuncao')
 
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
@@ -197,11 +211,14 @@ class ProgramasListView(BaseListView):
         year = self.kwargs['year']
         subfuncao_id = self.kwargs['subfuncao_id']
         ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id) \
-            .distinct('programa')
+            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id)
         if ret:
             self._breadcrumb = self.create_breadcrumb(ret[0])
         return ret
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('programa')
 
     def get_timeseries_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
@@ -227,11 +244,14 @@ class ProjetosAtividadesListView(BaseListView):
         programa_id = self.kwargs['programa_id']
         ret = Execucao.objects \
             .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id,
-                    programa_id=programa_id) \
-            .distinct('projeto')
+                    programa_id=programa_id)
         if ret:
             self._breadcrumb = self.create_breadcrumb(ret[0])
         return ret
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('projeto')
 
     def get_timeseries_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
