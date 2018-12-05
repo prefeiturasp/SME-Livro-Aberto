@@ -67,7 +67,7 @@
           {% for execucao in execucoes %}
           <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
                   <div class="value">R$ {{ execucao.orcado_total }} </div>
-                  <div class="name">{{ execucao.grupo_nome }}</div>
+		  <div class="name"><a href="{{ execucao.url}}">{{ execucao.nome }}</a></div>
                   <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
               </li>
           {% endfor %}
@@ -270,7 +270,7 @@
           <tbody>
           {% for execucao in execucoes %}
               <tr>
-                  <th>{{ execucao.grupo_nome }}</th>
+                  <th>{{ execucao.nome }}</th>
                   <td>R$ {{ execucao.orcado_total }} </td>
                   <td>R$ {{ execucao.empenhado_total}} </td>
                   <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
