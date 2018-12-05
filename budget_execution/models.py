@@ -92,7 +92,13 @@ class Execucao(models.Model):
             f'{s.fonte_id}.{s.subelemento_id}')
 
     def get_url(self, area):
-        if area == "grupo":
+        # simples areas
+        if area == 'home_simples':
+            url = reverse_lazy(
+                "mosaico:home_simples",
+                args=[self.year.strftime('%Y')])
+
+        elif area == "grupo":
             url = reverse_lazy(
                 "mosaico:grupo",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
@@ -107,6 +113,12 @@ class Execucao(models.Model):
                 "mosaico:elemento",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
                       self.subgrupo_id, self.elemento_id])
+        # tecnico areas
+        elif area == 'home_tecnico':
+            url = reverse_lazy(
+                "mosaico:home_tecnico",
+                args=[self.year.strftime('%Y')])
+
         elif area == "subfuncao":
             url = reverse_lazy(
                 "mosaico:subfuncao",
