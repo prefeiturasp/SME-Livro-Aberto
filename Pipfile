@@ -13,7 +13,6 @@ dj-database-url = "*"
 openpyxl = "*"
 django-extensions = "*"
 django-rest-framework = "*"
-django-filter = "*"
 
 [dev-packages]
 ipdb = "*"
