@@ -1,7 +1,6 @@
 from functools import lru_cache
 
 from django.db.models import Sum
-from django.urls import reverse_lazy
 from rest_framework import serializers
 
 from budget_execution.models import Execucao
@@ -55,9 +54,7 @@ class GrupoSerializer(BaseSerializer):
         return obj.subgrupo.grupo.desc
 
     def get_url(self, obj):
-        return reverse_lazy(
-            "mosaico:grupo",
-            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id])
+        return obj.get_url('grupo')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -78,10 +75,7 @@ class SubgrupoSerializer(BaseSerializer):
         return obj.subgrupo.desc
 
     def get_url(self, obj):
-        return reverse_lazy(
-            "mosaico:subgrupo",
-            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id,
-                  obj.subgrupo_id])
+        return obj.get_url("subgrupo")
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -102,10 +96,7 @@ class ElementoSerializer(BaseSerializer):
         return obj.elemento.desc
 
     def get_url(self, obj):
-        return reverse_lazy(
-            "mosaico:elemento",
-            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id,
-                  obj.subgrupo_id, obj.elemento_id])
+        return obj.get_url('elemento')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -142,9 +133,7 @@ class SubfuncaoSerializer(BaseSerializer):
         return obj.subfuncao.desc
 
     def get_url(self, obj):
-        return reverse_lazy(
-            "mosaico:subfuncao",
-            args=[obj.year.strftime('%Y'), obj.subfuncao_id])
+        return obj.get_url('subfuncao')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -165,9 +154,7 @@ class ProgramaSerializer(BaseSerializer):
         return obj.programa.desc
 
     def get_url(self, obj):
-        return reverse_lazy(
-            "mosaico:programa",
-            args=[obj.year.strftime('%Y'), obj.subfuncao_id, obj.programa_id])
+        return obj.get_url('programa')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
