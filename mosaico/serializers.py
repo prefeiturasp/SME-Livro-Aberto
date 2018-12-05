@@ -80,7 +80,7 @@ class SubgrupoSerializer(BaseSerializer):
     def get_url(self, obj):
         return reverse_lazy(
             "mosaico:subgrupo",
-            args=[obj.year.strftime('%y'), obj.subgrupo.grupo_id,
+            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id,
                   obj.subgrupo_id])
 
     @lru_cache(maxsize=10)
