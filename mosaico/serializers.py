@@ -39,17 +39,17 @@ class BaseSerializer(serializers.ModelSerializer):
 class GrupoSerializer(BaseSerializer):
 
     grupo_id = serializers.SerializerMethodField()
-    grupo_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'grupo_id', 'grupo_nome', 'orcado_total',
+        fields = ('id', 'grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
     def get_grupo_id(self, obj):
         return obj.subgrupo.grupo_id
 
-    def get_grupo_nome(self, obj):
+    def get_nome(self, obj):
         return obj.subgrupo.grupo.desc
 
     @lru_cache(maxsize=10)
@@ -60,14 +60,14 @@ class GrupoSerializer(BaseSerializer):
 
 class SubgrupoSerializer(BaseSerializer):
 
-    subgrupo_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subgrupo_id', 'subgrupo_nome', 'orcado_total',
+        fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_subgrupo_nome(self, obj):
+    def get_nome(self, obj):
         return obj.subgrupo.desc
 
     @lru_cache(maxsize=10)
@@ -78,14 +78,14 @@ class SubgrupoSerializer(BaseSerializer):
 
 class ElementoSerializer(BaseSerializer):
 
-    elemento_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'elemento_id', 'elemento_nome', 'orcado_total',
+        fields = ('id', 'elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_elemento_nome(self, obj):
+    def get_nome(self, obj):
         return obj.elemento.desc
 
     @lru_cache(maxsize=10)
@@ -97,14 +97,14 @@ class ElementoSerializer(BaseSerializer):
 
 class SubelementoSerializer(ElementoSerializer):
 
-    subelemento_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subelemento_id', 'subelemento_nome', 'orcado_total',
+        fields = ('id', 'subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_subelemento_nome(self, obj):
+    def get_nome(self, obj):
         return obj.subelemento_friendly.desc
 
 
@@ -112,14 +112,14 @@ class SubelementoSerializer(ElementoSerializer):
 
 class SubfuncaoSerializer(BaseSerializer):
 
-    subfuncao_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subfuncao_id', 'subfuncao_nome', 'orcado_total',
+        fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_subfuncao_nome(self, obj):
+    def get_nome(self, obj):
         return obj.subfuncao.desc
 
     @lru_cache(maxsize=10)
@@ -130,14 +130,14 @@ class SubfuncaoSerializer(BaseSerializer):
 
 class ProgramaSerializer(BaseSerializer):
 
-    programa_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'programa_id', 'programa_nome', 'orcado_total',
+        fields = ('id', 'programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_programa_nome(self, obj):
+    def get_nome(self, obj):
         return obj.programa.desc
 
     @lru_cache(maxsize=10)
@@ -149,14 +149,14 @@ class ProgramaSerializer(BaseSerializer):
 
 class ProjetoAtividadeSerializer(BaseSerializer):
 
-    projeto_nome = serializers.SerializerMethodField()
+    nome = serializers.SerializerMethodField()
 
     class Meta:
         model = Execucao
-        fields = ('id', 'projeto_id', 'projeto_nome', 'orcado_total',
+        fields = ('id', 'projeto_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_projeto_nome(self, obj):
+    def get_nome(self, obj):
         return obj.projeto.desc
 
     @lru_cache(maxsize=10)
