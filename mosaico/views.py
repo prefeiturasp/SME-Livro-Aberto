@@ -98,7 +98,7 @@ class SubgruposListView(BaseListView):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
-            {"name": obj.subgrupo.grupo.desc, 'url': 'url'}
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')}
         ]
 
 
@@ -123,8 +123,8 @@ class ElementosListView(BaseListView):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
-            {"name": obj.subgrupo.grupo.desc, 'url': 'url'},
-            {"name": obj.subgrupo.desc, 'url': 'url'}
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
+            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')}
         ]
 
 
@@ -153,9 +153,9 @@ class SubelementosListView(BaseListView):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
-            {"name": obj.subgrupo.grupo.desc, 'url': 'url'},
-            {"name": obj.subgrupo.desc, 'url': 'url'},
-            {"name": obj.elemento.desc, 'url': 'url'}
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
+            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')},
+            {"name": obj.elemento.desc, 'url': obj.get_url('elemento')}
         ]
 
 
@@ -201,7 +201,7 @@ class ProgramasListView(BaseListView):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
-            {"name": obj.subfuncao.desc, 'url': 'url'}
+            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
         ]
 
 
@@ -230,6 +230,6 @@ class ProjetosAtividadesListView(BaseListView):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
-            {"name": obj.subfuncao.desc, 'url': 'url'},
-            {"name": obj.programa.desc, 'url': 'url'}
+            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
+            {"name": obj.programa.desc, 'url': obj.get_url('programa')},
         ]
