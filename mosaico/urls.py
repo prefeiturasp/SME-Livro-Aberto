@@ -18,16 +18,16 @@ urlpatterns = [
          name='home'),
 
     # `Simples` visualization urls
-    path('simples/<int:year>/', GruposListView.as_view(),
+    path('<int:year>/', GruposListView.as_view(),
          name='grupos'),
-    path('simples/<int:year>/grupo/<int:grupo_id>/',
+    path('<int:year>/grupo/<int:grupo_id>/',
          SubgruposListView.as_view(),
          name='subgrupos'),
-    path(('simples/<int:year>/grupo/<int:grupo_id>/'
+    path(('<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/'),
          ElementosListView.as_view(),
          name='elementos'),
-    path(('simples/<int:year>/grupo/<int:grupo_id>/'
+    path(('<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/elemento/<int:elemento_id>/'),
          SubelementosListView.as_view(),
          name='subelementos'),
