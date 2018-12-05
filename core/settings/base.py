@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'django_filters',
     'mosaico',
     'from_to_handler.apps.FromToHandlerConfig',
     'budget_execution.apps.BudgetExecutionConfig',
