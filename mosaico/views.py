@@ -69,7 +69,7 @@ class GruposListView(BaseListView):
 
     @property
     def breadcrumb(self):
-        return f'Ano {self.kwargs["year"]}'
+        return [{"name": f'Ano {self.kwargs["year"]}', 'url': 'url'}]
 
 
 class SubgruposListView(BaseListView):
@@ -95,8 +95,10 @@ class SubgruposListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}')
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
+            {"name": obj.subgrupo.grupo.desc, 'url': 'url'}
+        ]
 
     @property
     def breadcrumb(self):
@@ -126,9 +128,11 @@ class ElementosListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
-            f'{obj.subgrupo.desc}')
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
+            {"name": obj.subgrupo.grupo.desc, 'url': 'url'},
+            {"name": obj.subgrupo.desc, 'url': 'url'}
+        ]
 
     @property
     def breadcrumb(self):
@@ -162,9 +166,12 @@ class SubelementosListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
-            f'{obj.subgrupo.desc}/{obj.elemento.desc}')
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
+            {"name": obj.subgrupo.grupo.desc, 'url': 'url'},
+            {"name": obj.subgrupo.desc, 'url': 'url'},
+            {"name": obj.elemento.desc, 'url': 'url'}
+        ]
 
     @property
     def breadcrumb(self):
@@ -189,7 +196,7 @@ class SubfuncoesListView(BaseListView):
 
     @property
     def breadcrumb(self):
-        return f'Ano {self.kwargs["year"]}'
+        return [{"name": f'Ano {self.kwargs["year"]}', 'url': 'url'}]
 
 
 class ProgramasListView(BaseListView):
@@ -216,7 +223,10 @@ class ProgramasListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}'
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
+            {"name": obj.subfuncao.desc, 'url': 'url'}
+        ]
 
     @property
     def breadcrumb(self):
@@ -250,9 +260,11 @@ class ProjetosAtividadesListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}/'
-            f'{obj.programa.desc}')
+        return [
+            {"name": f'Ano {self.kwargs["year"]}', 'url': 'url'},
+            {"name": obj.subfuncao.desc, 'url': 'url'},
+            {"name": obj.programa.desc, 'url': 'url'}
+        ]
 
     @property
     def breadcrumb(self):
