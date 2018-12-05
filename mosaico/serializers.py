@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 from django.db.models import Sum
+from django.urls import reverse_lazy
 from rest_framework import serializers
 
 from budget_execution.models import Execucao
@@ -11,6 +12,7 @@ class BaseSerializer(serializers.ModelSerializer):
     orcado_total = serializers.SerializerMethodField()
     empenhado_total = serializers.SerializerMethodField()
     percentual_empenhado = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     @lru_cache(maxsize=10)
     def get_orcado_total(self, obj):
@@ -44,13 +46,18 @@ class GrupoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'grupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_grupo_id(self, obj):
         return obj.subgrupo.grupo_id
 
     def get_nome(self, obj):
         return obj.subgrupo.grupo.desc
+
+    def get_url(self, obj):
+        return reverse_lazy(
+            "mosaico:grupo",
+            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id])
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -65,10 +72,16 @@ class SubgrupoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.subgrupo.desc
+
+    def get_url(self, obj):
+        return reverse_lazy(
+            "mosaico:subgrupo",
+            args=[obj.year.strftime('%y'), obj.subgrupo.grupo_id,
+                  obj.subgrupo_id])
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -83,10 +96,16 @@ class ElementoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'elemento_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.elemento.desc
+
+    def get_url(self, obj):
+        return reverse_lazy(
+            "mosaico:elemento",
+            args=[obj.year.strftime('%Y'), obj.subgrupo.grupo_id,
+                  obj.subgrupo_id, obj.elemento_id])
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -117,10 +136,15 @@ class SubfuncaoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.subfuncao.desc
+
+    def get_url(self, obj):
+        return reverse_lazy(
+            "mosaico:subfuncao",
+            args=[obj.year.strftime('%Y'), obj.subfuncao_id])
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -135,10 +159,15 @@ class ProgramaSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.programa.desc
+
+    def get_url(self, obj):
+        return reverse_lazy(
+            "mosaico:programa",
+            args=[obj.year.strftime('%Y'), obj.subfuncao_id, obj.programa_id])
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
