@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'mosaico',
+    'geologia',
     'from_to_handler.apps.FromToHandlerConfig',
     'budget_execution.apps.BudgetExecutionConfig',
 ]
@@ -60,6 +61,9 @@ MIDDLEWARE = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = config('STATICFILES_STORAGE', 'whitenoise.storage.CompressedManifestStaticFilesStorage')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 if 'whitenoise' in STATICFILES_STORAGE:
     MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
@@ -69,7 +73,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['core/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

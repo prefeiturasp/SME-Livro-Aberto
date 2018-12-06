@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Camada_1"
+   data-name="Camada 1"
+   viewBox="0 0 1920 534"
+   version="1.1"
+   sodipodi:docname="bkg-geologia-header.svg"
+   inkscape:version="0.92.2 2405546, 2018-03-11">
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>header_geologia-02</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview88"
+     showgrid="false"
+     inkscape:zoom="0.51854497"
+     inkscape:cx="371.45718"
+     inkscape:cy="-58.327133"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Camada_1" />
+  <defs
+     id="defs7">
+    <style
+       id="style2">.cls-1,.cls-10{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-11,.cls-12,.cls-3,.cls-6,.cls-7,.cls-8{fill:#fff;}.cls-4{fill:#693d89;}.cls-11,.cls-12,.cls-13,.cls-14,.cls-15,.cls-16,.cls-17,.cls-18,.cls-5,.cls-6,.cls-7,.cls-8{isolation:isolate;}.cls-6,.cls-7,.cls-8{font-size:18.12px;font-family:Nunito-Black, Nunito;font-weight:800;}.cls-6{letter-spacing:0.06em;}.cls-7{letter-spacing:0.08em;}.cls-8{letter-spacing:0.02em;}.cls-9{opacity:0.3;}.cls-10{stroke:#fff;stroke-miterlimit:10;}.cls-11,.cls-12{font-size:111.5px;font-family:Nunito-Light, Nunito;font-weight:300;}.cls-12{letter-spacing:-0.01em;}.cls-13,.cls-14,.cls-15,.cls-16,.cls-17,.cls-18{font-size:33.45px;fill:#fddd33;font-family:Ubuntu-Bold, Ubuntu;font-weight:700;}.cls-13{letter-spacing:0.18em;}.cls-14{letter-spacing:0.2em;}.cls-15{letter-spacing:0.16em;}.cls-16{letter-spacing:0.21em;}.cls-17{letter-spacing:0.15em;}.cls-18{letter-spacing:0.11em;}</style>
+    <clipPath
+       id="clip-path">
+      <rect
+         class="cls-1"
+         x="0.81"
+         width="1919.19"
+         height="532.43"
+         id="rect4" />
+    </clipPath>
+  </defs>
+  <title
+     id="title9">header_geologia-02</title>
+  <g
+     class="cls-9"
+     id="g41">
+    <path
+       class="cls-10"
+       d="M0,297.57l272.16-18c46.26-3.07,92.94-6.12,138.86,0C458,285.82,503,301.49,549.84,307.86c131.42,17.88,263.51-38.32,395.83-27.64,42.86,3.47,85.77,13.93,128.34,8.16,29.07-3.93,56.43-15.33,85.16-21,57.62-11.49,117.16,0,176,3.15,99.7,5.24,198.74-14,297.93-24.7,96.17-10.36,197.1-12,286.19,22.88"
+       id="path33" />
+    <path
+       class="cls-10"
+       d="M1919.22,206.08c-63.18-8.64-122.44-41.92-186.77-44.11-65-2.22-125.89,27.48-189.2,41.7-166.57,37.42-339.93-33.45-510.69-21.28-65.51,4.68-129.43,21.55-194.6,29.71C783,219,727.44,219.63,672,220.27L440.21,223c-57.77.67-115.88,1.31-172.91-7.36-47.11-7.18-93.18-20.65-140.77-24C82.11,188.54,34.4,195.7,0,221.72"
+       id="path35" />
+    <path
+       class="cls-10"
+       d="M0,420c48.06-11.36,93.3-39.87,142.25-33.73,15.67,2,30.55,7.47,45.33,12.78,52.6,19,114.55,35.62,162.61,8,32.88-18.91,54.91-56.76,93.06-62,55.68-7.64,95,59.46,151.18,62.3,33.37,1.69,62.62-19.85,94.92-27.87,63.19-15.85,126.88,20.93,192,26.62,61.22,5.36,121.54-17.24,174.48-46.67,26.24-14.58,55.75-31.62,85-23.8,22.52,6,38.32,25.46,60,33.67,49.47,18.69,99-26.09,151.28-35.61,41.29-7.53,82.86,7.54,124,15.67A380.8,380.8,0,0,0,1674,335.44c11.24-3.93,23.14-8.46,34.85-6,10.21,2.16,18.25,9.31,26.27,15.65,50.17,39.64,120,55.86,184.09,43.5"
+       id="path37" />
+    <path
+       class="cls-10"
+       d="M1919.22,268.7c-89.09-34.84-190-33.24-286.18-22.88-99.2,10.69-198.24,29.94-297.94,24.7-58.8-3.08-118.34-14.64-176-3.15-28.72,5.73-56.08,17.08-85.16,21-42.56,5.77-85.48-4.69-128.34-8.16-132.29-10.68-264.38,45.52-395.83,27.64-46.87-6.37-91.89-22-138.77-28.28-45.93-6.12-92.61-3.07-138.86,0L0,297.57"
+       id="path39" />
+  </g>
+</svg>

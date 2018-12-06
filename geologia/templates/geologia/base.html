@@ -1,0 +1,78 @@
+{% extends 'base.html'  %}{% load static %}
+
+{% block title %}Geologia{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'css/geologia.css' %}">
+{% endblock %}
+
+{%block header %}
+  <h1>Geologia Orçamentária</h1>
+  <p>Os gastos na educação em São Paulo</p>
+{% endblock %}
+
+{%block sections %}
+  <section id="camadas">
+    <div class="wrapper">
+      <h2>Conheça as <em>camadas</em> do orçamento</h2>
+      <p>Veja a distribuição de gastos em educação na Prefeitura de São Paulo pelas naturezas de despezas ao longo dos anos.</p>
+      <form action="" method="get" class="query">
+      <fieldset>
+        <legend>
+          Valores:
+        </legend>
+        <div class="form-item switch">
+          <input class="radio" type="radio" name="break" checked id="by-orgao">
+          <label for="by-orgao">Orçamento atualizado</label>
+          <input class="radio" type="radio" name="break" value="" id="by-area">
+          <label for="by-area">Empenhado</label>
+        </div>
+      </fieldset>
+      </form>
+      <a class="btn" href="">Dados por natureza</a>
+  </section>
+  <section id="por-programa">
+    <div class="wrapper">
+      <h2>Volume de gastos por <em>programa</em></h2>
+      <form action="" method="get" class="query">
+      <fieldset>
+        <legend>
+          Valores:
+        </legend>
+        <div class="form-item">
+          <label for="query"></label>
+          <input class="text" id="query" type="text" name="" value="">
+        </div>
+        <div class="form-item switch">
+          <input class="radio" type="radio" name="break" checked id="by-orgao">
+          <label for="by-orgao">Orçamento atualizado</label>
+          <input class="radio" type="radio" name="break" value="" id="by-area">
+          <label for="by-area">Empenhado</label>
+        </div>
+      </fieldset>
+      </form>
+    </div>
+  </section>
+  <section id="por-funcao">
+    <div class="wrapper">
+      <h2>Volume de gastos por <em>função</em></h2>
+      <form action="" method="get" class="query">
+      <fieldset>
+        <legend>
+          Valores:
+        </legend>
+        <div class="form-item">
+          <label for="query"></label>
+          <input class="text" id="query" type="text" name="" value="">
+        </div>
+        <div class="form-item switch">
+          <input class="radio" type="radio" name="break" checked id="by-orgao">
+          <label for="by-orgao">Orçamento atualizado</label>
+          <input class="radio" type="radio" name="break" value="" id="by-area">
+          <label for="by-area">Empenhado</label>
+        </div>
+      </fieldset>
+      </form>
+    </div>
+  </section>
+{% endblock %}

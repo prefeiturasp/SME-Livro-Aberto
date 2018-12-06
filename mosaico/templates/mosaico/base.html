@@ -1,34 +1,23 @@
-{% load static %}{% load humanize %}{% load l10n %}<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no">
-  <title>Mosaico • Transparência Orçamentária</title>
-  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700,800,900|Ubuntu:400,700" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/typography.css' %}">
-  <link rel="stylesheet" href="{% static 'css/palette.css' %}">
-  <link rel="stylesheet" href="{% static 'css/grid.css' %}">
-  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Mosaico{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
   <link rel="stylesheet" href="{% static 'css/charts.css' %}">
-  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="{% static 'js/treemap.js' %}"></script>
   <script src="{% static 'js/timeseries.js' %}"></script>
-</head>
-<body>
-  <header>
-    <div class="wrapper">
-      <h1>Mosaico Orçamentário</h1>
-      <p>Orçamento da Educação ao seu alcance</p>
-      <nav>
-        <a class="methodology" href="">
-          <svg viewBox="0 0 320 320" height="32" class="icon">
-            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-          </svg>
-          Metodologia
-        </a>
-      </nav>
-    </div>
-  </header>
+{% endblock %}
+
+{%block header %}
+  <h1>Mosaico Orçamentário</h1>
+  <p>Orçamento da Educação ao seu alcance</p>
+{% endblock %}
+
+{%block sections %}
   <section id="mosaico">
     <div class="wrapper">
       <form action="" method="get" class="query">
@@ -144,62 +133,4 @@
       </table>
     </div>
   </section>
-  <section id="social">
-    <div class="wrapper">
-      <h2>
-        Compartilhe!
-      </h2>
-      <nav>
-        <ul>
-          <li>
-            <a href="">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-linkedin.svg' %}#icon-linkedin"></use>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-whatsapp.svg' %}#icon-whatsapp"></use>
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </section>
-  <footer>
-    <div class="wrapper">
-      <nav>
-        <ul>
-          <li>
-            <a href="">
-              <img src="{% static 'img/logo-unesco.svg' %}" alt="Unesco">
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <img src="{% static 'img/logo-sme.svg' %}" alt="Prefeitura de São Paulo - Educação">
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </footer>
-</body>
-</html>
+{% endblock %}
