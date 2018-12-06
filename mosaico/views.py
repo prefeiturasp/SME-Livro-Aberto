@@ -24,12 +24,14 @@ class BaseListView(generics.ListAPIView):
     template_name = 'mosaico/base.html'
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
+
+        breadcrumb = self.create_breadcrumb(queryset[0])
 
         tseries_qs = self.get_timeseries_queryset()
         tseries_data = self.prepare_timeseries_data(tseries_qs)
-        return Response({'breadcrumb': self.breadcrumb,
+        return Response({'breadcrumb': breadcrumb,
                          'execucoes': serializer.data,
                          'timeseries': tseries_data})
 
@@ -48,8 +50,10 @@ class BaseListView(generics.ListAPIView):
 
         return ret
 
-    @property
-    def breadcrumb(self):
+    def get_timeseries_queryset(self):
+        raise NotImplemented
+
+    def create_breadcrumb(self, obj):
         raise NotImplemented
 
 
@@ -58,30 +62,34 @@ class GruposListView(BaseListView):
 
     def get_queryset(self):
         year = self.kwargs['year']
-        return Execucao.objects.filter(year=date(year, 1, 1)) \
-            .distinct('subgrupo__grupo')
+        return Execucao.objects.filter(year=date(year, 1, 1))
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subgrupo__grupo_id')
 
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    @property
-    def breadcrumb(self):
-        return f'Ano {self.kwargs["year"]}'
+    def create_breadcrumb(self, obj):
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_simples')}
+        ]
 
 
 class SubgruposListView(BaseListView):
     serializer_class = SubgrupoSerializer
-    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         grupo_id = self.kwargs['grupo_id']
-        ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id) \
-            .distinct('subgrupo')
-        if ret:
-            self._breadcrumb = self.create_breadcrumb(ret[0])
-        return ret
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subgrupo__grupo_id=grupo_id)
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subgrupo')
 
     def get_timeseries_queryset(self):
         grupo_id = self.kwargs['grupo_id']
@@ -89,27 +97,25 @@ class SubgruposListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}')
-
-    @property
-    def breadcrumb(self):
-        return self._breadcrumb
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_simples')},
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')}
+        ]
 
 
 class ElementosListView(BaseListView):
     serializer_class = ElementoSerializer
-    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subgrupo_id = self.kwargs['subgrupo_id']
-        ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id) \
-            .distinct('elemento')
-        if ret:
-            self._breadcrumb = self.create_breadcrumb(ret[0])
-        return ret
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id)
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('elemento')
 
     def get_timeseries_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
@@ -117,30 +123,28 @@ class ElementosListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
-            f'{obj.subgrupo.desc}')
-
-    @property
-    def breadcrumb(self):
-        return self._breadcrumb
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_simples')},
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
+            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')}
+        ]
 
 
 class SubelementosListView(BaseListView):
     serializer_class = SubelementoSerializer
-    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subgrupo_id = self.kwargs['subgrupo_id']
         elemento_id = self.kwargs['elemento_id']
-        ret = Execucao.objects \
+        return Execucao.objects \
             .filter(year=date(year, 1, 1), subgrupo_id=subgrupo_id,
-                    elemento_id=elemento_id) \
-            .distinct('subelemento')
-        if ret:
-            self._breadcrumb = self.create_breadcrumb(ret[0])
-        return ret
+                    elemento_id=elemento_id)
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subelemento')
 
     def get_timeseries_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
@@ -150,13 +154,13 @@ class SubelementosListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subgrupo.grupo.desc}/'
-            f'{obj.subgrupo.desc}/{obj.elemento.desc}')
-
-    @property
-    def breadcrumb(self):
-        return self._breadcrumb
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_simples')},
+            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
+            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')},
+            {"name": obj.elemento.desc, 'url': obj.get_url('elemento')}
+        ]
 
 
 # `Técnico` visualization views
@@ -166,30 +170,34 @@ class SubfuncoesListView(BaseListView):
 
     def get_queryset(self):
         year = self.kwargs['year']
-        return Execucao.objects.filter(year=date(year, 1, 1)) \
-            .distinct('subfuncao')
+        return Execucao.objects.filter(year=date(year, 1, 1))
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subfuncao')
 
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    @property
-    def breadcrumb(self):
-        return f'Ano {self.kwargs["year"]}'
+    def create_breadcrumb(self, obj):
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_tecnico')},
+        ]
 
 
 class ProgramasListView(BaseListView):
     serializer_class = ProgramaSerializer
-    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subfuncao_id = self.kwargs['subfuncao_id']
-        ret = Execucao.objects \
-            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id) \
-            .distinct('programa')
-        if ret:
-            self._breadcrumb = self.create_breadcrumb(ret[0])
-        return ret
+        return Execucao.objects \
+            .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id)
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('programa')
 
     def get_timeseries_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
@@ -198,28 +206,27 @@ class ProgramasListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}'
-
-    @property
-    def breadcrumb(self):
-        return self._breadcrumb
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_tecnico')},
+            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
+        ]
 
 
 class ProjetosAtividadesListView(BaseListView):
     serializer_class = ProjetoAtividadeSerializer
-    _breadcrumb = ""
 
     def get_queryset(self):
         year = self.kwargs['year']
         subfuncao_id = self.kwargs['subfuncao_id']
         programa_id = self.kwargs['programa_id']
-        ret = Execucao.objects \
+        return Execucao.objects \
             .filter(year=date(year, 1, 1), subfuncao_id=subfuncao_id,
-                    programa_id=programa_id) \
-            .distinct('projeto')
-        if ret:
-            self._breadcrumb = self.create_breadcrumb(ret[0])
-        return ret
+                    programa_id=programa_id)
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('projeto')
 
     def get_timeseries_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
@@ -229,10 +236,9 @@ class ProjetosAtividadesListView(BaseListView):
             .order_by('year')
 
     def create_breadcrumb(self, obj):
-        return (
-            f'Ano {self.kwargs["year"]}/{obj.subfuncao.desc}/'
-            f'{obj.programa.desc}')
-
-    @property
-    def breadcrumb(self):
-        return self._breadcrumb
+        return [
+            {"name": f'Ano {self.kwargs["year"]}',
+             'url': obj.get_url('home_tecnico')},
+            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
+            {"name": obj.programa.desc, 'url': obj.get_url('programa')},
+        ]

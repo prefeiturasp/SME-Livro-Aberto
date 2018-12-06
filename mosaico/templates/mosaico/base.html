@@ -64,26 +64,13 @@
         </ol>
       </nav>
       <ol class="treemap">
-          <li data-execution="0.05" data-value="1000.00">
-              <div class="name">Pessoal e Benefícios</div>
-              <div class="value">R$ 1000,00</div>
-              <div class="execution">5%</div>
-          </li>
-          <li data-execution="0.25" data-value="600.00">
-              <div class="name">Convênios</div>
-              <div class="value">R$ 600,00</div>
-              <div class="execution">25%</div>
-          </li>
-          <li data-execution="0.8" data-value="910.00">
-              <div class="name">Administração</div>
-              <div class="value">R$ 910,00</div>
-              <div class="execution">80%</div>
-          </li>
-          <li data-execution="1" data-value="100.00">
-              <div class="name">Obras</div>
-              <div class="value">R$ 100,00</div>
-              <div class="execution">100%</div>
-          </li>
+          {% for execucao in execucoes %}
+          <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
+                  <div class="value">R$ {{ execucao.orcado_total }} </div>
+		  <div class="name"><a href="{{ execucao.url}}">{{ execucao.nome }}</a></div>
+                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
+              </li>
+          {% endfor %}
       </ol>
       <style type="text/css">
         .treemap{
@@ -177,86 +164,13 @@
                   </tr>
               </thead>
               <tbody>
+		  {% for year, values in timeseries.items %}
                   <tr>
-                      <th data-year="2003">2003</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
+			  <th data-year="{{ year }}">{{ year }}</th>
+			  <td data-updated="{{ values.orcado }}">R${{ values.orcado }}</td>
+			  <td data-paid="{{ values.empenhado }}">R${{ values.empenhado }}</td>
                   </tr>
-                  <tr>
-                      <th data-year="2004">2004</th>
-                      <td data-updated="14000">R$14.000,00</td>
-                      <td data-paid="9000">R$9.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2005">2005</th>
-                      <td data-updated="1000">R$1.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2006">2006</th>
-                      <td data-updated="2000">R$2.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2007">2007</th>
-                      <td data-updated="5000">R$5.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2008">2008</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2009">2009</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2010">2010</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2011">2011</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2012">2012</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2013">2013</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2014">2014</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2015">2015</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2016">2016</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2017">2017</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
-                  <tr>
-                      <th data-year="2018">2018</th>
-                      <td data-updated="12000">R$12.000,00</td>
-                      <td data-paid="10000">R$10.000,00</td>
-                  </tr>
+		  {% endfor %}
               </tbody>
           </table>
       </div>
@@ -281,36 +195,14 @@
               </tr>
           </thead>
           <tbody>
+          {% for execucao in execucoes %}
               <tr>
-                  <th>Pessoal e benefícios</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
+                  <th>{{ execucao.nome }}</th>
+                  <td>R$ {{ execucao.orcado_total }} </td>
+                  <td>R$ {{ execucao.empenhado_total}} </td>
+                  <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
               </tr>
-              <tr>
-                  <th>Convênios</th>
-                  <td data-updated="14000">R$14.000,00</td>
-                  <td data-paid="9000">R$9.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Apoio ao aluno</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Apoio e manutenção  de unidades escolares</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
-              <tr>
-                  <th>Obras e reformass</th>
-                  <td data-updated="12000">R$12.000,00</td>
-                  <td data-paid="10000">R$10.000,00</td>
-                  <td data-paid="0.5">50%</td>
-              </tr>
+          {% endfor %}
           </tbody>
       </table>
     </div>

@@ -11,6 +11,7 @@ class BaseSerializer(serializers.ModelSerializer):
     orcado_total = serializers.SerializerMethodField()
     empenhado_total = serializers.SerializerMethodField()
     percentual_empenhado = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     @lru_cache(maxsize=10)
     def get_orcado_total(self, obj):
@@ -29,7 +30,7 @@ class BaseSerializer(serializers.ModelSerializer):
         empenhado = self.get_empenhado_total(obj)
 
         if empenhado:
-            return (empenhado * 100) / orcado
+            return empenhado / orcado
         else:
             return 0
 
@@ -44,13 +45,16 @@ class GrupoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'grupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_grupo_id(self, obj):
         return obj.subgrupo.grupo_id
 
     def get_nome(self, obj):
         return obj.subgrupo.grupo.desc
+
+    def get_url(self, obj):
+        return obj.get_url('grupo')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -65,10 +69,13 @@ class SubgrupoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.subgrupo.desc
+
+    def get_url(self, obj):
+        return obj.get_url("subgrupo")
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -83,10 +90,13 @@ class ElementoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'elemento_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.elemento.desc
+
+    def get_url(self, obj):
+        return obj.get_url('elemento')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -117,10 +127,13 @@ class SubfuncaoSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.subfuncao.desc
+
+    def get_url(self, obj):
+        return obj.get_url('subfuncao')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -135,10 +148,13 @@ class ProgramaSerializer(BaseSerializer):
     class Meta:
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado')
+                  'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.programa.desc
+
+    def get_url(self, obj):
+        return obj.get_url('programa')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):

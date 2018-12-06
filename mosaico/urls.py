@@ -19,27 +19,27 @@ urlpatterns = [
 
     # `Simples` visualization urls
     path('<int:year>/', GruposListView.as_view(),
-         name='grupos'),
+         name='home_simples'),
     path('<int:year>/grupo/<int:grupo_id>/',
          SubgruposListView.as_view(),
-         name='subgrupos'),
+         name='grupo'),
     path(('<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/'),
          ElementosListView.as_view(),
-         name='elementos'),
+         name='subgrupo'),
     path(('<int:year>/grupo/<int:grupo_id>/'
           'subgrupo/<int:subgrupo_id>/elemento/<int:elemento_id>/'),
          SubelementosListView.as_view(),
-         name='subelementos'),
+         name='elemento'),
 
     # `Tecnico` visualization urls
     path('tecnico/<int:year>/', SubfuncoesListView.as_view(),
-         name='subfuncoes'),
+         name='home_tecnico'),
     path('tecnico/<int:year>/subfuncao/<int:subfuncao_id>/',
          ProgramasListView.as_view(),
-         name='programas'),
+         name='subfuncao'),
     path(('tecnico/<int:year>/subfuncao/<int:subfuncao_id>/'
           'programa/<int:programa_id>/'),
          ProjetosAtividadesListView.as_view(),
-         name='projetos'),
+         name='programa'),
 ]
