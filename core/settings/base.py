@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'mosaico',
+    'geologia',
     'from_to_handler.apps.FromToHandlerConfig',
     'budget_execution.apps.BudgetExecutionConfig',
 ]

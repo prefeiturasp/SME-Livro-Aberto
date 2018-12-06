@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='mosaico/')),
     path('mosaico/', include('mosaico.urls')),
+    path('geologia/', include('geologia.urls')),
 ]
