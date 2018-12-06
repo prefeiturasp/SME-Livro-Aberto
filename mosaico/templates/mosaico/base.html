@@ -30,7 +30,6 @@
   </header>
   <section id="mosaico">
     <div class="wrapper">
-
       <form action="" method="get" class="query">
       <fieldset>
         <legend>
@@ -60,9 +59,11 @@
       <ol class="treemap">
           {% for execucao in execucoes %}
           <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
+                  <a href="{{ execucao.url}}#mosaico">
                   <div class="value">R$ {{ execucao.orcado_total }} </div>
-		  <div class="name"><a href="{{ execucao.url}}">{{ execucao.nome }}</a></div>
+                  <div class="name">{{ execucao.nome }}</div>
                   <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
+                  </a>
               </li>
           {% endfor %}
       </ol>
@@ -73,15 +74,20 @@
             width: 100%;
             height: 35rem;
         }
+        .treemap a{
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
         .treemap > li{
             position: absolute;
             overflow: hidden;
             box-sizing: border-box;
         }
-        .treemap > li > div:first-child{
+        .treemap > li div:first-child{
             padding-top: 1em;
         }
-        .treemap > li > div{
+        .treemap > li div{
             padding-left: 1em;
             white-space: nowrap;
             text-overflow: clip;
