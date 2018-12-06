@@ -59,6 +59,9 @@ MIDDLEWARE = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = config('STATICFILES_STORAGE', 'whitenoise.storage.CompressedManifestStaticFilesStorage')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 if 'whitenoise' in STATICFILES_STORAGE:
     MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
