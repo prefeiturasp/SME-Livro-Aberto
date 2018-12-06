@@ -2,7 +2,7 @@ header h1 + p {
   color: #b1d51b;
 }
 
-section#budget-over-time{
+section:nth-child(2n+1){
   background-color: #f9faf9;
 }
 
