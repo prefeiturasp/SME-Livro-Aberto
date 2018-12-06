@@ -57,11 +57,7 @@
         </select>
       </fieldset>
       </form>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
       </nav>
       <ol class="treemap">
           {% for execucao in execucoes %}
@@ -123,12 +119,7 @@
         </div>
       </fieldset>
       </form>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
-      </nav>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
       <div class="timeseries">
           <style type="text/css">
             .timeseries svg{
@@ -179,12 +170,7 @@
   <section id="data-table">
     <div class="wrapper">
       <h2><em>Tabela</em> de Dados</h2>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
-      </nav>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
       <table>
           <thead>
               <tr>
