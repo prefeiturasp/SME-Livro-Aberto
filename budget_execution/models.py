@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.db import models
+from django.urls import reverse_lazy
 
 
 class ExecucaoQuerySet(models.QuerySet):
@@ -89,6 +90,47 @@ class Execucao(models.Model):
             f'{s.year.strftime("%Y")}.{s.orgao_id}.{s.projeto_id}.'
             f'{s.categoria_id}.{s.gnd_id}.{s.modalidade_id}.{s.elemento_id}.'
             f'{s.fonte_id}.{s.subelemento_id}')
+
+    def get_url(self, area):
+        # simples areas
+        if area == 'home_simples':
+            url = reverse_lazy(
+                "mosaico:home_simples",
+                args=[self.year.strftime('%Y')])
+
+        elif area == "grupo":
+            url = reverse_lazy(
+                "mosaico:grupo",
+                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
+
+        elif area == "subgrupo":
+            url = reverse_lazy(
+                "mosaico:subgrupo",
+                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
+                      self.subgrupo_id])
+        elif area == "elemento":
+            url = reverse_lazy(
+                "mosaico:elemento",
+                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
+                      self.subgrupo_id, self.elemento_id])
+        # tecnico areas
+        elif area == 'home_tecnico':
+            url = reverse_lazy(
+                "mosaico:home_tecnico",
+                args=[self.year.strftime('%Y')])
+
+        elif area == "subfuncao":
+            url = reverse_lazy(
+                "mosaico:subfuncao",
+                args=[self.year.strftime('%Y'), self.subfuncao_id])
+        elif area == "programa":
+            url = reverse_lazy(
+                "mosaico:programa",
+                args=[self.year.strftime('%Y'),
+                      self.subfuncao_id,
+                      self.programa_id])
+
+        return url
 
 
 class Categoria(models.Model):

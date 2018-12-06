@@ -31,6 +31,10 @@ h2:first-child{
   margin-top: 0;
 }
 
+section{
+  padding-bottom: 2em;
+}
+
 section#social{
   text-align: center;
 }
@@ -59,6 +63,7 @@ svg.icon{
 
 legend{
   margin-bottom: 1em;
+  padding: 0;
 }
 
 fieldset{
@@ -101,4 +106,44 @@ footer li{
 
 footer img{
   height: 12em;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 3px;
+}
+
+table thead tr th:first-child{
+    border-radius: 4px 0 0 4px;
+}
+
+table thead tr th:last-child{
+    border-radius: 0 4px 4px 0;
+}
+
+thead > tr > *{
+  position: relative;
+  box-sizing: border-box;
+}
+
+thead > tr > *::before{
+  content: '';
+  position: absolute;
+  height: 1.2em;
+  left: 0;
+  border-right: solid 1px currentColor;
+}
+
+tr > *{
+  text-align: right;
+  padding: 1em;
+}
+
+tr > *:first-child{
+  text-align: left;
+}
+
+tr > *:first-child::before{
+  border-right: none;
 }
