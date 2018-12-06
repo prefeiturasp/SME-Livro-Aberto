@@ -60,6 +60,7 @@ svg.icon{
   fill: currentColor;
 }
 
+select,
 .breadcrumb a,
 button, input[type=submit], .btn,
 form.query label{

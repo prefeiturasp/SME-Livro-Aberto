@@ -41,6 +41,7 @@ header nav a{
   text-decoration: none;
 }
 
+select,
 a.btn,
 form.query label{
   text-transform: uppercase;
