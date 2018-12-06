@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}{% load humanize %}{% load l10n %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{% static 'css/palette.css' %}">
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/charts.css' %}">
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="{% static 'js/treemap.js' %}"></script>
   <script src="{% static 'js/timeseries.js' %}"></script>
@@ -28,19 +29,18 @@
       </nav>
     </div>
   </header>
-  <section id="mosaic">
+  <section id="mosaico">
     <div class="wrapper">
-
       <form action="" method="get" class="query">
       <fieldset>
         <legend>
           Visualizar
         </legend>
         <div class="form-item switch">
-          <input class="radio" type="radio" name="break" checked id="by-orgao">
-          <label for="by-orgao">Por órgão</label>
-          <input class="radio" type="radio" name="break" value="" id="by-area">
-          <label for="by-area">Por área</label>
+          <input class="radio" type="radio" name="break" checked id="simple">
+          <label for="simple">Visão simplificada</label>
+          <input class="radio" type="radio" name="break" id="pro">
+          <label for="pro">Visão técnica</label>
         </div>
         <div class="form-item">
           <input class="radio" type="radio" name="universe" value="">
@@ -49,53 +49,25 @@
           <label>Mínimo constitucional</label>
         </div>
         <select name="year">
-          <option value="2018">2018</option>
-          <option value="2017">2017</option>
-          <option value="2016">2016</option>
-          <option value="2015">2015</option>
-          <option value="2014">2014</option>
+            {% for year, values in timeseries.items %}
+                <option value="{{year}}">{{year}}</option>
+            {% endfor %}
         </select>
       </fieldset>
       </form>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
       </nav>
       <ol class="treemap">
           {% for execucao in execucoes %}
-          <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
-                  <div class="value">R$ {{ execucao.orcado_total }} </div>
-		  <div class="name"><a href="{{ execucao.url}}">{{ execucao.nome }}</a></div>
+          <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
+                  <a href="{{ execucao.url}}#mosaico">
+                  <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
+                  <div class="name">{{ execucao.nome }}</div>
                   <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
+                  </a>
               </li>
           {% endfor %}
       </ol>
-      <style type="text/css">
-        .treemap{
-            position: relative;
-            padding: 0;
-            width: 100%;
-            height: 35rem;
-        }
-        .treemap > li{
-            position: absolute;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        .treemap > li > div:first-child{
-            padding-top: 1em;
-        }
-        .treemap > li > div{
-            padding-left: 1em;
-            white-space: nowrap;
-            text-overflow: clip;
-        }
-        .treemap > li .name{
-            font-weight: 700;
-        }
-      </style>
       <footer>
           <div class="legend">
               {# TODO: think on a progressive strategy of loading legend #}
@@ -123,38 +95,8 @@
         </div>
       </fieldset>
       </form>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
-      </nav>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
       <div class="timeseries">
-          <style type="text/css">
-            .timeseries svg{
-                width: 100%;
-            }
-            path.line{
-                fill: transparent;
-                stroke-width: 2;
-            }
-
-            .axis--x path,
-            .axis--y path {
-                stroke: none;
-            }
-
-            .axis line {
-                fill: none;
-                stroke: #5f6b6d;
-                shape-rendering: crispEdges;
-            }
-
-            text{
-                font-weight: 700;
-                color: #5f6b6d;
-            }
-          </style>
           <table>
               <thead>
                   <tr>
@@ -167,8 +109,8 @@
 		  {% for year, values in timeseries.items %}
                   <tr>
 			  <th data-year="{{ year }}">{{ year }}</th>
-			  <td data-updated="{{ values.orcado }}">R${{ values.orcado }}</td>
-			  <td data-paid="{{ values.empenhado }}">R${{ values.empenhado }}</td>
+			  <td data-updated="{{ values.orcado|unlocalize }}">R${{ values.orcado }}</td>
+			  <td data-paid="{{ values.empenhado|unlocalize }}">R${{ values.empenhado }}</td>
                   </tr>
 		  {% endfor %}
               </tbody>
@@ -179,12 +121,7 @@
   <section id="data-table">
     <div class="wrapper">
       <h2><em>Tabela</em> de Dados</h2>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li><a href="#">Ano 2019</a></li>
-          <li class="active" aria-current="page"><span>Apoio ao Aluno</span></li>
-        </ol>
-      </nav>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
       <table>
           <thead>
               <tr>
@@ -198,8 +135,8 @@
           {% for execucao in execucoes %}
               <tr>
                   <th>{{ execucao.nome }}</th>
-                  <td>R$ {{ execucao.orcado_total }} </td>
-                  <td>R$ {{ execucao.empenhado_total}} </td>
+                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
+                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
                   <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
               </tr>
           {% endfor %}
