@@ -122,6 +122,7 @@ def import_empenhos_csv():
         subelemento_id = import_fk_object(ws, row, 'Subelemento')
         empenhado = ws['al' + str(row)].value
         empenhado = Decimal(empenhado)
+        elemento_desc = ws['x' + str(row)].value
 
         execs = Execucao.objects.filter_by_indexer((
             f'{year}.{orgao_id}.{projeto_id}.{categoria_id}.{gnd_id}.'
@@ -159,6 +160,8 @@ def import_empenhos_csv():
             print("new execution")
 
         execucao.empenhado_liquido = empenhado
+        execucao.elemento.desc = elemento_desc
+        execucao.elemento.save()
 
         execucao.save()
         row += 1
