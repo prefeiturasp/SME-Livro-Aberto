@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}{% load humanize %}{% load l10n %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -59,9 +59,9 @@
       </nav>
       <ol class="treemap">
           {% for execucao in execucoes %}
-          <li data-execution="{{ execucao.percentual_empenhado}}" data-value="{{ execucao.orcado_total }}">
+          <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
                   <a href="{{ execucao.url}}#mosaico">
-                  <div class="value">R$ {{ execucao.orcado_total }} </div>
+                  <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
                   <div class="name">{{ execucao.nome }}</div>
                   <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
                   </a>
@@ -109,8 +109,8 @@
 		  {% for year, values in timeseries.items %}
                   <tr>
 			  <th data-year="{{ year }}">{{ year }}</th>
-			  <td data-updated="{{ values.orcado }}">R${{ values.orcado }}</td>
-			  <td data-paid="{{ values.empenhado }}">R${{ values.empenhado }}</td>
+			  <td data-updated="{{ values.orcado|unlocalize }}">R${{ values.orcado }}</td>
+			  <td data-paid="{{ values.empenhado|unlocalize }}">R${{ values.empenhado }}</td>
                   </tr>
 		  {% endfor %}
               </tbody>
@@ -135,8 +135,8 @@
           {% for execucao in execucoes %}
               <tr>
                   <th>{{ execucao.nome }}</th>
-                  <td>R$ {{ execucao.orcado_total }} </td>
-                  <td>R$ {{ execucao.empenhado_total}} </td>
+                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
+                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
                   <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
               </tr>
           {% endfor %}
