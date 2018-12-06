@@ -1,11 +1,3 @@
-header{
-  background-color: #277fcd;
-  background-image: url('../img/bkg-mosaico-header.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  color: #fff;
-}
-
 header h1 + p {
   color: #b1d51b;
 }
@@ -25,6 +17,7 @@ section#data-table thead th{
   background-color: #c3f570;
 }
 
+header,
 section#social{
   background-color: #222b34;
   color: #fff;
