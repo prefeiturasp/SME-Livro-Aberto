@@ -26,8 +26,11 @@ def get_gnd_orcado_data(queryset):
     orcado_total = queryset.aggregate(total=Sum('orcado_atualizado'))
 
     orcado_gnds = [
-        {"name": gnd['gnd_gealogia__desc'],
-         "value": gnd['orcado']}
+        {
+            "name": gnd['gnd_gealogia__desc'],
+            "value": gnd['orcado'],
+            "percent": gnd['orcado'] / orcado_total['total'],
+        }
         for gnd in orcado_by_gnd
     ]
 
@@ -45,11 +48,16 @@ def get_gnd_empenhado_data(queryset):
         .annotate(empenhado=Sum('empenhado_liquido'))
     empenhado_total = queryset.aggregate(total=Sum('empenhado_liquido'))
 
-    empenhado_gnds = [
-        {"name": gnd['gnd_gealogia__desc'],
-         "value": gnd['empenhado']}
-        for gnd in empenhado_by_gnd
-    ]
+    empenhado_gnds = []
+    for gnd in empenhado_by_gnd:
+        if gnd['empenhado'] is None:
+            gnd['empenhado'] = 0
+
+        empenhado_gnds.append({
+            "name": gnd['gnd_gealogia__desc'],
+            "value": gnd['empenhado'],
+            "percent": gnd['empenhado'] / empenhado_total['total'],
+        })
 
     return {
         "year": year.strftime("%Y"),
