@@ -1,9 +1,9 @@
 from django.urls import path
-from django.views.generic.base import TemplateView
+
+from geologia.views import GeologiaView
 
 
 app_name = 'geologia'
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='geologia/base.html'),
-         name='home'),
+    path('', GeologiaView.as_view(), name='home'),
 ]
