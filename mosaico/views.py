@@ -1,9 +1,13 @@
 from datetime import date
 from itertools import groupby
 
+from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
+
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 from budget_execution.models import Execucao
 from mosaico.serializers import (
@@ -15,6 +19,13 @@ from mosaico.serializers import (
     SubfuncaoSerializer,
     SubgrupoSerializer,
 )
+
+
+class HomeView(APIView):
+    def get(self, request, format=None):
+        year = Execucao.objects.order_by('year').last().year.year
+        redirect_url = reverse('mosaico:home_simples', kwargs=dict(year=year))
+        return HttpResponseRedirect(redirect_url)
 
 
 # `Simples` visualization views

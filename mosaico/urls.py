@@ -2,6 +2,7 @@ from django.urls import path
 from django.views.generic.base import TemplateView
 
 from mosaico.views import (
+    HomeView,
     ElementosListView,
     GruposListView,
     ProgramasListView,
@@ -14,7 +15,7 @@ from mosaico.views import (
 
 app_name = 'mosaico'
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='mosaico/base.html'),
+    path('', HomeView.as_view(),
          name='home'),
 
     # `Simples` visualization urls
