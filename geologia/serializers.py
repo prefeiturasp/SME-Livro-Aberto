@@ -9,12 +9,12 @@ class GeologiaSerializer:
     @property
     def data(self):
         return {
-            'gnd': self.prepare_gnd_data(),
+            'camadas': self.prepare_camadas_data(),
             'subfuncao': self.prepare_subfuncao_data(),
         }
 
-    # Chart 1: Gnd
-    def prepare_gnd_data(self):
+    # Chart 1: Camadas
+    def prepare_camadas_data(self):
         qs = self.queryset
 
         years = qs.values('year').distinct()
@@ -27,12 +27,12 @@ class GeologiaSerializer:
             year = year_dict['year']
             year_qs = qs.filter(year=year)
 
-            ret['orcado'].append(self.get_gnd_orcado_data(year_qs))
-            ret['empenhado'].append(self.get_gnd_empenhado_data(year_qs))
+            ret['orcado'].append(self.get_camadas_orcado_data(year_qs))
+            ret['empenhado'].append(self.get_camadas_empenhado_data(year_qs))
 
         return ret
 
-    def get_gnd_orcado_data(self, qs):
+    def get_camadas_orcado_data(self, qs):
         year = qs[0].year
 
         orcado_by_gnd = qs.values('gnd_gealogia__desc') \
@@ -47,7 +47,7 @@ class GeologiaSerializer:
             "gnds": orcado_gnds,
         }
 
-    def get_gnd_empenhado_data(self, qs):
+    def get_camadas_empenhado_data(self, qs):
         year = qs[0].year
 
         empenhado_by_gnd = qs.values('gnd_gealogia__desc') \
