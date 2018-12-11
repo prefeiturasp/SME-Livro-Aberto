@@ -35,27 +35,37 @@ class TestGeologiaSerializer:
         empenhado_total = Decimal(30)
         return gnds_dict, empenhado_total
 
-    def test_prepare_gnd_data(self):
-        pass
-        # execucoes_2017 = mommy.make(
-        #     Execucao,
-        #     year=date(2017, 1, 1),
-        #     _quantity=2)
-        # execucoes_2018 = mommy.make(
-        #     Execucao,
-        #     year=date(2018, 1, 1),
-        #     _quantity=2)
+    @patch.object(GeologiaSerializer, 'get_camadas_empenhado_data')
+    @patch.object(GeologiaSerializer, 'get_camadas_orcado_data')
+    def test_prepare_camadas_data(self, mock_orcado, mock_empenhado):
+        mock_orcado.return_value = 'mock_o'
+        mock_empenhado.return_value = 'mock_e'
 
-        # execucoes = Execucao.objects.all()
-        # serializer = GeologiaSerializer(execucoes)
-        # ret = serializer.prepare_gnd_data()
+        execs_2017 = mommy.make(
+            Execucao,
+            year=date(2017, 1, 1),
+            _quantity=2)
+        execs_2018 = mommy.make(
+            Execucao,
+            year=date(2018, 1, 1),
+            _quantity=2)
+        execucoes = Execucao.objects.all()
 
-        # orcado_2017 = sum([e.orcado_atualizado for e in execucoes_2017])
-        # orcado_2018 = sum([e.orcado_atualizado for e in execucoes_2018])
-        # # expected
+        serializer = GeologiaSerializer(execucoes)
+        ret = serializer.prepare_camadas_data()
 
-        # empenhado_2017 = sum([e.empenhado_liquido for e in execucoes_2017])
-        # empenhado_2018 = sum([e.empenhado_liquido for e in execucoes_2018])
+        expected = {
+            'orcado': ['mock_o', 'mock_o'],
+            'empenhado': ['mock_e', 'mock_e'],
+        }
+
+        assert expected == ret
+
+        execs = [execs_2017, execs_2018]
+        for exec_year, call in zip(execs, mock_orcado.mock_calls):
+            assert set(exec_year) == set(call[1][0])
+        for exec_year, call in zip(execs, mock_empenhado.mock_calls):
+            assert set(exec_year) == set(call[1][0])
 
     @patch.object(GeologiaSerializer, "_get_orcado_gnds_list",
                   Mock(return_value=[]))
