@@ -38,12 +38,13 @@ class GeologiaSerializer:
         orcado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
+        orcado_total = orcado_total['total']
 
         orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
 
         return {
             "year": year.strftime("%Y"),
-            "total": orcado_total['total'],
+            "total": orcado_total,
             "gnds": orcado_gnds,
         }
 
@@ -53,13 +54,14 @@ class GeologiaSerializer:
         empenhado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(empenhado=Sum('empenhado_liquido'))
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
+        empenhado_total = empenhado_total['total']
 
         empenhado_gnds = self._get_empenhado_gnds_list(empenhado_by_gnd,
                                                        empenhado_total)
 
         return {
             "year": year.strftime("%Y"),
-            "total": empenhado_total['total'],
+            "total": empenhado_total,
             "gnds": empenhado_gnds,
         }
 
@@ -135,7 +137,7 @@ class GeologiaSerializer:
             {
                 "name": gnd['gnd_gealogia__desc'],
                 "value": gnd['orcado'],
-                "percent": gnd['orcado'] / orcado_total['total'],
+                "percent": gnd['orcado'] / orcado_total,
             }
             for gnd in orcado_by_gnd
         ]
@@ -149,7 +151,7 @@ class GeologiaSerializer:
             ret.append({
                 "name": gnd['gnd_gealogia__desc'],
                 "value": gnd['empenhado'],
-                "percent": gnd['empenhado'] / empenhado_total['total'],
+                "percent": gnd['empenhado'] / empenhado_total,
             })
 
         return ret
