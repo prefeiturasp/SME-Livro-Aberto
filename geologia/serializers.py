@@ -81,7 +81,8 @@ class GeologiaSerializer:
 
             ret['orcado'].append(self.get_subfuncao_year_orcado_data(year_qs))
             # TODO: fix empenhado
-            ret['empenhado'].append(self.get_subfuncao_empenhado_data(year_qs))
+            ret['empenhado'].append(
+                self.get_subfuncao_year_empenhado_data(year_qs))
 
         return ret
 
@@ -100,6 +101,9 @@ class GeologiaSerializer:
                 self.get_subfuncao_orcado_data(qs_subfuncao))
 
         return ret
+
+    def get_subfuncao_year_empenhado_data(self, qs):
+        pass
 
     def get_subfuncao_orcado_data(self, qs):
         subfuncao = qs[0].subfuncao
