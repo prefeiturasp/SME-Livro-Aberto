@@ -9,10 +9,9 @@ from geologia.serializers import GeologiaSerializer
 class TestHomeView(APITestCase):
 
     def get(self, programa=None):
+        url = reverse('geologia:home')
         if programa:
-            url = '{}?programa={}'.format(reverse('geologia:home'), programa)
-        else:
-            url = reverse('geologia:home')
+            url += '?programa={}'.format(programa)
         return self.client.get(url)
 
     def test_serializes_geologia_data(self):
