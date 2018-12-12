@@ -50,7 +50,7 @@ window.addEventListener('load', function(){
 
   const z = d3.scaleOrdinal()
         .domain(d3.range(n))
-        .range(['investiment', 'people', 'debt', 'other']);
+        .range(['investment', 'people', 'debt', 'other']);
 
   const area = d3.area()
       .curve(d3.curveMonotoneX)

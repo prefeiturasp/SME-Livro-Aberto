@@ -10,9 +10,13 @@ header{
   margin: 2em 0;
 }
 
-.investiment{
+.investment{
   fill: #ecb93a;
   background-color: #ecb93a;
+}
+
+.fg-investment{
+  color: #ecb93a;
 }
 
 .people{
@@ -20,12 +24,38 @@ header{
   background-color: #ea4168;
 }
 
+.fg-people{
+  color: #ea4168;
+}
+
 .debt{
   fill: #693d8a;
   background-color: #693d8a;
 }
 
+.fg-debt{
+  color: #693d8a;
+}
+
 .other{
   fill: #287fce;
   background-color: #287fce;
+}
+
+.fg-other{
+  color: #287fce;
+}
+
+.legend{
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.legend .icon{
+  height: 3em;
+  width: 3em;
 }
