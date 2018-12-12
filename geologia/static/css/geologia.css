@@ -5,3 +5,27 @@ header{
   background-size: cover;
   background-position: center;
 }
+
+.stream-chart{
+  margin: 2em 0;
+}
+
+.investiment{
+  fill: #ecb93a;
+  background-color: #ecb93a;
+}
+
+.people{
+  fill: #ea4168;
+  background-color: #ea4168;
+}
+
+.debt{
+  fill: #693d8a;
+  background-color: #693d8a;
+}
+
+.other{
+  fill: #287fce;
+  background-color: #287fce;
+}
