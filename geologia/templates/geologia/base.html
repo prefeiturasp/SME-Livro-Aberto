@@ -1,4 +1,6 @@
 {% extends 'base.html'  %}{% load static %}
+{% load humanize %}
+{% load l10n %}
 
 {% block title %}Geologia{% endblock %}
 
@@ -29,6 +31,30 @@
         </div>
       </fieldset>
       </form>
+      <div class="stream-chart chart">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Nome</th>
+                      <th>Ano</th>
+                      <th>Valor</th>
+                      <th>Executado</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for year in camadas.empenhado %}
+                      {% for item in year.gnds%}
+                          <tr>
+                          <td data-name="{{ item.name }}">{{ item.name}}</td>
+                          <th data-year="{{ year.year }}">{{ year.year }}</th>
+                          <td data-value="{{ item.value|unlocalize }}">R$ {{ item.value|intcomma }}</td>
+                          <td data-execution="{{ item.percent|unlocalize }}">{% widthratio item.percent 1 100 %}%</td>
+                          </tr>
+                      {% endfor %}
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
       <a class="btn" href="">Dados por natureza</a>
   </section>
   <section id="por-programa">
