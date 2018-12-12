@@ -3,23 +3,13 @@ function toArray(nodeList){
 }
 
 window.addEventListener('load', function(){
-    let pt_BR = {
-      "decimal": ",",
-      "thousands": ".",
-      "grouping": [3],
-      "currency": ["R$", ""]
-    }
-
-    d3.formatDefaultLocale(pt_BR);
     let rows = document.querySelectorAll('.timeseries tr');
-    let thSeries= rows[0].querySelectorAll('.serie')
-    // let serieNames = toArray(thSeries).map(th => th.textContent);
     let cell = x => +(x.dataset.year || x.dataset.updated || x.dataset.paid);
     let row = x => toArray(x.children).map(cell)
     let data = toArray(rows).map(row);
 
     let container = d3.select(".timeseries").append("svg");
-    let parentWidth = parseInt(getComputedStyle(container.node())['width']);
+    let parentWidth = realWidth(container.node());
     var margin = {top: 40, right: 80, bottom: 40, left: 40},
     width = parentWidth - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
