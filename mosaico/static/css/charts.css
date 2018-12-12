@@ -27,9 +27,6 @@
   text-shadow: 0 0 2em #000;
 }
 
-.timeseries svg{
-  width: 100%;
-}
 path.line{
   fill: transparent;
   stroke-width: 2;
