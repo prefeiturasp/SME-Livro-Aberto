@@ -5,18 +5,18 @@ class GeologiaSerializer:
 
     def __init__(self, queryset, programa_id=None, *args, **kwargs):
         self.queryset = queryset
-        self.programa_id = programa_id
+        self._programa_id = int(programa_id) if programa_id else programa_id
 
     @property
     def data(self):
         return {
             'camadas': self.prepare_data(),
-            'programa': self.prepare_data(),
+            'programa': self.prepare_data(programa_id=self._programa_id),
             'subfuncao': self.prepare_subfuncao_data(),
         }
 
     # Charts 1 and 2 (camadas and programa)
-    def prepare_data(self):
+    def prepare_data(self, programa_id=None):
         qs = self.queryset
 
         ret = {
@@ -25,9 +25,9 @@ class GeologiaSerializer:
         }
 
         # filtering for chart 2 (by programa)
-        if self.programa_id:
-            qs = qs.filter(programa_id=self.programa_id)
-            ret['programa_id'] = self.programa_id
+        if programa_id:
+            qs = qs.filter(programa_id=programa_id)
+            ret['programa_id'] = programa_id
 
         years = qs.values('year').distinct()
 

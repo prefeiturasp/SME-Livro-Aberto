@@ -8,16 +8,26 @@ from geologia.serializers import GeologiaSerializer
 
 class TestHomeView(APITestCase):
 
-    def get(self, programa=None):
+    def get(self, programa_id=None):
         url = reverse('geologia:home')
-        if programa:
-            url += '?programa={}'.format(programa)
+        if programa_id:
+            url += '?programa_id={}'.format(programa_id)
         return self.client.get(url)
 
     def test_serializes_geologia_data(self):
-        mommy.make(Execucao, _quantity=3)
+        mommy.make(Execucao, _quantity=2)
         execucoes = Execucao.objects.all()
         serializer = GeologiaSerializer(execucoes)
 
         response = self.get()
+        assert serializer.data == response.data
+
+    def test_serializes_geologia_data_with_programa(self):
+        mommy.make(Execucao, programa_id=1, _quantity=2)
+        mommy.make(Execucao, programa_id=2, _quantity=1)
+        execucoes = Execucao.objects.all()
+
+        serializer = GeologiaSerializer(execucoes, programa_id=1)
+
+        response = self.get(programa_id=1)
         assert serializer.data == response.data
