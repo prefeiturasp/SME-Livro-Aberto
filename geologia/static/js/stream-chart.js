@@ -35,34 +35,34 @@ window.addEventListener('load', function(){
         .keys(d3.range(n))
         .offset(d3['stackOffsetExpand'])
 
-  const x = d3.scaleLinear()
-      .domain([0, m - 1])
-      .range([0, width]);
+    const x = d3.scaleLinear()
+        .domain([0, m - 1])
+        .range([0, width]);
 
-  const layers = stack(data)
+    const layers = stack(data)
 
-  const y = d3.scaleLinear()
-      .range([height, 0])
-      .domain([
-          d3.min(layers, l => d3.min(l, d => d[0])),
-          d3.max(layers, l => d3.max(l, d => d[1]))
-      ]);
+    const y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([
+            d3.min(layers, l => d3.min(l, d => d[0])),
+            d3.max(layers, l => d3.max(l, d => d[1]))
+        ]);
 
-  const z = d3.scaleOrdinal()
-        .domain(d3.range(n))
-        .range(['investment', 'people', 'debt', 'other']);
+    const z = d3.scaleOrdinal()
+          .domain(d3.range(n))
+          .range(['investment', 'people', 'debt', 'other']);
 
-  const area = d3.area()
-      .curve(d3.curveMonotoneX)
-      .x((d, i) => x(i))
-      .y0(d => y(d[0]))
-      .y1(d => y(d[1]));
+    const area = d3.area()
+        .curve(d3.curveMonotoneX)
+        .x((d, i) => x(i))
+        .y0(d => y(d[0]))
+        .y1(d => y(d[1]));
 
-  const path = svg.selectAll('path')
-    .data(layers)
-    .enter().append('path')
-      .attr('d', area)
-      .attr('class', (d, i) => z(i));
+    const path = svg.selectAll('path')
+      .data(layers)
+      .enter().append('path')
+        .attr('d', area)
+        .attr('class', (d, i) => z(i));
 
     table.style.display = 'none';
 })
