@@ -3,36 +3,44 @@ from django.db.models import Sum
 
 class GeologiaSerializer:
 
-    def __init__(self, queryset, *args, **kwargs):
+    def __init__(self, queryset, programa_id=None, *args, **kwargs):
         self.queryset = queryset
+        self._programa_id = int(programa_id) if programa_id else programa_id
 
     @property
     def data(self):
         return {
-            'camadas': self.prepare_camadas_data(),
+            'camadas': self.prepare_data(),
+            'programa': self.prepare_data(programa_id=self._programa_id),
             'subfuncao': self.prepare_subfuncao_data(),
         }
 
-    # Chart 1: Camadas
-    def prepare_camadas_data(self):
+    # Charts 1 and 2 (camadas and programa)
+    def prepare_data(self, programa_id=None):
         qs = self.queryset
-
-        years = qs.values('year').distinct()
 
         ret = {
             'orcado': [],
             'empenhado': [],
         }
+
+        # filtering for chart 2 (by programa)
+        if programa_id:
+            qs = qs.filter(programa_id=programa_id)
+            ret['programa_id'] = programa_id
+
+        years = qs.values('year').distinct()
+
         for year_dict in years:
             year = year_dict['year']
             year_qs = qs.filter(year=year)
 
-            ret['orcado'].append(self.get_camadas_orcado_data(year_qs))
-            ret['empenhado'].append(self.get_camadas_empenhado_data(year_qs))
+            ret['orcado'].append(self._get_orcado_data_by_year(year_qs))
+            ret['empenhado'].append(self._get_empenhado_data_by_year(year_qs))
 
         return ret
 
-    def get_camadas_orcado_data(self, qs):
+    def _get_orcado_data_by_year(self, qs):
         year = qs[0].year
 
         orcado_by_gnd = qs.values('gnd_gealogia__desc') \
@@ -48,7 +56,7 @@ class GeologiaSerializer:
             "gnds": orcado_gnds,
         }
 
-    def get_camadas_empenhado_data(self, qs):
+    def _get_empenhado_data_by_year(self, qs):
         year = qs[0].year
 
         empenhado_by_gnd = qs.values('gnd_gealogia__desc') \

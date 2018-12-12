@@ -92,8 +92,8 @@ class TestGeologiaSerializerCore:
 @pytest.mark.django_db
 class TestGeologiaSerializerCamadas:
 
-    @patch.object(GeologiaSerializer, 'get_camadas_empenhado_data')
-    @patch.object(GeologiaSerializer, 'get_camadas_orcado_data')
+    @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
+    @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
     def test_prepare_camadas_data(self, mock_orcado, mock_empenhado):
         mock_orcado.return_value = 'mock_o'
         mock_empenhado.return_value = 'mock_e'
@@ -109,7 +109,7 @@ class TestGeologiaSerializerCamadas:
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer(execucoes)
-        ret = serializer.prepare_camadas_data()
+        ret = serializer.prepare_data()
 
         expected = {
             'orcado': ['mock_o', 'mock_o'],
@@ -126,7 +126,7 @@ class TestGeologiaSerializerCamadas:
 
     @patch.object(GeologiaSerializer, "_get_orcado_gnds_list",
                   Mock(return_value=[]))
-    def test_get_camadas_orcado_data(self, orcado_fixture):
+    def test_get_orcado_data_by_year(self, orcado_fixture):
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
@@ -144,13 +144,13 @@ class TestGeologiaSerializerCamadas:
         }
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_camadas_orcado_data(execucoes)
+        ret = serializer._get_orcado_data_by_year(execucoes)
 
         assert expected == ret
 
     @patch.object(GeologiaSerializer, "_get_empenhado_gnds_list",
                   Mock(return_value=[]))
-    def test_get_camadas_empenhado_data(self, empenhado_fixture):
+    def test_get_empenhado_data_by_year(self, empenhado_fixture):
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
@@ -168,9 +168,53 @@ class TestGeologiaSerializerCamadas:
         }
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_camadas_empenhado_data(execucoes)
+        ret = serializer._get_empenhado_data_by_year(execucoes)
 
         assert expected == ret
+
+
+@pytest.mark.django_db
+class TestGeologiaSerializerPrograma:
+
+    @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
+    @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
+    def test_prepare_programa_data(self, mock_orcado, mock_empenhado):
+        mock_orcado.return_value = 'mock_o'
+        mock_empenhado.return_value = 'mock_e'
+
+        programa_id = 1
+
+        execs_2017_p1 = mommy.make(
+            Execucao,
+            year=date(2017, 1, 1),
+            programa_id=programa_id,
+            _quantity=2)
+        mommy.make(Execucao, year=date(2017, 1, 1), programa_id=2, _quantity=2)
+        execs_2018_p1 = mommy.make(
+            Execucao,
+            year=date(2018, 1, 1),
+            programa_id=programa_id,
+            _quantity=2)
+        mommy.make(Execucao, year=date(2018, 1, 1), programa_id=2, _quantity=2)
+
+        execucoes = Execucao.objects.all()
+
+        serializer = GeologiaSerializer(execucoes, programa_id=programa_id)
+        ret = serializer.prepare_data(programa_id=programa_id)
+
+        expected = {
+            'programa_id': programa_id,
+            'orcado': ['mock_o', 'mock_o'],
+            'empenhado': ['mock_e', 'mock_e'],
+        }
+
+        assert expected == ret
+
+        execs = [execs_2017_p1, execs_2018_p1]
+        for exec_year, call in zip(execs, mock_orcado.mock_calls):
+            assert set(exec_year) == set(call[1][0])
+        for exec_year, call in zip(execs, mock_empenhado.mock_calls):
+            assert set(exec_year) == set(call[1][0])
 
 
 @pytest.mark.django_db
