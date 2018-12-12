@@ -5,7 +5,7 @@ from budget_execution.models import Execucao
 from geologia.serializers import GeologiaSerializer
 
 
-class GeologiaView(generics.ListAPIView):
+class HomeView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     template_name = 'geologia/base.html'
     queryset = Execucao.objects.all()
