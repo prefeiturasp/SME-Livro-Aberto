@@ -60,3 +60,56 @@ header{
 .actions{
   text-align: center;
 }
+
+.bar-chart thead{
+  display: none;
+}
+
+.bar-chart tr > *{
+  padding-left: 0;
+}
+
+.bar-chart tbody tr > *{
+  border-right: solid 1px #d1d1d1;
+}
+
+.bar-chart tbody tr:last-child > *{
+  padding-bottom: 2em;
+}
+
+.bar-chart tfoot tr > *{
+  position: relative;
+  color: #d1d1d1;
+  top: -1.5em;
+}
+
+.bar-chart tfoot tr > *:after{
+  content: '';
+  border-radius: 50%;
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  position: absolute;
+  right: -0.25em;
+  top: 1.25em;
+  background-color: currentColor;
+}
+
+.bar-parent{
+  padding-right: 0;
+}
+
+.bar{
+  display: flex;
+}
+
+.bar span.label{
+  display: none;
+}
+
+.bar span.value{
+  display: block;
+  text-indent: 100%;
+  overflow: hidden;
+  background-color: currentColor;
+}

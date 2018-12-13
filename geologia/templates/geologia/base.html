@@ -107,6 +107,40 @@
         </div>
       </fieldset>
       </form>
+      <div class="bar-chart chart">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Ano</th>
+                      <th>Valores</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for year in programa.empenhado %}
+                          <tr>
+                          <th data-year="{{ year.year }}">{{ year.year }}</th>
+                          <td class="bar-parent">
+                              <div class="bar">
+                              {% for item in year.gnds%}
+                                  <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
+                                      <span class="value" data-execution="{{ item.percent|unlocalize }}"
+                                            style="width: {% widthratio item.percent 1 100 %}%">
+                                          {% widthratio item.percent 1 100 %}%
+                                      </span>
+                              {% endfor %}
+                              </div>
+                          </td>
+                          </tr>
+                  {% endfor %}
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <td>R$ 0</td>
+                      <td>R$ {{ programa.total|intcomma }}</td>
+                  </tr>
+              </tfoot>
+          </table>
+      </div>
     </div>
   </section>
   <section id="por-funcao">
