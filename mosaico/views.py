@@ -28,6 +28,20 @@ class HomeView(APIView):
         return HttpResponseRedirect(redirect_url)
 
 
+class SimplesViewMixin:
+
+    def get_root_url(self):
+        year = self.kwargs['year']
+        return reverse('mosaico:home_tecnico', args=[year])
+
+
+class TecnicoViewMixin:
+
+    def get_root_url(self):
+        year = self.kwargs['year']
+        return reverse('mosaico:home_simples', args=[year])
+
+
 # `Simples` visualization views
 
 class BaseListView(generics.ListAPIView):
@@ -44,7 +58,8 @@ class BaseListView(generics.ListAPIView):
         tseries_data = self.prepare_timeseries_data(tseries_qs)
         return Response({'breadcrumb': breadcrumb,
                          'execucoes': serializer.data,
-                         'timeseries': tseries_data})
+                         'timeseries': tseries_data,
+                         'root_url': self.get_root_url()})
 
     # TODO: move this logic to somewhere else
     def prepare_timeseries_data(self, qs):
@@ -68,7 +83,7 @@ class BaseListView(generics.ListAPIView):
         raise NotImplemented
 
 
-class GruposListView(BaseListView):
+class GruposListView(BaseListView, SimplesViewMixin):
     serializer_class = GrupoSerializer
 
     def get_queryset(self):
@@ -89,7 +104,7 @@ class GruposListView(BaseListView):
         ]
 
 
-class SubgruposListView(BaseListView):
+class SubgruposListView(BaseListView, SimplesViewMixin):
     serializer_class = SubgrupoSerializer
 
     def get_queryset(self):
@@ -115,7 +130,7 @@ class SubgruposListView(BaseListView):
         ]
 
 
-class ElementosListView(BaseListView):
+class ElementosListView(BaseListView, SimplesViewMixin):
     serializer_class = ElementoSerializer
 
     def get_queryset(self):
@@ -142,7 +157,7 @@ class ElementosListView(BaseListView):
         ]
 
 
-class SubelementosListView(BaseListView):
+class SubelementosListView(BaseListView, SimplesViewMixin):
     serializer_class = SubelementoSerializer
 
     def get_queryset(self):
@@ -176,7 +191,7 @@ class SubelementosListView(BaseListView):
 
 # `Técnico` visualization views
 
-class SubfuncoesListView(BaseListView):
+class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     serializer_class = SubfuncaoSerializer
 
     def get_queryset(self):
@@ -197,7 +212,7 @@ class SubfuncoesListView(BaseListView):
         ]
 
 
-class ProgramasListView(BaseListView):
+class ProgramasListView(BaseListView, TecnicoViewMixin):
     serializer_class = ProgramaSerializer
 
     def get_queryset(self):
@@ -224,7 +239,7 @@ class ProgramasListView(BaseListView):
         ]
 
 
-class ProjetosAtividadesListView(BaseListView):
+class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
     serializer_class = ProjetoAtividadeSerializer
 
     def get_queryset(self):
