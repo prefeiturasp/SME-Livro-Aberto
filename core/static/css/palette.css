@@ -53,6 +53,7 @@ svg.icon{
   fill: currentColor;
 }
 
+input[type=text],
 select,
 .breadcrumb a,
 button, input[type=submit], .btn,
