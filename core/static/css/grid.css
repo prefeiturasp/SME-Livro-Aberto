@@ -148,3 +148,7 @@ tr > *:first-child{
 tr > *:first-child::before{
   border-right: none;
 }
+
+.chart svg{
+  width: 100%;
+}
