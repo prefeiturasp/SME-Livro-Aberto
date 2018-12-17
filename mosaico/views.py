@@ -29,6 +29,7 @@ class HomeView(APIView):
 
 
 class SimplesViewMixin:
+    tecnico = False
 
     def get_root_url(self):
         year = self.kwargs['year']
@@ -36,6 +37,7 @@ class SimplesViewMixin:
 
 
 class TecnicoViewMixin:
+    tecnico = True
 
     def get_root_url(self):
         year = self.kwargs['year']
@@ -59,6 +61,7 @@ class BaseListView(generics.ListAPIView):
         return Response({'breadcrumb': breadcrumb,
                          'execucoes': serializer.data,
                          'timeseries': tseries_data,
+                         'tecnico': self.tecnico,
                          'root_url': self.get_root_url()})
 
     # TODO: move this logic to somewhere else
