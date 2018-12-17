@@ -163,7 +163,8 @@ class GeologiaSerializer:
             {
                 "name": gnd['gnd_gealogia__desc'],
                 "value": gnd['orcado'],
-                "percent": gnd['orcado'] / orcado_total,
+                "percent": self._calculate_percent(
+                    gnd['orcado'], orcado_total)
             }
             for gnd in orcado_by_gnd
         ]
@@ -180,6 +181,6 @@ class GeologiaSerializer:
         ]
 
     def _calculate_percent(self, value, total):
-        if value is None or total is None:
+        if value is None or not total:
             return 0
         return value / total
