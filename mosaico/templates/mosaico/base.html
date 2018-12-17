@@ -26,11 +26,17 @@
           Visualizar
         </legend>
         <div class="form-item switch">
-          <input class="radio" type="radio" name="break" checked id="simple">
+           <input class="radio" type="radio" name="mode" id="simple" value="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
           <label for="simple">Visão simplificada</label>
-          <input class="radio" type="radio" name="break" id="pro">
+          <input class="radio" type="radio" name="mode" id="pro" value="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
           <label for="pro">Visão técnica</label>
         </div>
+    <script type="text/javascript">
+        function goToValue(){ window.location = this.value; }
+        document.getElementById('simple').addEventListener('change', goToValue);
+        document.getElementById('pro').addEventListener('change', goToValue);
+    </script>
+
         <div class="form-item">
           <input class="radio" type="radio" name="universe" value="">
           <label>Educação</label>
@@ -85,7 +91,7 @@
       </fieldset>
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
-      <div class="timeseries">
+      <div class="timeseries chart">
           <table>
               <thead>
                   <tr>

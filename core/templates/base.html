@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
   <link rel="stylesheet" href="{% static 'css/form.css' %}">
   <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="{% static 'js/index.js' %}"></script>
   {%block head %}{% endblock %}
 </head>
 <body>
@@ -35,20 +36,20 @@
       <nav>
         <ul>
           <li>
-            <a href="">
+            <a href="https://www.facebook.com/EducaPrefSP">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="">
+            <a href="https://twitter.com/educaprefsp">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
               </svg>
             </a>
           </li>
-          <li>
+          <!--li>
             <a href="">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-linkedin.svg' %}#icon-linkedin"></use>
@@ -61,7 +62,7 @@
                 <use xlink:href="{% static 'img/icon-whatsapp.svg' %}#icon-whatsapp"></use>
               </svg>
             </a>
-          </li>
+          </li--!>
         </ul>
       </nav>
     </div>
@@ -71,12 +72,17 @@
       <nav>
         <ul>
           <li>
-            <a href="">
+            <a href="https://en.unesco.org/">
               <img src="{% static 'img/logo-unesco.svg' %}" alt="Unesco">
             </a>
           </li>
           <li>
-            <a href="">
+            <a href="http://dapp.fgv.br/">
+              <img src="{% static 'img/logo-fgv-dapp.svg' %}" alt="FGV DAPP" width="250">
+            </a>
+          </li>
+          <li>
+            <a href="http://portal.sme.prefeitura.sp.gov.br/">
               <img src="{% static 'img/logo-sme.svg' %}" alt="Prefeitura de São Paulo - Educação">
             </a>
           </li>

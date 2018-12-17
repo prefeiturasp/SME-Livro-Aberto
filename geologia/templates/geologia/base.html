@@ -1,9 +1,12 @@
 {% extends 'base.html'  %}{% load static %}
+{% load humanize %}
+{% load l10n %}
 
 {% block title %}Geologia{% endblock %}
 
 {%block head %}
   <link rel="stylesheet" href="{% static 'css/geologia.css' %}">
+  <script src="{% static 'js/stream-chart.js' %}"></script>
 {% endblock %}
 
 {%block header %}
@@ -29,7 +32,60 @@
         </div>
       </fieldset>
       </form>
-      <a class="btn" href="">Dados por natureza</a>
+      <div class="stream-chart chart">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Nome</th>
+                      <th>Ano</th>
+                      <th>Valor</th>
+                      <th>Executado</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for year in camadas.empenhado %}
+                      {% for item in year.gnds%}
+                          <tr>
+                          <td data-name="{{ item.name }}">{{ item.name}}</td>
+                          <th data-year="{{ year.year }}">{{ year.year }}</th>
+                          <td data-value="{{ item.value|unlocalize }}">R$ {{ item.value|intcomma }}</td>
+                          <td data-execution="{{ item.percent|unlocalize }}">{% widthratio item.percent 1 100 %}%</td>
+                          </tr>
+                      {% endfor %}
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+      <p>Natureza das despesas:</p>
+      <ul class="legend">
+          <li class="fg-investment">
+              <svg class="icon">
+                <use xlink:href="{% static 'img/investment.svg' %}#icon"></use>
+              </svg>
+              Investimentos
+          </li>
+          <li class="fg-people">
+              <svg class="icon">
+                <use xlink:href="{% static 'img/people.svg' %}#icon"></use>
+              </svg>
+              Pessoal e benefícios
+          </li>
+          <li class="fg-debt">
+              <svg class="icon">
+                <use xlink:href="{% static 'img/debt.svg' %}#icon"></use>
+              </svg>
+              Pagamento da dívida
+          </li>
+          <li class="fg-other">
+              <svg class="icon">
+                <use xlink:href="{% static 'img/other.svg' %}#icon"></use>
+              </svg>
+              Custeio e outras despesas
+          </li>
+      </ul>
+      <div class="actions">
+          <a class="btn" href="">Dados por natureza</a>
+      </div>
   </section>
   <section id="por-programa">
     <div class="wrapper">

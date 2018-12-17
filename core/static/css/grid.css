@@ -97,15 +97,16 @@ footer nav *{
 footer ul{
   display: flex;
   justify-content: space-between;
-  padding: 0 3em;
+  padding: 0;
 }
 
 footer li{
   list-style: none;
 }
 
-footer img{
+body > footer img{
   height: 12em;
+  width: 15em;
 }
 
 table{
@@ -146,4 +147,8 @@ tr > *:first-child{
 
 tr > *:first-child::before{
   border-right: none;
+}
+
+.chart svg{
+  width: 100%;
 }
