@@ -104,7 +104,7 @@ footer li{
   list-style: none;
 }
 
-footer img{
+body > footer img{
   height: 12em;
   width: 15em;
 }
