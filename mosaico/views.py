@@ -73,7 +73,8 @@ class GruposListView(BaseListView):
 
     def get_queryset(self):
         year = self.kwargs['year']
-        return Execucao.objects.filter(year=date(year, 1, 1))
+        return Execucao.objects.filter(year=date(year, 1, 1),
+                                       subgrupo_id__isnull=False)
 
     def filter_queryset(self, qs):
         qs = super().filter_queryset(qs)
