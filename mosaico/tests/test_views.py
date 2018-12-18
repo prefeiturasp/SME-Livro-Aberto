@@ -11,6 +11,7 @@ from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
+    SubelementoSerializer,
     SubgrupoSerializer,
 )
 
@@ -159,21 +160,22 @@ class TestElementosListView(APITestCase):
 
     @pytest.fixture(autouse=True)
     def initial(self):
+        subgrupo = make(Subgrupo, id=1, grupo__id=1)
         make(Execucao,
              elemento__id=1,
-             subgrupo__id=1,
+             subgrupo=subgrupo,
              fonte_grupo__id=1,
              year=date(2018, 1, 1),
              _quantity=2)
         make(Execucao,
              elemento__id=2,
-             subgrupo__id=1,
+             subgrupo=subgrupo,
              fonte_grupo__id=1,
              year=date(2018, 1, 1),
              _quantity=2)
         make(Execucao,
              elemento__id=3,
-             subgrupo__id=1,
+             subgrupo=subgrupo,
              fonte_grupo__id=2,
              year=date(2018, 1, 1),
              _quantity=2)
@@ -192,6 +194,69 @@ class TestElementosListView(APITestCase):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('elemento')
         serializer = ElementoSerializer(execucoes, many=True)
+        expected = serializer.data
+
+        response = self.get(fonte_grupo_id=1)
+        data = response.data['execucoes']
+        assert 2 == len(data)
+        assert expected == data
+
+    def test_view_works_when_queryset_is_empty(self):
+        make(FonteDeRecursoGrupo, id=3)
+        response = self.get(fonte_grupo_id=3)
+        assert [] == response.data['execucoes']
+
+
+class TestSubelementosListView(APITestCase):
+
+    def get(self, fonte_grupo_id=None):
+        url = reverse('mosaico:subelementos', args=[2018, 1, 1, 1])
+        if fonte_grupo_id:
+            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
+        return self.client.get(url)
+
+    @pytest.fixture(autouse=True)
+    def initial(self):
+        subgrupo = make(Subgrupo, id=1, grupo__id=1)
+        make(Execucao,
+             subelemento__id=1,
+             subelemento_friendly__id=1,
+             elemento__id=1,
+             subgrupo=subgrupo,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subelemento__id=2,
+             subelemento_friendly__id=2,
+             elemento__id=1,
+             subgrupo=subgrupo,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subelemento__id=3,
+             subelemento_friendly__id=3,
+             elemento__id=1,
+             subgrupo=subgrupo,
+             fonte_grupo__id=2,
+             year=date(2018, 1, 1),
+             _quantity=2)
+
+    def test_serializes_execucoes_data(self):
+        execucoes = Execucao.objects.all().distinct('subelemento')
+        serializer = SubelementoSerializer(execucoes, many=True)
+        expected = serializer.data
+
+        response = self.get()
+        data = response.data['execucoes']
+        assert 3 == len(data)
+        assert expected == data
+
+    def test_filters_by_fonte_grupo_querystring_data(self):
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
+            .distinct('subelemento')
+        serializer = SubelementoSerializer(execucoes, many=True)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
