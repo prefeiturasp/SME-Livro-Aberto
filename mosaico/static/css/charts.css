@@ -47,3 +47,8 @@ text{
   font-weight: 700;
   color: #5f6b6d;
 }
+
+.axis--y{
+  text-anchor: start;
+  opacity: 0.5;
+}

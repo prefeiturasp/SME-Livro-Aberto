@@ -40,7 +40,7 @@ window.addEventListener('load', function(){
     let svg = container.datum(data)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(0," + margin.top + ")");
 
     svg.append("g")
         .attr("class", "axis axis--x")
@@ -49,7 +49,13 @@ window.addEventListener('load', function(){
 
     svg.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).tickSize(-parentWidth + margin.left).tickValues(yTicks));
+        .call(d3.axisLeft(y)
+                .tickSize(-parentWidth)
+                .tickFormat(d3.format('$,~d'))
+                .tickValues(yTicks))
+        .selectAll('text').attr('dy', '-0.4em')
+                           .attr('x', '0');
+
 
     [serie1, serie2].forEach(function(serie, i){
         var line = d3.line()
