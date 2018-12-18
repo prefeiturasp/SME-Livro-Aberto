@@ -1,8 +1,11 @@
+import pytest
+
 from datetime import date
 
-from django.urls import reverse
 from model_mommy.mommy import make
 from rest_framework.test import APITestCase
+
+from django.urls import reverse
 
 from budget_execution.models import Execucao
 from mosaico.serializers import GrupoSerializer
@@ -38,17 +41,43 @@ class TestHomeView(APITestCase):
 
 class TestGruposListView(APITestCase):
 
-    def get(self, fonte_grupo=None):
+    def get(self, fonte_grupo_id=None):
         url = reverse('mosaico:home_simples', args=[2018])
+        if fonte_grupo_id:
+            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
         return self.client.get(url)
 
+    @pytest.fixture(autouse=True)
+    def initial(self):
+        make(Execucao,
+             subgrupo__grupo__id=1,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subgrupo__grupo__id=2,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subgrupo__grupo__id=3,
+             fonte_grupo__id=2,
+             year=date(2018, 1, 1),
+             _quantity=2)
+
     def test_serializes_execucoes_data(self):
-        make(Execucao, subgrupo__grupo__id=1, year=date(2018, 1, 1),
-             _quantity=2)
-        make(Execucao, subgrupo__grupo__id=2, year=date(2018, 1, 1),
-             _quantity=2)
         execucoes = Execucao.objects.all().distinct('subgrupo__grupo')
         serializer = GrupoSerializer(execucoes, many=True)
+        expected = serializer.data
 
         response = self.get()
-        assert serializer.data == response.data['execucoes']
+        assert expected == response.data['execucoes']
+
+    def test_filters_by_fonte_grupo_querystring_data(self):
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
+            .distinct('subgrupo__grupo')
+        serializer = GrupoSerializer(execucoes, many=True)
+        expected = serializer.data
+
+        response = self.get(fonte_grupo_id=1)
+        assert expected == response.data['execucoes']

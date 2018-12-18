@@ -1,6 +1,7 @@
 from datetime import date
 from itertools import groupby
 
+from django_filters import rest_framework as filters
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -19,6 +20,13 @@ from mosaico.serializers import (
     SubfuncaoSerializer,
     SubgrupoSerializer,
 )
+
+
+class ExecucaoFilter(filters.FilterSet):
+
+    class Meta:
+        model = Execucao
+        fields = ['fonte_grupo_id']
 
 
 class HomeView(APIView):
@@ -48,6 +56,8 @@ class TecnicoViewMixin:
 
 class BaseListView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = ExecucaoFilter
     template_name = 'mosaico/base.html'
 
     def list(self, request, *args, **kwargs):
