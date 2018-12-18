@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from budget_execution.models import Grupo, Execucao
+from budget_execution.models import Grupo, Execucao, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -166,12 +166,16 @@ class ElementosListView(BaseListView, SimplesViewMixin):
         return Execucao.objects.filter(subgrupo_id=subgrupo_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs['year']
+        subgrupo = Subgrupo.objects.get(id=self.kwargs['subgrupo_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('grupos')},
-            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
-            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])},
+            {"name": subgrupo.grupo.desc,
+             'url': reverse('mosaico:subgrupos',
+                            args=[year, subgrupo.grupo.id])},
+            {"name": subgrupo.desc, 'url': ''}
         ]
 
 
