@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from budget_execution.models import Grupo, Elemento, Execucao, Programa, \
-    Subfuncao, Subgrupo
+from budget_execution.models import Grupo, Elemento, Execucao, \
+    FonteDeRecursoGrupo, Programa, Subfuncao, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -69,11 +69,16 @@ class BaseListView(generics.ListAPIView):
 
         tseries_qs = self.get_timeseries_queryset()
         tseries_data = self.prepare_timeseries_data(tseries_qs)
-        return Response({'breadcrumb': breadcrumb,
-                         'execucoes': serializer.data,
-                         'timeseries': tseries_data,
-                         'tecnico': self.tecnico,
-                         'root_url': self.get_root_url()})
+        return Response(
+            {
+                 'breadcrumb': breadcrumb,
+                 'execucoes': serializer.data,
+                 'timeseries': tseries_data,
+                 'tecnico': self.tecnico,
+                 'root_url': self.get_root_url(),
+                 'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+            }
+        )
 
     # TODO: move this logic to somewhere else
     def prepare_timeseries_data(self, qs):
@@ -89,6 +94,12 @@ class BaseListView(generics.ListAPIView):
             }
 
         return ret
+
+    def get_fonte_grupo_filters(self):
+        return [
+            {fonte_grupo.id: fonte_grupo.desc}
+            for fonte_grupo
+            in FonteDeRecursoGrupo.objects.all().order_by('id')]
 
     def get_timeseries_queryset(self):
         raise NotImplemented

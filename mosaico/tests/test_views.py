@@ -48,10 +48,24 @@ class TestHomeView(APITestCase):
                              fetch_redirect_response=False)
 
 
-class TestGruposListView(APITestCase):
-
+class TestBaseListView(APITestCase):
     def get(self, fonte_grupo_id=None):
         url = reverse('mosaico:grupos', args=[2018])
+        return self.client.get(url)
+
+    def test_returns_fonte_grupo_filters(self):
+        fgs = [
+            make(FonteDeRecursoGrupo, id=1, desc='fg1'),
+            make(FonteDeRecursoGrupo, id=2, desc='fg2'),
+            make(FonteDeRecursoGrupo, id=3, desc='fg3'),
+        ]
+
+        expected = [{fg.id: fg.desc} for fg in fgs]
+
+        response = self.get()
+        assert expected == response.data['fonte_grupo_filters']
+
+
 class BaseTestCase(APITestCase):
 
     def url(self, fonte_grupo_id=None):
