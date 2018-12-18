@@ -64,7 +64,7 @@ class BaseListView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
 
-        breadcrumb = self.create_breadcrumb(queryset[0])
+        breadcrumb = self.create_breadcrumb()
 
         tseries_qs = self.get_timeseries_queryset()
         tseries_data = self.prepare_timeseries_data(tseries_qs)
@@ -92,7 +92,7 @@ class BaseListView(generics.ListAPIView):
     def get_timeseries_queryset(self):
         raise NotImplemented
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
         raise NotImplemented
 
 
@@ -111,10 +111,11 @@ class GruposListView(BaseListView, SimplesViewMixin):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])}
         ]
 
 
@@ -136,11 +137,14 @@ class SubgruposListView(BaseListView, SimplesViewMixin):
         return Execucao.objects.filter(subgrupo__grupo_id=grupo_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs['year']
+        grupo_id = self.kwargs['grupo_id']
+        grupo = Grupo.objects.get(id=grupo_id)
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
-            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])},
+            {"name": grupo.desc, 'url': ''}
         ]
 
 
@@ -165,7 +169,7 @@ class ElementosListView(BaseListView, SimplesViewMixin):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
+             'url': obj.get_url('grupos')},
             {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
             {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')}
         ]
@@ -196,7 +200,7 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
     def create_breadcrumb(self, obj):
         return [
             {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
+             'url': obj.get_url('grupos')},
             {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
             {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')},
             {"name": obj.elemento.desc, 'url': obj.get_url('elemento')}

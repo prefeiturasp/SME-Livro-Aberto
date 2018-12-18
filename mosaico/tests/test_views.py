@@ -81,3 +81,8 @@ class TestGruposListView(APITestCase):
 
         response = self.get(fonte_grupo_id=1)
         assert expected == response.data['execucoes']
+
+    def test_view_works_when_queryset_is_empty(self):
+        make(FonteDeRecursoGrupo, id=3)
+        response = self.get(fonte_grupo_id=3)
+        assert [] == response.data['execucoes']
