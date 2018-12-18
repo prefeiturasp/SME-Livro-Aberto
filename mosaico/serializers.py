@@ -34,6 +34,16 @@ class BaseSerializer(serializers.ModelSerializer):
         else:
             return 0
 
+    @property
+    def query_params(self):
+        params = self.context['request'].query_params
+        if params:
+            ret = "?"
+            for param, value in params.items():
+                ret += f'{param}={value}&'
+            return ret[:-1]
+        return ''
+
 
 # `Simples` visualization serializers
 
@@ -54,7 +64,7 @@ class GrupoSerializer(BaseSerializer):
         return obj.subgrupo.grupo.desc
 
     def get_url(self, obj):
-        return obj.get_url('subgrupos')
+        return obj.get_url('subgrupos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -75,7 +85,7 @@ class SubgrupoSerializer(BaseSerializer):
         return obj.subgrupo.desc
 
     def get_url(self, obj):
-        return obj.get_url("elementos")
+        return obj.get_url("elementos") + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -96,7 +106,7 @@ class ElementoSerializer(BaseSerializer):
         return obj.elemento.desc
 
     def get_url(self, obj):
-        return obj.get_url('subelementos')
+        return obj.get_url('subelementos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
