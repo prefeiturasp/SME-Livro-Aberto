@@ -312,13 +312,15 @@ class TestSubelementosListView(BaseTestCase):
         assert [] == response.data['execucoes']
 
 
-class TestSubfuncaoListView(APITestCase):
+class TestSubfuncaoListView(BaseTestCase):
 
-    def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:subfuncoes', args=[2018])
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return self.client.get(url)
+    @property
+    def serializer_class(self):
+        return SubfuncaoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:subfuncoes', args=[2018])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -340,7 +342,7 @@ class TestSubfuncaoListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('subfuncao')
-        serializer = SubfuncaoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -351,7 +353,7 @@ class TestSubfuncaoListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subfuncao')
-        serializer = SubfuncaoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
@@ -365,13 +367,15 @@ class TestSubfuncaoListView(APITestCase):
         assert [] == response.data['execucoes']
 
 
-class TestProgramasListView(APITestCase):
+class TestProgramasListView(BaseTestCase):
 
-    def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:programas', args=[2018, 1])
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return self.client.get(url)
+    @property
+    def serializer_class(self):
+        return ProgramaSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:programas', args=[2018, 1])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -396,7 +400,7 @@ class TestProgramasListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('programa')
-        serializer = ProgramaSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -407,7 +411,7 @@ class TestProgramasListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('programa')
-        serializer = ProgramaSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)

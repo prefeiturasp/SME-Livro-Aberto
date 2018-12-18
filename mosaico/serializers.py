@@ -143,7 +143,7 @@ class SubfuncaoSerializer(BaseSerializer):
         return obj.subfuncao.desc
 
     def get_url(self, obj):
-        return obj.get_url('programas')
+        return obj.get_url('programas') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -164,7 +164,7 @@ class ProgramaSerializer(BaseSerializer):
         return obj.programa.desc
 
     def get_url(self, obj):
-        return obj.get_url('projetos')
+        return obj.get_url('projetos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
