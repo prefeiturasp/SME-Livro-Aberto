@@ -44,7 +44,7 @@ class GrupoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'grupo_id', 'nome', 'orcado_total',
+        fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_grupo_id(self, obj):
@@ -68,7 +68,7 @@ class SubgrupoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
+        fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
@@ -89,7 +89,7 @@ class ElementoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'elemento_id', 'nome', 'orcado_total',
+        fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
@@ -111,7 +111,7 @@ class SubelementoSerializer(ElementoSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subelemento_id', 'nome', 'orcado_total',
+        fields = ('subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
     def get_nome(self, obj):
