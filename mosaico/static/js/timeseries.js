@@ -8,7 +8,7 @@ window.addEventListener('load', function(){
     let row = x => toArray(x.children).map(cell)
     let data = toArray(rows).map(row);
 
-    let container = d3.select(".timeseries").append("svg");
+    let container = d3.select('.timeseries').append('svg');
     let parentWidth = realWidth(container.node());
     var margin = {top: 40, right: 80, bottom: 40, left: 40},
     width = parentWidth - margin.left - margin.right,
@@ -38,17 +38,17 @@ window.addEventListener('load', function(){
     let defined = d => d[0] && d[1] && d[2];
 
     let svg = container.datum(data)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(0," + margin.top + ")");
+        .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+        .attr('transform', 'translate(0,' + margin.top + ')');
 
-    svg.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(" + margin.left + "," + height + ")")
+    svg.append('g')
+        .attr('class', 'axis axis--x')
+        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
         .call(d3.axisBottom(x).ticks(xTicks.length, 'i'));
 
-    svg.append("g")
-        .attr("class", "axis axis--y")
+    svg.append('g')
+        .attr('class', 'axis axis--y')
         .call(d3.axisLeft(y)
                 .tickSize(-parentWidth)
                 .tickFormat(d3.format('$,~d'))
@@ -65,24 +65,24 @@ window.addEventListener('load', function(){
             .y(d => y(serie(d)));
 
 
-        let g = svg.append("g")
-            .attr("class", "serie_" + i)
-            .attr("transform", "translate(" + margin.left + ",0)")
+        let g = svg.append('g')
+            .attr('class', 'serie_' + i)
+            .attr('transform', 'translate(' + margin.left + ',0)')
 
-        g.append("path")
-            .attr("class", "line")
+        g.append('path')
+            .attr('class', 'line')
             .attr('stroke', color(i))
-            .attr("d", line);
+            .attr('d', line);
 
-        g.selectAll(".dot")
+        g.selectAll('.dot')
           .data(data.filter(defined))
-          .enter().append("circle")
-            .attr("class", "dot")
+          .enter().append('circle')
+            .attr('class', 'dot')
             .attr('fill', color(i))
-            .attr("cx", line.x())
-            .attr("cy", line.y())
-            .attr("r", 3.5);
+            .attr('cx', line.x())
+            .attr('cy', line.y())
+            .attr('r', 3.5);
     });
 
-    d3.select(".timeseries table").style('display', 'none')
+    d3.select('.timeseries table').style('display', 'none')
 })
