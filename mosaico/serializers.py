@@ -54,7 +54,7 @@ class GrupoSerializer(BaseSerializer):
         return obj.subgrupo.grupo.desc
 
     def get_url(self, obj):
-        return obj.get_url('grupo')
+        return obj.get_url('subgrupos')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -75,7 +75,7 @@ class SubgrupoSerializer(BaseSerializer):
         return obj.subgrupo.desc
 
     def get_url(self, obj):
-        return obj.get_url("subgrupo")
+        return obj.get_url("elementos")
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -96,7 +96,7 @@ class ElementoSerializer(BaseSerializer):
         return obj.elemento.desc
 
     def get_url(self, obj):
-        return obj.get_url('elemento')
+        return obj.get_url('subelementos')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -133,7 +133,7 @@ class SubfuncaoSerializer(BaseSerializer):
         return obj.subfuncao.desc
 
     def get_url(self, obj):
-        return obj.get_url('subfuncao')
+        return obj.get_url('programas')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -154,7 +154,7 @@ class ProgramaSerializer(BaseSerializer):
         return obj.programa.desc
 
     def get_url(self, obj):
-        return obj.get_url('programa')
+        return obj.get_url('projetos')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
