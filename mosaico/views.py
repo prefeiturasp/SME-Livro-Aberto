@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from budget_execution.models import Grupo, Elemento, Execucao, Subgrupo
+from budget_execution.models import Grupo, Elemento, Execucao, Subfuncao, \
+    Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -239,8 +240,7 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     def create_breadcrumb(self):
         year = self.kwargs["year"]
         return [
-            {"name": f'Ano {year}',
-             'url': reverse('mosaico:subfuncoes', args=[year])}
+            {"name": f'Ano {year}', 'url': ''}
         ]
 
 
@@ -263,11 +263,13 @@ class ProgramasListView(BaseListView, TecnicoViewMixin):
             .filter(subfuncao_id=subfuncao_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
+        subfuncao = Subfuncao.objects.get(id=self.kwargs['subfuncao_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_tecnico')},
-            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:subfuncoes', args=[year])},
+            {"name": subfuncao.desc, 'url': ''},
         ]
 
 

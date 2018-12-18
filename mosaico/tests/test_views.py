@@ -11,6 +11,7 @@ from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
+    ProgramaSerializer,
     SubelementoSerializer,
     SubgrupoSerializer,
     SubfuncaoSerializer,
@@ -311,6 +312,62 @@ class TestSubfuncaoListView(APITestCase):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subfuncao')
         serializer = SubfuncaoSerializer(execucoes, many=True)
+        expected = serializer.data
+
+        response = self.get(fonte_grupo_id=1)
+        data = response.data['execucoes']
+        assert 2 == len(data)
+        assert expected == data
+
+    def test_view_works_when_queryset_is_empty(self):
+        make(FonteDeRecursoGrupo, id=3)
+        response = self.get(fonte_grupo_id=3)
+        assert [] == response.data['execucoes']
+
+
+class TestProgramasListView(APITestCase):
+
+    def get(self, fonte_grupo_id=None):
+        url = reverse('mosaico:programas', args=[2018, 1])
+        if fonte_grupo_id:
+            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
+        return self.client.get(url)
+
+    @pytest.fixture(autouse=True)
+    def initial(self):
+        make(Execucao,
+             programa__id=1,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             programa__id=2,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             programa__id=3,
+             subfuncao__id=1,
+             fonte_grupo__id=2,
+             year=date(2018, 1, 1),
+             _quantity=2)
+
+    def test_serializes_execucoes_data(self):
+        execucoes = Execucao.objects.all().distinct('programa')
+        serializer = ProgramaSerializer(execucoes, many=True)
+        expected = serializer.data
+
+        response = self.get()
+        data = response.data['execucoes']
+        assert 3 == len(data)
+        assert expected == data
+
+    def test_filters_by_fonte_grupo_querystring_data(self):
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
+            .distinct('programa')
+        serializer = ProgramaSerializer(execucoes, many=True)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
