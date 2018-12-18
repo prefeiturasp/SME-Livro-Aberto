@@ -18,12 +18,24 @@
     <div class="wrapper">
       {%block header %}{% endblock %}
       <nav>
-        <a class="methodology" href="">
-          <svg viewBox="0 0 320 320" height="32" class="icon">
-            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-          </svg>
-          Metodologia
-        </a>
+          <ul>
+              <li>
+                  <a href="">
+                      <svg viewBox="0 0 320 320" height="32" class="icon">
+                          <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+                      </svg>
+                      Saiba mais
+                  </a>
+              </li>
+              <li>
+                  <a href="">
+                      <svg viewBox="0 0 320 320" height="32" class="icon">
+                          <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+                      </svg>
+                      Metodologia
+                  </a>
+              </li>
+          </ul>
       </nav>
     </div>
   </header>
