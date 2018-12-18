@@ -5,6 +5,7 @@ from datetime import date
 from model_mommy.mommy import make
 from rest_framework.test import APITestCase
 
+from django.test import RequestFactory
 from django.urls import reverse
 
 from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
@@ -51,9 +52,39 @@ class TestGruposListView(APITestCase):
 
     def get(self, fonte_grupo_id=None):
         url = reverse('mosaico:grupos', args=[2018])
+class BaseTestCase(APITestCase):
+
+    def url(self, fonte_grupo_id=None):
+        url = self.base_url
         if fonte_grupo_id:
             url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
+        return url
+
+    def get(self, fonte_grupo_id=None):
+        url = self.url(fonte_grupo_id)
         return self.client.get(url)
+
+    def get_serializer(self, execucoes, fonte_grupo_id=None):
+        serializer = self.serializer_class
+
+        factory = RequestFactory()
+        request = factory.get(self.url(fonte_grupo_id=fonte_grupo_id))
+        request.query_params = {}
+        if fonte_grupo_id:
+            request.query_params['fonte_grupo_id'] = fonte_grupo_id
+
+        return serializer(execucoes, many=True, context={'request': request})
+
+
+class TestGruposListView(BaseTestCase):
+
+    @property
+    def serializer_class(self):
+        return GrupoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:grupos', args=[2018])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -75,7 +106,7 @@ class TestGruposListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('subgrupo__grupo')
-        serializer = GrupoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -84,11 +115,13 @@ class TestGruposListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subgrupo__grupo')
-        serializer = GrupoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
-        assert expected == response.data['execucoes']
+        data = response.data['execucoes']
+        assert 2 == len(data)
+        assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
@@ -96,13 +129,15 @@ class TestGruposListView(APITestCase):
         assert [] == response.data['execucoes']
 
 
-class TestSubgruposListView(APITestCase):
+class TestSubgruposListView(BaseTestCase):
 
-    def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:subgrupos', args=[2018, 1])
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return self.client.get(url)
+    @property
+    def serializer_class(self):
+        return SubgrupoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:subgrupos', args=[2018, 1])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -128,7 +163,7 @@ class TestSubgruposListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('subgrupo')
-        serializer = SubgrupoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -139,7 +174,7 @@ class TestSubgruposListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subgrupo')
-        serializer = SubgrupoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
@@ -153,13 +188,15 @@ class TestSubgruposListView(APITestCase):
         assert [] == response.data['execucoes']
 
 
-class TestElementosListView(APITestCase):
+class TestElementosListView(BaseTestCase):
 
-    def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:elementos', args=[2018, 1, 1])
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return self.client.get(url)
+    @property
+    def serializer_class(self):
+        return ElementoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:elementos', args=[2018, 1, 1])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -185,7 +222,7 @@ class TestElementosListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('elemento')
-        serializer = ElementoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -196,7 +233,7 @@ class TestElementosListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('elemento')
-        serializer = ElementoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
@@ -210,13 +247,15 @@ class TestElementosListView(APITestCase):
         assert [] == response.data['execucoes']
 
 
-class TestSubelementosListView(APITestCase):
+class TestSubelementosListView(BaseTestCase):
 
-    def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:subelementos', args=[2018, 1, 1, 1])
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return self.client.get(url)
+    @property
+    def serializer_class(self):
+        return SubelementoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:subelementos', args=[2018, 1, 1, 1])
 
     @pytest.fixture(autouse=True)
     def initial(self):
@@ -248,7 +287,7 @@ class TestSubelementosListView(APITestCase):
 
     def test_serializes_execucoes_data(self):
         execucoes = Execucao.objects.all().distinct('subelemento')
-        serializer = SubelementoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes)
         expected = serializer.data
 
         response = self.get()
@@ -259,7 +298,7 @@ class TestSubelementosListView(APITestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subelemento')
-        serializer = SubelementoSerializer(execucoes, many=True)
+        serializer = self.get_serializer(execucoes, fonte_grupo_id=1)
         expected = serializer.data
 
         response = self.get(fonte_grupo_id=1)
