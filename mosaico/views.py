@@ -41,7 +41,7 @@ class SimplesViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
-        return reverse('mosaico:home_tecnico', args=[year])
+        return reverse('mosaico:subfuncoes', args=[year])
 
 
 class TecnicoViewMixin:
@@ -236,10 +236,11 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_tecnico')},
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:subfuncoes', args=[year])}
         ]
 
 

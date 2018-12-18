@@ -34,12 +34,12 @@ urlpatterns = [
 
     # `Tecnico` visualization urls
     path('tecnico/<int:year>/', SubfuncoesListView.as_view(),
-         name='home_tecnico'),
+         name='subfuncoes'),
     path('tecnico/<int:year>/subfuncao/<int:subfuncao_id>/',
          ProgramasListView.as_view(),
-         name='subfuncao'),
+         name='programas'),
     path(('tecnico/<int:year>/subfuncao/<int:subfuncao_id>/'
           'programa/<int:programa_id>/'),
          ProjetosAtividadesListView.as_view(),
-         name='programa'),
+         name='projetos'),
 ]
