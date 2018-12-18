@@ -95,22 +95,22 @@ class Execucao(models.Model):
         # simples areas
         if area == 'home_simples':
             url = reverse_lazy(
-                "mosaico:home_simples",
+                "mosaico:grupos",
                 args=[self.year.strftime('%Y')])
 
         elif area == "grupo":
             url = reverse_lazy(
-                "mosaico:grupo",
+                "mosaico:subgrupos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
 
         elif area == "subgrupo":
             url = reverse_lazy(
-                "mosaico:subgrupo",
+                "mosaico:elementos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
                       self.subgrupo_id])
         elif area == "elemento":
             url = reverse_lazy(
-                "mosaico:elemento",
+                "mosaico:subelementos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
                       self.subgrupo_id, self.elemento_id])
         # tecnico areas

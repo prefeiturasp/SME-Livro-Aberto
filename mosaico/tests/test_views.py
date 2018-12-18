@@ -7,8 +7,8 @@ from rest_framework.test import APITestCase
 
 from django.urls import reverse
 
-from budget_execution.models import Execucao
-from mosaico.serializers import GrupoSerializer
+from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
+from mosaico.serializers import GrupoSerializer, SubgrupoSerializer
 
 
 class TestHomeView(APITestCase):
@@ -18,14 +18,14 @@ class TestHomeView(APITestCase):
 
     def test_redirect_to_most_recent_year(self):
         year = 1500
-        redirect_url = reverse('mosaico:home_simples', kwargs=dict(year=year))
+        redirect_url = reverse('mosaico:grupos', kwargs=dict(year=year))
         make('Execucao', year=date(year, 1, 1))
         response = self.get()
         self.assertRedirects(response, redirect_url,
                              fetch_redirect_response=False)
 
         year = 2018
-        redirect_url = reverse('mosaico:home_simples',
+        redirect_url = reverse('mosaico:grupos',
                                kwargs=dict(year=year))
         make('Execucao', year=date(year, 1, 1))
         response = self.get()
@@ -42,7 +42,7 @@ class TestHomeView(APITestCase):
 class TestGruposListView(APITestCase):
 
     def get(self, fonte_grupo_id=None):
-        url = reverse('mosaico:home_simples', args=[2018])
+        url = reverse('mosaico:grupos', args=[2018])
         if fonte_grupo_id:
             url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
         return self.client.get(url)

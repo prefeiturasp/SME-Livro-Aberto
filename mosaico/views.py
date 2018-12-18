@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from budget_execution.models import Execucao
+from budget_execution.models import Grupo, Execucao
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -32,7 +32,7 @@ class ExecucaoFilter(filters.FilterSet):
 class HomeView(APIView):
     def get(self, request, format=None):
         year = Execucao.objects.order_by('year').last().year.year
-        redirect_url = reverse('mosaico:home_simples', kwargs=dict(year=year))
+        redirect_url = reverse('mosaico:grupos', kwargs=dict(year=year))
         return HttpResponseRedirect(redirect_url)
 
 
@@ -49,7 +49,7 @@ class TecnicoViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
-        return reverse('mosaico:home_simples', args=[year])
+        return reverse('mosaico:grupos', args=[year])
 
 
 # `Simples` visualization views
