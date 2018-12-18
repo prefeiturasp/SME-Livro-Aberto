@@ -43,12 +43,48 @@ path.line{
   shape-rendering: crispEdges;
 }
 
+.axis--y{
+  text-anchor: start;
+  opacity: 0.5;
+}
+
 text{
   font-weight: 700;
   color: #5f6b6d;
 }
 
-.axis--y{
-  text-anchor: start;
-  opacity: 0.5;
+.timeseries .updated,
+.timeseries .payed{
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.timeseries .line{
+  fill: transparent;
+}
+
+.timeseries .payed{
+  color: #693d89;
+}
+
+.timeseries .updated{
+  color: #277fcd;
+}
+
+.timeseries ul.legend{
+  margin: 1em 0;
+  padding: 0;
+}
+
+.timeseries ul.legend li{
+  margin-right: 3em;
+  list-style: none;
+  font-variant: small-caps;
+  display: inline-block;
+}
+
+.timeseries ul.legend li:before{
+  content: '\25CF';
+  margin-right: .5em;
+  font-size: 1.5em;
 }

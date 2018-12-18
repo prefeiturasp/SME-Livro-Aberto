@@ -8,7 +8,7 @@ window.addEventListener('load', function(){
     let row = x => toArray(x.children).map(cell)
     let data = toArray(rows).map(row);
 
-    let container = d3.select('.timeseries').append('svg');
+    let container = d3.select('.timeseries');
     let parentWidth = realWidth(container.node());
     var margin = {top: 40, right: 80, bottom: 40, left: 40},
     width = parentWidth - margin.left - margin.right,
@@ -20,7 +20,7 @@ window.addEventListener('load', function(){
 
     var color = d3.scaleQuantize()
         .domain([0, 1])
-        .range(['#277fcd', '#693d89']);
+        .range(['updated', 'payed']);
 
     var x = d3.scaleLinear()
         .domain(d3.extent(data, year))
@@ -37,7 +37,7 @@ window.addEventListener('load', function(){
 
     let defined = d => d[0] && d[1] && d[2];
 
-    let svg = container.datum(data)
+    let svg = container.append('svg').datum(data)
         .attr('height', height + margin.top + margin.bottom)
       .append('g')
         .attr('transform', 'translate(0,' + margin.top + ')');
@@ -71,18 +71,27 @@ window.addEventListener('load', function(){
 
         g.append('path')
             .attr('class', 'line')
-            .attr('stroke', color(i))
+            .classed(color(i), true)
             .attr('d', line);
 
         g.selectAll('.dot')
           .data(data.filter(defined))
           .enter().append('circle')
             .attr('class', 'dot')
-            .attr('fill', color(i))
+            .classed(color(i), true)
             .attr('cx', line.x())
             .attr('cy', line.y())
             .attr('r', 3.5);
     });
 
-    d3.select('.timeseries table').style('display', 'none')
+    let legend = container.append('ul')
+            .attr('class', 'legend')
+
+    legend.append('li')
+            .classed(color(1), true)
+            .text('Valor pago')
+    legend.append('li')
+            .classed(color(0), true)
+            .text('Valor atualizado')
+    container.select('table').style('display', 'none')
 })
