@@ -28,6 +28,7 @@ window.addEventListener('load', function(){
 
     let qtyYTicks = Math.ceil(d3.max(data, serie1) / 1000)
     let maxY = qtyYTicks * 1000
+    let xTicks = d3.range(x.domain()[0], x.domain()[1])
     let yTicks = d3.range(0, maxY+1, maxY / 5)
 
     var y = d3.scaleLinear()
@@ -44,7 +45,7 @@ window.addEventListener('load', function(){
     svg.append("g")
         .attr("class", "axis axis--x")
         .attr("transform", "translate(" + margin.left + "," + height + ")")
-        .call(d3.axisBottom(x).ticks(15));
+        .call(d3.axisBottom(x).ticks(xTicks.length, 'i'));
 
     svg.append("g")
         .attr("class", "axis axis--y")
