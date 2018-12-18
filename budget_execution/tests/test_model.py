@@ -14,27 +14,27 @@ class TestExecucaoQuerySet:
         expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=10,
-            subelemento_id=99)
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=10,
+            subelemento__id=99)
 
         # not expected
         mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=10,
-            subelemento_id=88)
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=10,
+            subelemento__id=88)
 
         execucao = Execucao.objects.get_by_indexer(
             '2018.16.1011.3.3.09.10.10.99')
@@ -45,26 +45,26 @@ class TestExecucaoQuerySet:
         expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=10,
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=10,
             _quantity=2)
 
         # not expected
         mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=20)
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=20)
 
         # using indexer without subelemento_id
         ret = Execucao.objects.filter_by_indexer(
@@ -77,21 +77,21 @@ class TestExecucaoQuerySet:
     def test_filter_by_subelemento_fromto_code(self):
         expected = mommy.make(
             Execucao,
-            categoria_id=1,
-            gnd_id=1,
-            modalidade_id=10,
-            elemento_id=10,
-            subelemento_id=1,
+            categoria__id=1,
+            gnd__id=1,
+            modalidade__id=10,
+            elemento__id=10,
+            subelemento__id=1,
             _quantity=2)
 
         # not expected
         mommy.make(
             Execucao,
-            categoria_id=1,
-            gnd_id=1,
-            modalidade_id=10,
-            elemento_id=10,
-            subelemento_id=55)
+            categoria__id=1,
+            gnd__id=1,
+            modalidade__id=10,
+            elemento__id=10,
+            subelemento__id=55)
 
         # using indexer without subelemento_id
         ret = Execucao.objects.filter_by_subelemento_fromto_code(
