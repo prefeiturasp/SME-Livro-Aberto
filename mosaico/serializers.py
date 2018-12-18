@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from functools import lru_cache
 
 from django.db.models import Sum
@@ -38,10 +39,7 @@ class BaseSerializer(serializers.ModelSerializer):
     def query_params(self):
         params = self.context['request'].query_params
         if params:
-            ret = "?"
-            for param, value in params.items():
-                ret += f'{param}={value}&'
-            return ret[:-1]
+            return "?{}".format(urlencode(params))
         return ''
 
 
