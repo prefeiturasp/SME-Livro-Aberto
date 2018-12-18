@@ -29,7 +29,7 @@ class GeologiaSerializer:
             qs = qs.filter(programa_id=programa_id)
             ret['programa_id'] = programa_id
 
-        years = qs.values('year').distinct()
+        years = qs.order_by('year').values('year').distinct()
 
         for year_dict in years:
             year = year_dict['year']
@@ -77,7 +77,7 @@ class GeologiaSerializer:
     def prepare_subfuncao_data(self):
         qs = self.queryset
 
-        years = qs.values('year').distinct()
+        years = qs.order_by('year').values('year').distinct()
 
         ret = {
             'orcado': [],
@@ -95,7 +95,8 @@ class GeologiaSerializer:
 
     def get_subfuncao_year_orcado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.values('subfuncao_id').distinct()
+        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+            .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
@@ -111,7 +112,8 @@ class GeologiaSerializer:
 
     def get_subfuncao_year_empenhado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.values('subfuncao_id').distinct()
+        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+            .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
