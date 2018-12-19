@@ -143,7 +143,7 @@ class GNDFromTo(models.Model, FromTo):
 
 class Deflator(models.Model):
     """ Applies the inflation correction to the values """
-    year = models.DateField('Ano')
+    year = models.DateField('Ano', unique=True)
     index_number = models.DecimalField('Número índice',
                                        max_digits=4, decimal_places=3,
                                        help_text='Set de 2018 = 1')
