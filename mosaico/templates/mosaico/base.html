@@ -20,7 +20,7 @@
 {%block sections %}
   <section id="mosaico">
     <div class="wrapper">
-      <form action="" method="get" class="query">
+      <form action="#mosaico" method="get" class="query">
       <fieldset>
         <legend>
           Visualizar
@@ -43,17 +43,17 @@
           <input class="radio" type="radio" name="universe" value="">
           <label>Mínimo legal (31%)</label>
         </div>
-        <select name="source">
-            <option value="">Todas as fontes de recurso</option>
-            <option value="">FUNDEB e outrass fontes</option>
-            <option value="">Tesouro municipal</option>
-            <option value="">Transferências federais</option>
+        <select name="fonte_grupo_id">
+          {% for fonte in fontes_de_recurso %}
+              <option value="{{fonte.id}}">{{ fonte.desc }}</option>
+          {% endfor %}
         </select>
         <select name="year">
             {% for year, values in timeseries.items %}
                 <option value="{{year}}">{{year}}</option>
             {% endfor %}
         </select>
+        <input class="submit" type="submit" value="Filtrar" name="">
       </fieldset>
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}

@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 from django.db.models import Sum
 from rest_framework import serializers
 
-from budget_execution.models import Execucao
+from budget_execution.models import Execucao, FonteDeRecurso
 from from_to_handler.models import Deflator
 
 
@@ -224,3 +224,10 @@ class ProjetoAtividadeSerializer(BaseSerializer):
             subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id,
             projeto_id=obj.projeto_id)
+
+
+class FonteDeRecursoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FonteDeRecurso
+        fields = ('id', 'desc')

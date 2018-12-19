@@ -14,6 +14,7 @@ from budget_execution.models import Grupo, Elemento, Execucao, \
     FonteDeRecursoGrupo, Programa, Subfuncao, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
+    FonteDeRecursoSerializer,
     GrupoSerializer,
     ProgramaSerializer,
     ProjetoAtividadeSerializer,
@@ -80,50 +81,18 @@ class BaseListView(generics.ListAPIView):
         tseries_qs = self.get_timeseries_queryset()
         tseries_serializer = TimeseriesSerializer(tseries_qs,
                                                   deflate=self.deflate)
-        return Response(
-            {
-                'breadcrumb': breadcrumb,
-                'tecnico': self.tecnico,
-                'toggle_mode_url': self.get_toggle_mode_url(),
-                'fonte_filters': self.get_fonte_grupo_filters(),
-                'fonte_filters_urls': self.get_fonte_grupo_filters_urls(),
-                'deflate': self.deflate,
-                'toggle_deflator_url': self.get_deflator_url(),
-                'execucoes': serializer.data,
-                'timeseries': tseries_serializer.data,
-            }
-        )
+        return Response({
+            'breadcrumb': breadcrumb,
+            'execucoes': serializer.data,
+            'timeseries': tseries_serializer.data,
+            'tecnico': self.tecnico,
+            'root_url': self.get_root_url(),
+            'fontes_de_recurso': self.get_fonte_grupo_filters()
+        })
 
     def get_fonte_grupo_filters(self):
-        return {
-            fonte_grupo.id: fonte_grupo.desc
-            for fonte_grupo
-            in FonteDeRecursoGrupo.objects.all().order_by('id')}
-
-    def get_fonte_grupo_filters_urls(self):
-        base_url = self.get_root_url()
-        params = self.request.GET.copy()
-        params.pop('fonte_grupo_id', None)
-
-        ret = {}
-        for fonte_grupo in FonteDeRecursoGrupo.objects.all().order_by('id'):
-            params['fonte_grupo_id'] = fonte_grupo.id
-            fonte_url = base_url + "?{}".format(urlencode(params))
-            ret[fonte_grupo.desc] = fonte_url
-        return ret
-
-    def get_deflator_url(self):
-        url = self.get_root_url()
-        params = self.request.GET.copy()
-        if self.deflate:
-            params.pop('deflate')
-        else:
-            params['deflate'] = True
-
-        if params:
-            url += "?{}".format(urlencode(params))
-
-        return url
+        fontes = FonteDeRecursoGrupo.objects.all()
+        return FonteDeRecursoSerializer(fontes, many=True).data
 
     def get_timeseries_queryset(self):
         raise NotImplemented

@@ -78,10 +78,10 @@ class TestBaseListView(APITestCase):
             make(FonteDeRecursoGrupo, id=3, desc='fg3'),
         ]
 
-        expected = {fg.id: fg.desc for fg in fgs}
+        expected = [dict(id=fg.id, desc=fg.desc) for fg in fgs]
 
         response = self.get()
-        assert expected == response.data['fonte_filters']
+        assert expected == response.data['fontes_de_recurso']
 
     @patch('mosaico.views.TimeseriesSerializer')
     def test_calls_serializer_with_deflate_true(self, mock_serializer):
