@@ -1,5 +1,4 @@
 from datetime import date
-from itertools import groupby
 
 from django_filters import rest_framework as filters
 from rest_framework.views import APIView
@@ -20,6 +19,7 @@ from mosaico.serializers import (
     SubelementoSerializer,
     SubfuncaoSerializer,
     SubgrupoSerializer,
+    TimeseriesSerializer,
 )
 
 
@@ -68,32 +68,17 @@ class BaseListView(generics.ListAPIView):
         breadcrumb = self.create_breadcrumb()
 
         tseries_qs = self.get_timeseries_queryset()
-        tseries_data = self.prepare_timeseries_data(tseries_qs)
+        tseries_serializer = TimeseriesSerializer(tseries_qs)
         return Response(
             {
                  'breadcrumb': breadcrumb,
                  'execucoes': serializer.data,
-                 'timeseries': tseries_data,
+                 'timeseries': tseries_serializer.data,
                  'tecnico': self.tecnico,
                  'root_url': self.get_root_url(),
                  'fonte_grupo_filters': self.get_fonte_grupo_filters(),
             }
         )
-
-    # TODO: move this logic to somewhere else
-    def prepare_timeseries_data(self, qs):
-        ret = {}
-        for year, execucoes in groupby(qs, lambda e: e.year):
-            execucoes = list(execucoes)
-            orcado_total = sum(e.orcado_atualizado for e in execucoes)
-            empenhado_total = sum(e.empenhado_liquido for e in execucoes
-                                  if e.empenhado_liquido)
-            ret[year.strftime('%Y')] = {
-                "orcado": orcado_total,
-                "empenhado": empenhado_total,
-            }
-
-        return ret
 
     def get_fonte_grupo_filters(self):
         return [

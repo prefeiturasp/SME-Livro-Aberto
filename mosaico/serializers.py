@@ -1,10 +1,33 @@
-from urllib.parse import urlencode
 from functools import lru_cache
+from itertools import groupby
+from urllib.parse import urlencode
 
 from django.db.models import Sum
 from rest_framework import serializers
 
 from budget_execution.models import Execucao
+
+
+class TimeseriesSerializer:
+
+    def __init__(self, queryset, *args, **kwargs):
+        self.queryset = queryset
+
+    @property
+    def data(self):
+        qs = self.queryset
+        ret = {}
+        for year, execucoes in groupby(qs, lambda e: e.year):
+            execucoes = list(execucoes)
+            orcado_total = sum(e.orcado_atualizado for e in execucoes)
+            empenhado_total = sum(e.empenhado_liquido for e in execucoes
+                                  if e.empenhado_liquido)
+            ret[year.strftime('%Y')] = {
+                "orcado": orcado_total,
+                "empenhado": empenhado_total,
+            }
+
+        return ret
 
 
 class BaseSerializer(serializers.ModelSerializer):
