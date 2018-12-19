@@ -69,11 +69,16 @@ class BaseSerializer(serializers.ModelSerializer):
         else:
             return 0
 
+    def get_url(self, obj):
+        # TODO: We need to test this
+        area = getattr(self.Meta, 'area')
+        return obj.get_url(area) + self._query_params
+
     @property
-    def query_params(self):
-        params = self.context['request'].query_params
+    def _query_params(self):
+        params = self.context['request'].GET
         if params:
-            return "?{}".format(urlencode(params))
+            return '?{}'.format(urlencode(params))
         return ''
 
 
@@ -88,9 +93,7 @@ class GrupoSerializer(BaseSerializer):
         model = Execucao
         fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_url(self, obj):
-        return obj.get_url('subgrupos') + self.query_params
+        area = 'subgrupos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -106,9 +109,7 @@ class SubgrupoSerializer(BaseSerializer):
         model = Execucao
         fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_url(self, obj):
-        return obj.get_url("elementos") + self.query_params
+        area = 'elementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -124,9 +125,7 @@ class ElementoSerializer(BaseSerializer):
         model = Execucao
         fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_url(self, obj):
-        return obj.get_url('subelementos') + self.query_params
+        area = 'subelementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -155,9 +154,7 @@ class SubfuncaoSerializer(BaseSerializer):
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_url(self, obj):
-        return obj.get_url('programas') + self.query_params
+        area = 'programas'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -173,9 +170,7 @@ class ProgramaSerializer(BaseSerializer):
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_url(self, obj):
-        return obj.get_url('projetos') + self.query_params
+        area = 'projetos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):

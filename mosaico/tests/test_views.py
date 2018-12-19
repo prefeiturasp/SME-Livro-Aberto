@@ -96,24 +96,13 @@ class TestBaseListView(APITestCase):
 
 class BaseTestCase(APITestCase):
 
-    def url(self, fonte_grupo_id=None):
-        url = self.base_url
-        if fonte_grupo_id:
-            url += '?fonte_grupo_id={}'.format(fonte_grupo_id)
-        return url
+    def get(self, **query_params):
+        return self.client.get(self.base_url, query_params)
 
-    def get(self, fonte_grupo_id=None):
-        url = self.url(fonte_grupo_id)
-        return self.client.get(url)
-
-    def get_serializer(self, execucoes, fonte_grupo_id=None):
-        serializer = self.serializer_class
-
+    def get_serializer(self, execucoes, **query_params):
         factory = RequestFactory()
-        request = factory.get(self.url(fonte_grupo_id=fonte_grupo_id))
-        request.query_params = {}
-        if fonte_grupo_id:
-            request.query_params['fonte_grupo_id'] = fonte_grupo_id
+        request = factory.get(self.base_url, data=query_params)
+        serializer = self.serializer_class
 
         return serializer(execucoes, many=True, context={'request': request})
 
