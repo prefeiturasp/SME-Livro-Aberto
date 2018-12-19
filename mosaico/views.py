@@ -67,8 +67,9 @@ class BaseListView(generics.ListAPIView):
 
         breadcrumb = self.create_breadcrumb()
 
+        deflate = bool(self.request.GET.get('deflate', None))
         tseries_qs = self.get_timeseries_queryset()
-        tseries_serializer = TimeseriesSerializer(tseries_qs)
+        tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
         return Response(
             {
                  'breadcrumb': breadcrumb,
