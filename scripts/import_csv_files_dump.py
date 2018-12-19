@@ -14,8 +14,8 @@ from openpyxl import load_workbook
 from budget_execution.models import Execucao
 
 
-ORCAMENTO_PATH = ('./budget_execution/data/orcamento-1812.xlsx')
-EMPENHOS_PATH = ('./budget_execution/data/empenhos-1812.xlsx')
+ORCAMENTO_PATH = ('./budget_execution/data/orcamento-181217.xlsx')
+EMPENHOS_PATH = ('./budget_execution/data/empenhos-181219.xlsx')
 
 
 class OtherColumn(NamedTuple):
