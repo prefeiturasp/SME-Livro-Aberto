@@ -1,3 +1,4 @@
+from urllib.parse import urlencode
 from functools import lru_cache
 
 from django.db.models import Sum
@@ -34,6 +35,13 @@ class BaseSerializer(serializers.ModelSerializer):
         else:
             return 0
 
+    @property
+    def query_params(self):
+        params = self.context['request'].query_params
+        if params:
+            return "?{}".format(urlencode(params))
+        return ''
+
 
 # `Simples` visualization serializers
 
@@ -44,7 +52,7 @@ class GrupoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'grupo_id', 'nome', 'orcado_total',
+        fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_grupo_id(self, obj):
@@ -54,7 +62,7 @@ class GrupoSerializer(BaseSerializer):
         return obj.subgrupo.grupo.desc
 
     def get_url(self, obj):
-        return obj.get_url('grupo')
+        return obj.get_url('subgrupos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -68,14 +76,14 @@ class SubgrupoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
+        fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.subgrupo.desc
 
     def get_url(self, obj):
-        return obj.get_url("subgrupo")
+        return obj.get_url("elementos") + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -89,14 +97,14 @@ class ElementoSerializer(BaseSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'elemento_id', 'nome', 'orcado_total',
+        fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
 
     def get_nome(self, obj):
         return obj.elemento.desc
 
     def get_url(self, obj):
-        return obj.get_url('elemento')
+        return obj.get_url('subelementos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -111,7 +119,7 @@ class SubelementoSerializer(ElementoSerializer):
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subelemento_id', 'nome', 'orcado_total',
+        fields = ('subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
     def get_nome(self, obj):
@@ -133,7 +141,7 @@ class SubfuncaoSerializer(BaseSerializer):
         return obj.subfuncao.desc
 
     def get_url(self, obj):
-        return obj.get_url('subfuncao')
+        return obj.get_url('programas') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -154,7 +162,7 @@ class ProgramaSerializer(BaseSerializer):
         return obj.programa.desc
 
     def get_url(self, obj):
-        return obj.get_url('programa')
+        return obj.get_url('projetos') + self.query_params
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):

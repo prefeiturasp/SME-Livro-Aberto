@@ -93,39 +93,38 @@ class Execucao(models.Model):
 
     def get_url(self, area):
         # simples areas
-        if area == 'home_simples':
+        if area == 'grupos':
             url = reverse_lazy(
-                "mosaico:home_simples",
+                "mosaico:grupos",
                 args=[self.year.strftime('%Y')])
 
-        elif area == "grupo":
+        elif area == "subgrupos":
             url = reverse_lazy(
-                "mosaico:grupo",
+                "mosaico:subgrupos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
 
-        elif area == "subgrupo":
+        elif area == "elementos":
             url = reverse_lazy(
-                "mosaico:subgrupo",
+                "mosaico:elementos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
                       self.subgrupo_id])
-        elif area == "elemento":
+        elif area == "subelementos":
             url = reverse_lazy(
-                "mosaico:elemento",
+                "mosaico:subelementos",
                 args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
                       self.subgrupo_id, self.elemento_id])
         # tecnico areas
-        elif area == 'home_tecnico':
+        elif area == 'subfuncoes':
             url = reverse_lazy(
-                "mosaico:home_tecnico",
+                "mosaico:subfuncoes",
                 args=[self.year.strftime('%Y')])
-
-        elif area == "subfuncao":
+        elif area == "programas":
             url = reverse_lazy(
-                "mosaico:subfuncao",
+                "mosaico:programas",
                 args=[self.year.strftime('%Y'), self.subfuncao_id])
-        elif area == "programa":
+        elif area == "projetos":
             url = reverse_lazy(
-                "mosaico:programa",
+                "mosaico:projetos",
                 args=[self.year.strftime('%Y'),
                       self.subfuncao_id,
                       self.programa_id])

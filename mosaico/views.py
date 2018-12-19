@@ -1,6 +1,7 @@
 from datetime import date
 from itertools import groupby
 
+from django_filters import rest_framework as filters
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -9,7 +10,8 @@ from rest_framework.response import Response
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-from budget_execution.models import Execucao
+from budget_execution.models import Grupo, Elemento, Execucao, \
+    FonteDeRecursoGrupo, Programa, Subfuncao, Subgrupo
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -21,10 +23,17 @@ from mosaico.serializers import (
 )
 
 
+class ExecucaoFilter(filters.FilterSet):
+
+    class Meta:
+        model = Execucao
+        fields = ['fonte_grupo_id']
+
+
 class HomeView(APIView):
     def get(self, request, format=None):
         year = Execucao.objects.order_by('year').last().year.year
-        redirect_url = reverse('mosaico:home_simples', kwargs=dict(year=year))
+        redirect_url = reverse('mosaico:grupos', kwargs=dict(year=year))
         return HttpResponseRedirect(redirect_url)
 
 
@@ -33,7 +42,7 @@ class SimplesViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
-        return reverse('mosaico:home_tecnico', args=[year])
+        return reverse('mosaico:subfuncoes', args=[year])
 
 
 class TecnicoViewMixin:
@@ -41,28 +50,35 @@ class TecnicoViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
-        return reverse('mosaico:home_simples', args=[year])
+        return reverse('mosaico:grupos', args=[year])
 
 
 # `Simples` visualization views
 
 class BaseListView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = ExecucaoFilter
     template_name = 'mosaico/base.html'
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
 
-        breadcrumb = self.create_breadcrumb(queryset[0])
+        breadcrumb = self.create_breadcrumb()
 
         tseries_qs = self.get_timeseries_queryset()
         tseries_data = self.prepare_timeseries_data(tseries_qs)
-        return Response({'breadcrumb': breadcrumb,
-                         'execucoes': serializer.data,
-                         'timeseries': tseries_data,
-                         'tecnico': self.tecnico,
-                         'root_url': self.get_root_url()})
+        return Response(
+            {
+                 'breadcrumb': breadcrumb,
+                 'execucoes': serializer.data,
+                 'timeseries': tseries_data,
+                 'tecnico': self.tecnico,
+                 'root_url': self.get_root_url(),
+                 'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+            }
+        )
 
     # TODO: move this logic to somewhere else
     def prepare_timeseries_data(self, qs):
@@ -79,10 +95,16 @@ class BaseListView(generics.ListAPIView):
 
         return ret
 
+    def get_fonte_grupo_filters(self):
+        return [
+            {fonte_grupo.id: fonte_grupo.desc}
+            for fonte_grupo
+            in FonteDeRecursoGrupo.objects.all().order_by('id')]
+
     def get_timeseries_queryset(self):
         raise NotImplemented
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
         raise NotImplemented
 
 
@@ -101,10 +123,11 @@ class GruposListView(BaseListView, SimplesViewMixin):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])}
         ]
 
 
@@ -126,11 +149,14 @@ class SubgruposListView(BaseListView, SimplesViewMixin):
         return Execucao.objects.filter(subgrupo__grupo_id=grupo_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs['year']
+        grupo_id = self.kwargs['grupo_id']
+        grupo = Grupo.objects.get(id=grupo_id)
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
-            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])},
+            {"name": grupo.desc, 'url': ''}
         ]
 
 
@@ -152,12 +178,16 @@ class ElementosListView(BaseListView, SimplesViewMixin):
         return Execucao.objects.filter(subgrupo_id=subgrupo_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs['year']
+        subgrupo = Subgrupo.objects.get(id=self.kwargs['subgrupo_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
-            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
-            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])},
+            {"name": subgrupo.grupo.desc,
+             'url': reverse('mosaico:subgrupos',
+                            args=[year, subgrupo.grupo.id])},
+            {"name": subgrupo.desc, 'url': ''}
         ]
 
 
@@ -183,13 +213,22 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
             .filter(subgrupo_id=subgrupo_id, elemento_id=elemento_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs['year']
+        subgrupo = Subgrupo.objects.get(id=self.kwargs['subgrupo_id'])
+        elemento = Elemento.objects.get(id=self.kwargs['elemento_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_simples')},
-            {"name": obj.subgrupo.grupo.desc, 'url': obj.get_url('grupo')},
-            {"name": obj.subgrupo.desc, 'url': obj.get_url('subgrupo')},
-            {"name": obj.elemento.desc, 'url': obj.get_url('elemento')}
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:grupos', args=[year])},
+            {"name": subgrupo.grupo.desc,
+             'url': reverse('mosaico:subgrupos',
+                            args=[year, subgrupo.grupo.id])},
+            {"name": subgrupo.desc,
+             'url': reverse(
+                 'mosaico:elementos',
+                 args=[year, subgrupo.grupo.id, subgrupo.id]
+             )},
+            {"name": elemento.desc, 'url': ''}
         ]
 
 
@@ -209,10 +248,10 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     def get_timeseries_queryset(self):
         return Execucao.objects.all().order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_tecnico')},
+            {"name": f'Ano {year}', 'url': ''}
         ]
 
 
@@ -235,11 +274,13 @@ class ProgramasListView(BaseListView, TecnicoViewMixin):
             .filter(subfuncao_id=subfuncao_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
+        subfuncao = Subfuncao.objects.get(id=self.kwargs['subfuncao_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_tecnico')},
-            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:subfuncoes', args=[year])},
+            {"name": subfuncao.desc, 'url': ''},
         ]
 
 
@@ -265,10 +306,15 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
             .filter(subfuncao_id=subfuncao_id, programa_id=programa_id) \
             .order_by('year')
 
-    def create_breadcrumb(self, obj):
+    def create_breadcrumb(self):
+        year = self.kwargs["year"]
+        subfuncao = Subfuncao.objects.get(id=self.kwargs['subfuncao_id'])
+        programa = Programa.objects.get(id=self.kwargs['programa_id'])
         return [
-            {"name": f'Ano {self.kwargs["year"]}',
-             'url': obj.get_url('home_tecnico')},
-            {"name": obj.subfuncao.desc, 'url': obj.get_url('subfuncao')},
-            {"name": obj.programa.desc, 'url': obj.get_url('programa')},
+            {"name": f'Ano {year}',
+             'url': reverse('mosaico:subfuncoes', args=[year])},
+            {"name": subfuncao.desc,
+             'url': reverse('mosaico:programas',
+                            args=[year, subfuncao.id])},
+            {"name": programa.desc, 'url': ''},
         ]

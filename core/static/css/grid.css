@@ -27,6 +27,12 @@ header nav{
   margin-top: 7rem;
 }
 
+header nav li{
+  display: inline-block;
+  list-style: none;
+  margin-right: 2em;
+}
+
 h2{
   margin: 1em 0;
 }

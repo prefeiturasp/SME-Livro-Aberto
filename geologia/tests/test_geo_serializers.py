@@ -187,15 +187,17 @@ class TestGeologiaSerializerPrograma:
         execs_2017_p1 = mommy.make(
             Execucao,
             year=date(2017, 1, 1),
-            programa_id=programa_id,
+            programa__id=programa_id,
             _quantity=2)
-        mommy.make(Execucao, year=date(2017, 1, 1), programa_id=2, _quantity=2)
+        mommy.make(Execucao, year=date(2017, 1, 1), programa__id=2,
+                   _quantity=2)
         execs_2018_p1 = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            programa_id=programa_id,
+            programa__id=programa_id,
             _quantity=2)
-        mommy.make(Execucao, year=date(2018, 1, 1), programa_id=2, _quantity=2)
+        mommy.make(Execucao, year=date(2018, 1, 1), programa__id=2,
+                   _quantity=2)
 
         execucoes = Execucao.objects.all()
 
@@ -260,12 +262,12 @@ class TestGeologiaSerializerSubfuncao:
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subfuncao_id=1,
+            subfuncao__id=1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subfuncao_id=2,
+            subfuncao__id=2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 
@@ -291,12 +293,12 @@ class TestGeologiaSerializerSubfuncao:
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subfuncao_id=1,
+            subfuncao__id=1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subfuncao_id=2,
+            subfuncao__id=2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 

@@ -23,8 +23,8 @@ class TestHomeView(APITestCase):
         assert serializer.data == response.data
 
     def test_serializes_geologia_data_with_programa(self):
-        mommy.make(Execucao, programa_id=1, _quantity=2)
-        mommy.make(Execucao, programa_id=2, _quantity=1)
+        mommy.make(Execucao, programa__id=1, _quantity=2)
+        mommy.make(Execucao, programa__id=2, _quantity=1)
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer(execucoes, programa_id=1)
