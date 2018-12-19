@@ -81,19 +81,13 @@ class BaseSerializer(serializers.ModelSerializer):
 
 class GrupoSerializer(BaseSerializer):
 
-    grupo_id = serializers.SerializerMethodField()
-    nome = serializers.SerializerMethodField()
+    grupo_id = serializers.IntegerField(source='subgrupo.grupo_id', read_only=True)
+    nome = serializers.CharField(source='subgrupo.grupo.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_grupo_id(self, obj):
-        return obj.subgrupo.grupo_id
-
-    def get_nome(self, obj):
-        return obj.subgrupo.grupo.desc
 
     def get_url(self, obj):
         return obj.get_url('subgrupos') + self.query_params
@@ -106,15 +100,12 @@ class GrupoSerializer(BaseSerializer):
 
 class SubgrupoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subgrupo.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.subgrupo.desc
 
     def get_url(self, obj):
         return obj.get_url("elementos") + self.query_params
@@ -127,15 +118,12 @@ class SubgrupoSerializer(BaseSerializer):
 
 class ElementoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='elemento.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.elemento.desc
 
     def get_url(self, obj):
         return obj.get_url('subelementos') + self.query_params
@@ -149,30 +137,24 @@ class ElementoSerializer(BaseSerializer):
 
 class SubelementoSerializer(ElementoSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subelemento_friendly.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
-    def get_nome(self, obj):
-        return obj.subelemento_friendly.desc
-
 
 # `Técnico` visualization serializers
 
 class SubfuncaoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subfuncao.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.subfuncao.desc
 
     def get_url(self, obj):
         return obj.get_url('programas') + self.query_params
@@ -185,15 +167,12 @@ class SubfuncaoSerializer(BaseSerializer):
 
 class ProgramaSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='programa.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.programa.desc
 
     def get_url(self, obj):
         return obj.get_url('projetos') + self.query_params
@@ -207,15 +186,12 @@ class ProgramaSerializer(BaseSerializer):
 
 class ProjetoAtividadeSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='projeto.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'projeto_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
-
-    def get_nome(self, obj):
-        return obj.projeto.desc
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
