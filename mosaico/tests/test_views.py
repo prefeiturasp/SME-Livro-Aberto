@@ -10,6 +10,21 @@ from django.test import RequestFactory
 from django.urls import reverse
 
 from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
+from mosaico.views import (
+    SimplesViewMixin,
+    TecnicoViewMixin,
+    BaseListView,
+
+    GruposListView,
+    SubgruposListView,
+    ElementosListView,
+    SubelementosListView,
+
+    SubfuncoesListView,
+    ProgramasListView,
+    ProjetosAtividadesListView,
+)
+
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -155,6 +170,10 @@ class TestGruposListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(GruposListView, BaseListView)
+        assert issubclass(GruposListView, SimplesViewMixin)
+
 
 class TestSubgruposListView(BaseTestCase):
 
@@ -214,6 +233,10 @@ class TestSubgruposListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubgruposListView, BaseListView)
+        assert issubclass(SubgruposListView, SimplesViewMixin)
+
 
 class TestElementosListView(BaseTestCase):
 
@@ -272,6 +295,10 @@ class TestElementosListView(BaseTestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ElementosListView, BaseListView)
+        assert issubclass(ElementosListView, SimplesViewMixin)
 
 
 class TestSubelementosListView(BaseTestCase):
@@ -338,6 +365,10 @@ class TestSubelementosListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubelementosListView, BaseListView)
+        assert issubclass(SubelementosListView, SimplesViewMixin)
+
 
 class TestSubfuncaoListView(BaseTestCase):
 
@@ -392,6 +423,10 @@ class TestSubfuncaoListView(BaseTestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubfuncoesListView, BaseListView)
+        assert issubclass(SubfuncoesListView, TecnicoViewMixin)
 
 
 class TestProgramasListView(BaseTestCase):
@@ -451,6 +486,10 @@ class TestProgramasListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ProgramasListView, BaseListView)
+        assert issubclass(ProgramasListView, TecnicoViewMixin)
+
 
 class TestProjetosAtividadesListView(APITestCase):
 
@@ -509,3 +548,7 @@ class TestProjetosAtividadesListView(APITestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ProjetosAtividadesListView, BaseListView)
+        assert issubclass(ProjetosAtividadesListView, TecnicoViewMixin)
