@@ -77,7 +77,7 @@ select{
 }
 
 select{
-  padding: 0.2em 2em 0.2em 1em;
+  padding: 0.2em 2em 0.2em 0em;
   border: none;
   cursor: pointer;
   background-image: url('../img/dropdown.svg');
