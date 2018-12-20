@@ -20,19 +20,29 @@
 {%block sections %}
   <section id="mosaico">
     <div class="wrapper">
-      <form action="#mosaico" method="get" class="query">
+      <form action="#mosaico" name="filter" method="get" class="query">
       <fieldset>
         <legend>
           Visualizar
         </legend>
         <div class="form-item switch">
-           <input class="radio" type="radio" name="mode" id="simple" value="{{toggle_mode_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
+          <input class="radio" type="radio" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
           <label for="simple">Visão simplificada</label>
-          <input class="radio" type="radio" name="mode" id="pro" value="{{toggle_mode_url}}#mosaico" {% if tecnico %}checked{% endif %} >
+          <input class="radio" type="radio" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
           <label for="pro">Visão técnica</label>
         </div>
     <script type="text/javascript">
-        function goToValue(){ window.location = this.value; }
+        window.addEventListener("DOMContentLoaded", function(){
+            var form = document.forms.filter;
+            function submit(){ form.submit(); }
+
+            form.fonte_grupo_id.addEventListener('change', submit);
+            form.year.addEventListener('change', submit);
+
+            form.go.remove();
+        });
+
+        function goToValue(){ console.log(this); window.location = this.dataset.href; }
         document.getElementById('simple').addEventListener('change', goToValue);
         document.getElementById('pro').addEventListener('change', goToValue);
     </script>
@@ -58,7 +68,7 @@
             </select>
         </div>
       </fieldset>
-      <input class="submit" type="submit" value="Filtrar" name="">
+      <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
       </nav>
