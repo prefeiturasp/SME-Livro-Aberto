@@ -85,6 +85,8 @@ class BaseListView(generics.ListAPIView):
                 'breadcrumb': breadcrumb,
                 'tecnico': self.tecnico,
                 'toggle_mode_url': self.get_toggle_mode_url(),
+                'fonte_filters': self.get_fonte_grupo_filters(),
+                'fonte_filters_urls': self.get_fonte_grupo_filters_urls(),
                 'deflate': self.deflate,
                 'toggle_deflator_url': self.get_deflator_url(),
                 'execucoes': serializer.data,
@@ -98,6 +100,19 @@ class BaseListView(generics.ListAPIView):
             for fonte_grupo
             in FonteDeRecursoGrupo.objects.all().order_by('id')]
 
+    def get_fonte_grupo_filters_urls(self):
+        base_url = self.get_root_url()
+        params = self.request.GET.copy()
+        params.pop('fonte_grupo_id', None)
+
+        ret = []
+
+        for fonte_grupo in FonteDeRecursoGrupo.objects.all().order_by('id'):
+            params['fonte_grupo_id'] = fonte_grupo.id
+            fonte_url = base_url + "?{}".format(urlencode(params))
+            ret.append({fonte_grupo.desc: fonte_url})
+        return ret
+
     def get_deflator_url(self):
         url = self.get_root_url()
         params = self.request.GET.copy()
@@ -105,6 +120,9 @@ class BaseListView(generics.ListAPIView):
             params.pop('deflate')
         else:
             params['deflate'] = True
+
+        if params:
+            url += "?{}".format(urlencode(params))
 
         return url
 
