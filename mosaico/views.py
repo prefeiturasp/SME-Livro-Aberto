@@ -55,15 +55,15 @@ class BaseListView(generics.ListAPIView):
     filterset_class = ExecucaoFilter
     template_name = 'mosaico/base.html'
 
-    def get(self, request, *args, **kwargs):
-        year = int(self.request.query_params.get('year', 0))
-        if not year:
-            year = Execucao.objects.order_by('year').last().year.year
-            redirect_url = reverse('mosaico:grupos') + querystring(dict(year=year))
-            return HttpResponseRedirect(redirect_url)
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        year = self.request.query_params.get('year')
+        if year:
+            self.year = int(year)
+            return queryset
         else:
-            self.year = year
-            return super().get(request, *args, **kwargs)
+            self.year = Execucao.objects.order_by('year').last().year.year
+            return queryset.filter(year__year=self.year)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
