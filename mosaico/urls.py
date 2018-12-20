@@ -44,6 +44,6 @@ urlpatterns = [
          ProjetosAtividadesListView.as_view(),
          name='projetos'),
 
-    path('download/', DownloadView.as_view(),
+    path('download/<str:view_name>/', DownloadView.as_view(),
          name='download'),
 ]

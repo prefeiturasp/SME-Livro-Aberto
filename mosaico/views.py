@@ -130,7 +130,7 @@ class BaseListView(generics.ListAPIView):
         return url
 
     def get_download_csv_url(self, filtered=False):
-        csv_url = reverse('mosaico:download')
+        csv_url = reverse('mosaico:download', args=[self.name])
         url_params = self.kwargs.copy()
 
         if filtered:
@@ -155,6 +155,7 @@ class BaseListView(generics.ListAPIView):
 
 
 class GruposListView(BaseListView, SimplesViewMixin):
+    name = 'grupos'
     serializer_class = GrupoSerializer
 
     def get_queryset(self):
@@ -178,6 +179,7 @@ class GruposListView(BaseListView, SimplesViewMixin):
 
 
 class SubgruposListView(BaseListView, SimplesViewMixin):
+    name = 'subgrupos'
     serializer_class = SubgrupoSerializer
 
     def get_queryset(self):
@@ -207,6 +209,7 @@ class SubgruposListView(BaseListView, SimplesViewMixin):
 
 
 class ElementosListView(BaseListView, SimplesViewMixin):
+    name = 'elementos'
     serializer_class = ElementoSerializer
 
     def get_queryset(self):
@@ -238,6 +241,7 @@ class ElementosListView(BaseListView, SimplesViewMixin):
 
 
 class SubelementosListView(BaseListView, SimplesViewMixin):
+    name = 'subelementos'
     serializer_class = SubelementoSerializer
 
     def get_queryset(self):
@@ -281,6 +285,7 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
 # `Técnico` visualization views
 
 class SubfuncoesListView(BaseListView, TecnicoViewMixin):
+    name = 'subfuncoes'
     serializer_class = SubfuncaoSerializer
 
     def get_queryset(self):
@@ -302,6 +307,7 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
 
 
 class ProgramasListView(BaseListView, TecnicoViewMixin):
+    name = 'programas'
     serializer_class = ProgramaSerializer
 
     def get_queryset(self):
@@ -331,6 +337,7 @@ class ProgramasListView(BaseListView, TecnicoViewMixin):
 
 
 class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
+    name = 'projetos'
     serializer_class = ProjetoAtividadeSerializer
 
     def get_queryset(self):
@@ -366,20 +373,72 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         ]
 
 
+class DownloadFilter(filters.FilterSet):
+
+    class Meta:
+        model = Execucao
+        fields = ['subgrupo_id']
+
+
 class DownloadView(generics.ListAPIView):
     renderer_classes = [CSVRenderer]
-    serializer_class = GrupoSerializer
-    queryset = Execucao.objects.filter(subgrupo_id__isnull=False) \
-        .order_by('subgrupo__grupo_id', 'year')
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = DownloadFilter
 
     def list(self, request, *args, **kwargs):
+        self.view_name = self.kwargs['view_name']
+        self.distinct_field = self._get_distinct_field_name()
+
         queryset = self.filter_queryset(self.get_queryset())
 
         serializer = self.get_serializer(queryset, many=True)
-        headers = {'Content-Disposition': 'attachment; filename="mosaico.csv"'}
+        filename = f'mosaico_{self.kwargs["view_name"]}.csv'
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}'
+        }
         response = Response(serializer.data, headers=headers)
         return response
 
+    def get_serializer_class(self):
+        view_name = self.view_name
+        if view_name == 'grupos':
+            return GrupoSerializer
+        elif view_name == 'subgrupos':
+            return SubgrupoSerializer
+        elif view_name == 'elementos':
+            return ElementoSerializer
+        elif view_name == 'subelementos':
+            return SubelementoSerializer
+        elif view_name == 'subfuncoes':
+            return SubfuncaoSerializer
+        elif view_name == 'programas':
+            return ProgramaSerializer
+        elif view_name == 'projetos':
+            return ProjetoAtividadeSerializer
+
+    def get_queryset(self):
+        return Execucao.objects.filter(subgrupo_id__isnull=False) \
+            .order_by(self.distinct_field, 'year')
+
     def filter_queryset(self, qs):
         qs = super().filter_queryset(qs)
-        return qs.distinct('subgrupo__grupo_id')
+        if self.view_name == 'subelementos':
+            qs = qs.filter(subelemento__isnull=False)
+        return qs.distinct(self.distinct_field)
+
+    def _get_distinct_field_name(self):
+        view_name = self.view_name
+        if view_name == 'grupos':
+            return 'subgrupo__grupo_id'
+        elif view_name == 'subgrupos':
+            return 'subgrupo'
+        elif view_name == 'elementos':
+            return 'elemento'
+        elif view_name == 'subelementos':
+            return 'subelemento'
+        elif view_name == 'subfuncoes':
+            return 'subfuncao'
+        elif view_name == 'programas':
+            return 'programa'
+        elif view_name == 'projetos':
+            return 'projeto'
