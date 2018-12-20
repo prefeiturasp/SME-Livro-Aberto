@@ -100,10 +100,8 @@ class BaseListView(generics.ListAPIView):
 
 
 def querystring(params):
-    from urllib.parse import urlencode
-    if params:
-        return '?{}'.format(urlencode(params))
-    return ''
+    prefix = '?' if params else ''
+    return prefix + params.urlencode()
 
 
 class GruposListView(BaseListView, SimplesViewMixin):
