@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework_csv.renderers import CSVRenderer
 
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -365,7 +366,20 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         ]
 
 
-class DownloadView(APIView):
+class DownloadView(generics.ListAPIView):
+    renderer_classes = [CSVRenderer]
+    serializer_class = GrupoSerializer
+    queryset = Execucao.objects.filter(subgrupo_id__isnull=False) \
+        .order_by('subgrupo__grupo_id', 'year')
 
-    def get(self, request):
-        pass
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        serializer = self.get_serializer(queryset, many=True)
+        headers = {'Content-Disposition': 'attachment; filename="mosaico.csv"'}
+        response = Response(serializer.data, headers=headers)
+        return response
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        return qs.distinct('subgrupo__grupo_id')
