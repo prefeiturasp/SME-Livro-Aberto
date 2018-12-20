@@ -90,8 +90,8 @@ class BaseListView(generics.ListAPIView):
                 'fonte_filters_urls': self.get_fonte_grupo_filters_urls(),
                 'deflate': self.deflate,
                 'toggle_deflator_url': self.get_deflator_url(),
-                'download_full_url': self.get_download_csv_url(),
-                'download_filtered_url': self.get_download_csv_url(
+                'download_full_csv_url': self.get_download_csv_url(),
+                'download_filtered_csv_url': self.get_download_csv_url(
                     filtered=True),
                 'execucoes': serializer.data,
                 'timeseries': tseries_serializer.data,
@@ -138,6 +138,7 @@ class BaseListView(generics.ListAPIView):
             query_params.pop('deflate', None)
             query_params.pop('format', None)
             params = {**url_params, **query_params}
+            params['filter'] = True
         else:
             url_params.pop('year')
             params = {**url_params}
@@ -388,7 +389,7 @@ class DownloadFilter(filters.FilterSet):
     class Meta:
         model = Execucao
         fields = ['year', 'grupo_id', 'subgrupo_id', 'elemento_id',
-                  'subfuncao_id', 'programa_id']
+                  'subfuncao_id', 'programa_id', 'fonte_grupo_id']
 
 
 class DownloadView(generics.ListAPIView):
@@ -403,9 +404,13 @@ class DownloadView(generics.ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
 
         serializer = self.get_serializer(queryset, many=True)
-        filename = f'mosaico_{self.kwargs["view_name"]}.csv'
+
+        filename = f'mosaico_{self.kwargs["view_name"]}'
+        if self.request.GET.get('filter'):
+            filename += "_filtrado"
+
         headers = {
-            'Content-Disposition': f'attachment; filename={filename}'
+            'Content-Disposition': f'attachment; filename={filename}.csv'
         }
         response = Response(serializer.data, headers=headers)
         return response
