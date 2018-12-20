@@ -1,4 +1,5 @@
 from datetime import date
+from urllib.parse import urlencode
 
 from django_filters import rest_framework as filters
 from rest_framework.views import APIView
@@ -67,17 +68,20 @@ class BaseListView(generics.ListAPIView):
 
         breadcrumb = self.create_breadcrumb()
 
-        deflate = bool(self.request.GET.get('deflate', None))
+        self.deflate = bool(self.request.GET.get('deflate', None))
         tseries_qs = self.get_timeseries_queryset()
-        tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
+        tseries_serializer = TimeseriesSerializer(tseries_qs,
+                                                  deflate=self.deflate)
         return Response(
             {
-                 'breadcrumb': breadcrumb,
-                 'execucoes': serializer.data,
-                 'timeseries': tseries_serializer.data,
-                 'tecnico': self.tecnico,
-                 'root_url': self.get_root_url(),
-                 'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+                'breadcrumb': breadcrumb,
+                'tecnico': self.tecnico,
+                'root_url': self.get_root_url(),
+                'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+                'deflate': self.deflate,
+                'toggle_deflator_url': self.get_deflator_url(),
+                'execucoes': serializer.data,
+                'timeseries': tseries_serializer.data,
             }
         )
 
@@ -86,6 +90,17 @@ class BaseListView(generics.ListAPIView):
             {fonte_grupo.id: fonte_grupo.desc}
             for fonte_grupo
             in FonteDeRecursoGrupo.objects.all().order_by('id')]
+
+    def get_deflator_url(self):
+        url = self.get_root_url()
+        params = self.request.GET.copy()
+        if self.deflate:
+            params.pop('deflate')
+        else:
+            params['deflate'] = True
+        url += urlencode(params)
+
+        return url
 
     def get_timeseries_queryset(self):
         raise NotImplemented
