@@ -95,10 +95,10 @@ class BaseListView(generics.ListAPIView):
         )
 
     def get_fonte_grupo_filters(self):
-        return [
-            {fonte_grupo.id: fonte_grupo.desc}
+        return {
+            fonte_grupo.id: fonte_grupo.desc
             for fonte_grupo
-            in FonteDeRecursoGrupo.objects.all().order_by('id')]
+            in FonteDeRecursoGrupo.objects.all().order_by('id')}
 
     def get_fonte_grupo_filters_urls(self):
         base_url = self.get_root_url()
