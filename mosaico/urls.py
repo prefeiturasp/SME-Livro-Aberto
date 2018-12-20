@@ -1,7 +1,6 @@
 from django.urls import path
 
 from mosaico.views import (
-    HomeView,
     ElementosListView,
     GruposListView,
     ProgramasListView,
@@ -14,9 +13,6 @@ from mosaico.views import (
 
 app_name = 'mosaico'
 urlpatterns = [
-    path('', HomeView.as_view(),
-         name='home'),
-
     # `Simples` visualization urls
     path('<int:year>/', GruposListView.as_view(),
          name='grupos'),

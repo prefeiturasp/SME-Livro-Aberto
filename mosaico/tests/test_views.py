@@ -36,22 +36,43 @@ from mosaico.serializers import (
 )
 
 
-class TestHomeView(APITestCase):
-    def get(self):
-        url = reverse('mosaico:home')
-        return self.client.get(url)
+class TestBaseListView(APITestCase):
+    def get(self, **kwargs):
+        url = reverse('mosaico:grupos')
+        return self.client.get(url, kwargs)
+
+    def test_filter_by_year(self):
+        subgrupo = make('Subgrupo', grupo=make('Grupo'))
+        make('Execucao', year=date(1500, 1, 1), subgrupo=subgrupo)
+        make('Execucao', year=date(2018, 1, 1), subgrupo=subgrupo)
+        response = self.get(year=1500)
+        assert 1 == len(response.data['execucoes'])
+        assert 1500 == response.data['year']
+
+    def test_returns_fonte_grupo_filters(self):
+        subgrupo = make('Subgrupo', grupo=make('Grupo'))
+        make('Execucao', year=date(1500, 1, 1), subgrupo=subgrupo)
+        fgs = [
+            make(FonteDeRecursoGrupo, id=1, desc='fg1'),
+            make(FonteDeRecursoGrupo, id=2, desc='fg2'),
+            make(FonteDeRecursoGrupo, id=3, desc='fg3'),
+        ]
+
+        expected = [dict(id=fg.id, desc=fg.desc) for fg in fgs]
+
+        response = self.get(year=1500)
+        assert expected == response.data['fontes_de_recurso']
 
     def test_redirect_to_most_recent_year(self):
         year = 1500
-        redirect_url = reverse('mosaico:grupos', kwargs=dict(year=year))
+        redirect_url = reverse('mosaico:grupos') + f'?year={year}'
         make('Execucao', year=date(year, 1, 1))
         response = self.get()
         self.assertRedirects(response, redirect_url,
                              fetch_redirect_response=False)
 
         year = 2018
-        redirect_url = reverse('mosaico:grupos',
-                               kwargs=dict(year=year))
+        redirect_url = reverse('mosaico:grupos') + f'?year={year}'
         make('Execucao', year=date(year, 1, 1))
         response = self.get()
         self.assertRedirects(response, redirect_url,
@@ -62,26 +83,6 @@ class TestHomeView(APITestCase):
         response = self.get()
         self.assertRedirects(response, redirect_url,
                              fetch_redirect_response=False)
-
-
-class TestBaseListView(APITestCase):
-    def get(self, deflate=None):
-        url = reverse('mosaico:grupos', args=[2018])
-        if deflate:
-            url += '?deflate=True'
-        return self.client.get(url)
-
-    def test_returns_fonte_grupo_filters(self):
-        fgs = [
-            make(FonteDeRecursoGrupo, id=1, desc='fg1'),
-            make(FonteDeRecursoGrupo, id=2, desc='fg2'),
-            make(FonteDeRecursoGrupo, id=3, desc='fg3'),
-        ]
-
-        expected = [dict(id=fg.id, desc=fg.desc) for fg in fgs]
-
-        response = self.get()
-        assert expected == response.data['fontes_de_recurso']
 
     @patch('mosaico.views.TimeseriesSerializer')
     def test_calls_serializer_with_deflate_true(self, mock_serializer):
