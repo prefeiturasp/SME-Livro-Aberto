@@ -94,40 +94,28 @@ class Execucao(models.Model):
     def get_url(self, area):
         # simples areas
         if area == 'grupos':
-            url = reverse_lazy(
-                "mosaico:grupos",
-                args=[self.year.strftime('%Y')])
+            url = reverse_lazy('mosaico:grupos')
 
         elif area == "subgrupos":
             url = reverse_lazy(
-                "mosaico:subgrupos",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
+                'mosaico:subgrupos', args=[self.subgrupo.grupo_id])
 
         elif area == "elementos":
             url = reverse_lazy(
-                "mosaico:elementos",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
-                      self.subgrupo_id])
+                'mosaico:elementos', args=[self.subgrupo.grupo_id,
+                    self.subgrupo_id])
         elif area == "subelementos":
             url = reverse_lazy(
-                "mosaico:subelementos",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
-                      self.subgrupo_id, self.elemento_id])
+                'mosaico:subelementos', args=[self.subgrupo.grupo_id,
+                    self.subgrupo_id, self.elemento_id])
         # tecnico areas
         elif area == 'subfuncoes':
-            url = reverse_lazy(
-                "mosaico:subfuncoes",
-                args=[self.year.strftime('%Y')])
-        elif area == "programas":
-            url = reverse_lazy(
-                "mosaico:programas",
-                args=[self.year.strftime('%Y'), self.subfuncao_id])
-        elif area == "projetos":
-            url = reverse_lazy(
-                "mosaico:projetos",
-                args=[self.year.strftime('%Y'),
-                      self.subfuncao_id,
-                      self.programa_id])
+            url = reverse_lazy('mosaico:subfuncoes')
+        elif area == 'programas':
+            url = reverse_lazy('mosaico:programas', args=[self.subfuncao_id])
+        elif area == 'projetos':
+            url = reverse_lazy('mosaico:projetos', args=[self.subfuncao_id,
+                self.programa_id])
 
         return url
 
