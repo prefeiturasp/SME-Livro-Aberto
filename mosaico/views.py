@@ -89,6 +89,9 @@ class BaseListView(generics.ListAPIView):
                 'fonte_filters_urls': self.get_fonte_grupo_filters_urls(),
                 'deflate': self.deflate,
                 'toggle_deflator_url': self.get_deflator_url(),
+                'download_full_url': self.get_download_csv_url(),
+                'download_filtered_url': self.get_download_csv_url(
+                    filtered=True),
                 'execucoes': serializer.data,
                 'timeseries': tseries_serializer.data,
             }
@@ -124,6 +127,24 @@ class BaseListView(generics.ListAPIView):
             url += "?{}".format(urlencode(params))
 
         return url
+
+    def get_download_csv_url(self, filtered=False):
+        csv_url = reverse('mosaico:download')
+        url_params = self.kwargs.copy()
+
+        if filtered:
+            query_params = self.request.GET.dict()
+            query_params.pop('deflate', None)
+            query_params.pop('format', None)
+            params = {**url_params, **query_params}
+        else:
+            url_params.pop('year')
+            params = {**url_params}
+
+        if params:
+            csv_url += "?{}".format(urlencode(params))
+
+        return csv_url
 
     def get_timeseries_queryset(self):
         raise NotImplemented
@@ -342,3 +363,9 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
                             args=[year, subfuncao.id])},
             {"name": programa.desc, 'url': ''},
         ]
+
+
+class DownloadView(APIView):
+
+    def get(self, request):
+        pass

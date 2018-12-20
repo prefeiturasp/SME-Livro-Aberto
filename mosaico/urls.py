@@ -1,6 +1,7 @@
 from django.urls import path
 
 from mosaico.views import (
+    DownloadView,
     HomeView,
     ElementosListView,
     GruposListView,
@@ -42,4 +43,7 @@ urlpatterns = [
           'programa/<int:programa_id>/'),
          ProjetosAtividadesListView.as_view(),
          name='projetos'),
+
+    path('download/', DownloadView.as_view(),
+         name='download'),
 ]
