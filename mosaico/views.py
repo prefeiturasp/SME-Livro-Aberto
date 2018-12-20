@@ -1,4 +1,5 @@
 from datetime import date
+from urllib.parse import urlencode
 
 from django_filters import rest_framework as filters
 from rest_framework.views import APIView
@@ -42,6 +43,10 @@ class SimplesViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
+        return reverse('mosaico:grupos', args=[year])
+
+    def get_toggle_mode_url(self):
+        year = self.kwargs['year']
         return reverse('mosaico:subfuncoes', args=[year])
 
 
@@ -49,6 +54,10 @@ class TecnicoViewMixin:
     tecnico = True
 
     def get_root_url(self):
+        year = self.kwargs['year']
+        return reverse('mosaico:subfuncoes', args=[year])
+
+    def get_toggle_mode_url(self):
         year = self.kwargs['year']
         return reverse('mosaico:grupos', args=[year])
 
@@ -67,25 +76,54 @@ class BaseListView(generics.ListAPIView):
 
         breadcrumb = self.create_breadcrumb()
 
-        deflate = bool(self.request.GET.get('deflate', None))
+        self.deflate = bool(self.request.GET.get('deflate', None))
         tseries_qs = self.get_timeseries_queryset()
-        tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
+        tseries_serializer = TimeseriesSerializer(tseries_qs,
+                                                  deflate=self.deflate)
         return Response(
             {
-                 'breadcrumb': breadcrumb,
-                 'execucoes': serializer.data,
-                 'timeseries': tseries_serializer.data,
-                 'tecnico': self.tecnico,
-                 'root_url': self.get_root_url(),
-                 'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+                'breadcrumb': breadcrumb,
+                'tecnico': self.tecnico,
+                'toggle_mode_url': self.get_toggle_mode_url(),
+                'fonte_filters': self.get_fonte_grupo_filters(),
+                'fonte_filters_urls': self.get_fonte_grupo_filters_urls(),
+                'deflate': self.deflate,
+                'toggle_deflator_url': self.get_deflator_url(),
+                'execucoes': serializer.data,
+                'timeseries': tseries_serializer.data,
             }
         )
 
     def get_fonte_grupo_filters(self):
-        return [
-            {fonte_grupo.id: fonte_grupo.desc}
+        return {
+            fonte_grupo.id: fonte_grupo.desc
             for fonte_grupo
-            in FonteDeRecursoGrupo.objects.all().order_by('id')]
+            in FonteDeRecursoGrupo.objects.all().order_by('id')}
+
+    def get_fonte_grupo_filters_urls(self):
+        base_url = self.get_root_url()
+        params = self.request.GET.copy()
+        params.pop('fonte_grupo_id', None)
+
+        ret = {}
+        for fonte_grupo in FonteDeRecursoGrupo.objects.all().order_by('id'):
+            params['fonte_grupo_id'] = fonte_grupo.id
+            fonte_url = base_url + "?{}".format(urlencode(params))
+            ret[fonte_grupo.desc] = fonte_url
+        return ret
+
+    def get_deflator_url(self):
+        url = self.get_root_url()
+        params = self.request.GET.copy()
+        if self.deflate:
+            params.pop('deflate')
+        else:
+            params['deflate'] = True
+
+        if params:
+            url += "?{}".format(urlencode(params))
+
+        return url
 
     def get_timeseries_queryset(self):
         raise NotImplemented
