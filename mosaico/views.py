@@ -105,12 +105,11 @@ class BaseListView(generics.ListAPIView):
         params = self.request.GET.copy()
         params.pop('fonte_grupo_id', None)
 
-        ret = []
-
+        ret = {}
         for fonte_grupo in FonteDeRecursoGrupo.objects.all().order_by('id'):
             params['fonte_grupo_id'] = fonte_grupo.id
             fonte_url = base_url + "?{}".format(urlencode(params))
-            ret.append({fonte_grupo.desc: fonte_url})
+            ret[fonte_grupo.desc] = fonte_url
         return ret
 
     def get_deflator_url(self):
