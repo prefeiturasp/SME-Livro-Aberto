@@ -1,10 +1,44 @@
-from urllib.parse import urlencode
 from functools import lru_cache
+from itertools import groupby
+from urllib.parse import urlencode
 
 from django.db.models import Sum
 from rest_framework import serializers
 
 from budget_execution.models import Execucao
+from from_to_handler.models import Deflator
+
+
+class TimeseriesSerializer:
+
+    def __init__(self, queryset, deflate=False, *args, **kwargs):
+        self.queryset = queryset
+        self._deflate = deflate
+
+    def deflate(self, value, year):
+        if self._deflate:
+            try:
+                deflator = Deflator.objects.get(year=year)
+                value = value / deflator.index_number
+            except Deflator.DoesNotExist:
+                pass
+        return value
+
+    @property
+    def data(self):
+        qs = self.queryset
+        ret = {}
+        for year, execucoes in groupby(qs, lambda e: e.year):
+            execucoes = list(execucoes)
+            orcado_total = sum(e.orcado_atualizado for e in execucoes)
+            empenhado_total = sum(e.empenhado_liquido for e in execucoes
+                                  if e.empenhado_liquido)
+            ret[year.strftime('%Y')] = {
+                "orcado": self.deflate(orcado_total, year),
+                "empenhado": self.deflate(empenhado_total, year),
+            }
+
+        return ret
 
 
 class BaseSerializer(serializers.ModelSerializer):

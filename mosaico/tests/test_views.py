@@ -1,6 +1,7 @@
 import pytest
 
 from datetime import date
+from unittest.mock import patch
 
 from model_mommy.mommy import make
 from rest_framework.test import APITestCase
@@ -9,6 +10,21 @@ from django.test import RequestFactory
 from django.urls import reverse
 
 from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
+from mosaico.views import (
+    SimplesViewMixin,
+    TecnicoViewMixin,
+    BaseListView,
+
+    GruposListView,
+    SubgruposListView,
+    ElementosListView,
+    SubelementosListView,
+
+    SubfuncoesListView,
+    ProgramasListView,
+    ProjetosAtividadesListView,
+)
+
 from mosaico.serializers import (
     ElementoSerializer,
     GrupoSerializer,
@@ -49,8 +65,10 @@ class TestHomeView(APITestCase):
 
 
 class TestBaseListView(APITestCase):
-    def get(self, fonte_grupo_id=None):
+    def get(self, deflate=None):
         url = reverse('mosaico:grupos', args=[2018])
+        if deflate:
+            url += '?deflate=True'
         return self.client.get(url)
 
     def test_returns_fonte_grupo_filters(self):
@@ -64,6 +82,16 @@ class TestBaseListView(APITestCase):
 
         response = self.get()
         assert expected == response.data['fonte_grupo_filters']
+
+    @patch('mosaico.views.TimeseriesSerializer')
+    def test_calls_serializer_with_deflate_true(self, mock_serializer):
+        make(Execucao, _quantity=2)
+        execucoes_qs = Execucao.objects.all().order_by('year')
+
+        self.get(deflate=True)
+
+        assert set(execucoes_qs) == set(mock_serializer.call_args[0][0])
+        assert {"deflate": True} == mock_serializer.call_args[1]
 
 
 class BaseTestCase(APITestCase):
@@ -142,6 +170,10 @@ class TestGruposListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(GruposListView, BaseListView)
+        assert issubclass(GruposListView, SimplesViewMixin)
+
 
 class TestSubgruposListView(BaseTestCase):
 
@@ -201,6 +233,10 @@ class TestSubgruposListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubgruposListView, BaseListView)
+        assert issubclass(SubgruposListView, SimplesViewMixin)
+
 
 class TestElementosListView(BaseTestCase):
 
@@ -259,6 +295,10 @@ class TestElementosListView(BaseTestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ElementosListView, BaseListView)
+        assert issubclass(ElementosListView, SimplesViewMixin)
 
 
 class TestSubelementosListView(BaseTestCase):
@@ -325,6 +365,10 @@ class TestSubelementosListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubelementosListView, BaseListView)
+        assert issubclass(SubelementosListView, SimplesViewMixin)
+
 
 class TestSubfuncaoListView(BaseTestCase):
 
@@ -379,6 +423,10 @@ class TestSubfuncaoListView(BaseTestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(SubfuncoesListView, BaseListView)
+        assert issubclass(SubfuncoesListView, TecnicoViewMixin)
 
 
 class TestProgramasListView(BaseTestCase):
@@ -438,6 +486,10 @@ class TestProgramasListView(BaseTestCase):
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
 
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ProgramasListView, BaseListView)
+        assert issubclass(ProgramasListView, TecnicoViewMixin)
+
 
 class TestProjetosAtividadesListView(APITestCase):
 
@@ -496,3 +548,7 @@ class TestProjetosAtividadesListView(APITestCase):
         make(FonteDeRecursoGrupo, id=3)
         response = self.get(fonte_grupo_id=3)
         assert [] == response.data['execucoes']
+
+    def test_issubclass_of_baselistview_and_simplesviewmixin(self):
+        assert issubclass(ProjetosAtividadesListView, BaseListView)
+        assert issubclass(ProjetosAtividadesListView, TecnicoViewMixin)
