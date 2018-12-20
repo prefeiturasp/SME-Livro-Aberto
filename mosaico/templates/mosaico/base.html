@@ -62,8 +62,8 @@
         </div>
         <div class="form-item">
             <select name="year">
-                {% for year, values in timeseries.items %}
-                    <option value="{{year}}">{{year}}</option>
+                {% for serie_year, values in timeseries.items %}
+                    <option value="{{serie_year}}" {% if serie_year|lower == year|lower %}selected{%endif%}>{{serie_year}}</option>
                 {% endfor %}
             </select>
         </div>
