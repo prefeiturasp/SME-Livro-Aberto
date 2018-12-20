@@ -26,9 +26,9 @@
           Visualizar
         </legend>
         <div class="form-item switch">
-           <input class="radio" type="radio" name="mode" id="simple" value="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
+           <input class="radio" type="radio" name="mode" id="simple" value="{{toggle_mode_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
           <label for="simple">Visão simplificada</label>
-          <input class="radio" type="radio" name="mode" id="pro" value="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
+          <input class="radio" type="radio" name="mode" id="pro" value="{{toggle_mode_url}}#mosaico" {% if tecnico %}checked{% endif %} >
           <label for="pro">Visão técnica</label>
         </div>
     <script type="text/javascript">

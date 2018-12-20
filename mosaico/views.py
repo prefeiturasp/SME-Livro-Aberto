@@ -43,6 +43,10 @@ class SimplesViewMixin:
 
     def get_root_url(self):
         year = self.kwargs['year']
+        return reverse('mosaico:grupos', args=[year])
+
+    def get_toggle_mode_url(self):
+        year = self.kwargs['year']
         return reverse('mosaico:subfuncoes', args=[year])
 
 
@@ -50,6 +54,10 @@ class TecnicoViewMixin:
     tecnico = True
 
     def get_root_url(self):
+        year = self.kwargs['year']
+        return reverse('mosaico:subfuncoes', args=[year])
+
+    def get_toggle_mode_url(self):
         year = self.kwargs['year']
         return reverse('mosaico:grupos', args=[year])
 
@@ -76,8 +84,7 @@ class BaseListView(generics.ListAPIView):
             {
                 'breadcrumb': breadcrumb,
                 'tecnico': self.tecnico,
-                'root_url': self.get_root_url(),
-                'fonte_grupo_filters': self.get_fonte_grupo_filters(),
+                'toggle_mode_url': self.get_toggle_mode_url(),
                 'deflate': self.deflate,
                 'toggle_deflator_url': self.get_deflator_url(),
                 'execucoes': serializer.data,
@@ -98,7 +105,6 @@ class BaseListView(generics.ListAPIView):
             params.pop('deflate')
         else:
             params['deflate'] = True
-        url += urlencode(params)
 
         return url
 
