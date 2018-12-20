@@ -374,10 +374,21 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
 
 
 class DownloadFilter(filters.FilterSet):
+    year = filters.CharFilter(method='filter_year')
+    grupo_id = filters.CharFilter(method='filter_grupo')
+
+    def filter_year(self, queryset, name, value):
+        qs = queryset.filter(year=date(int(value), 1, 1))
+        return qs
+
+    def filter_grupo(self, queryset, name, value):
+        qs = queryset.filter(subgrupo__grupo_id=int(value))
+        return qs
 
     class Meta:
         model = Execucao
-        fields = ['subgrupo_id', 'elemento_id', 'subfuncao_id', 'programa_id']
+        fields = ['year', 'grupo_id', 'subgrupo_id', 'elemento_id',
+                  'subfuncao_id', 'programa_id']
 
 
 class DownloadView(generics.ListAPIView):
