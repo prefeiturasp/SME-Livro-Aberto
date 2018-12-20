@@ -377,7 +377,7 @@ class DownloadFilter(filters.FilterSet):
 
     class Meta:
         model = Execucao
-        fields = ['subgrupo_id']
+        fields = ['subgrupo_id', 'elemento_id', 'subfuncao_id', 'programa_id']
 
 
 class DownloadView(generics.ListAPIView):
