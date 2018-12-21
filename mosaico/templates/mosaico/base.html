@@ -36,7 +36,7 @@
             var form = document.forms.filter;
             function submit(){ form.submit(); }
 
-            form.fonte_grupo_id.addEventListener('change', submit);
+            form.fonte.addEventListener('change', submit);
             form.year.addEventListener('change', submit);
 
             form.go.remove();
@@ -54,7 +54,7 @@
           <label>Mínimo legal (31%)</label>
         </div>
         <div class="form-item">
-            <select name="fonte_grupo_id">
+            <select name="fonte">
               {% for fonte in fontes_de_recurso %}
                   <option value="{{fonte.id}}">{{ fonte.desc }}</option>
               {% endfor %}

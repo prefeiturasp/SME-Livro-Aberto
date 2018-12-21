@@ -27,10 +27,11 @@ from mosaico.serializers import (
 
 class ExecucaoFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name='year', lookup_expr='year')
+    fonte = filters.NumberFilter(field_name='fonte_grupo_id')
 
     class Meta:
         model = Execucao
-        fields = ('fonte_grupo_id', 'year')
+        fields = ('fonte', 'year')
 
 
 class SimplesViewMixin:

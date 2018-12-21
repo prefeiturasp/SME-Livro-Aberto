@@ -158,17 +158,17 @@ class TestGruposListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subgrupo__grupo')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -219,17 +219,17 @@ class TestSubgruposListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subgrupo')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -280,17 +280,17 @@ class TestElementosListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('elemento')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -348,17 +348,17 @@ class TestSubelementosListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subelemento')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -405,17 +405,17 @@ class TestSubfuncaoListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('subfuncao')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -465,17 +465,17 @@ class TestProgramasListView(BaseTestCase):
     def test_filters_by_fonte_grupo_querystring_data(self):
         execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
             .distinct('programa')
-        serializer = self.get_serializer(execucoes, fonte_grupo_id=1, year=2018)
+        serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
@@ -529,14 +529,14 @@ class TestProjetosAtividadesListView(BaseTestCase):
         serializer = ProjetoAtividadeSerializer(execucoes, many=True)
         expected = serializer.data
 
-        response = self.get(fonte_grupo_id=1, year=2018)
+        response = self.get(fonte=1, year=2018)
         data = response.data['execucoes']
         assert 2 == len(data)
         assert expected == data
 
     def test_view_works_when_queryset_is_empty(self):
         make(FonteDeRecursoGrupo, id=3)
-        response = self.get(fonte_grupo_id=3, year=2018)
+        response = self.get(fonte=3, year=2018)
         assert [] == response.data['execucoes']
 
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
