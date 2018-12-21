@@ -86,12 +86,13 @@ class BaseListView(generics.ListAPIView):
             'timeseries': tseries_serializer.data,
             'tecnico': self.tecnico,
             'root_url': self.get_root_url(),
-            'fontes_de_recurso': self.get_fonte_grupo_filters()
+            'fontes_de_recurso': self.get_fonte_grupo_filters(),
         })
 
     def get_fonte_grupo_filters(self):
         fontes = FonteDeRecursoGrupo.objects.all()
-        return FonteDeRecursoSerializer(fontes, many=True).data
+        context= {'request': self.request}
+        return FonteDeRecursoSerializer(fontes, many=True, context=context).data
 
     def get_timeseries_queryset(self):
         return self.get_queryset()

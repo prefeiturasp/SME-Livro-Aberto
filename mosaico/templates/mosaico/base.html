@@ -55,8 +55,9 @@
         </div>
         <div class="form-item">
             <select name="fonte">
+                  <option value="">Todas as fontes</option>
               {% for fonte in fontes_de_recurso %}
-                  <option value="{{fonte.id}}">{{ fonte.desc }}</option>
+                  <option value="{{fonte.id}}" {% if fonte.selecionado %}selected{%endif%}>{{ fonte.desc }}</option>
               {% endfor %}
             </select>
         </div>

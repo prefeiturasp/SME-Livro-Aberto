@@ -198,7 +198,13 @@ class ProjetoAtividadeSerializer(BaseSerializer):
 
 
 class FonteDeRecursoSerializer(serializers.ModelSerializer):
+    selecionado = serializers.SerializerMethodField()
 
     class Meta:
         model = FonteDeRecurso
-        fields = ('id', 'desc')
+        fields = ('id', 'desc', 'selecionado')
+
+    def get_selecionado(self, obj):
+        request = self.context['request']
+        param = request.query_params.get('fonte', False)
+        return param and obj.id == int(param)
