@@ -31,22 +31,6 @@
           <input class="radio" type="radio" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
           <label for="pro">Visão técnica</label>
         </div>
-    <script type="text/javascript">
-        window.addEventListener("DOMContentLoaded", function(){
-            var form = document.forms.filter;
-            function submit(){ form.submit(); }
-
-            form.fonte.addEventListener('change', submit);
-            form.year.addEventListener('change', submit);
-
-            form.go.remove();
-        });
-
-        function goToValue(){ console.log(this); window.location = this.dataset.href; }
-        document.getElementById('simple').addEventListener('change', goToValue);
-        document.getElementById('pro').addEventListener('change', goToValue);
-    </script>
-
         <div class="form-item">
           <input class="radio" type="radio" name="universe" value="">
           <label>Educação</label>
