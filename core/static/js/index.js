@@ -10,3 +10,17 @@ let pt_BR = {
 }
 
 d3.formatDefaultLocale(pt_BR);
+
+window.addEventListener("DOMContentLoaded", function(){
+    var form = document.forms.filter;
+    function submit(){ form.submit(); }
+
+    form.fonte.addEventListener('change', submit);
+    form.year.addEventListener('change', submit);
+
+    form.go.remove();
+
+    function goToValue(){ console.log(this); window.location = this.dataset.href; }
+    document.getElementById('simple').addEventListener('change', goToValue);
+    document.getElementById('pro').addEventListener('change', goToValue);
+});
