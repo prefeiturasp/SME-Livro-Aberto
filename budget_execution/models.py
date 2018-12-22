@@ -93,44 +93,24 @@ class Execucao(models.Model):
 
     def get_url(self, area):
         # simples areas
-        if area == 'home_simples':
-            url = reverse_lazy(
-                "mosaico:home_simples",
-                args=[self.year.strftime('%Y')])
+        if area == 'grupos':
+            args = []
+        elif area == 'subgrupos':
+            args = [self.subgrupo.grupo_id]
+        elif area == 'elementos':
+            args = [self.subgrupo.grupo_id, self.subgrupo_id]
+        elif area == 'subelementos':
+            args=[self.subgrupo.grupo_id, self.subgrupo_id, self.elemento_id]
 
-        elif area == "grupo":
-            url = reverse_lazy(
-                "mosaico:grupo",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id])
-
-        elif area == "subgrupo":
-            url = reverse_lazy(
-                "mosaico:subgrupo",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
-                      self.subgrupo_id])
-        elif area == "elemento":
-            url = reverse_lazy(
-                "mosaico:elemento",
-                args=[self.year.strftime('%Y'), self.subgrupo.grupo_id,
-                      self.subgrupo_id, self.elemento_id])
         # tecnico areas
-        elif area == 'home_tecnico':
-            url = reverse_lazy(
-                "mosaico:home_tecnico",
-                args=[self.year.strftime('%Y')])
+        elif area == 'subfuncoes':
+            args = []
+        elif area == 'programas':
+            args = [self.subfuncao_id]
+        elif area == 'projetos':
+            args = [self.subfuncao_id, self.programa_id]
 
-        elif area == "subfuncao":
-            url = reverse_lazy(
-                "mosaico:subfuncao",
-                args=[self.year.strftime('%Y'), self.subfuncao_id])
-        elif area == "programa":
-            url = reverse_lazy(
-                "mosaico:programa",
-                args=[self.year.strftime('%Y'),
-                      self.subfuncao_id,
-                      self.programa_id])
-
-        return url
+        return reverse_lazy(f'mosaico:{area}', args=args)
 
 
 class Categoria(models.Model):

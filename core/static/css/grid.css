@@ -27,6 +27,12 @@ header nav{
   margin-top: 7rem;
 }
 
+header nav li{
+  display: inline-block;
+  list-style: none;
+  margin-right: 2em;
+}
+
 h2{
   margin: 1em 0;
 }
@@ -75,6 +81,11 @@ fieldset{
   display: inline-block;
   margin-right: 3em;
 }
+
+.form-item:last-child{
+  margin-right: 0em;
+}
+
 
 .breadcrumb {
   display: flex;

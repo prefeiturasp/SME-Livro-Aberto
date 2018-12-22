@@ -1,9 +1,44 @@
 from functools import lru_cache
+from itertools import groupby
+from urllib.parse import urlencode
 
 from django.db.models import Sum
 from rest_framework import serializers
 
-from budget_execution.models import Execucao
+from budget_execution.models import Execucao, FonteDeRecurso
+from from_to_handler.models import Deflator
+
+
+class TimeseriesSerializer:
+
+    def __init__(self, queryset, deflate=False, *args, **kwargs):
+        self.queryset = queryset
+        self._deflate = deflate
+
+    def deflate(self, value, year):
+        if self._deflate:
+            try:
+                deflator = Deflator.objects.get(year=year)
+                value = value / deflator.index_number
+            except Deflator.DoesNotExist:
+                pass
+        return value
+
+    @property
+    def data(self):
+        qs = self.queryset
+        ret = {}
+        for year, execucoes in groupby(qs, lambda e: e.year):
+            execucoes = list(execucoes)
+            orcado_total = sum(e.orcado_atualizado for e in execucoes)
+            empenhado_total = sum(e.empenhado_liquido for e in execucoes
+                                  if e.empenhado_liquido)
+            ret[year.strftime('%Y')] = {
+                "orcado": self.deflate(orcado_total, year),
+                "empenhado": self.deflate(empenhado_total, year),
+            }
+
+        return ret
 
 
 class BaseSerializer(serializers.ModelSerializer):
@@ -34,27 +69,31 @@ class BaseSerializer(serializers.ModelSerializer):
         else:
             return 0
 
+    def get_url(self, obj):
+        # TODO: We need to test this
+        area = getattr(self.Meta, 'area')
+        return obj.get_url(area) + self._query_params
+
+    @property
+    def _query_params(self):
+        params = self.context['request'].GET
+        if params:
+            return '?{}'.format(urlencode(params))
+        return ''
+
 
 # `Simples` visualization serializers
 
 class GrupoSerializer(BaseSerializer):
 
-    grupo_id = serializers.SerializerMethodField()
-    nome = serializers.SerializerMethodField()
+    grupo_id = serializers.IntegerField(source='subgrupo.grupo_id', read_only=True)
+    nome = serializers.CharField(source='subgrupo.grupo.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'grupo_id', 'nome', 'orcado_total',
+        fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_grupo_id(self, obj):
-        return obj.subgrupo.grupo_id
-
-    def get_nome(self, obj):
-        return obj.subgrupo.grupo.desc
-
-    def get_url(self, obj):
-        return obj.get_url('grupo')
+        area = 'subgrupos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -64,18 +103,13 @@ class GrupoSerializer(BaseSerializer):
 
 class SubgrupoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subgrupo.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subgrupo_id', 'nome', 'orcado_total',
+        fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.subgrupo.desc
-
-    def get_url(self, obj):
-        return obj.get_url("subgrupo")
+        area = 'elementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -85,18 +119,13 @@ class SubgrupoSerializer(BaseSerializer):
 
 class ElementoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='elemento.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'elemento_id', 'nome', 'orcado_total',
+        fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.elemento.desc
-
-    def get_url(self, obj):
-        return obj.get_url('elemento')
+        area = 'subelementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -107,33 +136,25 @@ class ElementoSerializer(BaseSerializer):
 
 class SubelementoSerializer(ElementoSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subelemento_friendly.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subelemento_id', 'nome', 'orcado_total',
+        fields = ('subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
-
-    def get_nome(self, obj):
-        return obj.subelemento_friendly.desc
 
 
 # `Técnico` visualization serializers
 
 class SubfuncaoSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='subfuncao.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.subfuncao.desc
-
-    def get_url(self, obj):
-        return obj.get_url('subfuncao')
+        area = 'programas'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -143,18 +164,13 @@ class SubfuncaoSerializer(BaseSerializer):
 
 class ProgramaSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='programa.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-
-    def get_nome(self, obj):
-        return obj.programa.desc
-
-    def get_url(self, obj):
-        return obj.get_url('programa')
+        area = 'projetos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -165,15 +181,12 @@ class ProgramaSerializer(BaseSerializer):
 
 class ProjetoAtividadeSerializer(BaseSerializer):
 
-    nome = serializers.SerializerMethodField()
+    nome = serializers.CharField(source='projeto.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('id', 'projeto_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
-
-    def get_nome(self, obj):
-        return obj.projeto.desc
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -182,3 +195,16 @@ class ProjetoAtividadeSerializer(BaseSerializer):
             subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id,
             projeto_id=obj.projeto_id)
+
+
+class FonteDeRecursoSerializer(serializers.ModelSerializer):
+    selecionado = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FonteDeRecurso
+        fields = ('id', 'desc', 'selecionado')
+
+    def get_selecionado(self, obj):
+        request = self.context['request']
+        param = request.query_params.get('fonte', False)
+        return param and obj.id == int(param)

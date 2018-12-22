@@ -22,27 +22,27 @@ class TestDotacaoGrupoSubgrupoFromTo:
         expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=10,
-            subgrupo_id=None,
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=10,
+            subgrupo=None,
             _quantity=2)
 
         not_expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=33,
-            subgrupo_id=None)
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=33,
+            subgrupo=None)
 
         ft = mommy.make(DotacaoFromTo,
                         indexer='2018.16.1011.3.3.9.10.10')
@@ -86,27 +86,27 @@ class TestFonteDeRecursoFromToApplier:
         expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=4,
-            fonte_grupo_id=None,
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=4,
+            fonte_grupo=None,
             _quantity=2)
 
         not_expected = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            orgao_id=16,
-            projeto_id=1011,
-            categoria_id=3,
-            gnd_id=3,
-            modalidade_id=9,
-            elemento_id=10,
-            fonte_id=33,
-            fonte_grupo_id=None)
+            orgao__id=16,
+            projeto__id=1011,
+            categoria__id=3,
+            gnd__id=3,
+            modalidade__id=9,
+            elemento__id=10,
+            fonte__id=33,
+            fonte_grupo=None)
 
         ft = mommy.make(
             FonteDeRecursoFromTo, code=4, grupo_code=3)
@@ -147,16 +147,16 @@ class TestGndFromToApplier:
 
         expected = mommy.make(
             Execucao,
-            gnd_id=gnd_id,
-            elemento_id=elemento_id,
-            gnd_gealogia_id=None,
+            gnd__id=gnd_id,
+            elemento__id=elemento_id,
+            gnd_gealogia=None,
             _quantity=2)
 
         not_expected = mommy.make(
             Execucao,
-            gnd_id=5,
-            elemento_id=55,
-            gnd_gealogia_id=None)
+            gnd__id=5,
+            elemento__id=55,
+            gnd_gealogia=None)
 
         ft = mommy.make(
             GNDFromTo, gnd_code=gnd_id, elemento_code=elemento_id)
@@ -185,23 +185,23 @@ class TestSubelementoFromToApplier:
 
         expected = mommy.make(
             Execucao,
-            categoria_id=1,
-            gnd_id=1,
-            modalidade_id=10,
-            elemento_id=10,
-            subelemento_id=1,
-            subelemento_friendly_id=None,
+            categoria__id=1,
+            gnd__id=1,
+            modalidade__id=10,
+            elemento__id=10,
+            subelemento__id=1,
+            subelemento_friendly=None,
             _quantity=2)
 
         # not expected
         not_expected = mommy.make(
             Execucao,
-            categoria_id=1,
-            gnd_id=1,
-            modalidade_id=10,
-            elemento_id=10,
-            subelemento_id=55,
-            subelemento_friendly_id=None)
+            categoria__id=1,
+            gnd__id=1,
+            modalidade__id=10,
+            elemento__id=10,
+            subelemento__id=55,
+            subelemento_friendly=None)
 
         ft = mommy.make(SubelementoFromTo, code='1.1.10.10.1')
         ft.apply()
