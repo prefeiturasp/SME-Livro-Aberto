@@ -1,18 +1,14 @@
-from datetime import date
 from urllib.parse import urlencode
 
 from django_filters import rest_framework as filters
-from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework_csv.renderers import CSVRenderer
 
 from django.urls import reverse
-from django.http import HttpResponseRedirect
 
-from budget_execution.models import Grupo, Elemento, Execucao, \
-    FonteDeRecursoGrupo, Programa, Subfuncao, Subgrupo
+from budget_execution.models import Execucao, FonteDeRecursoGrupo
 from mosaico.serializers import (
     ElementoSerializer,
     FonteDeRecursoSerializer,
@@ -26,13 +22,40 @@ from mosaico.serializers import (
 )
 
 
+SERIALIZERS_BY_VIEW = {
+    'grupos': GrupoSerializer,
+    'subgrupos': SubgrupoSerializer,
+    'elementos': ElementoSerializer,
+    'subelementos': SubelementoSerializer,
+    'subfuncoes': SubfuncaoSerializer,
+    'programas': ProgramaSerializer,
+    'projetos': ProjetoAtividadeSerializer,
+}
+
+DISTINCT_FIELD_BY_VIEW = {
+    'grupos': 'subgrupo__grupo_id',
+    'subgrupos': 'subgrupo',
+    'elementos': 'elemento',
+    'subelementos': 'subelemento',
+    'subfuncoes': 'subfuncao',
+    'programas': 'programa',
+    'projetos': 'projeto',
+}
+
+
 class ExecucaoFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name='year', lookup_expr='year')
     fonte = filters.NumberFilter(field_name='fonte_grupo_id')
+    grupo_id = filters.CharFilter(method='filter_grupo')
+
+    def filter_grupo(self, queryset, name, value):
+        qs = queryset.filter(subgrupo__grupo_id=int(value))
+        return qs
 
     class Meta:
         model = Execucao
-        fields = ('fonte', 'year')
+        fields = ['year', 'grupo_id', 'subgrupo_id', 'elemento_id',
+                  'subfuncao_id', 'programa_id', 'fonte']
 
 
 class SimplesViewMixin:
@@ -95,7 +118,7 @@ class BaseListView(generics.ListAPIView):
 
     def get_fonte_grupo_filters(self):
         fontes = FonteDeRecursoGrupo.objects.all()
-        context= {'request': self.request}
+        context = {'request': self.request}
         return FonteDeRecursoSerializer(fontes, many=True, context=context).data
 
     def get_download_csv_url(self, filtered=False):
@@ -109,7 +132,6 @@ class BaseListView(generics.ListAPIView):
             params = {**url_params, **query_params}
             params['filter'] = True
         else:
-            url_params.pop('year')
             params = {**url_params}
 
         if params:
@@ -311,28 +333,10 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         ]
 
 
-class DownloadFilter(filters.FilterSet):
-    year = filters.CharFilter(method='filter_year')
-    grupo_id = filters.CharFilter(method='filter_grupo')
-
-    def filter_year(self, queryset, name, value):
-        qs = queryset.filter(year=date(int(value), 1, 1))
-        return qs
-
-    def filter_grupo(self, queryset, name, value):
-        qs = queryset.filter(subgrupo__grupo_id=int(value))
-        return qs
-
-    class Meta:
-        model = Execucao
-        fields = ['year', 'grupo_id', 'subgrupo_id', 'elemento_id',
-                  'subfuncao_id', 'programa_id', 'fonte_grupo_id']
-
-
 class DownloadView(generics.ListAPIView):
     renderer_classes = [CSVRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
-    filterset_class = DownloadFilter
+    filterset_class = ExecucaoFilter
 
     def list(self, request, *args, **kwargs):
         self.view_name = self.kwargs['view_name']
@@ -353,21 +357,7 @@ class DownloadView(generics.ListAPIView):
         return response
 
     def get_serializer_class(self):
-        view_name = self.view_name
-        if view_name == 'grupos':
-            return GrupoSerializer
-        elif view_name == 'subgrupos':
-            return SubgrupoSerializer
-        elif view_name == 'elementos':
-            return ElementoSerializer
-        elif view_name == 'subelementos':
-            return SubelementoSerializer
-        elif view_name == 'subfuncoes':
-            return SubfuncaoSerializer
-        elif view_name == 'programas':
-            return ProgramaSerializer
-        elif view_name == 'projetos':
-            return ProjetoAtividadeSerializer
+        return SERIALIZERS_BY_VIEW[self.view_name]
 
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False) \
@@ -380,18 +370,4 @@ class DownloadView(generics.ListAPIView):
         return qs.distinct(self.distinct_field)
 
     def _get_distinct_field_name(self):
-        view_name = self.view_name
-        if view_name == 'grupos':
-            return 'subgrupo__grupo_id'
-        elif view_name == 'subgrupos':
-            return 'subgrupo'
-        elif view_name == 'elementos':
-            return 'elemento'
-        elif view_name == 'subelementos':
-            return 'subelemento'
-        elif view_name == 'subfuncoes':
-            return 'subfuncao'
-        elif view_name == 'programas':
-            return 'programa'
-        elif view_name == 'projetos':
-            return 'projeto'
+        return DISTINCT_FIELD_BY_VIEW[self.view_name]
