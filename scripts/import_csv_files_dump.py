@@ -155,18 +155,13 @@ def import_empenhos_csv():
             execucao.subelemento_id = subelemento_id
             subelemento_added_count += 1
             print("subelemento added")
-        else:
-            execucao = execs[0]
-            execucao.pk = None
-            execucao.subelemento_id = subelemento_id
-            new_dotacoes += 1
-            print("new execution")
 
-        execucao.empenhado_liquido = empenhado
-        execucao.elemento.desc = elemento_desc
-        execucao.elemento.save()
+            execucao.empenhado_liquido = empenhado
+            execucao.elemento.desc = elemento_desc
+            execucao.elemento.save()
 
-        execucao.save()
+            execucao.save()
+
         row += 1
 
     print(f'new dotacoes: {new_dotacoes}')
