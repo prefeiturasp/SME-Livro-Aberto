@@ -89,7 +89,7 @@ window.addEventListener('load', function(){
 
     legend.append('li')
             .classed(color(1), true)
-            .text('Valor pago')
+            .text('Valor empenhado')
     legend.append('li')
             .classed(color(0), true)
             .text('Valor atualizado')
