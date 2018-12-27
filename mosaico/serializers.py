@@ -71,8 +71,8 @@ class BaseSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         # TODO: We need to test this
-        area = getattr(self.Meta, 'area')
-        return obj.get_url(area) + self._query_params
+        next_level = getattr(self.Meta, 'next_level')
+        return obj.get_url(next_level) + self._query_params
 
     @property
     def _query_params(self):
@@ -93,7 +93,7 @@ class GrupoSerializer(BaseSerializer):
         model = Execucao
         fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'subgrupos'
+        next_level = 'subgrupos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -109,7 +109,7 @@ class SubgrupoSerializer(BaseSerializer):
         model = Execucao
         fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'elementos'
+        next_level = 'elementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -125,7 +125,7 @@ class ElementoSerializer(BaseSerializer):
         model = Execucao
         fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'subelementos'
+        next_level = 'subelementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -154,7 +154,7 @@ class SubfuncaoSerializer(BaseSerializer):
         model = Execucao
         fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'programas'
+        next_level = 'programas'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
@@ -170,7 +170,7 @@ class ProgramaSerializer(BaseSerializer):
         model = Execucao
         fields = ('id', 'programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'projetos'
+        next_level = 'projetos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
