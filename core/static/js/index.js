@@ -10,6 +10,7 @@ let pt_BR = {
 }
 
 d3.formatDefaultLocale(pt_BR);
+let currency = d3.format('$,~d');
 
 window.addEventListener("DOMContentLoaded", function(){
     var form = document.forms.filter;

@@ -22,9 +22,6 @@
     <div class="wrapper">
       <form action="#mosaico" name="filter" method="get" class="query">
       <fieldset>
-        <legend>
-          Visualizar
-        </legend>
         <div class="form-item switch">
           <input class="radio" type="radio" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
           <label for="simple">Visão simplificada</label>
@@ -35,7 +32,7 @@
           <input class="radio" type="radio" name="universe" value="">
           <label>Educação</label>
           <input class="radio" type="radio" name="universe" value="">
-          <label>Mínimo legal (31%)</label>
+          <label title="Em breve...">Mínimo legal (31%)</label>
         </div>
         <div class="form-item">
             <select name="fonte">
@@ -85,9 +82,6 @@
       <h2>Orçamento x <em>Tempo</em></h2>
       <form action="" method="get" class="query">
       <fieldset>
-        <legend>
-          Visualizar
-        </legend>
         <div class="form-item switch">
           <input type="checkbox" name="break" checked id="use-deflator">
           <label for="use-deflator">Valores corrigidos</label>
