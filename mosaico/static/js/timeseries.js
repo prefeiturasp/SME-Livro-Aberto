@@ -51,7 +51,7 @@ window.addEventListener('load', function(){
         .attr('class', 'axis axis--y')
         .call(d3.axisLeft(y)
                 .tickSize(-parentWidth)
-                .tickFormat(d3.format('$,~d'))
+                .tickFormat(currency)
                 .tickValues(yTicks))
         .selectAll('text').attr('dy', '-0.4em')
                            .attr('x', '0');
