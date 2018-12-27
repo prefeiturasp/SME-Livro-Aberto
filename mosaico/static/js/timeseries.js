@@ -56,14 +56,12 @@ window.addEventListener('load', function(){
         .selectAll('text').attr('dy', '-0.4em')
                            .attr('x', '0');
 
-
     [serie1, serie2].forEach(function(serie, i){
         var line = d3.line()
             .defined(defined)
             .curve(d3.curveMonotoneX)
             .x(d => x(year(d)))
             .y(d => y(serie(d)));
-
 
         let g = svg.append('g')
             .attr('class', 'serie_' + i)
@@ -74,6 +72,11 @@ window.addEventListener('load', function(){
             .classed(color(i), true)
             .attr('d', line);
 
+        // Define the div for the tooltip
+        var div = d3.select(".timeseries").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
         g.selectAll('.dot')
           .data(data.filter(defined))
           .enter().append('circle')
@@ -81,15 +84,39 @@ window.addEventListener('load', function(){
             .classed(color(i), true)
             .attr('cx', line.x())
             .attr('cy', line.y())
-            .attr('r', 3.5);
+            .attr('r', 3.5)
+            .on("mouseover", function(d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                if(event.target.classList.contains('updated')) {
+                    div.html(`<strong>Ano:</strong> ${event.target.__data__[0]}
+                              <br>
+                              <strong>Valor atualizado:</strong> R$ ${event.target.__data__[1].toLocaleString('pt-BR')}`)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+                } else {
+                    div.html(`<strong>Ano:</strong> ${event.target.__data__[0]}
+                              <br>
+                              <strong>Valor empenhado:</strong> R$ ${event.target.__data__[2].toLocaleString('pt-BR')}`)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
+                    }
+                })
+            .on("mouseout", function(d) {		
+                div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);	
+            });
     });
+
 
     let legend = container.append('ul')
             .attr('class', 'legend')
 
     legend.append('li')
             .classed(color(1), true)
-            .text('Valor pago')
+            .text('Valor empenhado')
     legend.append('li')
             .classed(color(0), true)
             .text('Valor atualizado')

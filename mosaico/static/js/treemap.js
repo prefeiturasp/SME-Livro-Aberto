@@ -21,6 +21,10 @@ window.addEventListener('load', function(){
         node.data.style.color = '#fff';
     }
 
+    function setToolTip(node) {
+        node.data.title = node.data.innerText;
+    }
+
     let rootEl = document.querySelector('.treemap');
     let root = d3.hierarchy(rootEl, d => d.children);
     let width = parseInt(getComputedStyle(rootEl)['width']);
@@ -35,4 +39,5 @@ window.addEventListener('load', function(){
                             .sort((a, b) => b.value - a.value));
 
     each(setNodeStyle, nodes.children)
+    each(setToolTip,nodes.children)
 })
