@@ -92,13 +92,3 @@ text{
 .timeseries circle {
   cursor: help;
 }
-
-.timeseries div.tooltip {	
-  position: absolute;
-  padding: 5px;
-  font: 12px sans-serif;
-  background: #000000;
-  border: 0px;
-  pointer-events: none;
-  color: #ffffff;
-}

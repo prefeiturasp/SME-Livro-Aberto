@@ -85,29 +85,9 @@ window.addEventListener('load', function(){
             .attr('cx', line.x())
             .attr('cy', line.y())
             .attr('r', 3.5)
-            .on("mouseover", function(d) {
-                div.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                if(event.target.classList.contains('updated')) {
-                    div.html(`<strong>Ano:</strong> ${event.target.__data__[0]}
-                              <br>
-                              <strong>Valor atualizado:</strong> R$ ${event.target.__data__[1].toLocaleString('pt-BR')}`)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
-                } else {
-                    div.html(`<strong>Ano:</strong> ${event.target.__data__[0]}
-                              <br>
-                              <strong>Valor empenhado:</strong> R$ ${event.target.__data__[2].toLocaleString('pt-BR')}`)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 28) + "px");
-                    }
-                })
-            .on("mouseout", function(d) {		
-                div.transition()		
-                    .duration(500)		
-                    .style("opacity", 0);	
-            });
+            .append('title').text(d => {
+                return `Ano: ${year(d)}\nValor: ${currency(serie(d))}`;
+            })
     });
 
 
