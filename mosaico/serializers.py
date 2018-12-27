@@ -107,7 +107,7 @@ class GrupoSerializer(BaseExecucaoSerializer):
     def _execucoes(self, obj):
         execs = super()._execucoes(obj)
         return execs.filter(
-            year=obj.year, subgrupo__grupo_id=obj.subgrupo.grupo_id)
+            subgrupo__grupo_id=obj.subgrupo.grupo_id)
 
 
 class SubgrupoSerializer(BaseExecucaoSerializer):
@@ -124,7 +124,7 @@ class SubgrupoSerializer(BaseExecucaoSerializer):
     def _execucoes(self, obj):
         execs = super()._execucoes(obj)
         return execs.filter(
-            year=obj.year, subgrupo_id=obj.subgrupo_id)
+            subgrupo_id=obj.subgrupo_id)
 
 
 class ElementoSerializer(BaseExecucaoSerializer):
@@ -141,7 +141,7 @@ class ElementoSerializer(BaseExecucaoSerializer):
     def _execucoes(self, obj):
         execs = super()._execucoes(obj)
         return execs.filter(
-            year=obj.year, subgrupo_id=obj.subgrupo_id,
+            subgrupo_id=obj.subgrupo_id,
             elemento_id=obj.elemento_id)
 
 
@@ -188,7 +188,7 @@ class ProgramaSerializer(BaseExecucaoSerializer):
     def _execucoes(self, obj):
         execs = super()._execucoes(obj)
         return execs.filter(
-            year=obj.year, subfuncao_id=obj.subfuncao_id,
+            subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id)
 
 

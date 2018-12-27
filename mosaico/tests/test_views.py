@@ -682,3 +682,15 @@ class TestDownloadView(APITestCase):
         data = self.get('subfuncoes').data
         assert 1 == len(data)
         assert expected == data
+
+    def test_downloads_programas_data(self):
+        expected = self.prepare_expected_data('programas')
+        data = self.get('programas').data
+        assert 1 == len(data)
+        assert expected == data
+
+    def test_downloads_projetos_data(self):
+        expected = self.prepare_expected_data('projetos')
+        data = self.get('projetos').data
+        assert 3 == len(data)
+        assert expected == data
