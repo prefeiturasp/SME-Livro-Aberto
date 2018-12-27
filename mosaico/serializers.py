@@ -190,6 +190,8 @@ class ProjetoAtividadeSerializer(BaseSerializer):
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
+        # import ipdb
+        # ipdb.set_trace()
         return Execucao.objects.filter(
             year=obj.year,
             subfuncao_id=obj.subfuncao_id,

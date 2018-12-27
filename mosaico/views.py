@@ -316,9 +316,6 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         return Execucao.objects.filter(
             subfuncao_id=subfuncao_id, programa_id=programa_id)
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('projeto')
 
     def create_breadcrumb(self, queryset):
         year = self.year
