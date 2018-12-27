@@ -22,7 +22,7 @@ from mosaico.serializers import (
 )
 
 
-SERIALIZERS_BY_VIEW = {
+SERIALIZERS_BY_SECTION = {
     'grupos': GrupoSerializer,
     'subgrupos': SubgrupoSerializer,
     'elementos': ElementoSerializer,
@@ -32,7 +32,7 @@ SERIALIZERS_BY_VIEW = {
     'projetos': ProjetoAtividadeSerializer,
 }
 
-DISTINCT_FIELD_BY_VIEW = {
+DISTINCT_FIELD_BY_SECTION = {
     'grupos': 'subgrupo__grupo_id',
     'subgrupos': 'subgrupo',
     'elementos': 'elemento',
@@ -234,8 +234,8 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
         elemento_id = self.kwargs['elemento_id']
-        return Execucao.objects.filter(subgrupo_id=subgrupo_id,
-                elemento_id=elemento_id)
+        return Execucao.objects.filter(
+            subgrupo_id=subgrupo_id, elemento_id=elemento_id)
 
     def filter_queryset(self, qs):
         qs = super().filter_queryset(qs)
@@ -254,7 +254,8 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
             {"name": f'Ano {year}', 'url': execucao.get_url('grupos') + qs},
             {"name": grupo.desc, 'url': execucao.get_url('subgrupos') + qs},
             {"name": subgrupo.desc, 'url': execucao.get_url('elementos') + qs},
-            {"name": elemento.desc, 'url': execucao.get_url('subelementos') + qs},
+            {"name": elemento.desc,
+             'url': execucao.get_url('subelementos') + qs},
         ]
 
 
@@ -312,8 +313,8 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
     def get_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
         programa_id = self.kwargs['programa_id']
-        return Execucao.objects.filter(subfuncao_id=subfuncao_id,
-                programa_id=programa_id)
+        return Execucao.objects.filter(
+            subfuncao_id=subfuncao_id, programa_id=programa_id)
 
     def filter_queryset(self, qs):
         qs = super().filter_queryset(qs)
@@ -339,14 +340,14 @@ class DownloadView(generics.ListAPIView):
     filterset_class = ExecucaoFilter
 
     def list(self, request, *args, **kwargs):
-        self.view_name = self.kwargs['view_name']
+        self.section = self.kwargs['section']
         self.distinct_field = self._get_distinct_field_name()
 
         queryset = self.filter_queryset(self.get_queryset())
 
         serializer = self.get_serializer(queryset, many=True)
 
-        filename = f'mosaico_{self.kwargs["view_name"]}'
+        filename = f'mosaico_{self.kwargs["section"]}'
         if self.request.GET.get('filter'):
             filename += "_filtrado"
 
@@ -357,7 +358,7 @@ class DownloadView(generics.ListAPIView):
         return response
 
     def get_serializer_class(self):
-        return SERIALIZERS_BY_VIEW[self.view_name]
+        return SERIALIZERS_BY_SECTION[self.section]
 
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False) \
@@ -365,9 +366,9 @@ class DownloadView(generics.ListAPIView):
 
     def filter_queryset(self, qs):
         qs = super().filter_queryset(qs)
-        if self.view_name == 'subelementos':
+        if self.section == 'subelementos':
             qs = qs.filter(subelemento__isnull=False)
         return qs.distinct(self.distinct_field)
 
     def _get_distinct_field_name(self):
-        return DISTINCT_FIELD_BY_VIEW[self.view_name]
+        return DISTINCT_FIELD_BY_SECTION[self.section]

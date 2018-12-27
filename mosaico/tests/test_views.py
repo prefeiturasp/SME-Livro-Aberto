@@ -36,6 +36,27 @@ from mosaico.serializers import (
 )
 
 
+SERIALIZERS_BY_SECTION = {
+    'grupos': GrupoSerializer,
+    'subgrupos': SubgrupoSerializer,
+    'elementos': ElementoSerializer,
+    'subelementos': SubelementoSerializer,
+    'subfuncoes': SubfuncaoSerializer,
+    'programas': ProgramaSerializer,
+    'projetos': ProjetoAtividadeSerializer,
+}
+
+DISTINCT_FIELD_BY_SECTION = {
+    'grupos': 'subgrupo__grupo_id',
+    'subgrupos': 'subgrupo',
+    'elementos': 'elemento',
+    'subelementos': 'subelemento',
+    'subfuncoes': 'subfuncao',
+    'programas': 'programa',
+    'projetos': 'projeto',
+}
+
+
 class TestBaseListView(APITestCase):
     def get(self, **kwargs):
         url = reverse('mosaico:grupos')
@@ -94,7 +115,7 @@ class TestBaseListView(APITestCase):
 
     def test_most_recent_year_as_default(self):
         year = 1500
-        grupo = make('Grupo', id=1)
+        make('Grupo', id=1)
 
         subgrupo_1 = make('Subgrupo', grupo=make('Grupo', id=1))
         subgrupo_2 = make('Subgrupo', grupo=make('Grupo', id=2))
@@ -566,3 +587,72 @@ class TestProjetosAtividadesListView(BaseTestCase):
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
         assert issubclass(ProjetosAtividadesListView, BaseListView)
         assert issubclass(ProjetosAtividadesListView, TecnicoViewMixin)
+
+
+class TestDownloadView(APITestCase):
+
+    def get(self, view_name):
+        url = reverse('mosaico:download', args=[view_name])
+        return self.client.get(url)
+
+    def base_url(self, view_name):
+        return reverse('mosaico:download', args=[view_name])
+
+    @pytest.fixture(autouse=True)
+    def initial(self):
+        subgrupo1 = make(Subgrupo, id=1, grupo__id=1)
+        subgrupo2 = make(Subgrupo, id=2, grupo__id=1)
+        subgrupo3 = make(Subgrupo, id=3, grupo__id=2)
+
+        make(Execucao,
+             subgrupo=subgrupo1,
+             projeto__id=1,
+             programa__id=1,
+             subfuncao__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subgrupo=subgrupo2,
+             projeto__id=2,
+             programa__id=1,
+             subfuncao__id=1,
+             year=date(2018, 1, 1),
+             _quantity=2)
+        make(Execucao,
+             subgrupo=subgrupo3,
+             projeto__id=3,
+             programa__id=1,
+             subfuncao__id=1,
+             year=date(2017, 1, 1),
+             _quantity=2)
+
+    def prepare_expected_data(self, section):
+        execucoes = Execucao.objects.all().distinct(
+            DISTINCT_FIELD_BY_SECTION[section])
+
+        factory = RequestFactory()
+        request = factory.get(self.base_url(section))
+        serializer_class = SERIALIZERS_BY_SECTION[section]
+        return serializer_class(
+            execucoes, many=True, context={'request': request}) \
+            .data
+
+    def test_uses_correct_renderer(self):
+        response = self.get('grupos')
+        assert 'csv' == response.accepted_renderer.format
+
+    def test_downloads_grupos_data(self):
+        expected = self.prepare_expected_data('grupos')
+        response = self.get('grupos')
+        data = response.data
+
+        assert 2 == len(data)
+        assert expected == data
+
+    def test_downloads_subgrupos_data(self):
+        expected = self.prepare_expected_data('subgrupos')
+        response = self.get('subgrupos')
+        data = response.data
+
+        assert 3 == len(data)
+        assert expected == data

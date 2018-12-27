@@ -30,6 +30,6 @@ urlpatterns = [
          name='programas'),
     path(('tecnico/subfuncao/<int:subfuncao_id>/programa/<int:programa_id>/'),
          ProjetosAtividadesListView.as_view(), name='projetos'),
-    path('download/<str:view_name>/', DownloadView.as_view(),
+    path('download/<str:section>/', DownloadView.as_view(),
          name='download'),
 ]
