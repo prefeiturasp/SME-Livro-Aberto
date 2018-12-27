@@ -9,7 +9,8 @@ from rest_framework.test import APITestCase
 from django.test import RequestFactory
 from django.urls import reverse
 
-from budget_execution.models import Execucao, FonteDeRecursoGrupo, Subgrupo
+from budget_execution.models import (Execucao, FonteDeRecursoGrupo, Subfuncao,
+                                     Subgrupo)
 from mosaico.views import (
     SimplesViewMixin,
     TecnicoViewMixin,
@@ -174,7 +175,7 @@ class TestGruposListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:grupos')
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         make(Execucao,
              subgrupo__grupo__id=1,
@@ -229,7 +230,7 @@ class TestSubgruposListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:subgrupos', args=[1])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         subgrupo1 = make(Subgrupo, id=96, grupo__id=1)
         subgrupo2 = make(Subgrupo, id=97, grupo__id=1)
@@ -290,7 +291,7 @@ class TestElementosListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:elementos', args=[1, 1])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         subgrupo = make(Subgrupo, id=1, grupo__id=1)
         make(Execucao,
@@ -351,7 +352,7 @@ class TestSubelementosListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:subelementos', args=[1, 1, 1])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         grupo = make('Grupo', id=1)
         subgrupo = make(Subgrupo, id=1, grupo=grupo)
@@ -419,7 +420,7 @@ class TestSubfuncaoListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:subfuncoes')
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         make(Execucao,
              subfuncao__id=1,
@@ -476,7 +477,7 @@ class TestProgramasListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:programas', args=[1])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         make(Execucao,
              programa__id=1,
@@ -534,7 +535,7 @@ class TestProjetosAtividadesListView(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:projetos', args=[1, 1])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         make(Execucao,
              projeto__id=1,
@@ -598,32 +599,42 @@ class TestDownloadView(APITestCase):
     def base_url(self, view_name):
         return reverse('mosaico:download', args=[view_name])
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='class')
     def initial(self):
         subgrupo1 = make(Subgrupo, id=1, grupo__id=1)
         subgrupo2 = make(Subgrupo, id=2, grupo__id=1)
         subgrupo3 = make(Subgrupo, id=3, grupo__id=2)
+        subfuncao = make(Subfuncao, id=1, desc="sub")
 
         make(Execucao,
              subgrupo=subgrupo1,
-             projeto__id=1,
+             elemento__id=1,
+             subelemento__id=1,
+             subfuncao=subfuncao,
              programa__id=1,
-             subfuncao__id=1,
+             projeto__id=1,
              year=date(2018, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
              subgrupo=subgrupo2,
-             projeto__id=2,
+             elemento__id=1,
+             subelemento__id=2,
+             subfuncao=subfuncao,
              programa__id=1,
-             subfuncao__id=1,
+             projeto__id=2,
              year=date(2018, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
              subgrupo=subgrupo3,
-             projeto__id=3,
+             elemento__id=2,
+             subelemento__id=3,
+             subfuncao=subfuncao,
              programa__id=1,
-             subfuncao__id=1,
+             projeto__id=3,
              year=date(2017, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
 
     def prepare_expected_data(self, section):
@@ -634,7 +645,8 @@ class TestDownloadView(APITestCase):
         request = factory.get(self.base_url(section))
         serializer_class = SERIALIZERS_BY_SECTION[section]
         return serializer_class(
-            execucoes, many=True, context={'request': request}) \
+            execucoes, many=True, context={'request': request,
+                                           'all_time': True}) \
             .data
 
     def test_uses_correct_renderer(self):
@@ -643,16 +655,30 @@ class TestDownloadView(APITestCase):
 
     def test_downloads_grupos_data(self):
         expected = self.prepare_expected_data('grupos')
-        response = self.get('grupos')
-        data = response.data
-
+        data = self.get('grupos').data
         assert 2 == len(data)
         assert expected == data
 
     def test_downloads_subgrupos_data(self):
         expected = self.prepare_expected_data('subgrupos')
-        response = self.get('subgrupos')
-        data = response.data
-
+        data = self.get('subgrupos').data
         assert 3 == len(data)
+        assert expected == data
+
+    def test_downloads_elementos_data(self):
+        expected = self.prepare_expected_data('elementos')
+        data = self.get('elementos').data
+        assert 2 == len(data)
+        assert expected == data
+
+    def test_downloads_subelementos_data(self):
+        expected = self.prepare_expected_data('subelementos')
+        data = self.get('subelementos').data
+        assert 3 == len(data)
+        assert expected == data
+
+    def test_downloads_subfuncoes_data(self):
+        expected = self.prepare_expected_data('subfuncoes')
+        data = self.get('subfuncoes').data
+        assert 1 == len(data)
         assert expected == data
