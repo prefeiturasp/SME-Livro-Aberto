@@ -72,11 +72,6 @@ window.addEventListener('load', function(){
             .classed(color(i), true)
             .attr('d', line);
 
-        // Define the div for the tooltip
-        var div = d3.select(".timeseries").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-
         g.selectAll('.dot')
           .data(data.filter(defined))
           .enter().append('circle')
