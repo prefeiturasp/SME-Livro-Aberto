@@ -14,8 +14,10 @@ from openpyxl import load_workbook
 from budget_execution.models import Execucao
 
 
-ORCAMENTO_PATH = ('./budget_execution/data/orcamento-181217.xlsx')
+ORCAMENTO_PATH = ('./budget_execution/data/orcamento-181220.xlsx')
 EMPENHOS_PATH = ('./budget_execution/data/empenhos-181219.xlsx')
+
+ROW = 2
 
 
 class OtherColumn(NamedTuple):
@@ -99,7 +101,7 @@ def import_empenhos_csv():
     wb = load_workbook(filepath)
     ws = wb['data']
 
-    row = 1
+    row = ROW
     row_is_valid = True
     dotacoes_not_found = 0
     subelemento_added_count = 0
@@ -174,7 +176,7 @@ def import_orcamento_csv():
     wb = load_workbook(filepath)
     ws = wb['data']
 
-    row = 1
+    row = ROW
     row_is_valid = True
     while row_is_valid:
         try:
