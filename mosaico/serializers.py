@@ -1,3 +1,4 @@
+from datetime import date
 from functools import lru_cache
 from itertools import groupby
 from urllib.parse import urlencode
@@ -81,11 +82,20 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
             return '?{}'.format(urlencode(params))
         return ''
 
+    # TODO: find a way to use the original queryset used to instantiate
+    # the serializer (`self.instance`) to get the children execucoes.
+    # I have already tried, but had many problems dealing with the distinc()
+    # (tried to find a way to move it from the views to here) and the way
+    # ListSerializer works.
     def _execucoes(self, obj):
-        all_time = self.context.get('all_time', False)
+        params = self.context['request'].GET
+        year = params.get('year', None)
+        fonte = params.get('fonte', None)
         execs = Execucao.objects.all()
-        if not all_time:
-            execs = execs.filter(year=obj.year)
+        if year:
+            execs = execs.filter(year=date(int(year), 1, 1))
+        if fonte:
+            execs = execs.filter(fonte_grupo_id=fonte)
         return execs
 
 
