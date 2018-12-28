@@ -51,11 +51,10 @@ window.addEventListener('load', function(){
         .attr('class', 'axis axis--y')
         .call(d3.axisLeft(y)
                 .tickSize(-parentWidth)
-                .tickFormat(d3.format('$,~d'))
+                .tickFormat(currency)
                 .tickValues(yTicks))
         .selectAll('text').attr('dy', '-0.4em')
                            .attr('x', '0');
-
 
     [serie1, serie2].forEach(function(serie, i){
         var line = d3.line()
@@ -63,7 +62,6 @@ window.addEventListener('load', function(){
             .curve(d3.curveMonotoneX)
             .x(d => x(year(d)))
             .y(d => y(serie(d)));
-
 
         let g = svg.append('g')
             .attr('class', 'serie_' + i)
@@ -81,15 +79,19 @@ window.addEventListener('load', function(){
             .classed(color(i), true)
             .attr('cx', line.x())
             .attr('cy', line.y())
-            .attr('r', 3.5);
+            .attr('r', 3.5)
+            .append('title').text(d => {
+                return `Ano: ${year(d)}\nValor: ${currency(serie(d))}`;
+            })
     });
+
 
     let legend = container.append('ul')
             .attr('class', 'legend')
 
     legend.append('li')
             .classed(color(1), true)
-            .text('Valor pago')
+            .text('Valor empenhado')
     legend.append('li')
             .classed(color(0), true)
             .text('Valor atualizado')

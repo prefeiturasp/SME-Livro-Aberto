@@ -12,6 +12,17 @@
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="{% static 'js/index.js' %}"></script>
   {%block head %}{% endblock %}
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-85250794-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-85250794-8');
+  </script>
+
 </head>
 <body>
   <header>
@@ -48,28 +59,28 @@
       <nav>
         <ul>
           <li>
-            <a href="https://www.facebook.com/EducaPrefSP">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.facebook.com/EducaPrefSP" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="https://twitter.com/educaprefsp">
+            <a href="https://twitter.com/educaprefsp" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="https://www.instagram.com/educaprefsp/">
+            <a href="https://www.instagram.com/educaprefsp/" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-instagram.svg' %}#icon-instagram"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="http://t.me/patiodigital">
+            <a href="https://telegram.me/share/url?url=http://t.me/patiodigital&text=SME-SP" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-telegram.svg' %}#icon-telegram"></use>
               </svg>
@@ -102,5 +113,6 @@
       </nav>
     </div>
   </footer>
+
 </body>
 </html>
