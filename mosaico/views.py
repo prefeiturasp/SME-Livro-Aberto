@@ -349,6 +349,11 @@ class DownloadView(generics.ListAPIView):
     def get_serializer_class(self):
         return SERIALIZERS_BY_SECTION[self.section]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['filters'] = self.request.query_params.dict()
+        return context
+
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False) \
             .order_by(self.distinct_field, 'year')
