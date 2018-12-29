@@ -161,8 +161,10 @@ class BaseTestCase(APITestCase):
         factory = RequestFactory()
         request = factory.get(self.base_url, data=query_params)
         serializer = self.serializer_class
+        filters = query_params
 
-        return serializer(execucoes, many=True, context={'request': request})
+        return serializer(execucoes, many=True,
+                          context={'request': request, 'filters': filters})
 
 
 class TestGruposListView(BaseTestCase):
@@ -361,6 +363,7 @@ class TestSubelementosListView(BaseTestCase):
              subgrupo=subgrupo,
              fonte_grupo__id=1,
              year=date(2018, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
              subelemento__id=2,
@@ -369,6 +372,7 @@ class TestSubelementosListView(BaseTestCase):
              subgrupo=subgrupo,
              fonte_grupo__id=1,
              year=date(2018, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
              subelemento__id=3,
@@ -377,6 +381,7 @@ class TestSubelementosListView(BaseTestCase):
              subgrupo=subgrupo,
              fonte_grupo__id=2,
              year=date(2018, 1, 1),
+             orcado_atualizado=1,
              _quantity=2)
 
     def test_serializes_execucoes_data(self):

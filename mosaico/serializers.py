@@ -88,10 +88,14 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
     # (tried to find a way to move it from the views to here) and the way
     # ListSerializer works.
     def _execucoes(self, obj):
-        params = self.context['request'].GET
-        year = params.get('year', None)
-        fonte = params.get('fonte', None)
         execs = Execucao.objects.all()
+        filters = self.context.get('filters')
+
+        if not filters:
+            return execs
+
+        year = filters.get('year', None)
+        fonte = filters.get('fonte', None)
         if year:
             execs = execs.filter(year=date(int(year), 1, 1))
         if fonte:

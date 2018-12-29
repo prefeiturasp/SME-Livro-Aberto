@@ -82,13 +82,20 @@ class BaseListView(generics.ListAPIView):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
+        self.filters = self.request.query_params.dict()
         year = self.request.query_params.get('year')
         if year:
             self.year = int(year)
             return queryset
         else:
             self.year = Execucao.objects.order_by('year').last().year.year
+            self.filters['year'] = self.year
             return queryset.filter(year__year=self.year)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['filters'] = self.filters
+        return context
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -126,10 +133,10 @@ class BaseListView(generics.ListAPIView):
         url_params = self.kwargs.copy()
 
         if filtered:
-            query_params = self.request.GET.dict()
-            query_params.pop('deflate', None)
-            query_params.pop('format', None)
-            params = {**url_params, **query_params}
+            filters = self.filters
+            filters.pop('deflate', None)
+            filters.pop('format', None)
+            params = {**url_params, **filters}
             params['filter'] = True
         else:
             params = {**url_params}
@@ -339,6 +346,19 @@ class DownloadView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoFilter
 
+    def get_serializer_class(self):
+        return SERIALIZERS_BY_SECTION[self.section]
+
+    def get_queryset(self):
+        return Execucao.objects.filter(subgrupo_id__isnull=False) \
+            .order_by(self.distinct_field, 'year')
+
+    def filter_queryset(self, qs):
+        qs = super().filter_queryset(qs)
+        if self.section == 'subelementos':
+            qs = qs.filter(subelemento__isnull=False)
+        return qs.distinct(self.distinct_field)
+
     def list(self, request, *args, **kwargs):
         self.section = self.kwargs['section']
         self.distinct_field = self._get_distinct_field_name()
@@ -356,19 +376,6 @@ class DownloadView(generics.ListAPIView):
         }
         response = Response(serializer.data, headers=headers)
         return response
-
-    def get_serializer_class(self):
-        return SERIALIZERS_BY_SECTION[self.section]
-
-    def get_queryset(self):
-        return Execucao.objects.filter(subgrupo_id__isnull=False) \
-            .order_by(self.distinct_field, 'year')
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        if self.section == 'subelementos':
-            qs = qs.filter(subelemento__isnull=False)
-        return qs.distinct(self.distinct_field)
 
     def _get_distinct_field_name(self):
         return DISTINCT_FIELD_BY_SECTION[self.section]
