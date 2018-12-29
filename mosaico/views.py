@@ -345,8 +345,7 @@ class DownloadView(generics.ListAPIView):
 
         queryset = self.filter_queryset(self.get_queryset())
 
-        serializer = self.get_serializer(queryset, many=True,
-                                         context={'all_time': True})
+        serializer = self.get_serializer(queryset, many=True)
 
         filename = f'mosaico_{self.kwargs["section"]}'
         if self.request.GET.get('filter'):
@@ -357,11 +356,6 @@ class DownloadView(generics.ListAPIView):
         }
         response = Response(serializer.data, headers=headers)
         return response
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['all_time'] = True
-        return context
 
     def get_serializer_class(self):
         return SERIALIZERS_BY_SECTION[self.section]
