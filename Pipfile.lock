@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ec2b615f7399f74daf2bc21f9cb6d3a83581922f39be996727c48eed823f2445"
+            "sha256": "e1c06dc1f9b2912aa6e8bde494496df9df49e48a0ee2d22baa1397b8c401d188"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -61,6 +61,13 @@
                 "sha256:63f76cbe1e7d12b94c357d7e54401103b2e52aef0f7c1650d6c820ad708776e5"
             ],
             "version": "==3.9.0"
+        },
+        "djangorestframework-csv": {
+            "hashes": [
+                "sha256:2f008b20a44f2d3c37835ea5b5ddfe19f54394f07b9cb267c616a917a7f7e27c"
+            ],
+            "index": "pypi",
+            "version": "==2.1.0"
         },
         "et-xmlfile": {
             "hashes": [
@@ -146,6 +153,12 @@
                 "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"
             ],
             "version": "==1.12.0"
+        },
+        "unicodecsv": {
+            "hashes": [
+                "sha256:018c08037d48649a0412063ff4eda26eaa81eff1546dbffa51fa5293276ff7fc"
+            ],
+            "version": "==0.14.1"
         },
         "whitenoise": {
             "hashes": [

@@ -1,3 +1,4 @@
+from datetime import date
 from functools import lru_cache
 from itertools import groupby
 from urllib.parse import urlencode
@@ -41,7 +42,7 @@ class TimeseriesSerializer:
         return ret
 
 
-class BaseSerializer(serializers.ModelSerializer):
+class BaseExecucaoSerializer(serializers.ModelSerializer):
 
     orcado_total = serializers.SerializerMethodField()
     empenhado_total = serializers.SerializerMethodField()
@@ -71,8 +72,8 @@ class BaseSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         # TODO: We need to test this
-        area = getattr(self.Meta, 'area')
-        return obj.get_url(area) + self._query_params
+        next_level = getattr(self.Meta, 'next_level')
+        return obj.get_url(next_level) + self._query_params
 
     @property
     def _query_params(self):
@@ -81,27 +82,49 @@ class BaseSerializer(serializers.ModelSerializer):
             return '?{}'.format(urlencode(params))
         return ''
 
+    # TODO: find a way to use the original queryset used to instantiate
+    # the serializer (`self.instance`) to get the children execucoes.
+    # I have already tried, but had many problems dealing with the distinc()
+    # (tried to find a way to move it from the views to here) and the way
+    # ListSerializer works.
+    def _execucoes(self, obj):
+        execs = Execucao.objects.all()
+        filters = self.context.get('filters')
+
+        if not filters:
+            return execs
+
+        year = filters.get('year', None)
+        fonte = filters.get('fonte', None)
+        if year:
+            execs = execs.filter(year=date(int(year), 1, 1))
+        if fonte:
+            execs = execs.filter(fonte_grupo_id=fonte)
+        return execs
+
 
 # `Simples` visualization serializers
 
-class GrupoSerializer(BaseSerializer):
+class GrupoSerializer(BaseExecucaoSerializer):
 
-    grupo_id = serializers.IntegerField(source='subgrupo.grupo_id', read_only=True)
+    grupo_id = serializers.IntegerField(source='subgrupo.grupo_id',
+                                        read_only=True)
     nome = serializers.CharField(source='subgrupo.grupo.desc', read_only=True)
 
     class Meta:
         model = Execucao
         fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'subgrupos'
+        next_level = 'subgrupos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subgrupo__grupo_id=obj.subgrupo.grupo_id)
+        execs = super()._execucoes(obj)
+        return execs.filter(
+            subgrupo__grupo_id=obj.subgrupo.grupo_id)
 
 
-class SubgrupoSerializer(BaseSerializer):
+class SubgrupoSerializer(BaseExecucaoSerializer):
 
     nome = serializers.CharField(source='subgrupo.desc', read_only=True)
 
@@ -109,15 +132,16 @@ class SubgrupoSerializer(BaseSerializer):
         model = Execucao
         fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'elementos'
+        next_level = 'elementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subgrupo_id=obj.subgrupo_id)
+        execs = super()._execucoes(obj)
+        return execs.filter(
+            subgrupo_id=obj.subgrupo_id)
 
 
-class ElementoSerializer(BaseSerializer):
+class ElementoSerializer(BaseExecucaoSerializer):
 
     nome = serializers.CharField(source='elemento.desc', read_only=True)
 
@@ -125,18 +149,20 @@ class ElementoSerializer(BaseSerializer):
         model = Execucao
         fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'subelementos'
+        next_level = 'subelementos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subgrupo_id=obj.subgrupo_id,
+        execs = super()._execucoes(obj)
+        return execs.filter(
+            subgrupo_id=obj.subgrupo_id,
             elemento_id=obj.elemento_id)
 
 
 class SubelementoSerializer(ElementoSerializer):
 
-    nome = serializers.CharField(source='subelemento_friendly.desc', read_only=True)
+    nome = serializers.CharField(source='subelemento_friendly.desc',
+                                 read_only=True)
 
     class Meta:
         model = Execucao
@@ -146,52 +172,53 @@ class SubelementoSerializer(ElementoSerializer):
 
 # `Técnico` visualization serializers
 
-class SubfuncaoSerializer(BaseSerializer):
+class SubfuncaoSerializer(BaseExecucaoSerializer):
 
     nome = serializers.CharField(source='subfuncao.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'subfuncao_id', 'nome', 'orcado_total',
+        fields = ('subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'programas'
+        next_level = 'programas'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subfuncao_id=obj.subfuncao_id)
+        execs = super()._execucoes(obj)
+        return execs.filter(subfuncao_id=obj.subfuncao_id)
 
 
-class ProgramaSerializer(BaseSerializer):
+class ProgramaSerializer(BaseExecucaoSerializer):
 
     nome = serializers.CharField(source='programa.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'programa_id', 'nome', 'orcado_total',
+        fields = ('programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
-        area = 'projetos'
+        next_level = 'projetos'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year, subfuncao_id=obj.subfuncao_id,
+        execs = super()._execucoes(obj)
+        return execs.filter(
+            subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id)
 
 
-class ProjetoAtividadeSerializer(BaseSerializer):
+class ProjetoAtividadeSerializer(BaseExecucaoSerializer):
 
     nome = serializers.CharField(source='projeto.desc', read_only=True)
 
     class Meta:
         model = Execucao
-        fields = ('id', 'projeto_id', 'nome', 'orcado_total',
+        fields = ('projeto_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        return Execucao.objects.filter(
-            year=obj.year,
+        execs = super()._execucoes(obj)
+        return execs.filter(
             subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id,
             projeto_id=obj.projeto_id)
