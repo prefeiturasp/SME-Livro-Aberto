@@ -56,6 +56,12 @@ form.query input[type=radio]:checked + label:first-of-type:after{
   right: -1.5em;
 }
 
+a.btn,
+a.btn:last-child {
+  margin: .5em 0;
+  width: 100%;
+}
+
 button, input[type=submit], .btn{
   border-radius: .2em;
   border-style: solid;
