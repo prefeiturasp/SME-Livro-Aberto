@@ -130,6 +130,7 @@ class TestBaseExecucaoSerializer:
             subgrupo__grupo__id=1,
             orcado_atualizado=cycle([50, 100, 150]),
             empenhado_liquido=cycle([5, 10, 15]),
+            fonte_grupo__id=1,
             year=date(2018, 1, 1),
             _quantity=3)
         return execucoes
@@ -137,7 +138,8 @@ class TestBaseExecucaoSerializer:
     @pytest.fixture
     def serializer(self):
         factory = RequestFactory()
-        request = factory.get(reverse('mosaico:grupos'))
+        request = factory.get(reverse('mosaico:grupos'),
+                              data={'year': 2018, 'fonte': 1})
 
         qs = Execucao.objects.all()
         return GrupoSerializer(qs, many=True,
@@ -169,7 +171,10 @@ class TestBaseExecucaoSerializer:
             _quantity=3)
 
         data = self.serializer().data
-        assert str(0) == str(data[0]['percentual_empenhado'])
+        assert 0 == data[0]['percentual_empenhado']
+
+    def test_query_params(self, execucoes, serializer):
+        assert '?year=2018&fonte=1' == serializer.child._query_params
 
     def test_serializers_are_subclasses(self):
         assert issubclass(GrupoSerializer, BaseExecucaoSerializer)
@@ -179,3 +184,15 @@ class TestBaseExecucaoSerializer:
         assert issubclass(SubfuncaoSerializer, BaseExecucaoSerializer)
         assert issubclass(ProgramaSerializer, BaseExecucaoSerializer)
         assert issubclass(ProjetoAtividadeSerializer, BaseExecucaoSerializer)
+
+
+class TestGrupoSerializer(TestBaseExecucaoSerializer):
+
+    def base_url(self, args=[]):
+        return reverse('mosaico:subgrupos', args=args)
+
+    def test_get_url(self, execucoes, serializer):
+        item = serializer.data[0]
+        expected = self.base_url([item['grupo_id']]) \
+            + serializer.child._query_params
+        assert expected == item['url']
