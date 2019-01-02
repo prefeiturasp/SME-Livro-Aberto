@@ -47,6 +47,11 @@ a.btn{
   text-decoration: none;
 }
 
+a.btn,
+a.btn:last-child {
+  text-align: center;
+}
+
 section#mosaico .breadcrumb{
   font-size: 2em;
 }
