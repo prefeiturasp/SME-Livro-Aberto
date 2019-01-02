@@ -71,7 +71,6 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
             return 0
 
     def get_url(self, obj):
-        # TODO: We need to test this
         next_level = getattr(self.Meta, 'next_level')
         return obj.get_url(next_level) + self._query_params
 

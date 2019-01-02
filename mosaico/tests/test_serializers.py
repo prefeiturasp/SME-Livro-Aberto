@@ -9,7 +9,7 @@ from model_mommy import mommy
 from django.test import RequestFactory
 from django.urls import reverse
 
-from budget_execution.models import Execucao
+from budget_execution.models import Execucao, Subgrupo
 from from_to_handler.models import Deflator
 from mosaico.serializers import (
     BaseExecucaoSerializer,
@@ -120,8 +120,36 @@ class TestTimeseriesSerializer:
         assert expected == serializer.data
 
 
+class BaseTestCase:
+
+    @pytest.fixture
+    def serializer(self):
+        query_params = {'year': 2018, 'fonte': 1}
+
+        factory = RequestFactory()
+        request = factory.get(self.base_url,
+                              data=query_params)
+        serializer = self.serializer_class
+        filters = query_params
+        qs = Execucao.objects.all()
+
+        return serializer(qs, many=True,
+                          context={'request': request,
+                                   'filters': filters})
+
+
 @pytest.mark.django_db
-class TestBaseExecucaoSerializer:
+class TestBaseExecucaoSerializer(BaseTestCase):
+
+    serializer_class = GrupoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:grupos')
+
+    @property
+    def next_level_base_url(self):
+        return reverse('mosaico:subgrupos', args=[1])
 
     @pytest.fixture
     def execucoes(self):
@@ -134,16 +162,6 @@ class TestBaseExecucaoSerializer:
             year=date(2018, 1, 1),
             _quantity=3)
         return execucoes
-
-    @pytest.fixture
-    def serializer(self):
-        factory = RequestFactory()
-        request = factory.get(reverse('mosaico:grupos'),
-                              data={'year': 2018, 'fonte': 1})
-
-        qs = Execucao.objects.all()
-        return GrupoSerializer(qs, many=True,
-                               context={'request': request})
 
     def test_get_orcado_total(self, execucoes, serializer):
         data = serializer.data
@@ -186,13 +204,124 @@ class TestBaseExecucaoSerializer:
         assert issubclass(ProjetoAtividadeSerializer, BaseExecucaoSerializer)
 
 
+def assert_get_url(testcase, execucoes, serializer):
+    item = serializer.data[0]
+    expected = testcase.next_level_base_url + serializer.child._query_params
+    return expected == item['url']
+
+
 class TestGrupoSerializer(TestBaseExecucaoSerializer):
 
-    def base_url(self, args=[]):
-        return reverse('mosaico:subgrupos', args=args)
+    def test_get_url(self, execucoes, serializer):
+        assert assert_get_url(self, execucoes, serializer)
+
+
+@pytest.mark.django_db
+class TestSubgrupoSerializer(BaseTestCase):
+
+    serializer_class = SubgrupoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:subgrupos', args=[1])
+
+    @property
+    def next_level_base_url(self):
+        return reverse('mosaico:elementos', args=[1, 1])
+
+    @pytest.fixture
+    def execucoes(self):
+        subgrupo = mommy.make(Subgrupo, id=1, grupo__id=1)
+        return mommy.make(
+            Execucao,
+            subgrupo=subgrupo,
+            fonte_grupo__id=1,
+            year=date(2018, 1, 1),
+            _quantity=2)
 
     def test_get_url(self, execucoes, serializer):
-        item = serializer.data[0]
-        expected = self.base_url([item['grupo_id']]) \
-            + serializer.child._query_params
-        assert expected == item['url']
+        assert assert_get_url(self, execucoes, serializer)
+
+
+@pytest.mark.django_db
+class TestElementoSerializer(BaseTestCase):
+
+    serializer_class = ElementoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:elementos', args=[1, 1])
+
+    @property
+    def next_level_base_url(self):
+        return reverse('mosaico:subelementos', args=[1, 1, 1])
+
+    @pytest.fixture
+    def execucoes(self):
+        subgrupo = mommy.make(Subgrupo, id=1, grupo__id=1)
+        return mommy.make(
+            Execucao,
+            subelemento__id=1,
+            subelemento_friendly__id=1,
+            elemento__id=1,
+            subgrupo=subgrupo,
+            fonte_grupo__id=1,
+            year=date(2018, 1, 1),
+            orcado_atualizado=1,
+            _quantity=2)
+
+    def test_get_url(self, execucoes, serializer):
+        assert assert_get_url(self, execucoes, serializer)
+
+
+@pytest.mark.django_db
+class TestSubfuncaoSerializer(BaseTestCase):
+
+    serializer_class = SubfuncaoSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:subfuncoes')
+
+    @property
+    def next_level_base_url(self):
+        return reverse('mosaico:programas', args=[1])
+
+    @pytest.fixture
+    def execucoes(self):
+        return mommy.make(
+            Execucao,
+            subfuncao__id=1,
+            fonte_grupo__id=1,
+            year=date(2018, 1, 1),
+            _quantity=2)
+
+    def test_get_url(self, execucoes, serializer):
+        assert assert_get_url(self, execucoes, serializer)
+
+
+@pytest.mark.django_db
+class TestProgramaSerializer(BaseTestCase):
+
+    serializer_class = ProgramaSerializer
+
+    @property
+    def base_url(self):
+        return reverse('mosaico:programas', args=[1])
+
+    @property
+    def next_level_base_url(self):
+        return reverse('mosaico:projetos', args=[1, 1])
+
+    @pytest.fixture
+    def execucoes(self):
+        return mommy.make(
+            Execucao,
+            programa__id=1,
+            subfuncao__id=1,
+            fonte_grupo__id=1,
+            year=date(2018, 1, 1),
+            _quantity=2)
+
+    def test_get_url(self, execucoes, serializer):
+        assert assert_get_url(self, execucoes, serializer)
