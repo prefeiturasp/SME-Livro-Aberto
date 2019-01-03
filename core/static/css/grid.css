@@ -194,6 +194,7 @@ tr > *:first-child::before{
 
   #mosaico footer {
     flex-direction: row;
+    justify-content: space-between;
   }
 }
 

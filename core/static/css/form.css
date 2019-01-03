@@ -114,20 +114,21 @@ select::-ms-expand {
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
   .actions {
     flex: inherit;
+    align-items: flex-start;
   }
-
   a.btn {
     margin-right: .5em;
+    white-space: nowrap;
   }
   a.btn:last-child {
     margin-right: 0;
   }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
