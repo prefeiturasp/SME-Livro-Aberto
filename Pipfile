@@ -15,12 +15,14 @@ django-extensions = "*"
 django-rest-framework = "*"
 django-filter = "*"
 djangorestframework-csv = "*"
+pip = "==18.0"
 
 [dev-packages]
 ipdb = "*"
 model-mommy = "*"
 pytest = "*"
 pytest-django = "*"
+pytest-freezegun = "*"
 
 [requires]
 python_version = "3.7"
