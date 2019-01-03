@@ -14,13 +14,12 @@ body > *{
 
 header{
   padding: 7em 1em 3em;
-  height: 15em;
 }
 
 header h1,
 header h1 + p{
   text-align: center;
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
 header nav{
@@ -97,8 +96,12 @@ fieldset{
 
 section footer{
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+}
+
+.legend img {
+  max-width: 100%;
+  height: auto;
 }
 
 footer nav *{
@@ -107,7 +110,8 @@ footer nav *{
 
 footer ul{
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   padding: 0;
 }
 
@@ -118,6 +122,10 @@ footer li{
 body > footer img{
   height: 12em;
   width: 15em;
+}
+
+#data-table div{
+  overflow-x: auto;
 }
 
 table{
@@ -162,4 +170,41 @@ tr > *:first-child::before{
 
 .chart svg{
   width: 100%;
+}
+
+
+/* Extra small devices (portrait phones, less than 576px) */
+/* No media query since this is the default in Bootstrap */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  h1 {
+    font-size: 5em;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  footer ul{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0;
+  }
+
+  #mosaico footer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  footer ul {
+    justify-content: space-between;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }

@@ -56,6 +56,12 @@ form.query input[type=radio]:checked + label:first-of-type:after{
   right: -1.5em;
 }
 
+a.btn,
+a.btn:last-child {
+  margin: .5em 0;
+  width: 100%;
+}
+
 button, input[type=submit], .btn{
   border-radius: .2em;
   border-style: solid;
@@ -89,4 +95,42 @@ select{
 
 select::-ms-expand {
   display: none;
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+/* No media query since this is the default in Bootstrap */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .actions {
+    display: flex;
+    flex: 1;
+  }
+  a.btn,
+  a.btn:last-child {
+    margin: .5em;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .actions {
+    flex: inherit;
+    align-items: flex-start;
+  }
+  a.btn {
+    margin-right: .5em;
+    white-space: nowrap;
+  }
+  a.btn:last-child {
+    margin-right: 0;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }
