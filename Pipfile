@@ -15,7 +15,6 @@ django-extensions = "*"
 django-rest-framework = "*"
 django-filter = "*"
 djangorestframework-csv = "*"
-pip = "==18.0"
 
 [dev-packages]
 ipdb = "*"
