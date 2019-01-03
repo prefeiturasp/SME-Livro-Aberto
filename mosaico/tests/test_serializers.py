@@ -215,7 +215,8 @@ class TestBaseExecucaoSerializer(BaseTestCase):
             year=date(2019, 1, 1),
             _quantity=3)
 
-        data = self.serializer().data
+        qs = Execucao.objects.all().order_by('subgrupo__grupo__id')
+        data = self.get_serializer(qs).data
         assert 0 == data[0]['percentual_empenhado']
 
     def test_query_params(self, execucoes, serializer):
@@ -258,7 +259,8 @@ class TestSubgrupoSerializer(BaseTestCase):
 
     @pytest.fixture
     def serializer(self):
-        qs = Execucao.objects.filter(subgrupo__grupo__id=1)
+        qs = Execucao.objects.filter(subgrupo__grupo__id=1) \
+            .order_by('subgrupo_id')
         return self.get_serializer(qs)
 
     @pytest.fixture
