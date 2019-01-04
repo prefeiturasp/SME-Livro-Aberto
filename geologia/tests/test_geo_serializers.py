@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import Execucao, Subfuncao
+from budget_execution.models import Execucao, Subfuncao, Subgrupo
 from geologia.serializers import GeologiaSerializer
 
 
@@ -220,11 +220,11 @@ class TestGeologiaSerializerPrograma:
 
 
 @pytest.mark.django_db
-class TestGeologiaSerializerSubfuncao:
+class TestGeologiaSerializerSubgrupo:
 
-    @patch.object(GeologiaSerializer, 'get_subfuncao_year_empenhado_data')
-    @patch.object(GeologiaSerializer, 'get_subfuncao_year_orcado_data')
-    def test_prepare_subfuncao_data(self, mock_orcado, mock_empenhado):
+    @patch.object(GeologiaSerializer, 'get_subgrupo_year_empenhado_data')
+    @patch.object(GeologiaSerializer, 'get_subgrupo_year_orcado_data')
+    def test_prepare_subgrupo_data(self, mock_orcado, mock_empenhado):
         mock_orcado.return_value = 'mock_o'
         mock_empenhado.return_value = 'mock_e'
 
@@ -239,7 +239,7 @@ class TestGeologiaSerializerSubfuncao:
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer(execucoes)
-        ret = serializer.prepare_subfuncao_data()
+        ret = serializer.prepare_subgrupo_data()
 
         expected = {
             'orcado': ['mock_o', 'mock_o'],
@@ -254,116 +254,116 @@ class TestGeologiaSerializerSubfuncao:
         for exec_year, call in zip(execs, mock_empenhado.mock_calls):
             assert set(exec_year) == set(call[1][0])
 
-    @patch.object(GeologiaSerializer, 'get_subfuncao_orcado_data')
-    def test_get_subfuncao_year_orcado_data(self, mock_orcado):
+    @patch.object(GeologiaSerializer, 'get_subgrupo_orcado_data')
+    def test_get_subgrupo_year_orcado_data(self, mock_orcado):
         mock_orcado.return_value = 'mock_o'
 
         year = date(2018, 1, 1)
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subfuncao__id=1,
+            subgrupo__id=1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subfuncao__id=2,
+            subgrupo__id=2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_subfuncao_year_orcado_data(execucoes)
+        ret = serializer.get_subgrupo_year_orcado_data(execucoes)
 
         expected = {
             'year': year.strftime('%Y'),
-            'subfuncoes': ['mock_o', 'mock_o'],
+            'subgrupos': ['mock_o', 'mock_o'],
         }
 
         assert expected == ret
 
         execs = [execs_sub1, execs_sub2]
-        for exec_subfuncao, call in zip(execs, mock_orcado.mock_calls):
-            assert set(exec_subfuncao) == set(call[1][0])
+        for exec_subgrupo, call in zip(execs, mock_orcado.mock_calls):
+            assert set(exec_subgrupo) == set(call[1][0])
 
-    @patch.object(GeologiaSerializer, 'get_subfuncao_empenhado_data')
-    def test_get_subfuncao_year_empenhado_data(self, mock_empenhado):
+    @patch.object(GeologiaSerializer, 'get_subgrupo_empenhado_data')
+    def test_get_subgrupo_year_empenhado_data(self, mock_empenhado):
         mock_empenhado.return_value = 'mock_e'
 
         year = date(2018, 1, 1)
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subfuncao__id=1,
+            subgrupo__id=1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subfuncao__id=2,
+            subgrupo__id=2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_subfuncao_year_empenhado_data(execucoes)
+        ret = serializer.get_subgrupo_year_empenhado_data(execucoes)
 
         expected = {
             'year': year.strftime('%Y'),
-            'subfuncoes': ['mock_e', 'mock_e'],
+            'subgrupos': ['mock_e', 'mock_e'],
         }
 
         assert expected == ret
 
         execs = [execs_sub1, execs_sub2]
-        for exec_subfuncao, call in zip(execs, mock_empenhado.mock_calls):
-            assert set(exec_subfuncao) == set(call[1][0])
+        for exec_subgrupo, call in zip(execs, mock_empenhado.mock_calls):
+            assert set(exec_subgrupo) == set(call[1][0])
 
     @patch.object(GeologiaSerializer, "_get_orcado_gnds_list",
                   Mock(return_value=[]))
-    def test_get_subfuncao_orcado_data(self, orcado_fixture):
+    def test_get_subgrupo_orcado_data(self, orcado_fixture):
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
-        subfuncao = mommy.make(Subfuncao)
+        subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
             year=year,
             orcado_atualizado=cycle([gnd['orcado'] for gnd in gnds]),
-            subfuncao=subfuncao,
+            subgrupo=subgrupo,
             _quantity=3)
         execucoes = Execucao.objects.all()
 
         expected = {
-            "subfuncao": subfuncao.desc,
+            "subgrupo": subgrupo.desc,
             "total": orcado_total,
             "gnds": [],
         }
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_subfuncao_orcado_data(execucoes)
+        ret = serializer.get_subgrupo_orcado_data(execucoes)
 
         assert expected == ret
 
     @patch.object(GeologiaSerializer, "_get_empenhado_gnds_list",
                   Mock(return_value=[]))
-    def test_get_subfuncao_empenhado_data(self, empenhado_fixture):
+    def test_get_subgrupo_empenhado_data(self, empenhado_fixture):
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
-        subfuncao = mommy.make(Subfuncao)
+        subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
             year=year,
             empenhado_liquido=cycle([gnd['empenhado'] for gnd in gnds]),
-            subfuncao=subfuncao,
+            subgrupo=subgrupo,
             _quantity=3)
         execucoes = Execucao.objects.all()
 
         expected = {
-            'subfuncao': subfuncao.desc,
+            'subgrupo': subgrupo.desc,
             "total": empenhado_total,
             "gnds": [],
         }
 
         serializer = GeologiaSerializer([])
-        ret = serializer.get_subfuncao_empenhado_data(execucoes)
+        ret = serializer.get_subgrupo_empenhado_data(execucoes)
 
         assert expected == ret

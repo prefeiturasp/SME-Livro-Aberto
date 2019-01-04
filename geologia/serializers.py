@@ -12,7 +12,7 @@ class GeologiaSerializer:
         return {
             'camadas': self.prepare_data(),
             'programa': self.prepare_data(programa_id=self._programa_id),
-            'subfuncao': self.prepare_subfuncao_data(),
+            'subgrupo': self.prepare_subgrupo_data(),
         }
 
     # Charts 1 and 2 (camadas and programa)
@@ -73,8 +73,8 @@ class GeologiaSerializer:
             "gnds": empenhado_gnds,
         }
 
-    # Chart 3: Subfuncao
-    def prepare_subfuncao_data(self):
+    # Chart 3: Subgrupo
+    def prepare_subgrupo_data(self):
         qs = self.queryset
 
         years = qs.order_by('year').values('year').distinct()
@@ -87,48 +87,48 @@ class GeologiaSerializer:
             year = year_dict['year']
             year_qs = qs.filter(year=year)
 
-            ret['orcado'].append(self.get_subfuncao_year_orcado_data(year_qs))
+            ret['orcado'].append(self.get_subgrupo_year_orcado_data(year_qs))
             ret['empenhado'].append(
-                self.get_subfuncao_year_empenhado_data(year_qs))
+                self.get_subgrupo_year_empenhado_data(year_qs))
 
         return ret
 
-    def get_subfuncao_year_orcado_data(self, qs):
+    def get_subgrupo_year_orcado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
             .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
-            'subfuncoes': [],
+            'subgrupos': [],
         }
 
-        for subfuncao in subfuncoes:
-            qs_subfuncao = qs.filter(subfuncao=subfuncao['subfuncao_id'])
-            ret['subfuncoes'].append(
-                self.get_subfuncao_orcado_data(qs_subfuncao))
+        for subgrupo in subgrupos:
+            qs_subgrupo = qs.filter(subgrupo=subgrupo['subgrupo_id'])
+            ret['subgrupos'].append(
+                self.get_subgrupo_orcado_data(qs_subgrupo))
 
         return ret
 
-    def get_subfuncao_year_empenhado_data(self, qs):
+    def get_subgrupo_year_empenhado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
             .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
-            'subfuncoes': [],
+            'subgrupos': [],
         }
 
-        for subfuncao in subfuncoes:
-            qs_subfuncao = qs.filter(subfuncao=subfuncao['subfuncao_id'])
-            ret['subfuncoes'].append(
-                self.get_subfuncao_empenhado_data(qs_subfuncao))
+        for subgrupo in subgrupos:
+            qs_subgrupo = qs.filter(subgrupo=subgrupo['subgrupo_id'])
+            ret['subgrupos'].append(
+                self.get_subgrupo_empenhado_data(qs_subgrupo))
 
         return ret
 
-    def get_subfuncao_orcado_data(self, qs):
-        subfuncao = qs[0].subfuncao
+    def get_subgrupo_orcado_data(self, qs):
+        subgrupo = qs[0].subgrupo
 
         orcado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(orcado=Sum('orcado_atualizado'))
@@ -138,13 +138,13 @@ class GeologiaSerializer:
         orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
 
         return {
-            "subfuncao": subfuncao.desc,
+            "subgrupo": subgrupo.desc,
             "total": orcado_total,
             "gnds": orcado_gnds,
         }
 
-    def get_subfuncao_empenhado_data(self, qs):
-        subfuncao = qs[0].subfuncao
+    def get_subgrupo_empenhado_data(self, qs):
+        subgrupo = qs[0].subgrupo
 
         empenhado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(empenhado=Sum('empenhado_liquido'))
@@ -155,7 +155,7 @@ class GeologiaSerializer:
                                                        empenhado_total)
 
         return {
-            "subfuncao": subfuncao.desc,
+            "subgrupo": subgrupo.desc,
             "total": empenhado_total,
             "gnds": empenhado_gnds,
         }
