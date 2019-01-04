@@ -15,16 +15,25 @@ class TestHomeView(APITestCase):
         return self.client.get(url)
 
     def test_serializes_geologia_data(self):
-        mommy.make(Execucao, _quantity=2)
+        mommy.make(Execucao, subgrupo__id=1, _quantity=2)
         execucoes = Execucao.objects.all()
         serializer = GeologiaSerializer(execucoes)
 
         response = self.get()
         assert serializer.data == response.data
 
+    def test_filters_execucoes_without_subgrupo(self):
+        mommy.make(Execucao, subgrupo=None, _quantity=2)
+        mommy.make(Execucao, subgrupo__id=1, _quantity=2)
+        execucoes = Execucao.objects.filter(subgrupo__isnull=False)
+        serializer = GeologiaSerializer(execucoes)
+
+        response = self.get()
+        assert serializer.data == response.data
+
     def test_serializes_geologia_data_with_programa(self):
-        mommy.make(Execucao, programa__id=1, _quantity=2)
-        mommy.make(Execucao, programa__id=2, _quantity=1)
+        mommy.make(Execucao, subgrupo__id=1, programa__id=1, _quantity=2)
+        mommy.make(Execucao, subgrupo__id=1, programa__id=2, _quantity=1)
         execucoes = Execucao.objects.all()
 
         serializer = GeologiaSerializer(execucoes, programa_id=1)

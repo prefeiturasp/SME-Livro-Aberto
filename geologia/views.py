@@ -9,7 +9,7 @@ from geologia.serializers import GeologiaSerializer
 class HomeView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     template_name = 'geologia/base.html'
-    queryset = Execucao.objects.all()
+    queryset = Execucao.objects.filter(subgrupo__isnull=False)
     serializer_class = GeologiaSerializer
 
     def list(self, request):
