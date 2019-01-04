@@ -174,38 +174,38 @@ class TestGeologiaSerializerCamadas:
 
 
 @pytest.mark.django_db
-class TestGeologiaSerializerPrograma:
+class TestGeologiaSerializerSubfuncao:
 
     @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
     @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
-    def test_prepare_programa_data(self, mock_orcado, mock_empenhado):
+    def test_prepare_subfuncao_data(self, mock_orcado, mock_empenhado):
         mock_orcado.return_value = 'mock_o'
         mock_empenhado.return_value = 'mock_e'
 
-        programa_id = 1
+        subfuncao_id = 1
 
         execs_2017_p1 = mommy.make(
             Execucao,
             year=date(2017, 1, 1),
-            programa__id=programa_id,
+            subfuncao__id=subfuncao_id,
             _quantity=2)
-        mommy.make(Execucao, year=date(2017, 1, 1), programa__id=2,
+        mommy.make(Execucao, year=date(2017, 1, 1), subfuncao__id=2,
                    _quantity=2)
         execs_2018_p1 = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
-            programa__id=programa_id,
+            subfuncao__id=subfuncao_id,
             _quantity=2)
-        mommy.make(Execucao, year=date(2018, 1, 1), programa__id=2,
+        mommy.make(Execucao, year=date(2018, 1, 1), subfuncao__id=2,
                    _quantity=2)
 
         execucoes = Execucao.objects.all()
 
-        serializer = GeologiaSerializer(execucoes, programa_id=programa_id)
-        ret = serializer.prepare_data(programa_id=programa_id)
+        serializer = GeologiaSerializer(execucoes, subfuncao_id=subfuncao_id)
+        ret = serializer.prepare_data(subfuncao_id=subfuncao_id)
 
         expected = {
-            'programa_id': programa_id,
+            'subfuncao_id': subfuncao_id,
             'orcado': ['mock_o', 'mock_o'],
             'empenhado': ['mock_e', 'mock_e'],
         }

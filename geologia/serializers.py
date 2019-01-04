@@ -3,20 +3,20 @@ from django.db.models import Sum
 
 class GeologiaSerializer:
 
-    def __init__(self, queryset, programa_id=None, *args, **kwargs):
+    def __init__(self, queryset, subfuncao_id=None, *args, **kwargs):
         self.queryset = queryset
-        self._programa_id = int(programa_id) if programa_id else programa_id
+        self._subfuncao_id = int(subfuncao_id) if subfuncao_id else subfuncao_id
 
     @property
     def data(self):
         return {
             'camadas': self.prepare_data(),
-            'programa': self.prepare_data(programa_id=self._programa_id),
+            'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
             'subgrupo': self.prepare_subgrupo_data(),
         }
 
-    # Charts 1 and 2 (camadas and programa)
-    def prepare_data(self, programa_id=None):
+    # Charts 1 and 2 (camadas and subfuncao)
+    def prepare_data(self, subfuncao_id=None):
         qs = self.queryset
 
         ret = {
@@ -24,10 +24,10 @@ class GeologiaSerializer:
             'empenhado': [],
         }
 
-        # filtering for chart 2 (by programa)
-        if programa_id:
-            qs = qs.filter(programa_id=programa_id)
-            ret['programa_id'] = programa_id
+        # filtering for chart 2 (by subfuncao)
+        if subfuncao_id:
+            qs = qs.filter(subfuncao_id=subfuncao_id)
+            ret['subfuncao_id'] = subfuncao_id
 
         years = qs.order_by('year').values('year').distinct()
 
