@@ -21,6 +21,7 @@
   padding-left: 1em;
   white-space: nowrap;
   text-overflow: clip;
+  width: fit-content;
 }
 .treemap > li .name{
   font-weight: 700;

@@ -40,4 +40,14 @@ window.addEventListener('load', function(){
 
     each(setNodeStyle, nodes.children)
     each(setToolTip,nodes.children)
+
+    let leafs = document.querySelectorAll('.treemap li');
+    for(let leaf of leafs) {
+        let children = leaf.children[0];
+        let labelName = children.children[1];
+        
+        if(labelName.offsetWidth >= parseInt(getComputedStyle(leaf)['width'])){
+            children.style.display = "none";
+        }
+    }
 })
