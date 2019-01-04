@@ -14,6 +14,6 @@ class HomeView(generics.ListAPIView):
 
     def list(self, request):
         qs = self.get_queryset()
-        programa_id = self.request.GET.get('programa_id', None)
-        serializer = self.get_serializer(qs, programa_id=programa_id)
+        subfuncao_id = self.request.GET.get('subfuncao_id', None)
+        serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)
