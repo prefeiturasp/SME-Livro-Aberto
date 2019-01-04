@@ -23,9 +23,9 @@
       <form action="#mosaico" name="filter" method="get" class="query">
       <fieldset>
         <div class="form-item switch">
-          <input class="radio" type="radio" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
+          <input class="checkbox" type="checkbox" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
           <label for="simple">Visão simplificada</label>
-          <input class="radio" type="radio" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
+          <input class="checkbox" type="checkbox" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
           <label for="pro">Visão técnica</label>
         </div>
         <div class="form-item">
