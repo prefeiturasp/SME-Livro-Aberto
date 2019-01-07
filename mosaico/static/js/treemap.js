@@ -39,15 +39,15 @@ window.addEventListener('load', function(){
                             .sort((a, b) => b.value - a.value));
 
     each(setNodeStyle, nodes.children)
-    each(setToolTip,nodes.children)
+    each(setToolTip, nodes.children)
 
-    let leafs = document.querySelectorAll('.treemap li');
-    for(let leaf of leafs) {
-        let children = leaf.children[0];
-        let labelName = children.children[1];
-        
-        if(labelName.offsetWidth >= parseInt(getComputedStyle(leaf)['width'])){
-            children.style.display = "none";
+    function hideOverdflowingLabels(node){
+        let element = node.data
+        let children = element.firstElementChild;
+
+        if(children.offsetWidth > element.offsetWidth){
+            children.className = "hidden-content";
         }
     }
+    each(hideOverdflowingLabels, nodes.children)
 })
