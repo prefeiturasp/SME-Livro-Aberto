@@ -31,7 +31,7 @@ window.addEventListener('load', function(event){
         tooltipDiv.style.left = `${event.clientX + 15}px`;
 
         node.data.addEventListener("mousemove", event => {
-            tooltipDiv.innerHTML = node.data.innerText;
+            tooltipDiv.innerHTML = node.data.innerText.replace(/\n/g,'<br>');
             let tooltipWidth = parseInt(getComputedStyle(tooltipDiv)['width']);
             tooltipDiv.style.top = `${event.clientY - 15}px`;
             tooltipDiv.style.padding = "15px";
