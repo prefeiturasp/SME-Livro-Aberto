@@ -22,7 +22,30 @@ window.addEventListener('load', function(){
     }
 
     function setToolTip(node) {
-        node.data.title = node.data.innerText;
+        let tooltipDiv = document.querySelector("#tooltip");
+        let width = window.innerWidth || 
+                    document.documentElement.clientWidth || 
+                    document.body.clientWidth;
+        
+        width /= 2;
+        tooltipDiv.style.left = `${event.clientX + 15}px`;
+
+        node.data.addEventListener("mousemove", event => {
+            tooltipDiv.innerHTML = node.data.innerText;
+            let tooltipWidth = parseInt(getComputedStyle(tooltipDiv)['width']);
+            tooltipDiv.style.top = `${event.clientY - 15}px`;
+            tooltipDiv.style.padding = "15px";
+
+            if(event.clientX > width) {
+                tooltipDiv.style.left = `${event.clientX - tooltipWidth - 40}px`;
+            } else {
+                tooltipDiv.style.left = `${event.clientX + 30}px`;
+            }
+        });
+        node.data.addEventListener("mouseout", () => {
+            tooltipDiv.innerHTML = "";
+            tooltipDiv.style.padding = "0";
+        });
     }
 
     let rootEl = document.querySelector('.treemap');
