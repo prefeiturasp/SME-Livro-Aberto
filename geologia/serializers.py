@@ -3,20 +3,20 @@ from django.db.models import Sum
 
 class GeologiaSerializer:
 
-    def __init__(self, queryset, programa_id=None, *args, **kwargs):
+    def __init__(self, queryset, subfuncao_id=None, *args, **kwargs):
         self.queryset = queryset
-        self._programa_id = int(programa_id) if programa_id else programa_id
+        self._subfuncao_id = int(subfuncao_id) if subfuncao_id else subfuncao_id
 
     @property
     def data(self):
         return {
             'camadas': self.prepare_data(),
-            'programa': self.prepare_data(programa_id=self._programa_id),
-            'subfuncao': self.prepare_subfuncao_data(),
+            'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
+            'subgrupo': self.prepare_subgrupo_data(),
         }
 
-    # Charts 1 and 2 (camadas and programa)
-    def prepare_data(self, programa_id=None):
+    # Charts 1 and 2 (camadas and subfuncao)
+    def prepare_data(self, subfuncao_id=None):
         qs = self.queryset
 
         ret = {
@@ -24,10 +24,10 @@ class GeologiaSerializer:
             'empenhado': [],
         }
 
-        # filtering for chart 2 (by programa)
-        if programa_id:
-            qs = qs.filter(programa_id=programa_id)
-            ret['programa_id'] = programa_id
+        # filtering for chart 2 (by subfuncao)
+        if subfuncao_id:
+            qs = qs.filter(subfuncao_id=subfuncao_id)
+            ret['subfuncao_id'] = subfuncao_id
 
         years = qs.order_by('year').values('year').distinct()
 
@@ -73,8 +73,8 @@ class GeologiaSerializer:
             "gnds": empenhado_gnds,
         }
 
-    # Chart 3: Subfuncao
-    def prepare_subfuncao_data(self):
+    # Chart 3: Subgrupo
+    def prepare_subgrupo_data(self):
         qs = self.queryset
 
         years = qs.order_by('year').values('year').distinct()
@@ -87,48 +87,48 @@ class GeologiaSerializer:
             year = year_dict['year']
             year_qs = qs.filter(year=year)
 
-            ret['orcado'].append(self.get_subfuncao_year_orcado_data(year_qs))
+            ret['orcado'].append(self.get_subgrupo_year_orcado_data(year_qs))
             ret['empenhado'].append(
-                self.get_subfuncao_year_empenhado_data(year_qs))
+                self.get_subgrupo_year_empenhado_data(year_qs))
 
         return ret
 
-    def get_subfuncao_year_orcado_data(self, qs):
+    def get_subgrupo_year_orcado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
             .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
-            'subfuncoes': [],
+            'subgrupos': [],
         }
 
-        for subfuncao in subfuncoes:
-            qs_subfuncao = qs.filter(subfuncao=subfuncao['subfuncao_id'])
-            ret['subfuncoes'].append(
-                self.get_subfuncao_orcado_data(qs_subfuncao))
+        for subgrupo in subgrupos:
+            qs_subgrupo = qs.filter(subgrupo=subgrupo['subgrupo_id'])
+            ret['subgrupos'].append(
+                self.get_subgrupo_orcado_data(qs_subgrupo))
 
         return ret
 
-    def get_subfuncao_year_empenhado_data(self, qs):
+    def get_subgrupo_year_empenhado_data(self, qs):
         year = qs[0].year
-        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
             .distinct()
 
         ret = {
             'year': year.strftime('%Y'),
-            'subfuncoes': [],
+            'subgrupos': [],
         }
 
-        for subfuncao in subfuncoes:
-            qs_subfuncao = qs.filter(subfuncao=subfuncao['subfuncao_id'])
-            ret['subfuncoes'].append(
-                self.get_subfuncao_empenhado_data(qs_subfuncao))
+        for subgrupo in subgrupos:
+            qs_subgrupo = qs.filter(subgrupo=subgrupo['subgrupo_id'])
+            ret['subgrupos'].append(
+                self.get_subgrupo_empenhado_data(qs_subgrupo))
 
         return ret
 
-    def get_subfuncao_orcado_data(self, qs):
-        subfuncao = qs[0].subfuncao
+    def get_subgrupo_orcado_data(self, qs):
+        subgrupo = qs[0].subgrupo
 
         orcado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(orcado=Sum('orcado_atualizado'))
@@ -138,13 +138,13 @@ class GeologiaSerializer:
         orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
 
         return {
-            "subfuncao": subfuncao.desc,
+            "subgrupo": subgrupo.desc,
             "total": orcado_total,
             "gnds": orcado_gnds,
         }
 
-    def get_subfuncao_empenhado_data(self, qs):
-        subfuncao = qs[0].subfuncao
+    def get_subgrupo_empenhado_data(self, qs):
+        subgrupo = qs[0].subgrupo
 
         empenhado_by_gnd = qs.values('gnd_gealogia__desc') \
             .annotate(empenhado=Sum('empenhado_liquido'))
@@ -155,7 +155,7 @@ class GeologiaSerializer:
                                                        empenhado_total)
 
         return {
-            "subfuncao": subfuncao.desc,
+            "subgrupo": subgrupo.desc,
             "total": empenhado_total,
             "gnds": empenhado_gnds,
         }
