@@ -6,7 +6,7 @@
 }
 .treemap a{
   text-decoration: none;
-  display: block;
+  display: table;
   height: 100%;
 }
 .treemap > li{
@@ -21,7 +21,6 @@
   padding-left: 1em;
   white-space: nowrap;
   text-overflow: clip;
-  width: fit-content;
 }
 .treemap > li .name{
   font-weight: 700;
