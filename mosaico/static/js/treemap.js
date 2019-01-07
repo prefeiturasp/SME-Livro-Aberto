@@ -25,6 +25,15 @@ window.addEventListener('load', function(){
         node.data.title = node.data.innerText;
     }
 
+    function hideOverdflowingLabels(node){
+        let element = node.data
+        let children = element.firstElementChild;
+
+        if(children.offsetWidth > element.offsetWidth){
+            children.className = "hidden-content";
+        }
+    }
+
     let rootEl = document.querySelector('.treemap');
     let root = d3.hierarchy(rootEl, d => d.children);
     let width = parseInt(getComputedStyle(rootEl)['width']);
@@ -39,5 +48,6 @@ window.addEventListener('load', function(){
                             .sort((a, b) => b.value - a.value));
 
     each(setNodeStyle, nodes.children)
-    each(setToolTip,nodes.children)
+    each(setToolTip, nodes.children)
+    each(hideOverdflowingLabels, nodes.children)
 })
