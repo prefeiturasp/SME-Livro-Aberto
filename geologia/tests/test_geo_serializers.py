@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import Execucao, Subfuncao, Subgrupo
+from budget_execution.models import Execucao, Subgrupo
 from geologia.serializers import GeologiaSerializer
 
 
@@ -253,6 +253,38 @@ class TestGeologiaSerializerSubgrupo:
             assert set(exec_year) == set(call[1][0])
         for exec_year, call in zip(execs, mock_empenhado.mock_calls):
             assert set(exec_year) == set(call[1][0])
+
+    @patch.object(GeologiaSerializer, 'get_subgrupo_year_empenhado_data')
+    @patch.object(GeologiaSerializer, 'get_subgrupo_year_orcado_data')
+    def test_filters_data_before_2010(self, mock_orcado, mock_empenhado):
+        mock_orcado.return_value = 'mock_o'
+        mock_empenhado.return_value = 'mock_e'
+
+        # not expected
+        mommy.make(
+            Execucao,
+            year=date(2009, 1, 1))
+
+        exec_2010 = mommy.make(
+            Execucao,
+            year=date(2010, 1, 1))
+        execucoes = Execucao.objects.all()
+
+        serializer = GeologiaSerializer(execucoes)
+        ret = serializer.prepare_subgrupo_data()
+
+        expected = {
+            'orcado': ['mock_o'],
+            'empenhado': ['mock_e'],
+        }
+
+        assert expected == ret
+
+        assert 1 == mock_orcado.call_count
+        assert [exec_2010] == list(mock_orcado.call_args[0][0])
+
+        assert 1 == mock_empenhado.call_count
+        assert [exec_2010] == list(mock_empenhado.call_args[0][0])
 
     @patch.object(GeologiaSerializer, 'get_subgrupo_orcado_data')
     def test_get_subgrupo_year_orcado_data(self, mock_orcado):

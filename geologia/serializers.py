@@ -75,7 +75,7 @@ class GeologiaSerializer:
 
     # Chart 3: Subgrupo
     def prepare_subgrupo_data(self):
-        qs = self.queryset
+        qs = self.queryset.filter(year__year__gte=2010)
 
         years = qs.order_by('year').values('year').distinct()
 

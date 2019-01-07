@@ -31,7 +31,7 @@ class TestHomeView(APITestCase):
         response = self.get()
         assert serializer.data == response.data
 
-    def test_serializes_geologia_data_with_programa(self):
+    def test_serializes_geologia_data_with_subfuncao(self):
         mommy.make(Execucao, subgrupo__id=1, subfuncao__id=1, _quantity=2)
         mommy.make(Execucao, subgrupo__id=1, subfuncao__id=2, _quantity=1)
         execucoes = Execucao.objects.all()
