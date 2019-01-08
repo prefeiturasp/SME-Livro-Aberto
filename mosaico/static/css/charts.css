@@ -98,4 +98,5 @@ text{
   text-transform: uppercase;
   background: #5f6b6d;
   color: #fff;
+  pointer-events: none;
 }
