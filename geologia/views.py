@@ -9,11 +9,11 @@ from geologia.serializers import GeologiaSerializer
 class HomeView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     template_name = 'geologia/base.html'
-    queryset = Execucao.objects.all()
+    queryset = Execucao.objects.filter(subgrupo__isnull=False)
     serializer_class = GeologiaSerializer
 
     def list(self, request):
         qs = self.get_queryset()
-        programa_id = self.request.GET.get('programa_id', None)
-        serializer = self.get_serializer(qs, programa_id=programa_id)
+        subfuncao_id = self.request.GET.get('subfuncao_id', None)
+        serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)

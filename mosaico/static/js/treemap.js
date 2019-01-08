@@ -22,7 +22,39 @@ window.addEventListener('DOMContentLoaded', function(){
     }
 
     function setToolTip(node) {
-        node.data.title = node.data.innerText;
+        let tooltipDiv = document.querySelector("#tooltip");
+        let width = window.innerWidth || 
+                    document.documentElement.clientWidth || 
+                    document.body.clientWidth;
+        
+        width /= 2;
+
+        node.data.addEventListener("mousemove", event => {
+            tooltipDiv.innerHTML = node.data.firstElementChild.innerHTML;
+            let tooltipWidth = parseInt(getComputedStyle(tooltipDiv)['width']);
+            let padding = parseInt(getComputedStyle(tooltipDiv)['paddingLeft']);
+            tooltipDiv.style.top = `${event.clientY - padding}px`;
+            tooltipDiv.style.display = 'block';
+
+            if(event.clientX > width) {
+                tooltipDiv.style.left = `${event.clientX - tooltipWidth - padding * 4}px`;
+            } else {
+                tooltipDiv.style.left = `${event.clientX + padding * 2}px`;
+            }
+        });
+        node.data.addEventListener("mouseout", () => {
+            tooltipDiv.innerHTML = "";
+            tooltipDiv.style.display = 'none';
+        });
+    }
+
+    function hideOverdflowingLabels(node){
+        let element = node.data
+        let children = element.firstElementChild;
+
+        if(children.offsetWidth > element.offsetWidth){
+            children.className = "hidden-content";
+        }
     }
 
     let rootEl = document.querySelector('.treemap');
@@ -39,5 +71,6 @@ window.addEventListener('DOMContentLoaded', function(){
                             .sort((a, b) => b.value - a.value));
 
     each(setNodeStyle, nodes.children)
-    each(setToolTip,nodes.children)
+    each(setToolTip, nodes.children)
+    each(hideOverdflowingLabels, nodes.children)
 })
