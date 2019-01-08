@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework_csv.renderers import CSVRenderer
 
 from budget_execution.models import Execucao
 from geologia.serializers import GeologiaSerializer
@@ -17,3 +18,9 @@ class HomeView(generics.ListAPIView):
         subfuncao_id = self.request.GET.get('subfuncao_id', None)
         serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)
+
+
+class DownloadView(generics.ListAPIView):
+    renderer_classes = [CSVRenderer]
+    queryset = Execucao.objects.filter(subgrupo__isnull=False)
+    serializer_class = GeologiaSerializer

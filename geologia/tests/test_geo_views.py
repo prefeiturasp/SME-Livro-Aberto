@@ -40,3 +40,17 @@ class TestHomeView(APITestCase):
 
         response = self.get(subfuncao_id=1)
         assert serializer.data == response.data
+
+
+class TestDownloadView(APITestCase):
+
+    def get(self, chart):
+        url = self.base_url(chart)
+        return self.client.get(url)
+
+    def base_url(self, chart):
+        return reverse('geologia:download', args=[chart])
+
+    def test_uses_correct_renderer(self):
+        response = self.get('camadas')
+        assert 'csv' == response.accepted_renderer.format
