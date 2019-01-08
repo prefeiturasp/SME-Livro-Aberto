@@ -32,18 +32,19 @@ window.addEventListener('load', function(event){
         node.data.addEventListener("mousemove", event => {
             tooltipDiv.innerHTML = node.data.firstElementChild.innerHTML;
             let tooltipWidth = parseInt(getComputedStyle(tooltipDiv)['width']);
-            tooltipDiv.style.top = `${event.clientY - 15}px`;
-            tooltipDiv.style.padding = "15px";
+            let padding = parseInt(getComputedStyle(tooltipDiv)['paddingLeft']);
+            tooltipDiv.style.top = `${event.clientY - padding}px`;
+            tooltipDiv.style.display = 'block';
 
             if(event.clientX > width) {
-                tooltipDiv.style.left = `${event.clientX - tooltipWidth - 40}px`;
+                tooltipDiv.style.left = `${event.clientX - tooltipWidth - padding * 4}px`;
             } else {
-                tooltipDiv.style.left = `${event.clientX + 30}px`;
+                tooltipDiv.style.left = `${event.clientX + padding * 2}px`;
             }
         });
         node.data.addEventListener("mouseout", () => {
             tooltipDiv.innerHTML = "";
-            tooltipDiv.style.padding = "0";
+            tooltipDiv.style.display = 'none';
         });
     }
 
