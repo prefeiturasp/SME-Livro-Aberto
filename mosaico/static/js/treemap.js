@@ -1,4 +1,4 @@
-window.addEventListener('load', function(){
+window.addEventListener('load', function(event){
     let px = v => v + 'px';
     let value = d => d.dataset.value;
 
@@ -22,7 +22,30 @@ window.addEventListener('load', function(){
     }
 
     function setToolTip(node) {
-        node.data.title = node.data.innerText;
+        let tooltipDiv = document.querySelector("#tooltip");
+        let width = window.innerWidth || 
+                    document.documentElement.clientWidth || 
+                    document.body.clientWidth;
+        
+        width /= 2;
+
+        node.data.addEventListener("mousemove", event => {
+            tooltipDiv.innerHTML = node.data.firstElementChild.innerHTML;
+            let tooltipWidth = parseInt(getComputedStyle(tooltipDiv)['width']);
+            let padding = parseInt(getComputedStyle(tooltipDiv)['paddingLeft']);
+            tooltipDiv.style.top = `${event.clientY - padding}px`;
+            tooltipDiv.style.display = 'block';
+
+            if(event.clientX > width) {
+                tooltipDiv.style.left = `${event.clientX - tooltipWidth - padding * 4}px`;
+            } else {
+                tooltipDiv.style.left = `${event.clientX + padding * 2}px`;
+            }
+        });
+        node.data.addEventListener("mouseout", () => {
+            tooltipDiv.innerHTML = "";
+            tooltipDiv.style.display = 'none';
+        });
     }
 
     function hideOverdflowingLabels(node){

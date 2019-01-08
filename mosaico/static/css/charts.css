@@ -96,3 +96,12 @@ text{
 .timeseries circle {
   cursor: help;
 }
+
+#tooltip {
+  position: fixed;
+  text-transform: uppercase;
+  background: #5f6b6d;
+  color: #fff;
+  padding: 1em;
+  pointer-events: none;
+}
