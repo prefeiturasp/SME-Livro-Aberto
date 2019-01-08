@@ -28,7 +28,6 @@ window.addEventListener('load', function(event){
                     document.body.clientWidth;
         
         width /= 2;
-        tooltipDiv.style.left = `${event.clientX + 15}px`;
 
         node.data.addEventListener("mousemove", event => {
             tooltipDiv.innerHTML = node.data.firstElementChild.innerHTML;
