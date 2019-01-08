@@ -1,4 +1,4 @@
-window.addEventListener('load', function(event){
+window.addEventListener('DOMContentLoaded', function(){
     let px = v => v + 'px';
     let value = d => d.dataset.value;
 
