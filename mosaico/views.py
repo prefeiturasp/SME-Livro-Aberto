@@ -392,3 +392,9 @@ class SobreView(generics.ListAPIView):
     def get(self, request, format=None):
         return Response()
 
+class MetodologiaView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/metodologia.html'
+
+    def get(self, request, format=None):
+        return Response()

@@ -10,6 +10,7 @@ from mosaico.views import (
     SubfuncoesListView,
     SubgruposListView,
     SobreView,
+    MetodologiaView,
 )
 
 
@@ -34,4 +35,5 @@ urlpatterns = [
     path('download/<str:section>/', DownloadView.as_view(),
          name='download'),
     path('sobre', SobreView.as_view(), name='sobre'),
+    path('metodologia', SobreView.as_view(), name='metodologia'),
 ]
