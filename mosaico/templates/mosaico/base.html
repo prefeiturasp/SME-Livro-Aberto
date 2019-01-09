@@ -18,7 +18,7 @@
 {% endblock %}
 
 {%block about %}
-<a href="/sobre">
+<a href="{% url 'mosaico:sobre' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -27,7 +27,7 @@
 {% endblock %}
 
 {%block metodology %}
-<a href="/about.html">
+<a href="{% url 'mosaico:metodologia' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
