@@ -25,3 +25,9 @@ class SobreView(generics.ListAPIView):
     def get(self, request, format=None):
         return Response()
 
+class MetodologiaView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'geologia/metodologia.html'
+
+    def get(self, request, format=None):
+        return Response()
