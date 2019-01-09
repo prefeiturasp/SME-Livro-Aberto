@@ -6,9 +6,15 @@ header{
 }
 
 /* About Section */
+.wrapper.container {
+  display: flex;
+  margin-top: -7em;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
 
 .sidebar {
-  max-width: 380px;
+  width: 300px;
   align-self: flex-start;
 }
 
@@ -18,7 +24,7 @@ header{
 }
 
 .sidebar .voltar {
-  background-image: url(../images/voltar.png);
+  background-image: url(../img/voltar.png);
   background-repeat: no-repeat;
   display: block;
   background-position: top 3px left;
@@ -31,6 +37,8 @@ header{
   background-color: transparent;
   border: none;
   outline: none;
+  line-height: 22px;
+  cursor: pointer;
 }
 
 .sidebar h1 {
@@ -48,13 +56,13 @@ header{
 }
 
 .card.sobre {
-  background: #008ecf;
+  background: #80A684;
 }
 
 .sidebar ul {
   display: flex;
   justify-content: space-between;
-  border: 1px solid #1b3263;
+  border: 1px solid #80A684;
   border-radius: 5px;
   margin: 30px 0;
   padding: 0;
@@ -67,11 +75,11 @@ header{
 }
 
 .sidebar ul li.active {
-  background: #1b3263;
+  background: #80A684;
 }
 
 .sidebar ul li a {
-  color: #1b3263;
+  color: #80A684;
   font-weight: 600;
   font-size: 13px;
   text-transform: uppercase;
@@ -86,8 +94,8 @@ header{
 }
 
 .main {
-  max-width: 780px;
   background: #fff;
+  padding-top: 2em;
 }
 
 .main h2 {
@@ -111,29 +119,32 @@ header{
   text-transform: none;
 }
 
-.azul h2,
-.azul i,
-.azul h3,
-.azul span,
-.azul .list,
-.azul .color,
-.azul blockquote {
-  color: #008ecf;
+.verde h2,
+.verde i,
+.verde h3,
+.verde span,
+.verde .list,
+.verde .color,
+.verde blockquote {
+  color: #80A684;
 }
 
-.azul h2:before {
-  background: #008ecf;
+.verde h2:before {
+  background: #80A684;
 }
 
 .main p {
   margin: 0 0 20px;
 }
 
+.main ul {
+  margin-left: 5%;
+  padding-inline-start: 2em;
+}
+
 .main ul li {
-  margin: 0;
   max-width: 385px;
-  padding: 3% 6%;
-  color: #008ecf;
+  padding: .5em 1em;
 }
 
 .main ul li ul {
@@ -149,9 +160,9 @@ header{
   max-width: 80px;
 }
 
-.azul li,
-.azul blockquote {
-  border-color: #008ecf;
+.verde li,
+.verde blockquote {
+  border-color: #80A684;
 }
 
 .main h3 {
@@ -172,7 +183,14 @@ header{
   color: #4c4c4c;
 }
 
-@media (max-width: 800px) {
+@media (min-width: 768px) {
+  .wrapper.container {
+    flex-wrap: nowrap;
+  }
+  .main {
+    max-width: 70%;
+  }
+
   .main ul {
       flex-wrap: wrap;
   }
@@ -182,56 +200,9 @@ header{
   }
 }
 
-.rosa i,
-.rosa h2,
-.rosa h3,
-.rosa span,
-.rosa .list,
-.rosa .color, 
-.rosa blockquote {
-  color: #e8573b;
-}
-
-.rosa h2:before {
-  background: #e8573b;
-}
-
 .main ul.ciclo li {
   border: none;
   text-align: center;
-}
-
-.marinho i,
-.marinho h2, 
-.marinho h3,
-.marinho span, 
-.marinho .list,
-.marinho .color,
-.marinho blockquote {
-  color: #2344a5;
-}
-
-.marinho h2:before {
-  background: #2344a5;
-}
-
-.verde h2,
-.verde h3,
-.verde h5,
-.verde span,
-.verde .list,
-.verde .color,
-.verde blockquote {
-  color: #249a94;
-}
-
-.verde h2:before {
-  background: #249a94;
-}
-
-.verde li,
-.verde blockquote {
-  border-color: #249a94;
 }
 
 .main blockquote {
@@ -245,4 +216,25 @@ header{
   font-weight: normal;
   text-transform: uppercase;
   font-size: 16px;
+}
+
+.table__about {
+  width: auto;
+  margin: 0 auto;
+}
+
+.table__about th {
+  background: #80A684;
+  color: #fff;
+  border: solid 1px #80A684;
+}
+
+.table__about td {
+  border: solid 1px #80A684;
+  border-top: none;
+}
+
+.table__about th,
+.table__about td {
+  text-align: center;
 }
