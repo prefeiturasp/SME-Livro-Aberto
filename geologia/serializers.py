@@ -21,6 +21,7 @@ class GeologiaSerializer:
             'camadas': self.prepare_data(),
             'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
             'subgrupo': self.prepare_subgrupo_data(),
+            'gnds': GndGeologiaSerializer(GndGealogia.objects.all(), many=True).data,
         }
 
     # Charts 1 and 2 (camadas and subfuncao)

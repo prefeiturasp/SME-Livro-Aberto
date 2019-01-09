@@ -18,6 +18,22 @@ class TestGndGeologiaSerializer:
         expected = dict(slug=gnd.slug, desc=gnd.desc)
         assert expected == GndGeologiaSerializer(gnd).data
 
+@pytest.mark.django_db
+class TestGeologiaSerializerGnds:
+    def test_serialize_list_of_gnds(self):
+        gnd_1 = mommy.make('GndGealogia',  desc='Consultoria',
+                slug='consulting')
+        gnd_2 = mommy.make('GndGealogia',  desc='Custeio operacional',
+                slug='operational')
+        gnds = [gnd_1, gnd_2]
+        expected = [dict(slug=gnd.slug, desc=gnd.desc) for gnd in gnds]
+
+        queryset = Execucao.objects.all()
+        serialized = GeologiaSerializer(queryset).data
+
+        assert expected == serialized.get('gnds')
+
+
 @pytest.fixture
 def orcado_fixture():
     gnds_dict = [
