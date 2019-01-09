@@ -157,11 +157,9 @@ header{
 }
 
 .list--border {
-  flex-wrap: nowrap;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   list-style: none;
-  flex-wrap: nowrap !important;
   padding-left: 0 !important;
   margin: 0 !important;
 }
@@ -171,14 +169,14 @@ header{
 }
 
 .list--inline {
-  flex-wrap: nowrap;
-  display: flex;
+  display: block;
   list-style: none;
   padding-left: 0 !important;
   width: 100%;
 }
 
 .list--inline li  {
+  display: inline-block;
   padding: 5px !important;
   color: #80A684;
 }
@@ -228,6 +226,33 @@ header{
   .main ul.ciclo li {
     padding: 3% 4%;
     width: 100%;    
+  }
+
+  .list--border {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    list-style: none;
+    flex-wrap: nowrap !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .list--border li {
+    border: solid 1px #80A684;
+  }
+  
+  .list--inline {
+    flex-wrap: nowrap;
+    display: flex;
+    list-style: none;
+    padding-left: 0 !important;
+    width: 100%;
+  }
+  
+  .list--inline li  {
+    padding: 5px !important;
+    color: #80A684;
   }
 }
 
