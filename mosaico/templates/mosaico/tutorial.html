@@ -1,0 +1,135 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Mosaico{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
+  <link rel="stylesheet" href="{% static 'css/charts.css' %}">
+  <script src="{% static 'js/treemap.js' %}"></script>
+  <script src="{% static 'js/timeseries.js' %}"></script>
+{% endblock %}
+
+{%block header %}
+  <h1>Mosaico Orçamentário</h1>
+  <p>Orçamento da Educação ao seu alcance</p>
+{% endblock %}
+
+{%block sections %}
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <h1>So<br/>bre</h1>
+                <p>
+                    Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.
+                </p>
+            </div>
+            <ul>
+                <li><a href="{% url 'mosaico:sobre' %}">Sobre</a></li>
+                <li class="active"><a href="{% url 'mosaico:tutorial' %}">Tutorial</a></li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="tutorial">
+
+                <!-- Part 1 -->
+                <div class="content verde">
+                    <div class="txt">
+                        <h2>Tutorial <span>&#x276f; Navegação por Linguagem Amigável</span></h2>
+                        <p>O Recorte para <b>navegação em linguagem amigável</b> apresenta quatro níveis, sendo o primeiro o de <b>Grupos</b>, o segundo de <b>Subgrupos</b>, o terceiro de <b>Elementos de Despesa</b> e o quarto de <b>Subelementos de Despesa</b> (veja a definição dos grupos e subgrupos na seção “Sobre o Mosaico”). Cada vez que se seleciona um retângulo, observa-se a distribuição interna a ele no nível abaixo.</p>
+                        <p>Se for analisado o Mosaico nessa segmentação, pode-se ver já no primeiro nível (Figura 1) como se dá a distribuição dos recursos pelo maior nível de agregação das despesas públicas. A partir deste nível, pode-se escolher a próxima área de interesse e entender como se dão os gastos dentro da área, entrando no nível de Subgrupos.</p>
+                        <img src="../../static/img/tutorial-1.png">
+                        <p class="sub"><i><b>Figura 1:</b> Orçamento Anual (2018) da Secretaria Municipal de Educação por Grupo</i></p>
+
+                        <p>A <i>figura 2</i> representa a distribuição do orçamento do grupo “Ações pedagógicas e educacionais”. Nota-se que “Ações de apoio à educação especial” é o maior gasto da Secretaria de Educação dentro deste grupo.</p>
+                        <img src="../../static/img/tutorial-2.png">
+                        <p class="sub"><i><b>Figura 2:</b>  Orçamento Anual (2018) do Grupo “Ações pedagógicas e educacionais” por Subgrupo</i></p>
+                        
+                        <p>Outra informação que é possível explorar é a faixa de execução em que cada rubrica se encontra. Pode-se observar que a execução do Programa Projovem Urbano, por exemplo, ficou na faixa de 20% a 40% do valor orçado. Isto pode ser um importante sinalizador de possíveis problemas no processo de execução dessa rubrica.</p>
+                        <p>Na <i>figura 3</i>, avaliam-se os elementos de despesa do Subgrupo escolhido. Como exemplo, apresenta-se a seguir como se gasta em “Ações de Apoio à Educação Especial”.</p>
+                        <p>A maior parte das despesas ocorre com Outros Serviços de Terceiros - Pessoa Jurídica.</p>
+                        <img src="../../static/img/tutorial-3.png">
+                        <p class="sub"><i><b>Figura 3:</b> Orçamento Anual (2018) do Subgrupo “Ações de Apoio à Educação Especial” por Elemento de Despesa</i></p>
+                        
+                        
+                        <p>Na <i>figura 4</i>, analisam-se os subelementos de despesa dentro do elemento “Outros Serviços de Terceiros - Pessoa Jurídica”. Vê-se que o principal gasto foi em “Instituições de Caráter Assistencial, Cultural e Educacional”. Vale ressaltar que o valor que aparece na ferramenta, neste caso, é o total empenhado líquido em cada subelemento.</p>
+                        <p>Observa-se que todos os subelementos apresentados possuem a mesma cor do elemento na tela anterior. Isso se deve ao fato de que, como o subelemento de despesa é uma categoria que só existe para os empenhos de despesa e não para o orçamento, conforme definido pela Lei Orçamentária (exemplo: não se autoriza verba para Material Hospitalar especificamente, mas sim para Materiais de Consumo, em geral), as cores associadas aos subelementos são “herdadas” da cor do elemento de despesa referente.</p>
+                        <img src="../../static/img/tutorial-4.png">
+                        <p class="sub"><i><b>Figura 4:</b> Orçamento Anual (2018) do Elemento de Despesa “Outros Serviços de Terceiros - Pessoa Jurídica” dentro do Subgrupo “Ações de Apoio à Educação Especial” por Subelemento de Despesa</i></p>
+                    </div>       
+                </div>
+                <!-- End Part 1 -->
+    
+                <!-- Part 2 -->
+                <div class="content verde">
+                    <div class="txt">
+                        <h2>Tutorial <span>&#x276f; Navegação por linguagem Técnica</span></h2>
+                        <p>A navegação do Mosaico pela Linguagem Técnica indica como se dá a distribuição de recursos da Secretaria Municipal de Educação segundo a classificação funcional/programática. Aqui não emprega-se nenhuma tipologia alternativa, isto é, as categorias usadas existem exatamente com esta nomenclatura no orçamento municipal..</p>
+                        <p>O primeiro nível disponível é a <b>Subfunção</b>, o segundo são os <b>Programas</b>, e, por último, chega-se ao nível do <b>Projeto/Atividade</b>.</p>
+    
+                        <p>A <i>figura 5</i>, ilustra como é realizada a distribuição de recursos por subfunção no ano de 2018. Analisa-se a subfunção Educação Infantil, que possui 50,5% do orçamento total da SME neste ano.</p>      
+                        <img src="../../static/img/tutorial-5.png">
+                        <p class="sub"><i><b>Figura 5:</b> Orçamento Anual (2018) da SME por Subfunção</i></p>
+    
+    
+                        <p>A <i>figura 6</i> indica as dotações dos programas relacionados à Educação Infantil. Nota-se que a maior parte dos recursos é destinada ao programa “Desenvolvimento e manutenção da educação”.</p>
+                        <img src="../../static/img/tutorial-6.png">
+                        <p class="sub"><i><b>Figura 6:</b> Orçamento Anual (2018) da Subfunção “Educação Infantil por Programa”</i></p>
+    
+                        <p>Observam-se agora os diversos projetos/atividades relacionados a este Programa, dentro dos gastos de Educação Infantil. Neste caso, selecionando-o (Figura 7) vê-se que “Manutenção e Operação da Rede Parceira - Centro de Educação Infantil (CEI)” é o principal projeto/atividade.</p>
+    
+                        <img src="../../static/img/tutorial-7.png">
+                        <p class="sub"><i><b>Figura 7:</b> Orçamento Anual (2018) do Programa de Desenvolvimento e Manutenção da Educação dentro da Subfunção “Educação Infantil por Projeto/Atividade”</i></p>
+                        </div>
+                    </div>
+                    <!-- End Part 2 -->
+    
+                    <!-- Part 3 -->
+                    <div class="content verde">
+                        <div class="txt">
+                            <h2>Tutorial <span>&#x276f; Gastos por Fonte de Recurso</span></h2>
+    
+                            <p>Uma possibilidade de escolha transversal a todas as visualizações permitida pela ferramenta é observar os gastos filtrados por <b>fonte de recurso</b>. Além do total, sem esse tipo de discriminação, há três recortes possíveis: <b>Tesouro Municipal</b>, <b>Transferências Federais</b>, e <b>Fundeb e outras fontes</b>.</p>
+                            <p>Outras fontes contemplam as Transferências Estaduais e os recursos do Fundo Municipal da Criança e do Adolescente (FUMCAD), destinados à educação.</p>
+                            <p>Um botão na parte superior direita da tela <i>(figura 7)</i> permite filtrar a fonte de recurso desejada, enquanto que, na opção default, o usuário verá os gastos totais, sem filtro.</p>
+        
+                            <img src="../../static/img/tutorial-8.png">
+                            <p class="sub"><i><b>Figura 8:</b> Seleção do Gasto por Fonte de Recurso</i></p>
+
+                        </div>                
+                    </div>
+                    <!-- End Part 3 -->
+    
+                     <!-- Part 4 -->
+                    <div class="content verde">
+                        <div class="txt">
+                            <h2>Tutorial <span>&#x276f; Vizualizações Auxiliares</span></h2>
+                            <p>O Mosaico Orçamentário da SME possui, até o momento, dados desde o ano de 2010 até o ano de 2018. Em qualquer nível de análise e filtro de pesquisa, a ferramenta conta com duas visualizações auxiliares: a <b>série histórica</b> e a <b>tabela de dados</b>.</b>.</p>
+        
+                            <h3>01. Série histórica</h3>
+                            <p>A série histórica mostra a evolução do orçamento ao longo do tempo, desde o ano de 2010 até o ano de 2018, como mostra a <i>figura 10</i>, A seleção realizada no mosaico atualiza este gráfico, isto é, supondo que o usuário selecione, por exemplo, “Apoio ao Aluno” como grupo na navegação amigável, a série histórica apresentará a evolução dos gastos para este grupo específico.</p>
+                            <p>O Gráfico tem duas linhas: o valor orçado atualizado (verba liberada para gasto) e o valor empenhado líquido (valor da despesa efetivamente executada). É possível selecionar entre dados nominais (valores correntes de cada ano) e valores corrigidos pela inflação (ver mais informações na seção 2.3.3.1 - <b>Deflacionamento</b> da metodologia).</p>
+                            <img src="../../static/img/tutorial-9.png">
+                            <p class="sub"><i><b>Figura 9:</b></i> Visualização de Série Histórica do Mosaico Orçamentário, Gastos Totais da SME</p>
+        
+                            <h3>02. tabela de dados</h3>
+                            <p>A tabela de dados contém todas as informações sobre o gráfico principal, ou seja, a proporção de cada rubrica, no nível superior. Assim como a série histórica, a seleção realizada no mosaico atualiza este gráfico para a rubrica específica que foi selecionada, abrindo pelos níveis subsequentes.</p>
+                            <p>No exemplo ilustrado na <i>figura 11</i>, são indicadas as informações sobre os Subgrupos dentro do Grupo “Ações pedagógicas e educacionais”.</p>
+                            <p>A coluna de porcentagem do orçado atualizado aponta para a proporção que cada subgrupo ocupa no total do grupo selecionado, fornecendo os números que retratam a proporção ilustrada no gráfico Mosaico.</p>             
+                            <img src="../../static/img/tutorial-10.png">
+                            <p class="sub"><i><b>Figura 10:</b> Tabela de Dados - Grupo “Ações pedagógicas e educacionais”</i></p>
+                        </div>
+                        
+                    </div>
+                    <!-- End Part 4 -->                
+            </div>            
+        </div>
+    </div>
+{% endblock %}
