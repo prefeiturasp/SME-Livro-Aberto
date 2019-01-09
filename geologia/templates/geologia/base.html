@@ -116,11 +116,12 @@
                   </tr>
               </thead>
               <tbody>
+                  {% with greater_total=subfuncao.empenhado|dictsort:"total"|last %}
                   {% for year in subfuncao.empenhado %}
                           <tr>
                           <th data-year="{{ year.year }}">{{ year.year }}</th>
                           <td class="bar-parent">
-                              <div class="bar">
+                              <div class="bar" style="width: {% widthratio year.total greater_total.total 100 %}%">
                               {% for item in year.gnds%}
                                   <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
                                   <span class="value fg-{{item.slug}}" data-execution="{{ item.percent|unlocalize }}"
@@ -136,9 +137,10 @@
               <tfoot>
                   <tr>
                       <td>R$ 0</td>
-                      <td>R$ {{ programa.total|intcomma }}</td>
+                      <td>R$ {{ greater_total.total|intcomma }}</td>
                   </tr>
               </tfoot>
+              {% endwith %}
           </table>
       </div>
     </div>
