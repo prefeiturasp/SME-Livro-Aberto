@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal
 from functools import lru_cache
 from itertools import groupby
 from urllib.parse import urlencode
@@ -65,13 +66,19 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
         orcado = self.get_orcado_total(obj)
         empenhado = self.get_empenhado_total(obj)
 
+        current_date = datetime.now().date()
+        if obj.year.year == current_date.year:
+            current_month = current_date.month
+            proportion_factor = Decimal(current_month / 12)
+        else:
+            proportion_factor = 1
+
         if empenhado:
-            return empenhado / orcado
+            return empenhado / (proportion_factor * orcado)
         else:
             return 0
 
     def get_url(self, obj):
-        # TODO: We need to test this
         next_level = getattr(self.Meta, 'next_level')
         return obj.get_url(next_level) + self._query_params
 

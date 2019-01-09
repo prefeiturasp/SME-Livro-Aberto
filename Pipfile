@@ -21,6 +21,7 @@ ipdb = "*"
 model-mommy = "*"
 pytest = "*"
 pytest-django = "*"
+pytest-freezegun = "*"
 
 [requires]
 python_version = "3.7"
