@@ -170,7 +170,7 @@ class GeologiaSerializer:
                 "name": gnd['gnd_gealogia__desc'],
                 "slug": gnd['gnd_gealogia__slug'],
                 "value": gnd['orcado'],
-                "percent": self._calculate_percent(
+                "percent": calculate_percent(
                     gnd['orcado'], orcado_total)
             }
             for gnd in orcado_by_gnd
@@ -182,7 +182,7 @@ class GeologiaSerializer:
                 "name": gnd['gnd_gealogia__desc'],
                 "slug": gnd['gnd_gealogia__slug'],
                 "value": gnd['empenhado'],
-                "percent": self._calculate_percent(
+                "percent": calculate_percent(
                     gnd['empenhado'], empenhado_total),
             }
             for gnd in empenhado_by_gnd
@@ -275,11 +275,11 @@ class GeologiaDownloadSerializer:
                 "gnd": gnd['gnd_gealogia__desc'],
                 "orcado": gnd['orcado'],
                 "orcado_total": orcado_total,
-                "orcado_percentual": self._calculate_percent(
+                "orcado_percentual": calculate_percent(
                     gnd['orcado'], orcado_total),
                 "empenhado": gnd['empenhado'],
                 "empenhado_total": empenhado_total,
-                "empenhado_percentual": self._calculate_percent(
+                "empenhado_percentual": calculate_percent(
                     gnd['empenhado'], empenhado_total),
             }
             if 'subfuncao__desc' in gnd:
@@ -335,17 +335,18 @@ class GeologiaDownloadSerializer:
                 "gnd": gnd['gnd_gealogia__desc'],
                 "orcado": gnd['orcado'],
                 "orcado_total": orcado_total,
-                "orcado_percentual": self._calculate_percent(
+                "orcado_percentual": calculate_percent(
                     gnd['orcado'], orcado_total),
                 "empenhado": gnd['empenhado'],
                 "empenhado_total": empenhado_total,
-                "empenhado_percentual": self._calculate_percent(
+                "empenhado_percentual": calculate_percent(
                     gnd['empenhado'], empenhado_total),
             })
 
         return ret
 
-    def _calculate_percent(self, value, total):
-        if value is None or not total:
-            return 0
-        return value / total
+
+def calculate_percent(value, total):
+    if value is None or not total:
+        return 0
+    return value / total

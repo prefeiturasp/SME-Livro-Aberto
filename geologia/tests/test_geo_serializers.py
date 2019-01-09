@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import Execucao, Subgrupo
-from geologia.serializers import GeologiaSerializer
+from budget_execution.models import Execucao, GndGealogia, Subgrupo
+from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
 
 
 @pytest.fixture
@@ -409,3 +409,67 @@ class TestGeologiaSerializerSubgrupo:
         ret = serializer.get_subgrupo_empenhado_data(execucoes)
 
         assert expected == ret
+
+
+@pytest.mark.django_db
+class TestGeologiaDownloadSerializer:
+    def test_serializes_camadas_chart_data(self):
+        gnd1 = mommy.make(GndGealogia, desc='gnd1')
+        gnd2 = mommy.make(GndGealogia, desc='gnd2')
+        mommy.make(Execucao, year=date(2017, 1, 1), gnd_gealogia=gnd1,
+                   orcado_atualizado=100, empenhado_liquido=5, _quantity=2)
+        mommy.make(Execucao, year=date(2017, 1, 1), gnd_gealogia=gnd2,
+                   orcado_atualizado=150, empenhado_liquido=15, _quantity=2)
+
+        mommy.make(Execucao, year=date(2018, 1, 1), gnd_gealogia=gnd1,
+                   orcado_atualizado=10, empenhado_liquido=0.5, _quantity=2)
+        mommy.make(Execucao, year=date(2018, 1, 1), gnd_gealogia=gnd2,
+                   orcado_atualizado=15, empenhado_liquido=2, _quantity=2)
+
+        expected = [
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "orcado": Decimal(200),
+                "orcado_total": Decimal(500),
+                "orcado_percentual": Decimal('0.4'),
+                "empenhado": Decimal(10),
+                "empenhado_total": Decimal(40),
+                "empenhado_percentual": Decimal('0.25'),
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "orcado": Decimal(300),
+                "orcado_total": Decimal(500),
+                "orcado_percentual": Decimal('0.6'),
+                "empenhado": Decimal(30),
+                "empenhado_total": Decimal(40),
+                "empenhado_percentual": Decimal('0.75'),
+            },
+            {
+                "ano": 2018,
+                "gnd": 'gnd1',
+                "orcado": Decimal(20),
+                "orcado_total": Decimal(50),
+                "orcado_percentual": Decimal('0.4'),
+                "empenhado": Decimal(1),
+                "empenhado_total": Decimal(5),
+                "empenhado_percentual": Decimal('0.2'),
+            },
+            {
+                "ano": 2018,
+                "gnd": 'gnd2',
+                "orcado": Decimal(30),
+                "orcado_total": Decimal(50),
+                "orcado_percentual": Decimal('0.6'),
+                "empenhado": Decimal(4),
+                "empenhado_total": Decimal(5),
+                "empenhado_percentual": Decimal('0.8'),
+            },
+        ]
+
+        execucoes = Execucao.objects.all()
+        serializer = GeologiaDownloadSerializer(execucoes, 'camadas')
+
+        assert expected == serializer.data
