@@ -156,6 +156,33 @@ header{
   align-items: center;
 }
 
+.list--border {
+  flex-wrap: nowrap;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  flex-wrap: nowrap !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+.list--border li {
+  border: solid 1px #80A684;
+}
+
+.list--inline {
+  flex-wrap: nowrap;
+  display: flex;
+  list-style: none;
+  padding-left: 0 !important;
+  width: 100%;
+}
+
+.list--inline li  {
+  padding: 5px !important;
+  color: #80A684;
+}
+
 .main ul li ul li {
   border: none;
   padding: 0;
@@ -207,6 +234,10 @@ header{
 .main ul.ciclo li {
   border: none;
   text-align: center;
+}
+
+.ciclo--text-left li {
+  text-align: left !important;
 }
 
 .main blockquote {
