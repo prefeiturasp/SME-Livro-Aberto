@@ -31,3 +31,10 @@ class MetodologiaView(generics.ListAPIView):
 
     def get(self, request, format=None):
         return Response()
+
+class TutorialView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'geologia/tutorial.html'
+
+    def get(self, request, format=None):
+        return Response()        
