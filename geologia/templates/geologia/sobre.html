@@ -15,7 +15,7 @@
 {% endblock %}
 
 {%block about %}
-<a href="/sobre.html">
+<a href="{% url 'geologia:sobre' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -24,7 +24,7 @@
 {% endblock %}
 
 {%block metodology %}
-<a href="/about.html">
+<a href="{% url 'geologia:metodologia' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
