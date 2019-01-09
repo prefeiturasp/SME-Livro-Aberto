@@ -27,12 +27,12 @@ header{
 }
 
 /* Despesas de Exercícios Anteriores */
-.previoys{
+.previous{
   fill: #e94363;
   background-color: #e94363;
 }
 
-.fg-previoys{
+.fg-previous{
   color: #e94363;
 }
 
@@ -58,12 +58,12 @@ header{
 
 /* Investimentos - Obras */
 .construction{
-  fill: #277fcd;
-  background-color: #277fcd;
+  fill: #58b9aa;
+  background-color: #58b9aa;
 }
 
 .fg-construction{
-  color: #277fcd;
+  color: #58b9aa;
 }
 
 /* Pessoal e Encargos */
