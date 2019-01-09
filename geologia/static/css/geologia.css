@@ -6,40 +6,84 @@ header{
   background-position: center;
 }
 
-.investment{
-  fill: #ecb93a;
-  background-color: #ecb93a;
+/* Auxílios e Contribuições */
+.contributions{
+  fill: #edb93b;
+  background-color: #edb93b;
 }
 
-.fg-investment{
-  color: #ecb93a;
+.fg-contributions{
+  color: #edb93b;
 }
 
+/* Custeio operacional */
+.operational{
+  fill: #f09564;
+  background-color: #f09564;
+}
+
+.fg-operational{
+  color: #f09564;
+}
+
+/* Despesas de Exercícios Anteriores */
+.previoys{
+  fill: #e94363;
+  background-color: #e94363;
+}
+
+.fg-previoys{
+  color: #e94363;
+}
+
+/* Investimentos em consultoria */
+.consulting{
+  fill: #693d89;
+  background-color: #693d89;
+}
+
+.fg-consulting{
+  color: #693d89;
+}
+
+/* Investimentos - Imóvel e Material Permanente */
+.realty{
+  fill: #277fcd;
+  background-color: #277fcd;
+}
+
+.fg-realty{
+  color: #277fcd;
+}
+
+/* Investimentos - Obras */
+.construction{
+  fill: #277fcd;
+  background-color: #277fcd;
+}
+
+.fg-construction{
+  color: #277fcd;
+}
+
+/* Pessoal e Encargos */
 .people{
-  fill: #ea4168;
-  background-color: #ea4168;
+  fill: #abd656;
+  background-color: #abd656;
 }
 
 .fg-people{
-  color: #ea4168;
+  color: #abd656;
 }
 
-.debt{
-  fill: #693d8a;
-  background-color: #693d8a;
+/* Serviços de Terceiros */
+.outsourced{
+  fill: #5f6b6d;
+  background-color: #5f6b6d;
 }
 
-.fg-debt{
-  color: #693d8a;
-}
-
-.other{
-  fill: #287fce;
-  background-color: #287fce;
-}
-
-.fg-other{
-  color: #287fce;
+.fg-outsourced{
+  color: #5f6b6d;
 }
 
 .legend{
