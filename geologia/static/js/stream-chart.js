@@ -26,7 +26,7 @@ window.addEventListener('load', function(){
     height = 400 - margin.top - margin.bottom;
     svg.attr('height', height + margin.top + margin.bottom);
 
-    let n = 4;
+    let n = 8;
     let m = 15;
     let k = 10;
     let data = d3.transpose(Array.from({length: n}, () => bumps(m, k)));
@@ -50,7 +50,8 @@ window.addEventListener('load', function(){
 
     const z = d3.scaleOrdinal()
           .domain(d3.range(n))
-          .range(['investment', 'people', 'debt', 'other']);
+          .range(['contributions', 'operational', 'previoys', 'consulting',
+              'realty', 'construction', 'people', 'outsourced', ]);
 
     const area = d3.area()
         .curve(d3.curveMonotoneX)
