@@ -6,61 +6,164 @@ header{
   background-position: center;
 }
 
-.stream-chart{
-  margin: 2em 0;
+/* Auxílios e Contribuições */
+.contributions{
+  fill: #edb93b;
+  background-color: #edb93b;
 }
 
-.investment{
-  fill: #ecb93a;
-  background-color: #ecb93a;
+.fg-contributions{
+  color: #edb93b;
 }
 
-.fg-investment{
-  color: #ecb93a;
+/* Custeio operacional */
+.operational{
+  fill: #f09564;
+  background-color: #f09564;
 }
 
+.fg-operational{
+  color: #f09564;
+}
+
+/* Despesas de Exercícios Anteriores */
+.previous{
+  fill: #e94363;
+  background-color: #e94363;
+}
+
+.fg-previous{
+  color: #e94363;
+}
+
+/* Investimentos em consultoria */
+.consulting{
+  fill: #693d89;
+  background-color: #693d89;
+}
+
+.fg-consulting{
+  color: #693d89;
+}
+
+/* Investimentos - Imóvel e Material Permanente */
+.realty{
+  fill: #277fcd;
+  background-color: #277fcd;
+}
+
+.fg-realty{
+  color: #277fcd;
+}
+
+/* Investimentos - Obras */
+.construction{
+  fill: #58b9aa;
+  background-color: #58b9aa;
+}
+
+.fg-construction{
+  color: #58b9aa;
+}
+
+/* Pessoal e Encargos */
 .people{
-  fill: #ea4168;
-  background-color: #ea4168;
+  fill: #abd656;
+  background-color: #abd656;
 }
 
 .fg-people{
-  color: #ea4168;
+  color: #abd656;
 }
 
-.debt{
-  fill: #693d8a;
-  background-color: #693d8a;
+/* Serviços de Terceiros */
+.outsourced{
+  fill: #5f6b6d;
+  background-color: #5f6b6d;
 }
 
-.fg-debt{
-  color: #693d8a;
-}
-
-.other{
-  fill: #287fce;
-  background-color: #287fce;
-}
-
-.fg-other{
-  color: #287fce;
+.fg-outsourced{
+  color: #5f6b6d;
 }
 
 .legend{
   padding: 0;
   margin: 1em 0 2em;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   list-style: none;
   text-transform: uppercase;
   font-weight: 800;
 }
 
+.legend > *{
+  width: 25%;
+  margin-bottom: 1em;
+}
+
 .legend .icon{
   height: 3em;
   width: 3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  float: left;
 }
 
 .actions{
   text-align: center;
+}
+
+.bar-chart thead{
+  display: none;
+}
+
+.bar-chart tr > *{
+  padding-left: 0;
+}
+
+.bar-chart tbody tr > *{
+  border-right: solid 1px #d1d1d1;
+}
+
+.bar-chart tbody tr:last-child > *{
+  padding-bottom: 2em;
+}
+
+.bar-chart tfoot tr > *{
+  position: relative;
+  color: #d1d1d1;
+  top: -1.5em;
+}
+
+.bar-chart tfoot tr > *:after{
+  content: '';
+  border-radius: 50%;
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  position: absolute;
+  right: -0.25em;
+  top: 1.25em;
+  background-color: currentColor;
+}
+
+.bar-parent{
+  padding-right: 0;
+}
+
+.bar{
+  display: flex;
+}
+
+.bar span.label{
+  display: none;
+}
+
+.bar span.value{
+  display: block;
+  text-indent: 100%;
+  overflow: hidden;
+  background-color: currentColor;
+  font-size: 2em;
 }

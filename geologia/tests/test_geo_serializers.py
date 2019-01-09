@@ -8,9 +8,11 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, GndGealogia, Subfuncao, Subgrupo
-from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
+from geologia.serializers import (
+    GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer)
 
 
+@pytest.mark.django_db
 @pytest.fixture
 def orcado_fixture():
     gnds_dict = [
@@ -409,6 +411,30 @@ class TestGeologiaSerializerSubgrupo:
         ret = serializer.get_subgrupo_empenhado_data(execucoes)
 
         assert expected == ret
+
+
+@pytest.mark.django_db
+class TestGeologiaSerializerGnds:
+    def test_serialize_list_of_gnds(self):
+        gnd_1 = mommy.make('GndGealogia',  desc='Consultoria',
+                           slug='consulting')
+        gnd_2 = mommy.make('GndGealogia',  desc='Custeio operacional',
+                           slug='operational')
+        gnds = [gnd_1, gnd_2]
+        expected = [dict(slug=gnd.slug, desc=gnd.desc) for gnd in gnds]
+
+        queryset = Execucao.objects.all()
+        serialized = GeologiaSerializer(queryset).data
+
+        assert expected == serialized.get('gnds')
+
+
+@pytest.mark.django_db
+class TestGndGeologiaSerializer:
+    def test_serialize_data(self):
+        gnd = mommy.make('GndGealogia',  desc='Consultoria', slug='consulting')
+        expected = dict(slug=gnd.slug, desc=gnd.desc)
+        assert expected == GndGeologiaSerializer(gnd).data
 
 
 @pytest.mark.django_db
