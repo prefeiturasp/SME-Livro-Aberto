@@ -398,3 +398,17 @@ class MetodologiaView(generics.ListAPIView):
 
     def get(self, request, format=None):
         return Response()
+
+class DeflacionamentoView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/deflacionamento.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class TutorialView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/tutorial.html'
+
+    def get(self, request, format=None):
+        return Response()
