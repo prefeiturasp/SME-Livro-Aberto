@@ -8,8 +8,15 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, Subgrupo
-from geologia.serializers import GeologiaSerializer
+from geologia.serializers import GeologiaSerializer, GndGeologiaSerializer
 
+
+@pytest.mark.django_db
+class TestGndGeologiaSerializer:
+    def test_serialize_data(self):
+        gnd = mommy.make('GndGealogia',  desc='Consultoria', slug='consulting')
+        expected = dict(slug=gnd.slug, desc=gnd.desc)
+        assert expected == GndGeologiaSerializer(gnd).data
 
 @pytest.fixture
 def orcado_fixture():

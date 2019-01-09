@@ -1,5 +1,13 @@
 from django.db.models import Sum
+from rest_framework import serializers
 
+from budget_execution.models import GndGealogia
+
+
+class GndGeologiaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GndGealogia
+        fields = ('desc', 'slug')
 
 class GeologiaSerializer:
 
