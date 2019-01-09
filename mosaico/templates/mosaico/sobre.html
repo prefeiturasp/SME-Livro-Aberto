@@ -1,0 +1,160 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Mosaico{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
+  <link rel="stylesheet" href="{% static 'css/charts.css' %}">
+  <script src="{% static 'js/treemap.js' %}"></script>
+  <script src="{% static 'js/timeseries.js' %}"></script>
+{% endblock %}
+
+{%block header %}
+  <h1>Mosaico Orçamentário</h1>
+  <p>Orçamento da Educação ao seu alcance</p>
+{% endblock %}
+
+{%block about %}
+<a href="/sobre.html">
+    <svg viewBox="0 0 320 320" height="32" class="icon">
+        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+    </svg>
+    Saiba mais
+</a>
+{% endblock %}
+
+{%block metodology %}
+<a href="/about.html">
+    <svg viewBox="0 0 320 320" height="32" class="icon">
+        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+    </svg>
+    Metodologia
+</a>
+{% endblock %}
+
+{%block sections %}
+  <section id="mosaico">
+    <div class="wrapper">
+      <form action="#mosaico" name="filter" method="get" class="query">
+      <fieldset>
+        <div class="form-item switch">
+          <input class="checkbox" type="checkbox" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
+          <label for="simple">Visão simplificada</label>
+          <input class="checkbox" type="checkbox" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
+          <label for="pro">Visão técnica</label>
+        </div>
+        <div class="form-item">
+          <input class="radio" type="radio" name="universe" value="">
+          <label>Educação</label>
+          <input class="radio" type="radio" name="universe" value="">
+          <label title="Em breve...">Mínimo legal (31%)</label>
+        </div>
+        <div class="form-item">
+            <select name="fonte">
+                  <option value="">Todas as fontes</option>
+              {% for fonte in fontes_de_recurso %}
+                  <option value="{{fonte.id}}" {% if fonte.selecionado %}selected{%endif%}>{{ fonte.desc }}</option>
+              {% endfor %}
+            </select>
+        </div>
+        <div class="form-item">
+            <select name="year">
+                {% for serie_year, values in timeseries.items %}
+                    <option value="{{serie_year}}" {% if serie_year|lower == year|lower %}selected{%endif%}>{{serie_year}}</option>
+                {% endfor %}
+            </select>
+        </div>
+      </fieldset>
+      <input class="submit" type="submit" value="Filtrar" name="go">
+      </form>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
+      </nav>
+      <ol class="treemap">
+          {% for execucao in execucoes %}
+          <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
+                  <a href="{{ execucao.url}}#mosaico">
+                  <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
+                  <div class="name">{{ execucao.nome }}</div>
+                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
+                  </a>
+              </li>
+          {% endfor %}
+      </ol>
+      <div id="tooltip"></div>
+      <footer>
+          <div class="legend">
+              {# TODO: think on a progressive strategy of loading legend #}
+              <img src="{% static 'img/escala_cor_mosaico.svg' %}" alt="">
+          </div>
+          <div class="actions">
+			  <a class="btn" href="{{ download_full_csv_url }}">Dados do gráfico</a>
+              <a class="btn" href="{{ download_filtered_csv_url }}">Dados da tela</a>
+          </div>
+      </footer>
+    </div>
+  </section>
+  <section id="budget-over-time">
+    <div class="wrapper">
+      <h2>Orçamento x <em>Tempo</em></h2>
+      <form action="" method="get" class="query">
+      <fieldset>
+        <div class="form-item switch">
+          <input type="checkbox" name="break" checked id="use-deflator">
+          <label for="use-deflator">Valores corrigidos</label>
+          <label for="use-deflator">Valores correntes</label>
+        </div>
+      </fieldset>
+      </form>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
+      <div class="timeseries chart">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Ano</th>
+                      <th>Valor atualizado</th>
+                      <th>Valor pago</th>
+                  </tr>
+              </thead>
+              <tbody>
+		  {% for year, values in timeseries.items %}
+                  <tr>
+			  <th data-year="{{ year }}">{{ year }}</th>
+			  <td data-updated="{{ values.orcado|unlocalize }}">R${{ values.orcado }}</td>
+			  <td data-paid="{{ values.empenhado|unlocalize }}">R${{ values.empenhado }}</td>
+                  </tr>
+		  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+    </div>
+  </section>
+  <section id="data-table">
+    <div class="wrapper">
+      <h2><em>Tabela</em> de Dados</h2>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
+      <table>
+          <thead>
+              <tr>
+                  <th>Área</th>
+                  <th>Orçamento</th>
+                  <th>Empenhado</th>
+                  <th>Execução</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for execucao in execucoes %}
+              <tr>
+                  <th>{{ execucao.nome }}</th>
+                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
+                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
+                  <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}
