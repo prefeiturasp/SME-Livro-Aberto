@@ -481,17 +481,17 @@ class TestGeologiaDownloadSerializer:
         gnd1 = mommy.make(GndGealogia, desc='gnd1')
         gnd2 = mommy.make(GndGealogia, desc='gnd2')
 
-        mommy.make(Execucao, subfuncao=subfuncao1, year=date(2017, 1, 1),
+        mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao1,
                    gnd_gealogia=gnd1, orcado_atualizado=100,
                    empenhado_liquido=5, _quantity=2)
-        mommy.make(Execucao, subfuncao=subfuncao1, year=date(2017, 1, 1),
+        mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao1,
                    gnd_gealogia=gnd2, orcado_atualizado=150,
                    empenhado_liquido=15, _quantity=2)
 
-        mommy.make(Execucao, subfuncao=subfuncao2, year=date(2017, 1, 1),
+        mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao2,
                    gnd_gealogia=gnd1, orcado_atualizado=5,
                    empenhado_liquido=1, _quantity=2)
-        mommy.make(Execucao, subfuncao=subfuncao2, year=date(2017, 1, 1),
+        mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao2,
                    gnd_gealogia=gnd2, orcado_atualizado=15,
                    empenhado_liquido=3, _quantity=2)
 
@@ -573,6 +573,109 @@ class TestGeologiaDownloadSerializer:
 
         execucoes = Execucao.objects.all()
         serializer = GeologiaDownloadSerializer(execucoes, 'subfuncao')
+
+        assert len(expected) == len(serializer.data)
+        for item in expected:
+            assert item in serializer.data
+
+    def test_serializes_subgrupo_chart_data(self):
+        subgrupo1 = mommy.make(Subgrupo, desc='subgrupo1')
+        subgrupo2 = mommy.make(Subgrupo, desc='subgrupo2')
+        gnd1 = mommy.make(GndGealogia, desc='gnd1')
+        gnd2 = mommy.make(GndGealogia, desc='gnd2')
+
+        mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                   gnd_gealogia=gnd1, orcado_atualizado=100,
+                   empenhado_liquido=5, _quantity=2)
+        mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                   gnd_gealogia=gnd2, orcado_atualizado=150,
+                   empenhado_liquido=15, _quantity=2)
+
+        mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo2,
+                   gnd_gealogia=gnd1, orcado_atualizado=5,
+                   empenhado_liquido=1, _quantity=2)
+        mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo2,
+                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   empenhado_liquido=3, _quantity=2)
+
+        mommy.make(Execucao, year=date(2018, 1, 1), subgrupo=subgrupo1,
+                   gnd_gealogia=gnd1, orcado_atualizado=10,
+                   empenhado_liquido=0.5, _quantity=2)
+        mommy.make(Execucao, year=date(2018, 1, 1), subgrupo=subgrupo1,
+                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   empenhado_liquido=2, _quantity=2)
+
+        expected = [
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "subgrupo": 'subgrupo1',
+                "orcado": Decimal(200),
+                "orcado_total": Decimal(500),
+                "orcado_percentual": Decimal('0.4'),
+                "empenhado": Decimal(10),
+                "empenhado_total": Decimal(40),
+                "empenhado_percentual": Decimal('0.25'),
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "subgrupo": 'subgrupo1',
+                "orcado": Decimal(300),
+                "orcado_total": Decimal(500),
+                "orcado_percentual": Decimal('0.6'),
+                "empenhado": Decimal(30),
+                "empenhado_total": Decimal(40),
+                "empenhado_percentual": Decimal('0.75'),
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "subgrupo": 'subgrupo2',
+                "orcado": Decimal(10),
+                "orcado_total": Decimal(40),
+                "orcado_percentual": Decimal('0.25'),
+                "empenhado": Decimal(2),
+                "empenhado_total": Decimal(8),
+                "empenhado_percentual": Decimal('0.25'),
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "subgrupo": 'subgrupo2',
+                "orcado": Decimal(30),
+                "orcado_total": Decimal(40),
+                "orcado_percentual": Decimal('0.75'),
+                "empenhado": Decimal(6),
+                "empenhado_total": Decimal(8),
+                "empenhado_percentual": Decimal('0.75'),
+            },
+            {
+                "ano": 2018,
+                "gnd": 'gnd1',
+                "subgrupo": 'subgrupo1',
+                "orcado": Decimal(20),
+                "orcado_total": Decimal(50),
+                "orcado_percentual": Decimal('0.4'),
+                "empenhado": Decimal(1),
+                "empenhado_total": Decimal(5),
+                "empenhado_percentual": Decimal('0.2'),
+            },
+            {
+                "ano": 2018,
+                "gnd": 'gnd2',
+                "subgrupo": 'subgrupo1',
+                "orcado": Decimal(30),
+                "orcado_total": Decimal(50),
+                "orcado_percentual": Decimal('0.6'),
+                "empenhado": Decimal(4),
+                "empenhado_total": Decimal(5),
+                "empenhado_percentual": Decimal('0.8'),
+            },
+        ]
+
+        execucoes = Execucao.objects.all()
+        serializer = GeologiaDownloadSerializer(execucoes, 'subgrupo')
 
         assert len(expected) == len(serializer.data)
         for item in expected:
