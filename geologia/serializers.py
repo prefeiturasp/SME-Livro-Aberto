@@ -1,5 +1,7 @@
 from django.db.models import Sum
 
+from geologia.exceptions import InvalidChartOptionException
+
 
 class GeologiaSerializer:
 
@@ -201,11 +203,15 @@ class GeologiaDownloadSerializer:
     @property
     def data(self):
         if self.chart == 'camadas':
-            return self.prepare_camadas_data()
+            return self.prepare_camadas_chart_data()
         elif self.chart == 'subfuncao':
-            return self.prepare_subfuncao_data()
+            return self.prepare_subfuncao_chart_data()
+        elif self.chart == 'subgrupo':
+            return self.prepare_subgrupo_chart_data()
+        else:
+            raise InvalidChartOptionException
 
-    def prepare_camadas_data(self):
+    def prepare_camadas_chart_data(self):
         qs = self.queryset.order_by('year')
 
         data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year') \
@@ -221,10 +227,11 @@ class GeologiaDownloadSerializer:
         empenhado_total = {v['year__year']: v['total']
                            for v in empenhado_values}
 
-        return self._get_gnds_list(data_by_gnd, orcado_total, empenhado_total)
+        return self._get_gnds_list_by_year(data_by_gnd, orcado_total,
+                                           empenhado_total)
 
-    def prepare_subfuncao_data(self):
-        qs = self.queryset.order_by('year')
+    def prepare_subfuncao_chart_data(self):
+        qs = self.queryset
 
         subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
             .distinct()
@@ -235,7 +242,9 @@ class GeologiaDownloadSerializer:
 
         return ret
 
-    def _get_subfuncao_values(self, qs):
+    def _get_subfuncao_values(self, queryset):
+        qs = queryset.order_by('year')
+
         data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year',
                                 'subfuncao__desc') \
             .annotate(orcado=Sum('orcado_atualizado')) \
@@ -250,10 +259,11 @@ class GeologiaDownloadSerializer:
         empenhado_total = {v['year__year']: v['total']
                            for v in empenhado_values}
 
-        return self._get_gnds_list(data_by_gnd, orcado_total, empenhado_total)
+        return self._get_gnds_list_by_year(data_by_gnd, orcado_total,
+                                           empenhado_total)
 
-    def _get_gnds_list(self, data_by_gnd, orcado_total_by_year,
-                       empenhado_total_by_year):
+    def _get_gnds_list_by_year(self, data_by_gnd, orcado_total_by_year,
+                               empenhado_total_by_year):
         ret = []
         for gnd in data_by_gnd:
             year = gnd['year__year']
@@ -276,6 +286,62 @@ class GeologiaDownloadSerializer:
                 gnd_dict["subfuncao"] = gnd['subfuncao__desc']
 
             ret.append(gnd_dict)
+
+        return ret
+
+    def prepare_subgrupo_chart_data(self):
+        qs = self.queryset.filter(year__year__gte=2010)
+
+        years = qs.order_by('year').values('year').distinct()
+        ret = []
+        for year_dict in years:
+            year = year_dict['year']
+            year_qs = qs.filter(year=year)
+            ret += self._get_subgrupo_values(year_qs)
+
+        return ret
+
+    def _get_subgrupo_values(self, queryset):
+        qs = queryset.order_by('subgrupo_id')
+
+        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year',
+                                'subgrupo_id', 'subgrupo__desc') \
+            .annotate(orcado=Sum('orcado_atualizado')) \
+            .annotate(empenhado=Sum('empenhado_liquido'))
+
+        orcado_values = qs.values('subgrupo_id') \
+            .annotate(total=Sum('orcado_atualizado'))
+        orcado_total = {v['subgrupo_id']: v['total'] for v in orcado_values}
+
+        empenhado_values = qs.values('subgrupo_id') \
+            .annotate(total=Sum('empenhado_liquido'))
+        empenhado_total = {v['subgrupo_id']: v['total']
+                           for v in empenhado_values}
+
+        return self._get_gnds_list_by_subgrupo(data_by_gnd, orcado_total,
+                                               empenhado_total)
+
+    def _get_gnds_list_by_subgrupo(self, data_by_gnd, orcado_total_by_subgrupo,
+                                   empenhado_total_by_subgrupo):
+        ret = []
+        for gnd in data_by_gnd:
+            subgrupo_id = gnd['subgrupo_id']
+            orcado_total = orcado_total_by_subgrupo[subgrupo_id]
+            empenhado_total = empenhado_total_by_subgrupo[subgrupo_id]
+
+            ret.append({
+                "ano": gnd['year__year'],
+                "subgrupo": gnd['subgrupo__desc'],
+                "gnd": gnd['gnd_gealogia__desc'],
+                "orcado": gnd['orcado'],
+                "orcado_total": orcado_total,
+                "orcado_percentual": self._calculate_percent(
+                    gnd['orcado'], orcado_total),
+                "empenhado": gnd['empenhado'],
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": self._calculate_percent(
+                    gnd['empenhado'], empenhado_total),
+            })
 
         return ret
 
