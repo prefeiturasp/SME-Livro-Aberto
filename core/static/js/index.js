@@ -13,7 +13,10 @@ d3.formatDefaultLocale(pt_BR);
 let currency = d3.format('$,~d');
 
 window.addEventListener("DOMContentLoaded", function(){
-    function submit(){ form.submit(); }
+    function submit(eventHandler){
+        let form = eventHandler.currentTarget;
+        form.submit();
+    }
     for(form of document.forms){
         form.go.remove();
         form.addEventListener('change', submit);

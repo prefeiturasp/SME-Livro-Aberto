@@ -82,6 +82,12 @@
     <div class="wrapper">
       <h2>Orçamento x <em>Tempo</em></h2>
       <form action="#budget-over-time" method="get" class="query">
+          <input type="hidden" name="year" value="{{year}}" />
+      {% for fonte in fontes_de_recurso %}
+         {% if fonte.selecionado %}
+          <input type="hidden" name="fonte" value="{{fonte.id}}" />
+          {%endif%}
+      {% endfor %}
       <fieldset>
         <div class="form-item switch">
             <input type="checkbox" name="deflate" {% if deflate %}checked{% endif %} id="use-deflator" value="True">
