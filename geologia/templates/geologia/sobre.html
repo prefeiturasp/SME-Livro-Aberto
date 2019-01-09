@@ -14,24 +14,6 @@
   <p>Os gastos na educação em São Paulo</p>
 {% endblock %}
 
-{%block about %}
-<a href="/sobre.html">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Saiba mais
-</a>
-{% endblock %}
-
-{%block metodology %}
-<a href="/about.html">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Metodologia
-</a>
-{% endblock %}
-
 {%block sections %}
   <div class="wrapper container">
 
@@ -42,10 +24,10 @@
             <h1>So<br/>bre</h1>
             <p>O objetivo da ferramenta Geologia Orçamentária é demonstrar <strong>a alocação dos gastos em Educação da Prefeitura de São Paulo ao longo do tempo</strong>, por meio de camadas que representam grupos de natureza de despesa e visualizações auxiliares que permitem maior detalhamento dos gastos.</p>
         </div>
-        <!-- <ul>
+        <ul>
             <li class="active"><a href="sobre.html">Sobre o mosaico</a></li>
             <li><a href="tutorial.html">Tutorial</a></li>
-        </ul> -->
+        </ul>
     </div>
     <!-- End Sidebar -->
 
@@ -53,7 +35,7 @@
         <div class="sobre_mosaico">
 
             <!-- Part 1 -->
-            <div class="content azul">
+            <div class="content verde">
                 <div class="txt">
                     <h2>Sobre <span> &#x276f; Geologia Orçamentário</span></h2>
                     <p>A ferramenta permite visualizar o Orçamento da Secretaria Municipal de Educação de São Paulo em camadas representativas de <strong>naturezas de despesa.</strong></p>
@@ -89,7 +71,7 @@
 
             <!-- Part 2 -->
 
-            <div class="content rosa">
+            <div class="content verde">
                 <div class="txt">
                     <h2>Sobre <span> &#x276f; O Processo de Execução</span></h2>
 
@@ -105,7 +87,7 @@
             <!-- End Part 2 -->
 
             <!-- Part 3 -->
-            <div class="content marinho">
+            <div class="content verde">
                 <div class="txt">
                     <h2>Sobre <span> &#x276f; Deflacionamento</span></h2>
 
@@ -123,7 +105,7 @@
 
                 </div>
 
-                <table>
+                <table class="table__about">
                   <tr>
                     <th>Ano</th>
                     <th>Número Índice (Set de 2018 = 1)</th>
