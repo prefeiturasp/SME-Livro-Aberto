@@ -190,3 +190,58 @@ class GeologiaSerializer:
         if value is None or not total:
             return 0
         return value / total
+
+
+class GeologiaDownloadSerializer:
+
+    def __init__(self, queryset, chart, *args, **kwargs):
+        self.queryset = queryset
+        self.chart = chart
+
+    @property
+    def data(self):
+        qs = self.queryset.order_by('year')
+        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year') \
+            .annotate(orcado=Sum('orcado_atualizado')) \
+            .annotate(empenhado=Sum('empenhado_liquido'))
+
+        orcado_values = qs.values('year__year') \
+            .annotate(total=Sum('orcado_atualizado'))
+        orcado_total = {v['year__year']: v['total'] for v in orcado_values}
+
+        empenhado_values = qs.values('year__year') \
+            .annotate(total=Sum('empenhado_liquido'))
+        empenhado_total = {v['year__year']: v['total']
+                           for v in empenhado_values}
+
+        return self._get_gnds_list(data_by_gnd, orcado_total, empenhado_total)
+
+    def _get_gnds_list(self, data_by_gnd, orcado_total_by_year,
+                       empenhado_total_by_year):
+        ret = []
+        for gnd in data_by_gnd:
+            year = gnd['year__year']
+            orcado_total = orcado_total_by_year[year]
+            empenhado_total = empenhado_total_by_year[year]
+
+            ret.append(
+                {
+                    "ano": year,
+                    "gnd": gnd['gnd_gealogia__desc'],
+                    "orcado": gnd['orcado'],
+                    "orcado_total": orcado_total,
+                    "orcado_percentual": self._calculate_percent(
+                        gnd['orcado'], orcado_total),
+                    "empenhado": gnd['empenhado'],
+                    "empenhado_total": empenhado_total,
+                    "empenhado_percentual": self._calculate_percent(
+                        gnd['empenhado'], empenhado_total),
+                }
+            )
+
+        return ret
+
+    def _calculate_percent(self, value, total):
+        if value is None or not total:
+            return 0
+        return value / total

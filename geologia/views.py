@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework_csv.renderers import CSVRenderer
 
 from budget_execution.models import Execucao
-from geologia.serializers import GeologiaSerializer
+from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
 
 
 class HomeView(generics.ListAPIView):
@@ -23,4 +23,16 @@ class HomeView(generics.ListAPIView):
 class DownloadView(generics.ListAPIView):
     renderer_classes = [CSVRenderer]
     queryset = Execucao.objects.filter(subgrupo__isnull=False)
-    serializer_class = GeologiaSerializer
+    serializer_class = GeologiaDownloadSerializer
+
+    def list(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        chart = self.kwargs['chart']
+        serializer = self.get_serializer(qs, chart=chart)
+
+        filename = f'geologia_{chart}'
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}.csv'
+        }
+        response = Response(serializer.data, headers=headers)
+        return response
