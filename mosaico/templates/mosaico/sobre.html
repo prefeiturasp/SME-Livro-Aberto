@@ -30,8 +30,8 @@
                 </p>
             </div>
             <ul>
-                <li class="active"><a href="sobre.html">Sobre</a></li>
-                <li><a href="tutorial.html">Tutorial</a></li>
+                <li class="active"><a href="{% url 'mosaico:sobre' %}">Sobre</a></li>
+                <li><a href="{% url 'mosaico:tutorial' %}">Tutorial</a></li>
             </ul>
         </div>
         <!-- End Sidebar -->
@@ -40,118 +40,149 @@
             <div class="tutorial">
 
                 <!-- Part 1 -->
-                <div class="content azul">
-                    <div class="txt">
-                        <h2>Tutorial <span>&#x276f; Navegação por Linguagem Amigável</span></h2>
-                        <p>
-						O Recorte para <b>navegação em linguagem amigável</b> apresenta quatro níveis, sendo o primeiro o de <b>Grupos</b>, o segundo de <b>Subgrupos</b>, o terceiro de <b>Elementos de Despesa</b> e o quarto de <b>Subelementos de Despesa</b> (veja a definição dos grupos e subgrupos na seção “Sobre o Mosaico”). Cada vez que se seleciona um retângulo, observa-se a distribuição interna a ele no nível abaixo.
-						</p>
-						<p>
-                        Se for analisado o Mosaico nessa segmentação, pode-se ver já no primeiro nível (Figura 1) como se dá a distribuição dos recursos pelo maior nível de agregação das despesas públicas. A partir deste nível, pode-se escolher a próxima área de interesse e entender como se dão os gastos dentro da área, entrando no nível de Subgrupos.
-						</p>
-                        <img src="{% static 'img/sobre_1.png' %}">
-                        <p class="sub"><i><b>Figura 1:</b> Orçamento Anual (2018) da Secretaria Municipal de Educação por Grupo</i></p>
-
-                        <p>A <i>figura 2</i> representa a distribuição do orçamento do grupo “Ações pedagógicas e educacionais”. Nota-se que “Ações de apoio à educação especial” é o maior gasto da Secretaria de Educação dentro deste grupo.</p>
-                        <img src="{% static 'img/sobre_2.png' %}">
-                        <p class="sub"><i><b>Figura 2:</b>  Orçamento Anual (2018) do Grupo “Ações pedagógicas e educacionais” por Subgrupo</i></p>
-                       
-
-                        <p>Outra informação que é possível explorar é a faixa de execução em que cada rubrica se encontra. Pode-se observar que a execução do Programa Projovem Urbano, por exemplo, ficou na faixa de 20% a 40% do valor orçado. Isto pode ser um importante sinalizador de possíveis problemas no processo de execução dessa rubrica.</p>
-                        <p>Na <i>figura 3</i>, avaliam-se os elementos de despesa do Subgrupo escolhido. Como exemplo, apresenta-se a seguir como se gasta em “Ações de Apoio à Educação Especial”.</p>
-                        <p>A maior parte das despesas ocorre com Outros Serviços de Terceiros - Pessoa Jurídica.</p>
-                        <img src="{% static 'img/sobre_3.png' %}">
-                        <p class="sub"><i><b>Figura 3:</b> Orçamento Anual (2018) do Subgrupo “Ações de Apoio à Educação Especial” por Elemento de Despesa</i></p>
-                      
-                      
-                        <p>Na <i>figura 4</i>, analisam-se os subelementos de despesa dentro do elemento “Outros Serviços de Terceiros - Pessoa Jurídica”. Vê-se que o principal gasto foi em “Instituições de Caráter Assistencial, Cultural e Educacional”. Vale ressaltar que o valor que aparece na ferramenta, neste caso, é o total empenhado líquido em cada subelemento.</p>
-                        <p>Observa-se que todos os subelementos apresentados possuem a mesma cor do elemento na tela anterior. Isso se deve ao fato de que, como o subelemento de despesa é uma categoria que só existe para os empenhos de despesa e não para o orçamento, conforme definido pela Lei Orçamentária (exemplo: não se autoriza verba para Material Hospitalar especificamente, mas sim para Materiais de Consumo, em geral), as cores associadas aos subelementos são “herdadas” da cor do elemento de despesa referente.</p>
-                        <img src="{% static 'img/sobre_4.png' %}">
-                        <p class="sub"><i><b>Figura 4:</b> Orçamento Anual (2018) do Elemento de Despesa “Outros Serviços de Terceiros - Pessoa Jurídica” dentro do Subgrupo “Ações de Apoio à Educação Especial” por Subelemento de Despesa</i></p>
-                    </div>       
-                </div>
-                <!-- End Part 1 -->
-
-                 <!-- Part 2 -->
-                <div class="content azul">
-                <div class="txt">
-                    <h2>Tutorial <span>&#x276f; Navegação por linguagem Técnica</span></h2>
-                    <p>A navegação do Mosaico pela Linguagem Técnica indica como se dá a distribuição de recursos da Secretaria Municipal de Educação segundo a classificação funcional/programática. Aqui não emprega-se nenhuma tipologia alternativa, isto é, as categorias usadas existem exatamente com esta nomenclatura no orçamento municipal..</p>
-                    <p>O primeiro nível disponível é a <b>Subfunção</b>, o segundo são os <b>Programas</b>, e, por último, chega-se ao nível do <b>Projeto/Atividade</b>.</p>
-
-                    <p>A <i>figura 5</i>, ilustra como é realizada a distribuição de recursos por subfunção no ano de 2018. Analisa-se a subfunção Educação Infantil, que possui 50,5% do orçamento total da SME neste ano.</p>      
-                    <img src="{% static 'img/sobre_5.png' %}">
-                    <p class="sub"><i><b>Figura 5:</b> Orçamento Anual (2018) da SME por Subfunção</i></p>
-
-
-                    <p>A <i>figura 6</i> indica as dotações dos programas relacionados à Educação Infantil. Nota-se que a maior parte dos recursos é destinada ao programa “Desenvolvimento e manutenção da educação”.</p>
-                    <img src="{% static 'img/sobre_6.png' %}">
-                    <p class="sub"><i><b>Figura 6:</b> Orçamento Anual (2018) da Subfunção “Educação Infantil por Programa”</i></p>
-
-                    <p>Observam-se agora os diversos projetos/atividades relacionados a este Programa, dentro dos gastos de Educação Infantil. Neste caso, selecionando-o (Figura 7) vê-se que “Manutenção e Operação da Rede Parceira - Centro de Educação Infantil (CEI)” é o principal projeto/atividade.</p>
-
-                    <img src="{% static 'img/sobre_7.png' %}">
-                    <p class="sub"><i><b>Figura 6:</b> Orçamento Anual (2018) do Programa de Desenvolvimento e Manutenção da Educação dentro da Subfunção “Educação Infantil por Projeto/Atividade”</i></p>
+                <div class="content verde">
+                        <div class="txt">
+                            <h2>Sobre <span> &#x276f; O Mosaico Orçamentário</span></h2>
+                            <p>A ferramenta permite visualizar o Orçamento da Secretaria Municipal de Educação de São Paulo a partir de dois recortes em termos da linguagem utilizada: <b>Simplificada e Técnica</b></p>
+                        </div>
+                        <ul class="list--border">
+                            <li>
+                                <h3><b>01. linguagem Simplificada</b> - uso de categorias mais familiares para o cidadão comum</h3>
+                                <ul class="list--inline">
+                                    <li>Grupo</li>
+                                    <li>&#x276f;</li>
+                                    <li>Subgrupo</li>
+                                    <li>&#x276f;</li>
+                                    <li>Elementos de despesa</li>
+                                    <li>&#x276f;</li>
+                                    <li>Subelementos de despesa</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <h3><b>02. Linguagem Técnica</b> - uso de categorias originais do orçamento segundo a classificação funcional/programática</h3>
+                                <ul class="list--inline">
+                                    <li>Subfunção</li>
+                                    <li>&#x276f;</li>
+                                    <li>Programa</li>
+                                    <li>&#x276f;</li>
+                                    <li>Projeto/Atividade</li>
+                                </ul>
+                            </li>
+                        </ul>
+    
+                        <div class="txt">
+                            <p>O último nível na linguagem <b>simplificada</b> o subelemento de despesa, descreve com o que especificamente a despesa está sendo efetuada.</p>
+                        </div>
+   
+                        <div class="txt">
+                            <p>O <b>tamanho</b> dos retângulos representa a proporção do orçamento (valor orçado atualizado) para aquela rubrica em relação às demais:</p>
+                            
+                            <img src="../../static/img/sobre_mosaico.png">
+                            <p>As <b>cores dos retângulos</b> representam a medida de execução do orçamento em questão. Isto é, o quanto do orçado atualizado foi, de fato, aplicado (o “empenhado”, já descontando eventuais cancelamentos de despesa):</p>
+                            <img src="../../static/img/sobre_percent.png">
+    
+                            <p>Como o subelemento de despesa é uma categoria que só existe para os empenhos de despesa e não para o orçamento – conforme definido pela Lei Orçamentária (exemplo: não se autoriza verba para Material Hospitalar especificamente, mas sim para Materiais de Consumo, em geral) –, as cores associadas aos subelementos são “herdadas” da categoria maior, ou seja, do respectivo elemento de despesa</p>
+    
+                            <p>A ferramenta permite mostrar os dados de dois conjuntos de informação distintos: (i) o órgão orçamentário “Secretaria Municipal de Educação”; e (ii) a função orçamentária “Educação” ampliada, incluindo todas as despesas que são contabilizadas para o cumprimento do mínimo legal de gastos em ensino.</p>
+    
+                            <p>No segundo caso, a visualização é útil para mostrar quais despesas contam para o cumprimento de requisitos legais do município de São Paulo em termos de gastos com Educação. A Constituição Federal assegura, em seu artigo 212, no âmbito dos municípios, a aplicação de “vinte e cinco por cento, no mínimo, da receita resultante de impostos, compreendida a proveniente de transferências, na manutenção e desenvolvimento do ensino”.</p>
+                            
+                            <p>Além disso, a Lei Orgânica Municipal de São Paulo assegura um percentual adicional de seis por cento, totalizando, portanto, trinta e um por cento como limite mínimo de gastos para manutenção e desenvolvimento do ensino. Parte dessas despesas contabilizadas não estão, no entanto, atreladas à função Educação e não são necessariamente executadas pela SME, por isso trata-se de um universo distinto de informações.</p>
+    
+                        </div>
                     </div>
-                </div>
-                <!-- End Part 2 -->
-
-                 <!-- Part 3 -->
-                <div class="content azul">
-                <div class="txt">
-                    <h2>Tutorial <span>&#x276f; Gastos por Fonte de Recurso</span></h2>
-
-                    <p>Uma possibilidade de escolha transversal a todas as visualizações permitida pela ferramenta é observar os gastos filtrados por <b>fonte de recurso</b>. Além do total, sem esse tipo de discriminação, há três recortes possíveis: <b>Tesouro Municipal</b>, <b>Transferências Federais</b>, e <b>Fundeb e outras fontes</b>.</p>
-                    <p>Outras fontes contemplam as Transferências Estaduais e os recursos do Fundo Municipal da Criança e do Adolescente (FUMCAD), destinados à educação.</p>
-                    <p>Um botão na parte superior direita da tela <i>(figura 7)</i> permite filtrar a fonte de recurso desejada, enquanto que, na opção default, o usuário verá os gastos totais, sem filtro.</p>
-
-                    <img src="{% static 'img/sobre_8.png' %}">
-                    <p class="sub"><i><b>Figura 7:</b> Seleção do Gasto por Fonte de Recurso</i></p>
-<!--
-                    <p>Utilizando como exemplo a visualização por Órgão em primeiro nível podemos comparar as  <i>figuras 8</i> e <i>9</i> com a <i>figuras 4</i> apresentada anteriormente.</p>
-
-                    <p>A <i>figura 8</i> apresenta a visualização por Órgão dos gastos obrigatórios do Orçamento Federal. Já a <i>figura 9</i> apresenta os dados referentes aos gastos discriminatórios também por Órgão. A <i>figura 8</i> se aproxima da <i>figura 4</i>, mantendo Encargos Financeiros, Ministério da Previdência Social e Transferências como aquelas que abrangem a maior parte dos recursos.</p>
-
-                    <img src="images/tutorial/obrigatorio.png">
-                    <p class="sub"><i><b>Figura 8:</b> Orçamento anual obrigatório de 2013 por Órgão</i></p>
-                    
-
-                    <img src="images/tutorial/discricionario.png">
-                    <p class="sub"><i><b>Figura 9:</b> Orçamento anual discriminatório de 2013 por Órgão</i></p>
-
-                    <p>A <i>figura 9</i> apresenta o mesmo ano, mas para os gastos discriminatórios. Ela difere bastante dos gráficos anteriores, referentes aos gastos obrigatórios e gastos totais.</p>
-
-                    <p>Primeiro, percebe-se como os Ministérios das Cidades, Transportes e Integração Nacional, que têm pouca expressão relativa no orçamento geral, ganham maior relevância quando se restringe a vizualização para os recursos discriminatórios.</p>
-
-                    <p>Outra consideração é a diferença de cores que preenchem os retângulos, mostrando que a execução de recursos é menor quando se trata de recursos discriminatórios.</p>
--->
-                    </div>                
-                </div>
-                <!-- End Part 3 -->
-
-                 <!-- Part 4 -->
-                <div class="content azul">
-                <div class="txt">
-                    <h2>Tutorial <span>&#x276f; Vizualizações Auxiliares</span></h2>
-                    <p>O Mosaico Orçamentário da SME possui, até o momento, dados desde o ano de 2010 até o ano de 2018. Em qualquer nível de análise e filtro de pesquisa, a ferramenta conta com duas visualizações auxiliares: a <b>série histórica</b> e a <b>tabela de dados</b>.</b>.</p>
-
-                    <h3>01. Série histórica</h3>
-                    <p>A série histórica mostra a evolução do orçamento ao longo do tempo, desde o ano de 2010 até o ano de 2018, como mostra a <i>figura 10</i>, A seleção realizada no mosaico atualiza este gráfico, isto é, supondo que o usuário selecione, por exemplo, “Apoio ao Aluno” como grupo na navegação amigável, a série histórica apresentará a evolução dos gastos para este grupo específico.</p>
-                    <p>O Gráfico tem duas linhas: o valor orçado atualizado (verba liberada para gasto) e o valor empenhado líquido (valor da despesa efetivamente executada). É possível selecionar entre dados nominais (valores correntes de cada ano) e valores corrigidos pela inflação (ver mais informações na seção 2.3.3.1 - <b>Deflacionamento</b> da metodologia).</p>
-                    <img src="{% static 'img/sobre_9.png' %}">
-                    <p class="sub"><i><b>Figura 10:</b></i> Visualização de Série Histórica do Mosaico Orçamentário, Gastos Totais da SME</p>
-
-
-                    <h3>02. tabela de dados</h3>
-                    <p>A tabela de dados contém todas as informações sobre o gráfico principal, ou seja, a proporção de cada rubrica, no nível superior. Assim como a série histórica, a seleção realizada no mosaico atualiza este gráfico para a rubrica específica que foi selecionada, abrindo pelos níveis subsequentes.</p>
-                    <p>No exemplo ilustrado na <i>figura 11</i>, são indicadas as informações sobre os Subgrupos dentro do Grupo “Ações pedagógicas e educacionais”.</p>
-                    <p>A coluna de porcentagem do orçado atualizado aponta para a proporção que cada subgrupo ocupa no total do grupo selecionado, fornecendo os números que retratam a proporção ilustrada no gráfico Mosaico.</p>             
-                    <img src="{% static 'img/sobre_10.png' %}">
-                    <p class="sub"><i><b>Figura 11:</b> Tabela de Dados - Grupo “Ações pedagógicas e educacionais”</i></p>
+                    <!-- End Parte 1 -->
+    
+                    <!-- Part 2 -->
+    
+                    <div class="content verde">
+                        <div class="txt">
+                            <h2>Sobre <span> &#x276f; O Ciclo Orçamentário</span></h2>
+    
+                            <p>O ciclo orçamentário é o processo pelo qual o orçamento público é planejado e formulado. Ele é composto por três peças principais:</p>
+    
+                            <ul class="ciclo ciclo--text-left">
+                                <li>O Plano Plurianual (PPA);</li>
+                                <li>A Lei de Diretrizes Orçamentárias (LDO); e</li>
+                                <li>A Lei Orçamentária Anual (LOA)</li>
+                            </ul>
+    
+                            <p>O ciclo tem início a cada primeiro ano de mandato do chefe do executivo, quando é elaborado o PPA, instrumento que faz o planejamento estratégico para os quatro anos posteriores. A LDO indica as prioridades e as metas do orçamento anual, considerando os cenários macroeconômico e fiscal. A partir das diretrizes descritas pela LDO, ocorre finalmente a formulação e aprovação da LOA, que autoriza a quantidade de recursos destinados aos órgãos públicos em cada ano, segundo as classificações pertinentes às despesas e detalhadas as fontes da receita.</p>
+    
+                            <p><b>Por meio destas três leis o orçamento é proposto, aprovado, executado e avaliado continuamente.</b></p>
+    
+                            <img src="../../static/img/sobre_image1.png">
+    
+                        </div>
+                        
                     </div>
-                    
-                </div>
-                <!-- End Part 4 -->
+                    <!-- End Part 2 -->
+    
+                    <!-- Part 3 -->
+                    <div class="content verde">
+                        <div class="txt">
+                            <h2>Sobre <span> &#x276f; O Processo de Execução</span></h2>
+    
+                            <p>Definidos os valores destinados às rubricas, cabe aos órgãos responsáveis a execução do orçamento previsto. Nem sempre há execução total do valor orçado. Quando ocorre sobra de recursos, os valores ao final do exercício não acumulam para o ano seguinte, eles são estornados e devem ser redistribuídos segundo a LOA do ano seguinte.</p>
+    
+                            <p>Se durante o exercício forem necessários mais recursos, o orçamento público pode sofrer alterações. O recurso para determinada conta pode ser ampliado por meio de crédito suplementar, crédito especial ou por decreto de abertura de crédito extraordinário. Desta forma, o chamado “valor orçado atualizado” pode variar ao longo do ano.</p>
+    
+                            <p>As despesas passam por algumas fases antes de serem efetivamente realizadas. A partir da dotação autorizada pela LOA, os recursos destinados a determinado fim devem ser empenhados. Empenhar significa reservar aquele valor para cobrir o pagamento de algum bem ou serviço compatível com os fins estabelecidos pela rubrica na qual se inclui. Apenas depois que o serviço foi concluído ou bem adquirido foi entregue, o valor é liquidado. O pagamento daquela despesa é então realizado, fase em que a administração pública efetivamente quita seu débito com o credor.</p>
+    
+                            <p>Como esclarecido anteriormente, recursos não pagos em um período não acumulam para o ano seguinte. No entanto, se houver valores já empenhados, isto é, comprometidos a algum pagamento, porém não liquidados (os chamados “restos a pagar não processados”) ou pagos (“restos a pagar processados”) até a data de 31 de dezembro daquele ano, os valores são mantidos e inscritos em Restos a Pagar, de forma a transferir o recurso para o exercício posterior. Além disso, recursos empenhados podem ser cancelados, por isso utiliza-se o “empenhado líquido” (que já considera eventuais cancelamentos) como referência para execução.</p>
+                        </div>
+                    </div>
+                    <!-- End Part 3 -->
+    
+                    <!-- Part 4 -->
+                    <div class="content verde">
+                        <div class="txt">
+                            <h2>Sobre <span> &#x276f; As Classificações</span></h2>
+    
+                            <p>As classificações orçamentárias são úteis para formular, apresentar, executar e controlar o orçamento em todo o ciclo orçamentário, garantindo um processo mais sistematizado e uniformizado e favorecendo a transparência.</p>
+    
+                            <p>As classificações devem facilitar a formulação de um orçamento que esteja em consonância com os objetivos das políticas, além de refletir com precisão o que o governo se propõe a fazer com os recursos disponíveis e proporcionar uma estrutura de controle administrativo para monitoramento do orçamento aprovado pelo Legislativo.</p>
+    
+                            <p>Existem várias classificações possíveis, segundo quatro lógicas distintas:</p>
+    
+                        </div>
+    
+                        <blockquote>
+                            <h5>01. Istitucional</h5>
+                            Evidencia as unidades administrativas responsáveis pela execução da despesa. Exemplo:
+                            <b class="color">(Órgão - Unidade Orçamentária) ⇔ (Secretaria de Educação - Gabinete do Secretário).</b>
+                        </blockquote>
+    
+                        <blockquote>
+                            <h5>02. funcional</h5>
+                            Fornece as bases para a apresentação de dados sobre os gastos públicos nos principais segmentos em que atuam as organizações do Estado. Exemplo:
+                            <b class="color">(Função - Subfunção) ⇔ (Educação - Educação Infantil).</b>
+                        </blockquote>
+    
+                        <blockquote>
+                            <h5>03. segundo a natureza da despesa</h5>
+                            Fornece indicações mais detalhadas sobre a destinação da despesa e como ela será aplicada. Exemplo:
+                            <b class="color">(Grupo de Natureza de Despesa - Elemento de Despesa) ⇔ (Investimentos - Obras e Instalações).</b>
+                        </blockquote>
+    
+                        <blockquote>
+                            <h5>04. programática</h5>
+                            Especifica os gastos até o nível de programa; sua finalidade é demonstrar as realizações do governo. Exemplo:
+                            <b class="color">(Programa - Projeto/Atividade) ⇔ (Desenvolvimento e Manutenção da Educação - Ações de Educação Integral).</b>
+                        </blockquote>
+                        
+                        <div class="txt">
+
+                            <p>Para o Mosaico, foram utilizados, na navegação por linguagem técnica, atributos das classificações funcional e programática. Já na linguagem simplificada, foi criada uma tipologia alternativa, para viabilizar o uso da ferramenta sem exigir conhecimento prévio sobre categorias orçamentárias. Além disso, essa navegação usa atributos da classificação segundo a natureza da despesa: o elemento e o subelemento de despesa. Essas categorias também tiveram sua nomenclatura original reformulada para uma linguagem mais acessível.</p>
+    
+                            <p>Essa tipologia alternativa é contemplada por áreas principais de gastos em Educação: os grupos e subgrupos. Grupos são categorias mais amplas que subgrupos. Por exemplo: uma despesa de pagamento de fornecedores de serviço de transporte escolar será categorizada no Subgrupo “Transporte Escolar”, que faz parte do Grupo “Apoio ao Aluno”.</p>
+    
+                            <p>A tipologia foi elaborada em conjunto entre a SME e a FGV/DAPP por meio da análise de outros atributos das despesas, em especial, o agrupamento das ações orçamentárias (Projeto/Atividade).</p>
+                        
+                        </div>
+                        
+                    </div>
+                    <!-- End Part 4 -->
                 
             </div>            
         </div>
