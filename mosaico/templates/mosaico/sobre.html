@@ -18,7 +18,7 @@
 {% endblock %}
 
 {%block about %}
-<a href="/sobre.html">
+<a href="{% url 'mosaico:sobre' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -27,7 +27,7 @@
 {% endblock %}
 
 {%block metodology %}
-<a href="/about.html">
+<a href="{% url 'mosaico:metodologia' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -36,125 +36,142 @@
 {% endblock %}
 
 {%block sections %}
-  <section id="mosaico">
-    <div class="wrapper">
-      <form action="#mosaico" name="filter" method="get" class="query">
-      <fieldset>
-        <div class="form-item switch">
-          <input class="checkbox" type="checkbox" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
-          <label for="simple">Visão simplificada</label>
-          <input class="checkbox" type="checkbox" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
-          <label for="pro">Visão técnica</label>
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <h1>So<br/>bre</h1>
+                <p>
+                    Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.
+                </p>
+            </div>
+            <ul>
+                <li><a href="sobre.html">Sobre o mosaico</a></li>
+                <li class="active"><a href="tutorial.html">Tutorial</a></li>
+            </ul>
         </div>
-        <div class="form-item">
-          <input class="radio" type="radio" name="universe" value="">
-          <label>Educação</label>
-          <input class="radio" type="radio" name="universe" value="">
-          <label title="Em breve...">Mínimo legal (31%)</label>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="tutorial">
+
+                <!-- Part 1 -->
+                <div class="content azul">
+                    <div class="txt">
+                        <h2>Tutorial <span>&#x276f; Navegação por Linguagem Amigável</span></h2>
+                        <p>
+						O Recorte para <b>navegação em linguagem amigável</b> apresenta quatro níveis, sendo o primeiro o de <b>Grupos</b>, o segundo de <b>Subgrupos</b>, o terceiro de <b>Elementos de Despesa</b> e o quarto de <b>Subelementos de Despesa</b> (veja a definição dos grupos e subgrupos na seção “Sobre o Mosaico”). Cada vez que se seleciona um retângulo, observa-se a distribuição interna a ele no nível abaixo.
+						</p>
+						<p>
+                        Se for analisado o Mosaico nessa segmentação, pode-se ver já no primeiro nível (Figura 1) como se dá a distribuição dos recursos pelo maior nível de agregação das despesas públicas. A partir deste nível, pode-se escolher a próxima área de interesse e entender como se dão os gastos dentro da área, entrando no nível de Subgrupos.
+						</p>
+                        <img src="{% static 'img/sobre_1.png' %}">
+                        <p class="sub"><i><b>Figura 1:</b> Orçamento Anual (2018) da Secretaria Municipal de Educação por Grupo</i></p>
+
+                        <p>A <i>figura 2</i> representa a distribuição do orçamento do grupo “Ações pedagógicas e educacionais”. Nota-se que “Ações de apoio à educação especial” é o maior gasto da Secretaria de Educação dentro deste grupo.</p>
+                        <img src="{% static 'img/sobre_2.png' %}">
+                        <p class="sub"><i><b>Figura 2:</b>  Orçamento Anual (2018) do Grupo “Ações pedagógicas e educacionais” por Subgrupo</i></p>
+                       
+
+                        <p>Outra informação que é possível explorar é a faixa de execução em que cada rubrica se encontra. Pode-se observar que a execução do Programa Projovem Urbano, por exemplo, ficou na faixa de 20% a 40% do valor orçado. Isto pode ser um importante sinalizador de possíveis problemas no processo de execução dessa rubrica.</p>
+                        <p>Na <i>figura 3</i>, avaliam-se os elementos de despesa do Subgrupo escolhido. Como exemplo, apresenta-se a seguir como se gasta em “Ações de Apoio à Educação Especial”.</p>
+                        <p>A maior parte das despesas ocorre com Outros Serviços de Terceiros - Pessoa Jurídica.</p>
+                        <img src="{% static 'img/sobre_3.png' %}">
+                        <p class="sub"><i><b>Figura 3:</b> Orçamento Anual (2018) do Subgrupo “Ações de Apoio à Educação Especial” por Elemento de Despesa</i></p>
+                      
+                      
+                        <p>Na <i>figura 4</i>, analisam-se os subelementos de despesa dentro do elemento “Outros Serviços de Terceiros - Pessoa Jurídica”. Vê-se que o principal gasto foi em “Instituições de Caráter Assistencial, Cultural e Educacional”. Vale ressaltar que o valor que aparece na ferramenta, neste caso, é o total empenhado líquido em cada subelemento.</p>
+                        <p>Observa-se que todos os subelementos apresentados possuem a mesma cor do elemento na tela anterior. Isso se deve ao fato de que, como o subelemento de despesa é uma categoria que só existe para os empenhos de despesa e não para o orçamento, conforme definido pela Lei Orçamentária (exemplo: não se autoriza verba para Material Hospitalar especificamente, mas sim para Materiais de Consumo, em geral), as cores associadas aos subelementos são “herdadas” da cor do elemento de despesa referente.</p>
+                        <img src="{% static 'img/sobre_4.png' %}">
+                        <p class="sub"><i><b>Figura 4:</b> Orçamento Anual (2018) do Elemento de Despesa “Outros Serviços de Terceiros - Pessoa Jurídica” dentro do Subgrupo “Ações de Apoio à Educação Especial” por Subelemento de Despesa</i></p>
+                    </div>       
+                </div>
+                <!-- End Part 1 -->
+
+                 <!-- Part 2 -->
+                <div class="content azul">
+                <div class="txt">
+                    <h2>Tutorial <span>&#x276f; Navegação por linguagem Técnica</span></h2>
+                    <p>A navegação do Mosaico pela Linguagem Técnica indica como se dá a distribuição de recursos da Secretaria Municipal de Educação segundo a classificação funcional/programática. Aqui não emprega-se nenhuma tipologia alternativa, isto é, as categorias usadas existem exatamente com esta nomenclatura no orçamento municipal..</p>
+                    <p>O primeiro nível disponível é a <b>Subfunção</b>, o segundo são os <b>Programas</b>, e, por último, chega-se ao nível do <b>Projeto/Atividade</b>.</p>
+
+                    <p>A <i>figura 5</i>, ilustra como é realizada a distribuição de recursos por subfunção no ano de 2018. Analisa-se a subfunção Educação Infantil, que possui 50,5% do orçamento total da SME neste ano.</p>      
+                    <img src="{% static 'img/sobre_5.png' %}">
+                    <p class="sub"><i><b>Figura 5:</b> Orçamento Anual (2018) da SME por Subfunção</i></p>
+
+
+                    <p>A <i>figura 6</i> indica as dotações dos programas relacionados à Educação Infantil. Nota-se que a maior parte dos recursos é destinada ao programa “Desenvolvimento e manutenção da educação”.</p>
+                    <img src="{% static 'img/sobre_6.png' %}">
+                    <p class="sub"><i><b>Figura 6:</b> Orçamento Anual (2018) da Subfunção “Educação Infantil por Programa”</i></p>
+
+                    <p>Observam-se agora os diversos projetos/atividades relacionados a este Programa, dentro dos gastos de Educação Infantil. Neste caso, selecionando-o (Figura 7) vê-se que “Manutenção e Operação da Rede Parceira - Centro de Educação Infantil (CEI)” é o principal projeto/atividade.</p>
+
+                    <img src="{% static 'img/sobre_7.png' %}">
+                    <p class="sub"><i><b>Figura 6:</b> Orçamento Anual (2018) do Programa de Desenvolvimento e Manutenção da Educação dentro da Subfunção “Educação Infantil por Projeto/Atividade”</i></p>
+                    </div>
+                </div>
+                <!-- End Part 2 -->
+
+                 <!-- Part 3 -->
+                <div class="content azul">
+                <div class="txt">
+                    <h2>Tutorial <span>&#x276f; Gastos por Fonte de Recurso</span></h2>
+
+                    <p>Uma possibilidade de escolha transversal a todas as visualizações permitida pela ferramenta é observar os gastos filtrados por <b>fonte de recurso</b>. Além do total, sem esse tipo de discriminação, há três recortes possíveis: <b>Tesouro Municipal</b>, <b>Transferências Federais</b>, e <b>Fundeb e outras fontes</b>.</p>
+                    <p>Outras fontes contemplam as Transferências Estaduais e os recursos do Fundo Municipal da Criança e do Adolescente (FUMCAD), destinados à educação.</p>
+                    <p>Um botão na parte superior direita da tela <i>(figura 7)</i> permite filtrar a fonte de recurso desejada, enquanto que, na opção default, o usuário verá os gastos totais, sem filtro.</p>
+
+                    <img src="{% static 'img/sobre_8.png' %}">
+                    <p class="sub"><i><b>Figura 7:</b> Seleção do Gasto por Fonte de Recurso</i></p>
+<!--
+                    <p>Utilizando como exemplo a visualização por Órgão em primeiro nível podemos comparar as  <i>figuras 8</i> e <i>9</i> com a <i>figuras 4</i> apresentada anteriormente.</p>
+
+                    <p>A <i>figura 8</i> apresenta a visualização por Órgão dos gastos obrigatórios do Orçamento Federal. Já a <i>figura 9</i> apresenta os dados referentes aos gastos discriminatórios também por Órgão. A <i>figura 8</i> se aproxima da <i>figura 4</i>, mantendo Encargos Financeiros, Ministério da Previdência Social e Transferências como aquelas que abrangem a maior parte dos recursos.</p>
+
+                    <img src="images/tutorial/obrigatorio.png">
+                    <p class="sub"><i><b>Figura 8:</b> Orçamento anual obrigatório de 2013 por Órgão</i></p>
+                    
+
+                    <img src="images/tutorial/discricionario.png">
+                    <p class="sub"><i><b>Figura 9:</b> Orçamento anual discriminatório de 2013 por Órgão</i></p>
+
+                    <p>A <i>figura 9</i> apresenta o mesmo ano, mas para os gastos discriminatórios. Ela difere bastante dos gráficos anteriores, referentes aos gastos obrigatórios e gastos totais.</p>
+
+                    <p>Primeiro, percebe-se como os Ministérios das Cidades, Transportes e Integração Nacional, que têm pouca expressão relativa no orçamento geral, ganham maior relevância quando se restringe a vizualização para os recursos discriminatórios.</p>
+
+                    <p>Outra consideração é a diferença de cores que preenchem os retângulos, mostrando que a execução de recursos é menor quando se trata de recursos discriminatórios.</p>
+-->
+                    </div>                
+                </div>
+                <!-- End Part 3 -->
+
+                 <!-- Part 4 -->
+                <div class="content azul">
+                <div class="txt">
+                    <h2>Tutorial <span>&#x276f; Vizualizações Auxiliares</span></h2>
+                    <p>O Mosaico Orçamentário da SME possui, até o momento, dados desde o ano de 2010 até o ano de 2018. Em qualquer nível de análise e filtro de pesquisa, a ferramenta conta com duas visualizações auxiliares: a <b>série histórica</b> e a <b>tabela de dados</b>.</b>.</p>
+
+                    <h3>01. Série histórica</h3>
+                    <p>A série histórica mostra a evolução do orçamento ao longo do tempo, desde o ano de 2010 até o ano de 2018, como mostra a <i>figura 10</i>, A seleção realizada no mosaico atualiza este gráfico, isto é, supondo que o usuário selecione, por exemplo, “Apoio ao Aluno” como grupo na navegação amigável, a série histórica apresentará a evolução dos gastos para este grupo específico.</p>
+                    <p>O Gráfico tem duas linhas: o valor orçado atualizado (verba liberada para gasto) e o valor empenhado líquido (valor da despesa efetivamente executada). É possível selecionar entre dados nominais (valores correntes de cada ano) e valores corrigidos pela inflação (ver mais informações na seção 2.3.3.1 - <b>Deflacionamento</b> da metodologia).</p>
+                    <img src="{% static 'img/sobre_9.png' %}">
+                    <p class="sub"><i><b>Figura 10:</b></i> Visualização de Série Histórica do Mosaico Orçamentário, Gastos Totais da SME</p>
+
+
+                    <h3>02. tabela de dados</h3>
+                    <p>A tabela de dados contém todas as informações sobre o gráfico principal, ou seja, a proporção de cada rubrica, no nível superior. Assim como a série histórica, a seleção realizada no mosaico atualiza este gráfico para a rubrica específica que foi selecionada, abrindo pelos níveis subsequentes.</p>
+                    <p>No exemplo ilustrado na <i>figura 11</i>, são indicadas as informações sobre os Subgrupos dentro do Grupo “Ações pedagógicas e educacionais”.</p>
+                    <p>A coluna de porcentagem do orçado atualizado aponta para a proporção que cada subgrupo ocupa no total do grupo selecionado, fornecendo os números que retratam a proporção ilustrada no gráfico Mosaico.</p>             
+                    <img src="{% static 'img/sobre_10.png' %}">
+                    <p class="sub"><i><b>Figura 11:</b> Tabela de Dados - Grupo “Ações pedagógicas e educacionais”</i></p>
+                    </div>
+                    
+                </div>
+                <!-- End Part 4 -->
+                
+            </div>            
         </div>
-        <div class="form-item">
-            <select name="fonte">
-                  <option value="">Todas as fontes</option>
-              {% for fonte in fontes_de_recurso %}
-                  <option value="{{fonte.id}}" {% if fonte.selecionado %}selected{%endif%}>{{ fonte.desc }}</option>
-              {% endfor %}
-            </select>
-        </div>
-        <div class="form-item">
-            <select name="year">
-                {% for serie_year, values in timeseries.items %}
-                    <option value="{{serie_year}}" {% if serie_year|lower == year|lower %}selected{%endif%}>{{serie_year}}</option>
-                {% endfor %}
-            </select>
-        </div>
-      </fieldset>
-      <input class="submit" type="submit" value="Filtrar" name="go">
-      </form>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
-      </nav>
-      <ol class="treemap">
-          {% for execucao in execucoes %}
-          <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
-                  <a href="{{ execucao.url}}#mosaico">
-                  <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
-                  <div class="name">{{ execucao.nome }}</div>
-                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
-                  </a>
-              </li>
-          {% endfor %}
-      </ol>
-      <div id="tooltip"></div>
-      <footer>
-          <div class="legend">
-              {# TODO: think on a progressive strategy of loading legend #}
-              <img src="{% static 'img/escala_cor_mosaico.svg' %}" alt="">
-          </div>
-          <div class="actions">
-			  <a class="btn" href="{{ download_full_csv_url }}">Dados do gráfico</a>
-              <a class="btn" href="{{ download_filtered_csv_url }}">Dados da tela</a>
-          </div>
-      </footer>
     </div>
-  </section>
-  <section id="budget-over-time">
-    <div class="wrapper">
-      <h2>Orçamento x <em>Tempo</em></h2>
-      <form action="" method="get" class="query">
-      <fieldset>
-        <div class="form-item switch">
-          <input type="checkbox" name="break" checked id="use-deflator">
-          <label for="use-deflator">Valores corrigidos</label>
-          <label for="use-deflator">Valores correntes</label>
-        </div>
-      </fieldset>
-      </form>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
-      <div class="timeseries chart">
-          <table>
-              <thead>
-                  <tr>
-                      <th>Ano</th>
-                      <th>Valor atualizado</th>
-                      <th>Valor pago</th>
-                  </tr>
-              </thead>
-              <tbody>
-		  {% for year, values in timeseries.items %}
-                  <tr>
-			  <th data-year="{{ year }}">{{ year }}</th>
-			  <td data-updated="{{ values.orcado|unlocalize }}">R${{ values.orcado }}</td>
-			  <td data-paid="{{ values.empenhado|unlocalize }}">R${{ values.empenhado }}</td>
-                  </tr>
-		  {% endfor %}
-              </tbody>
-          </table>
-      </div>
-    </div>
-  </section>
-  <section id="data-table">
-    <div class="wrapper">
-      <h2><em>Tabela</em> de Dados</h2>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
-      <table>
-          <thead>
-              <tr>
-                  <th>Área</th>
-                  <th>Orçamento</th>
-                  <th>Empenhado</th>
-                  <th>Execução</th>
-              </tr>
-          </thead>
-          <tbody>
-          {% for execucao in execucoes %}
-              <tr>
-                  <th>{{ execucao.nome }}</th>
-                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
-                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
-                  <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
-              </tr>
-          {% endfor %}
-          </tbody>
-      </table>
-    </div>
-  </section>
 {% endblock %}

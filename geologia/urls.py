@@ -7,5 +7,5 @@ app_name = 'geologia'
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('sobre', SobreView.as_view(), name='sobre'),
-    path('metodologia', SobreView.as_view(), name='metodologia'),
+    path('metodologia', MetodologiaView.as_view(), name='metodologia'),
 ]

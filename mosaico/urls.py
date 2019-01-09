@@ -35,5 +35,5 @@ urlpatterns = [
     path('download/<str:section>/', DownloadView.as_view(),
          name='download'),
     path('sobre', SobreView.as_view(), name='sobre'),
-    path('metodologia', SobreView.as_view(), name='metodologia'),
+    path('metodologia', MetodologiaView.as_view(), name='metodologia'),
 ]

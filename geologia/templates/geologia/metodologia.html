@@ -15,7 +15,7 @@
 {% endblock %}
 
 {%block about %}
-<a href="/sobre.html">
+<a href="{% url 'geologia:sobre' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -24,7 +24,7 @@
 {% endblock %}
 
 {%block metodology %}
-<a href="/about.html">
+<a href="{% url 'geologia:metodologia' %}">
     <svg viewBox="0 0 320 320" height="32" class="icon">
         <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
     </svg>
@@ -55,7 +55,7 @@
             <!-- Part 1 -->
             <div class="content azul">
                 <div class="txt">
-                    <h2>Sobre <span> &#x276f; Geologia Orçamentário</span></h2>
+                    <h2>Metodologia <span> &#x276f; Geologia Orçamentário</span></h2>
                     <p>A ferramenta permite visualizar o Orçamento da Secretaria Municipal de Educação de São Paulo em camadas representativas de <strong>naturezas de despesa.</strong></p>
                     <p>A natureza de despesa é um atributo que permite distinguir entre o que o governo gasta com pagamento de pessoal, custeio, investimentos e gastos financeiros. A classificação orçamentária oficial, tal como consta no Manual Técnico de Orçamento do Tesouro Nacional, prevê seis possíveis <strong>GRUPOS DE NATUREZA DE DESPESA: Pessoal e Encargos Sociais, Juros e Encargos da Dívida ou Outras Despesas Correntes</strong> (que são despesas correntes) e <strong>Investimentos, Inversões Financeiras ou Amortização da Dívida</strong> (que são despesas de capital). Vale ressaltar que no orçamento da Secretaria Municipal de Educação (SME) de São Paulo, apenas os grupos de Pessoal e Encargos Sociais, Outras Despesas Correntes e Investimentos possuem valores registrados, dado que o tipo de despesa que entra nos demais grupos não é executada pela Educação.</p>
                     <p>Além disso, a classificação de natureza de despesa pode especificar ainda mais o tipo de gasto por meio de atributos como o <strong>ELEMENTO DE DESPESA</strong>, que tem por finalidade identificar os objetos imediatos de cada despesa, tais como <strong>vencimentos e vantagens fixas, diárias, material de consumo, serviços de terceiros</strong> prestados sob qualquer forma, <strong>subvenções sociais, obras e instalações, equipamentos e material permanente, auxílios, amortização</strong> e outros que a Administração Pública utiliza para a consecução de seus fins.</p>
