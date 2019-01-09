@@ -17,144 +17,43 @@
   <p>Orçamento da Educação ao seu alcance</p>
 {% endblock %}
 
-{%block about %}
-<a href="{% url 'mosaico:sobre' %}">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Saiba mais
-</a>
-{% endblock %}
-
-{%block metodology %}
-<a href="{% url 'mosaico:metodologia' %}">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Metodologia
-</a>
-{% endblock %}
-
 {%block sections %}
-  <section id="mosaico">
-    <div class="wrapper">
-      <form action="#mosaico" name="filter" method="get" class="query">
-      <fieldset>
-        <div class="form-item switch">
-          <input class="checkbox" type="checkbox" name="simples" id="simple" data-href="{{root_url}}#mosaico" {% if not tecnico %}checked{% endif %} >
-          <label for="simple">Visão simplificada</label>
-          <input class="checkbox" type="checkbox" name="simples" id="pro" data-href="{{root_url}}#mosaico" {% if tecnico %}checked{% endif %} >
-          <label for="pro">Visão técnica</label>
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <h1>Meto<br/>dolo<br/>gia</h1>
+                <p>Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.</p>
+            </div>
+            <ul>
+                <li class="active"><a href="metodologia.html">Metodologia</a></li>
+                <li><a href="deflacionamento.html">Deflacionamento</a></li>
+            </ul>
         </div>
-        <div class="form-item">
-          <input class="radio" type="radio" name="universe" value="">
-          <label>Educação</label>
-          <input class="radio" type="radio" name="universe" value="">
-          <label title="Em breve...">Mínimo legal (31%)</label>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="deflacionamento">
+                <div class="txt verde">
+                    <h2>O Que é deflacionamento?</h2>
+
+                    <p>Assim como muitas variáveis econômicas, as despesas públicas são apresentadas em moeda nacional. O problema é que, ao contrário de outras unidades de medida, o valor da moeda varia ao longo do tempo. Isto se deve à inflação, ou seja, à elevação do nível geral de preços, que faz com que o poder de compra da moeda diminua ao longo dos anos (uma deflação, caso contrário, elevaria o poder de compra).</p>
+                   <p>Em termos práticos, a inflação faz com que R$ 1 neste ano tenha menos valor do que o mesmo R$ 1 em qualquer ano do passado. De forma equivalente, R$ 1 hoje vale mais do que R$ 1 no futuro.</p>
+                    <p>Para que os efeitos da inflação não distorçam as análises que comparam os dados em diferentes anos, é importante que se considere o efeito da mudança de valor da moeda.</p>
+                    <p><b>Por isto, a visualização das séries históricas é feita usando dados reais e nominais. Os valores reais são os valores trazidos a preços presentes, isto é, deflacionados.</b></p>
+                    <p><b>COMO FOI FEITO O DEFLACIONAMENTO NA FERRAMENTA MOSAICO ORÇAMENTÁRIO?</b></p>
+                    <p>O Índice de Preços ao Consumidor Amplo (IPCA) do IBGE foi o índice de preços selecionado para deflacionar as séries de dados utilizados na ferramenta. O IPCA é adotado pelo Banco Central como o índice de referência para o cumprimento do regime de metas de inflação. Isto faz com que este índice seja bastante divulgado e conhecido entre os brasileiros.</p>
+                    <p>Para deflacionar as séries, utiliza-se a tabela do IPCA que está disponibilizada na página do IBGE  (em formato zip). Os dados utilizados estão disponíveis na planilha “Série Histórica IPCA”, na coluna “Número Índice (Dez 93 = 100)”. Para cada ano entre 2010 e o mais atual, foi adotado o número de fechamento, ou seja, o valor do índice em dezembro. A série do deflator tem o ano mais recente como a sua base. Desta forma, usando a série supracitada é correto afirmar que os valores deflacionados são apresentados a preços de 2018, que é o ano mais recente da ferramenta até o momento.</p>
+                    
+                    <img src="{% static 'img/metodologia_1.png' %}">
+
+                    <p>Em posse da série de deflatores, basta dividir cada observação da série de dados orçamentários pela observação correspondente da série do deflator para obter a série temporal do orçamento deflacionada.</p>
+                </div>
+            </div>          
         </div>
-        <div class="form-item">
-            <select name="fonte">
-                  <option value="">Todas as fontes</option>
-              {% for fonte in fontes_de_recurso %}
-                  <option value="{{fonte.id}}" {% if fonte.selecionado %}selected{%endif%}>{{ fonte.desc }}</option>
-              {% endfor %}
-            </select>
-        </div>
-        <div class="form-item">
-            <select name="year">
-                {% for serie_year, values in timeseries.items %}
-                    <option value="{{serie_year}}" {% if serie_year|lower == year|lower %}selected{%endif%}>{{serie_year}}</option>
-                {% endfor %}
-            </select>
-        </div>
-      </fieldset>
-      <input class="submit" type="submit" value="Filtrar" name="go">
-      </form>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
-      </nav>
-      <ol class="treemap">
-          {% for execucao in execucoes %}
-          <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
-                  <a href="{{ execucao.url}}#mosaico">
-                  <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
-                  <div class="name">{{ execucao.nome }}</div>
-                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
-                  </a>
-              </li>
-          {% endfor %}
-      </ol>
-      <div id="tooltip"></div>
-      <footer>
-          <div class="legend">
-              {# TODO: think on a progressive strategy of loading legend #}
-              <img src="{% static 'img/escala_cor_mosaico.svg' %}" alt="">
-          </div>
-          <div class="actions">
-			  <a class="btn" href="{{ download_full_csv_url }}">Dados do gráfico</a>
-              <a class="btn" href="{{ download_filtered_csv_url }}">Dados da tela</a>
-          </div>
-      </footer>
+
+
     </div>
-  </section>
-  <section id="budget-over-time">
-    <div class="wrapper">
-      <h2>Orçamento x <em>Tempo</em></h2>
-      <form action="" method="get" class="query">
-      <fieldset>
-        <div class="form-item switch">
-          <input type="checkbox" name="break" checked id="use-deflator">
-          <label for="use-deflator">Valores corrigidos</label>
-          <label for="use-deflator">Valores correntes</label>
-        </div>
-      </fieldset>
-      </form>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
-      <div class="timeseries chart">
-          <table>
-              <thead>
-                  <tr>
-                      <th>Ano</th>
-                      <th>Valor atualizado</th>
-                      <th>Valor pago</th>
-                  </tr>
-              </thead>
-              <tbody>
-		  {% for year, values in timeseries.items %}
-                  <tr>
-			  <th data-year="{{ year }}">{{ year }}</th>
-			  <td data-updated="{{ values.orcado|unlocalize }}">R${{ values.orcado }}</td>
-			  <td data-paid="{{ values.empenhado|unlocalize }}">R${{ values.empenhado }}</td>
-                  </tr>
-		  {% endfor %}
-              </tbody>
-          </table>
-      </div>
-    </div>
-  </section>
-  <section id="data-table">
-    <div class="wrapper">
-      <h2><em>Tabela</em> de Dados</h2>
-      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
-      <table>
-          <thead>
-              <tr>
-                  <th>Área</th>
-                  <th>Orçamento</th>
-                  <th>Empenhado</th>
-                  <th>Execução</th>
-              </tr>
-          </thead>
-          <tbody>
-          {% for execucao in execucoes %}
-              <tr>
-                  <th>{{ execucao.nome }}</th>
-                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
-                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
-                  <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
-              </tr>
-          {% endfor %}
-          </tbody>
-      </table>
-    </div>
-  </section>
 {% endblock %}
