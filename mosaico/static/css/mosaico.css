@@ -32,7 +32,7 @@ header{
   text-transform: uppercase;
   font-size: 13px;
   font-weight: 600;
-  margin: 28px 0 0 5px;
+  margin: 28px 0 10px 5px;
   color: #fff;
   background-color: transparent;
   border: none;
@@ -131,6 +131,10 @@ header{
 
 .verde h2:before {
   background: #80A684;
+}
+
+.verde img {
+  max-width: 100%;
 }
 
 .main p {
