@@ -111,6 +111,7 @@ class BaseListView(generics.ListAPIView):
         tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
 
         return Response({
+            'deflate': deflate,
             'year': self.year,
             'breadcrumb': breadcrumb,
             'execucoes': serializer.data,

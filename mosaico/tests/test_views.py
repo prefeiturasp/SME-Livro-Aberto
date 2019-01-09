@@ -146,10 +146,11 @@ class TestBaseListView(APITestCase):
         make(Execucao, _quantity=2)
         execucoes_qs = Execucao.objects.all().order_by('year')
 
-        self.get(deflate=True, year=2018)
+        response = self.get(deflate=True, year=2018)
 
         assert set(execucoes_qs) == set(mock_serializer.call_args[0][0])
         assert {"deflate": True} == mock_serializer.call_args[1]
+        assert response.context.get('deflate')
 
 
 class BaseTestCase(APITestCase):
