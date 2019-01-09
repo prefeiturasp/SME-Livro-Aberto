@@ -100,7 +100,7 @@ class Execucao(models.Model):
         elif area == 'elementos':
             args = [self.subgrupo.grupo_id, self.subgrupo_id]
         elif area == 'subelementos':
-            args=[self.subgrupo.grupo_id, self.subgrupo_id, self.elemento_id]
+            args = [self.subgrupo.grupo_id, self.subgrupo_id, self.elemento_id]
 
         # tecnico areas
         elif area == 'subfuncoes':
@@ -203,6 +203,7 @@ class FonteDeRecursoGrupo(models.Model):
 class GndGealogia(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=100)
+    slug = models.CharField(max_length=20, null=True)
 
 
 class SubelementoFriendly(models.Model):
