@@ -50,7 +50,7 @@ window.addEventListener('load', function(){
 
     const z = d3.scaleOrdinal()
           .domain(d3.range(n))
-          .range(['contributions', 'operational', 'previoys', 'consulting',
+          .range(['contributions', 'operational', 'previous', 'consulting',
               'realty', 'construction', 'people', 'outsourced', ]);
 
     const area = d3.area()
