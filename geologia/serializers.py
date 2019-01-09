@@ -200,8 +200,44 @@ class GeologiaDownloadSerializer:
 
     @property
     def data(self):
+        if self.chart == 'camadas':
+            return self.prepare_camadas_data()
+        elif self.chart == 'subfuncao':
+            return self.prepare_subfuncao_data()
+
+    def prepare_camadas_data(self):
         qs = self.queryset.order_by('year')
+
         data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year') \
+            .annotate(orcado=Sum('orcado_atualizado')) \
+            .annotate(empenhado=Sum('empenhado_liquido'))
+
+        orcado_values = qs.values('year__year') \
+            .annotate(total=Sum('orcado_atualizado'))
+        orcado_total = {v['year__year']: v['total'] for v in orcado_values}
+
+        empenhado_values = qs.values('year__year') \
+            .annotate(total=Sum('empenhado_liquido'))
+        empenhado_total = {v['year__year']: v['total']
+                           for v in empenhado_values}
+
+        return self._get_gnds_list(data_by_gnd, orcado_total, empenhado_total)
+
+    def prepare_subfuncao_data(self):
+        qs = self.queryset.order_by('year')
+
+        subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
+            .distinct()
+        ret = []
+        for subfuncao in subfuncoes:
+            qs_subfuncao = qs.filter(subfuncao=subfuncao['subfuncao_id'])
+            ret += self._get_subfuncao_values(qs_subfuncao)
+
+        return ret
+
+    def _get_subfuncao_values(self, qs):
+        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year',
+                                'subfuncao__desc') \
             .annotate(orcado=Sum('orcado_atualizado')) \
             .annotate(empenhado=Sum('empenhado_liquido'))
 
@@ -224,20 +260,22 @@ class GeologiaDownloadSerializer:
             orcado_total = orcado_total_by_year[year]
             empenhado_total = empenhado_total_by_year[year]
 
-            ret.append(
-                {
-                    "ano": year,
-                    "gnd": gnd['gnd_gealogia__desc'],
-                    "orcado": gnd['orcado'],
-                    "orcado_total": orcado_total,
-                    "orcado_percentual": self._calculate_percent(
-                        gnd['orcado'], orcado_total),
-                    "empenhado": gnd['empenhado'],
-                    "empenhado_total": empenhado_total,
-                    "empenhado_percentual": self._calculate_percent(
-                        gnd['empenhado'], empenhado_total),
-                }
-            )
+            gnd_dict = {
+                "ano": year,
+                "gnd": gnd['gnd_gealogia__desc'],
+                "orcado": gnd['orcado'],
+                "orcado_total": orcado_total,
+                "orcado_percentual": self._calculate_percent(
+                    gnd['orcado'], orcado_total),
+                "empenhado": gnd['empenhado'],
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": self._calculate_percent(
+                    gnd['empenhado'], empenhado_total),
+            }
+            if 'subfuncao__desc' in gnd:
+                gnd_dict["subfuncao"] = gnd['subfuncao__desc']
+
+            ret.append(gnd_dict)
 
         return ret
 
