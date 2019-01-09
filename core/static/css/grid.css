@@ -168,6 +168,10 @@ tr > *:first-child::before{
   border-right: none;
 }
 
+.chart{
+  margin: 2em 0;
+}
+
 .chart svg{
   width: 100%;
 }
