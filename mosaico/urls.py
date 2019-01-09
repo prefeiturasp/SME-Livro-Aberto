@@ -11,6 +11,8 @@ from mosaico.views import (
     SubgruposListView,
     SobreView,
     MetodologiaView,
+    DeflacionamentoView,
+    TutorialView,
 )
 
 
@@ -36,4 +38,6 @@ urlpatterns = [
          name='download'),
     path('sobre', SobreView.as_view(), name='sobre'),
     path('metodologia', MetodologiaView.as_view(), name='metodologia'),
+    path('deflacionamento', DeflacionamentoView.as_view(), name='deflacionamento'),
+    path('tutorial', TutorialView.as_view(), name='tutorial'),
 ]
