@@ -123,7 +123,7 @@
                               <div class="bar">
                               {% for item in year.gnds%}
                                   <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
-                                      <span class="value" data-execution="{{ item.percent|unlocalize }}"
+                                  <span class="value fg-{{item.slug}}" data-execution="{{ item.percent|unlocalize }}"
                                             style="width: {% widthratio item.percent 1 100 %}%">
                                           {% widthratio item.percent 1 100 %}%
                                       </span>
