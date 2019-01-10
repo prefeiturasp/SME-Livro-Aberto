@@ -22,8 +22,8 @@
 .navbar-wrapper a { width: 120px; }
 .navbar-wrapper a:nth-child(2){ margin-top: 2px; }
 
-.navbar-wrapper a:last-child { 
-    width: 20px; 
+.navbar-wrapper a:last-child {
+    width: 20px;
     margin-top: 1px;
 }
 
@@ -53,7 +53,7 @@
     font-size: 1.5em;
     text-align: center;
 }
-  
+
 .menu a {
     color: #fff;
     text-decoration: none;
@@ -67,11 +67,11 @@
 @media (min-width: 576px) {
     .navbar-wrapper a { width: 200px; }
     .navbar-wrapper a:nth-child(2){ margin-top: 2px; }
-    
-    .navbar-wrapper a:last-child { 
-        width: 20px; 
+
+    .navbar-wrapper a:last-child {
+        width: 20px;
         margin-top: 10px;
     }
-    
-    .navbar-wrapper a img { width: 100%; }   
+
+    .navbar-wrapper a img { width: 100%; }
 }
