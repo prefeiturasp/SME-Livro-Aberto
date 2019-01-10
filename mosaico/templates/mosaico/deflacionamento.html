@@ -1,0 +1,103 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Mosaico{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
+  <link rel="stylesheet" href="{% static 'css/charts.css' %}">
+  <script src="{% static 'js/treemap.js' %}"></script>
+  <script src="{% static 'js/timeseries.js' %}"></script>
+{% endblock %}
+
+{%block header %}
+  <h1>Mosaico Orçamentário</h1>
+  <p>Orçamento da Educação ao seu alcance</p>
+{% endblock %}
+
+{%block sections %}
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <h1>Meto<br/>dolo<br/>gia</h1>
+                <p>Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.</p>
+            </div>
+            <ul>
+                <li><a href="{% url 'mosaico:metodologia' %}">Metodologia</a></li>
+                <li class="active"><a href="{% url 'mosaico:deflacionamento' %}">Deflacionamento</a></li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="deflacionamento">
+                <div class="txt verde">
+                    <h2>O Que é deflacionamento?</h2>
+
+                    <p>Assim como muitas variáveis econômicas, as despesas públicas são apresentadas em moeda nacional. O problema é que, ao contrário de outras unidades de medida, o valor da moeda varia ao longo do tempo. Isto se deve à inflação, ou seja, à elevação do nível geral de preços, que faz com que o poder de compra da moeda diminua ao longo dos anos (uma deflação, caso contrário, elevaria o poder de compra).</p>
+                   <p>Em termos práticos, a inflação faz com que R$ 1 neste ano tenha menos valor do que o mesmo R$ 1 em qualquer ano do passado. De forma equivalente, R$ 1 hoje vale mais do que R$ 1 no futuro.</p>
+                    <p>Para que os efeitos da inflação não distorçam as análises que comparam os dados em diferentes anos, é importante que se considere o efeito da mudança de valor da moeda.</p>
+                    <p><b>Por isto, a visualização das séries históricas é feita usando dados reais e nominais. Os valores reais são os valores trazidos a preços presentes, isto é, deflacionados.</b></p>
+                    <p><b>COMO FOI FEITO O DEFLACIONAMENTO NA FERRAMENTA MOSAICO ORÇAMENTÁRIO?</b></p>
+                    <p>O Índice de Preços ao Consumidor Amplo (IPCA) do IBGE foi o índice de preços selecionado para deflacionar as séries de dados utilizados na ferramenta. O IPCA é adotado pelo Banco Central como o índice de referência para o cumprimento do regime de metas de inflação. Isto faz com que este índice seja bastante divulgado e conhecido entre os brasileiros.</p>
+                    <p>Para deflacionar as séries, utiliza-se a tabela do IPCA que está disponibilizada na página do IBGE  (em formato zip). Os dados utilizados estão disponíveis na planilha “Série Histórica IPCA”, na coluna “Número Índice (Dez 93 = 100)”. Para cada ano entre 2010 e o mais atual, foi adotado o número de fechamento, ou seja, o valor do índice em dezembro. A série do deflator tem o ano mais recente como a sua base. Desta forma, usando a série supracitada é correto afirmar que os valores deflacionados são apresentados a preços de 2018, que é o ano mais recente da ferramenta até o momento.</p>
+                    
+                    <table class="table__about">
+                        <tr>
+                            <th>Ano</th>
+                            <th>Número Índice (Out de 2018 = 1)</th>
+                        </tr>
+                        <tr>
+                            <td>2010</td>
+                            <td>0,626</td>
+                        </tr>
+                        <tr>
+                            <td>2011</td>
+                            <td>0,667</td>
+                        </tr>
+                        <tr>
+                            <td>2012</td>
+                            <td>0,706</td>
+                        </tr>
+                        <tr>
+                            <td>2013</td>
+                            <td>0,748</td>
+                        </tr>
+                        <tr>
+                            <td>2014</td>
+                            <td>0,795</td>
+                        </tr>
+                        <tr>
+                            <td>2015</td>
+                            <td>0,880</td>
+                        </tr>
+                        <tr>
+                            <td>2016</td>
+                            <td>0,936</td>
+                        </tr>
+                        <tr>
+                            <td>2017</td>
+                            <td>0,963</td>
+                        </tr>
+                        <tr>
+                            <td>2018</td>
+                            <td>1,000</td>
+                        </tr>
+                    </table>
+
+                    <div class="txt">
+                        <p>Em posse da série de deflatores, basta dividir cada observação da série de dados orçamentários pela observação correspondente da série do deflator para obter a série temporal do orçamento deflacionada.</p>
+                    </div>
+                    
+                </div>
+            </div>          
+        </div>
+
+
+    </div>
+{% endblock %}

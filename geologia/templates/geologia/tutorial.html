@@ -1,0 +1,78 @@
+{% extends 'base.html'  %}{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Geologia{% endblock %}
+
+{%block head %}
+<link rel="stylesheet" href="{% static 'css/geologia.css' %}">
+<script src="{% static 'js/stream-chart.js' %}"></script>
+{% endblock %}
+
+{%block header %}
+<h1>Geologia Orçamentária</h1>
+<p>Os gastos na educação em São Paulo</p>
+{% endblock %}
+
+{%block sections %}
+<div class="wrapper container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="card sobre">
+            <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+            <h1>So<br/>bre</h1>
+            <p>O objetivo da ferramenta Geologia Orçamentária é demonstrar <strong>a alocação dos gastos em Educação da Prefeitura de São Paulo ao longo do tempo</strong>, por meio de camadas que representam grupos de natureza de despesa e visualizações auxiliares que permitem maior detalhamento dos gastos.</p>
+        </div>
+        <ul>
+            <li><a href="{% url 'geologia:sobre' %}">Sobre o mosaico</a></li>
+            <li class="active"><a href="{% url 'geologia:tutorial' %}">Tutorial</a></li>
+        </ul>
+    </div>
+    <!-- End Sidebar -->
+
+    <div class="main">
+        <div class="sobre_mosaico">
+
+            <!-- Part 1 -->
+            <div class="content verde">
+                <div class="txt">
+                    <h2>TUTORIAL <span> &#x276f;Geologia Orçamentária</span></h2>
+                    <p>A ferramenta Geologia Orçamentária é dividida em três visualizações integradas:</p>
+                    <ul>
+                        <li><strong>Gráfico de área</strong> com a composição dos grupos de natureza de despesa em série histórica, com navegação interativa por meio de tool-tips e seletor do critério de execução;</li>
+                        <li><strong>Gráfico de barras</strong> interativo com ferramenta de busca para um determinado tipo de despesa (subfunção), mostrando a evolução específica dessa despesa com navegação interativa por meio de tool-tips e seletor do critério de execução;</li>
+                        <li><strong>Bubble-plot</strong> comparativo de subgrupos de despesa, que permitir ao usuário detectar diferenças entre tais categorias em anos selecionáveis, também com navegação interativa por meio de tool-tips e seletor do critério de execução;</li>
+                    </ul>
+                </div>
+                <div class="txt">
+                    <h2>TUTORIAL <span> &#x276f; Gráfico de área</span></h2>
+                    <p>O primeiro gráfico é a razão do nome da ferramenta. Trata-se de uma apresentação das camadas do orçamento (naturezas de despesa) ao longo do tempo, conforme mostra a <strong>figura 1</strong>. É possível usar o seletor do canto direito superior para escolher entre despesas orçadas e empenhadas, ambas mostradas em valores corrigidos pela inflação. No gráfico, ao passar o mouse pelos anos, é possível ver a proporção de gastos para cada grupo de natureza de despesa em todos os anos disponíveis: 2003 até o mais recente. Logo abaixo do gráfico é possível verificar mais informações sobre os grupos de natureza apenas passando o mouse sobre as categorias, além de permitir ao usuário o download dos dados em .xls e .csv.</span>
+                    <p><img src="../../static/img/tutorial-figura1.png" alt="Gráfico de área do Mosaico de Geologia"></p>
+                    <p><small><strong>Figura 1:</strong> Gráfico de área do Geologia Orçamentária: gastos da Secretaria Municipal de Educação</small></p>
+                </div>
+                <div class="txt">
+                    <h2>TUTORIAL <span> &#x276f;Gráfico de barras</span></h2>
+                    <p>A segunda visualização que compõe o Geologia Orçamentária é composta por um campo de busca e um gráfico de barras cujo objetivo é mostrar a evolução temporal das despesas por natureza de despesa a partir de uma seleção realizada pelo usuário. Trata-se de um detalhamento em relação à primeira visualização, pois permite que o usuário encontre informações mais específicas sobre um determinado tipo de gasto, mantendo o recorte transversal de grupos de natureza no tempo.
+                    </p>
+                    <p>A <strong>figura 2</strong> apresenta um exemplo de seleção de subfunção: Educação Infantil. A navegação permite ver como os gastos nessa rubrica se distribuíram em grupos de natureza de despesa ao longo do tempo, tanto graficamente quanto textualmente com os valores do lado direito. Também é possível baixar os dados da seleção realizada em .xls e .csv.</p>
+                    <p><img src="../../static/img/tutorial-figura2.png" alt="Gráfico de Barras do Mosaico de Geologia"></p>
+                    <p><small><strong>Figura 2:</strong> Gráfico de barras do Geologia Orçamentária: seleção da subfunção "Educação Infantil"</small></p>
+                </div>
+                <div class="txt">
+                    <h2>TUTORIAL <span> &#x276f;Bubble-Plot</span></h2>
+                    <p>A terceira visualização que compõe o Geologia Orçamentária é composta por três elementos: um seletor de ano de exercício da despesa, uma relação de subgrupos que podem ser selecionados e um gráfico de bolhas (bubble-plot) que responde à seleção de subgrupos.
+                    </p>
+                    <p>O objetivo é permitir comparação de despesas a partir do tamanho das bolhas: o usuário pode escolher até três subgrupos e compará-los entre si em termos da distribuição dos gastos em grupos de natureza de despesa e no tempo, alterando a chave de ano.</p>
+                    <p>Na <strong>figura 3</strong>, apresentamos um exemplo de comparação entre os subgrupos de Alimentação, Transporte e Uniforme Escolar para o ano de 2018. Com isso percebemos as semelhanças e diferenças entre os gastos e podemos, a partir do seletor de ano, verificar como isso mudou ao longo do tempo.</p>
+                    <p><img src="../../static/img/tutorial-figura2.png" alt="Gráfico bubble-plot do Mosaico de Geologia"></p>
+                    
+                    <p><small><strong>Figura 3:</strong> Gráfico bubble-plot do Geologia Orçamentária: seleção dos subgrupos "Alimentação Escolar", "Transporte Escolar" e "Uniformes e Material Escolar" no ano de 2018.</small></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

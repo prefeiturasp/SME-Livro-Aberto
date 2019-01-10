@@ -17,3 +17,24 @@ class HomeView(generics.ListAPIView):
         subfuncao_id = self.request.GET.get('subfuncao_id', None)
         serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)
+
+class SobreView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'geologia/sobre.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class MetodologiaView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'geologia/metodologia.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class TutorialView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'geologia/tutorial.html'
+
+    def get(self, request, format=None):
+        return Response()        
