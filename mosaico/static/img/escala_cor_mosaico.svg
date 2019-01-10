@@ -67,32 +67,7 @@
        class="cls-2"
        transform="translate(31.71,34.96)"
        id="text8"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.01em;isolation:isolate;fill:#5f6b6d">E</text>
-    <text
-       class="cls-3"
-       transform="translate(39.25,34.96)"
-       id="text10"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:-0.02em;isolation:isolate;fill:#5f6b6d">x</text>
-    <text
-       class="cls-4"
-       transform="translate(45.62,34.96)"
-       id="text12"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;isolation:isolate;fill:#5f6b6d">ecução do orçamen</text>
-    <text
-       class="cls-5"
-       transform="translate(159.67,34.96)"
-       id="text14"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:-0.01em;isolation:isolate;fill:#5f6b6d">t</text>
-    <text
-       class="cls-3"
-       transform="translate(164.71,34.96)"
-       id="text16"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:-0.02em;isolation:isolate;fill:#5f6b6d">o</text>
-    <text
-       class="cls-4"
-       transform="translate(172.12,34.96)"
-       id="text18"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;isolation:isolate;fill:#5f6b6d">*</text>
+       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.01em;isolation:isolate;fill:#5f6b6d">Execução do orçamento*</text>
   </g>
   <g
      class="cls-1"
@@ -103,37 +78,7 @@
        class="cls-6"
        transform="translate(31.71,112.82)"
        id="text22"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.02em;isolation:isolate;fill:#5f6b6d">*Proporção do orçamen</text>
-    <text
-       class="cls-7"
-       transform="translate(177.62,112.82)"
-       id="text24"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.01em;isolation:isolate;fill:#5f6b6d">t</text>
-    <text
-       class="cls-6"
-       transform="translate(182.92,112.82)"
-       id="text26"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.02em;isolation:isolate;fill:#5f6b6d">o que foi de fa</text>
-    <text
-       class="cls-7"
-       transform="translate(271.59,112.82)"
-       id="text28"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.01em;isolation:isolate;fill:#5f6b6d">t</text>
-    <text
-       class="cls-6"
-       transform="translate(276.9,112.82)"
-       id="text30"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.02em;isolation:isolate;fill:#5f6b6d">o e</text>
-    <text
-       class="cls-4"
-       transform="translate(295.62,112.82)"
-       id="text32"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;isolation:isolate;fill:#5f6b6d">x</text>
-    <text
-       class="cls-8"
-       transform="translate(302.25,112.82)"
-       id="text34"
-       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.02em;isolation:isolate;fill:#5f6b6d">ecutado</text>
+       style="font-size:13px;font-family:Ubuntu-Regular, Ubuntu;letter-spacing:0.02em;isolation:isolate;fill:#5f6b6d">*Proporção do orçamento que foi de fato executado</text>
   </g>
   <text
      class="cls-9"
