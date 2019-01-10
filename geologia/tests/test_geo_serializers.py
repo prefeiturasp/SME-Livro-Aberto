@@ -8,15 +8,41 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, Subgrupo
-from geologia.serializers import GeologiaSerializer
+from geologia.serializers import GeologiaSerializer, GndGeologiaSerializer
+
+
+@pytest.mark.django_db
+class TestGndGeologiaSerializer:
+    def test_serialize_data(self):
+        gnd = mommy.make('GndGealogia',  desc='Consultoria', slug='consulting')
+        expected = dict(slug=gnd.slug, desc=gnd.desc)
+        assert expected == GndGeologiaSerializer(gnd).data
+
+@pytest.mark.django_db
+class TestGeologiaSerializerGnds:
+    def test_serialize_list_of_gnds(self):
+        gnd_1 = mommy.make('GndGealogia',  desc='Consultoria',
+                slug='consulting')
+        gnd_2 = mommy.make('GndGealogia',  desc='Custeio operacional',
+                slug='operational')
+        gnds = [gnd_1, gnd_2]
+        expected = [dict(slug=gnd.slug, desc=gnd.desc) for gnd in gnds]
+
+        queryset = Execucao.objects.all()
+        serialized = GeologiaSerializer(queryset).data
+
+        assert expected == serialized.get('gnds')
 
 
 @pytest.fixture
 def orcado_fixture():
     gnds_dict = [
-        {'gnd_gealogia__desc': 'gnd1', 'orcado': Decimal(10)},
-        {'gnd_gealogia__desc': 'gnd2', 'orcado': Decimal(20)},
-        {'gnd_gealogia__desc': 'gnd3', 'orcado': Decimal(30)},
+        {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+         'orcado': Decimal(10)},
+        {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+         'orcado': Decimal(20)},
+        {'gnd_gealogia__desc': 'gnd3', 'gnd_gealogia__slug': 'g3',
+         'orcado': Decimal(30)},
     ]
     orcado_total = Decimal(60)
     return gnds_dict, orcado_total
@@ -25,10 +51,13 @@ def orcado_fixture():
 @pytest.fixture
 def empenhado_fixture():
     gnds_dict = [
-        {'gnd_gealogia__desc': 'gnd1', 'empenhado': Decimal(10)},
-        {'gnd_gealogia__desc': 'gnd2', 'empenhado': Decimal(20)},
+        {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+         'empenhado': Decimal(10)},
+        {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+         'empenhado': Decimal(20)},
         # must support None for empenhado
-        {'gnd_gealogia__desc': 'gnd3', 'empenhado': None},
+        {'gnd_gealogia__desc': 'gnd3', 'gnd_gealogia__slug': 'g3',
+         'empenhado': None},
     ]
     empenhado_total = Decimal(30)
     return gnds_dict, empenhado_total
@@ -42,6 +71,7 @@ class TestGeologiaSerializerCore:
         expected = [
             {
                 "name": gnd['gnd_gealogia__desc'],
+                "slug": gnd['gnd_gealogia__slug'],
                 "value": gnd['orcado'],
                 "percent": gnd['orcado'] / orcado_total
             }
@@ -62,6 +92,7 @@ class TestGeologiaSerializerCore:
 
             expected.append({
                 "name": gnd['gnd_gealogia__desc'],
+                "slug": gnd['gnd_gealogia__slug'],
                 "value": gnd['empenhado'],
                 "percent": gnd['empenhado'] / empenhado_total
             })
@@ -74,8 +105,10 @@ class TestGeologiaSerializerCore:
 
     def test_get_empenhado_gnd_list_when_total_is_none(self):
         gnds_dicts = [
-            {'gnd_gealogia__desc': 'gnd1', 'empenhado': None},
-            {'gnd_gealogia__desc': 'gnd2', 'empenhado': None},
+            {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+             'empenhado': None},
+            {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+             'empenhado': None},
         ]
         empenhado_total = None
 

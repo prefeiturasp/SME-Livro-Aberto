@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no">
-  <title>{% block title %}{% endblock %}• Transparência Orçamentária</title>
+  <title>{% block title %}{% endblock %} • Transparência Orçamentária</title>
   <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700,800,900|Ubuntu:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/menu-sme.css' %}">
   <link rel="stylesheet" href="{% static 'css/typography.css' %}">
   <link rel="stylesheet" href="{% static 'css/palette.css' %}">
   <link rel="stylesheet" href="{% static 'css/grid.css' %}">
@@ -25,26 +26,35 @@
 
 </head>
 <body>
+
+  <div id="navbar" class="navbar">
+    <div class="navbar-wrapper">
+      <a href="http://patiodigital.prefeitura.sp.gov.br/">
+        <img src="{% static 'img/logo_patiodigital_fundoescuro.png' %}" alt="Pátio Digital" />
+      </a>
+      <a href="#"><img src="{% static 'img/logo_livroaberto.png' %}" alt="Livro Aberto" /></a>
+      <a class="menu-toggle" href="#" id="menu-toggle"><img src="{% static 'img/menu.png' %}" alt="Menu" /></a>
+    </div>
+  </div>
+
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Geologia</a></li>
+      <li><a href="#">Mosaico Orçamentário</a></li>
+    </ul>
+  </div>
+
   <header>
     <div class="wrapper">
       {%block header %}{% endblock %}
       <nav>
           <ul>
               <li>
-                  <a href="">
-                      <svg viewBox="0 0 320 320" height="32" class="icon">
-                          <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-                      </svg>
-                      Saiba mais
-                  </a>
+                  {%block about %}{% endblock %}
               </li>
               <li>
-                  <a href="">
-                      <svg viewBox="0 0 320 320" height="32" class="icon">
-                          <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-                      </svg>
-                      Metodologia
-                  </a>
+                  {%block metodology %}{% endblock %}
               </li>
           </ul>
       </nav>
@@ -113,6 +123,6 @@
       </nav>
     </div>
   </footer>
-
+  <script src="{% static 'js/menu.js' %}"></script>
 </body>
 </html>

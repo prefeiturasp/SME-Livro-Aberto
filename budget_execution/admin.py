@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import GndGealogia
+
+
+@admin.register(GndGealogia)
+class GndGealogiaAdmin(admin.ModelAdmin):
+    ordering = ('desc',)
+    list_display = ('id', 'desc', 'slug')

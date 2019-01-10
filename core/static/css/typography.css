@@ -35,6 +35,7 @@ header nav a{
   text-decoration: none;
 }
 
+input[type=text],
 select,
 a.btn,
 form.query label{

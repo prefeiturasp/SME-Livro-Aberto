@@ -111,6 +111,7 @@ class BaseListView(generics.ListAPIView):
         tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
 
         return Response({
+            'deflate': deflate,
             'year': self.year,
             'breadcrumb': breadcrumb,
             'execucoes': serializer.data,
@@ -384,3 +385,31 @@ class DownloadView(generics.ListAPIView):
 
     def _get_distinct_field_name(self):
         return DISTINCT_FIELD_BY_SECTION[self.section]
+
+class SobreView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/sobre.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class MetodologiaView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/metodologia.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class DeflacionamentoView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/deflacionamento.html'
+
+    def get(self, request, format=None):
+        return Response()
+
+class TutorialView(generics.ListAPIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'mosaico/tutorial.html'
+
+    def get(self, request, format=None):
+        return Response()
