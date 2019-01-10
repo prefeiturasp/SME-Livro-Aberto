@@ -15,14 +15,14 @@ let currency = d3.format('$,~d');
 window.addEventListener("DOMContentLoaded", function(){
     function submit(eventHandler){
         let form = eventHandler.currentTarget;
-        form.submit();
+        let input = eventHandler.target;
+        if(input.name == 'simples')
+            window.location = input.dataset.href;
+        else
+            form.submit();
     }
     for(form of document.forms){
         form.go.remove();
         form.addEventListener('change', submit);
     }
-
-    function goToValue(){ console.log(this); window.location = this.dataset.href; }
-    document.getElementById('simple').addEventListener('change', goToValue);
-    document.getElementById('pro').addEventListener('change', goToValue);
 });
