@@ -1,0 +1,2 @@
+class InvalidChartOptionException(Exception):
+    pass
