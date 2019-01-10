@@ -99,14 +99,21 @@
   <section id="budget-over-time">
     <div class="wrapper">
       <h2>Orçamento x <em>Tempo</em></h2>
-      <form action="" method="get" class="query">
+      <form action="#budget-over-time" method="get" class="query">
+          <input type="hidden" name="year" value="{{year}}" />
+      {% for fonte in fontes_de_recurso %}
+         {% if fonte.selecionado %}
+          <input type="hidden" name="fonte" value="{{fonte.id}}" />
+          {%endif%}
+      {% endfor %}
       <fieldset>
         <div class="form-item switch">
-          <input type="checkbox" name="break" checked id="use-deflator">
+            <input type="checkbox" name="deflate" {% if deflate %}checked{% endif %} id="use-deflator" value="True">
           <label for="use-deflator">Valores corrigidos</label>
           <label for="use-deflator">Valores correntes</label>
         </div>
       </fieldset>
+      <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='budget-over-time' %}
       <div class="timeseries chart">
