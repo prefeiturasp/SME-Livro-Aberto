@@ -155,8 +155,8 @@
           {% for execucao in execucoes %}
               <tr>
                   <th>{{ execucao.nome }}</th>
-                  <td>R$ {{ execucao.orcado_total|intcomma }} </td>
-                  <td>R$ {{ execucao.empenhado_total|intcomma}} </td>
+                  <td>{% if execucao.orcado_total %}R$ {{ execucao.orcado_total|intcomma }}{% else %}-{% endif %}</td>
+                  <td>{% if execucao.empenhado_total %}R$ {{ execucao.empenhado_total|intcomma}}{% else %}-{% endif %}</td>
                   <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
               </tr>
           {% endfor %}
