@@ -1,9 +1,10 @@
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework_csv.renderers import CSVRenderer
 
 from budget_execution.models import Execucao
-from geologia.serializers import GeologiaSerializer
+from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
 
 
 class HomeView(generics.ListAPIView):
@@ -18,23 +19,19 @@ class HomeView(generics.ListAPIView):
         serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)
 
-class SobreView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'geologia/sobre.html'
+class DownloadView(generics.ListAPIView):
+    renderer_classes = [CSVRenderer]
+    queryset = Execucao.objects.filter(subgrupo__isnull=False)
+    serializer_class = GeologiaDownloadSerializer
 
-    def get(self, request, format=None):
-        return Response()
+    def list(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        chart = self.kwargs['chart']
+        serializer = self.get_serializer(qs, chart=chart)
 
-class MetodologiaView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'geologia/metodologia.html'
-
-    def get(self, request, format=None):
-        return Response()
-
-class TutorialView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'geologia/tutorial.html'
-
-    def get(self, request, format=None):
-        return Response()        
+        filename = f'geologia_{chart}'
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}.csv'
+        }
+        response = Response(serializer.data, headers=headers)
+        return response
