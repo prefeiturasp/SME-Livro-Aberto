@@ -69,18 +69,10 @@
       <nav>
         <ul>
           <li>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.facebook.com/EducaPrefSP" target="_blank">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
-              </svg>
-            </a>
+            {%block fb_link %}{% endblock %}
           </li>
           <li>
-            <a href="https://twitter.com/educaprefsp" target="_blank">
-              <svg class="icon">
-                <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
-              </svg>
-            </a>
+            {%block tw_link %}{% endblock %}
           </li>
           <li>
             <a href="https://www.instagram.com/educaprefsp/" target="_blank">
