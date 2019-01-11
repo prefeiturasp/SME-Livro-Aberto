@@ -62,7 +62,7 @@
                           <tr>
                           <td data-name="{{ item.name }}">{{ item.name}}</td>
                           <th data-year="{{ year.year }}">{{ year.year }}</th>
-                          <td data-value="{{ item.value|unlocalize }}">R$ {{ item.value|intcomma }}</td>
+                          <td data-value="{{ item.value|unlocalize }}">{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
                           <td data-execution="{{ item.percent|unlocalize }}">{% widthratio item.percent 1 100 %}%</td>
                           </tr>
                       {% endfor %}
