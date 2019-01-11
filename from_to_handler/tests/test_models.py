@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from budget_execution.models import (
-    Execucao, FonteDeRecursoGrupo, GndGealogia, Grupo, SubelementoFriendly,
+    Execucao, FonteDeRecursoGrupo, GndGeologia, Grupo, SubelementoFriendly,
     Subgrupo)
 from from_to_handler.models import (
     DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo, SubelementoFromTo)
@@ -140,7 +140,7 @@ class TestFonteDeRecursoFromToApplier:
 class TestGndFromToApplier:
 
     def test_apply_gnd_fromto(self):
-        assert 0 == GndGealogia.objects.count()
+        assert 0 == GndGeologia.objects.count()
 
         gnd_id = 1
         elemento_id = 11
@@ -149,27 +149,27 @@ class TestGndFromToApplier:
             Execucao,
             gnd__id=gnd_id,
             elemento__id=elemento_id,
-            gnd_gealogia=None,
+            gnd_geologia=None,
             _quantity=2)
 
         not_expected = mommy.make(
             Execucao,
             gnd__id=5,
             elemento__id=55,
-            gnd_gealogia=None)
+            gnd_geologia=None)
 
         ft = mommy.make(
             GNDFromTo, gnd_code=gnd_id, elemento_code=elemento_id)
         ft.apply()
 
-        assert 1 == GndGealogia.objects.count()
+        assert 1 == GndGeologia.objects.count()
 
-        gnd_gealogia = GndGealogia.objects.get(id=ft.new_gnd_code)
-        assert ft.new_gnd_desc == gnd_gealogia.desc
+        gnd_geologia = GndGeologia.objects.get(id=ft.new_gnd_code)
+        assert ft.new_gnd_desc == gnd_geologia.desc
 
         for ex in expected:
             ex.refresh_from_db()
-            assert gnd_gealogia == ex.gnd_gealogia
+            assert gnd_geologia == ex.gnd_geologia
 
         assert not_expected.fonte_grupo is None
 
