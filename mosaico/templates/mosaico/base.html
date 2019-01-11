@@ -6,6 +6,20 @@
 {% block title %}Mosaico{% endblock %}
 
 {%block head %}
+  <meta property="og:locale" content="pt_BR">
+
+  <meta property="og:title" content="Mosaico Orçamentário - SMESP">
+  <meta property="og:site_name" content="Mosaico Orçamentário - SMESP">
+  <meta property="og:description" content="Conheça o Mosaico Orçamentário da Secretaria da Educação de São Paulo.">
+
+  <meta property="og:type" content="website">
+
+
+  <meta property="og:image" content="{% static 'img/og-mosaico.png' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="867">
+  <meta property="og:image:height" content="284">
+
   <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
   <link rel="stylesheet" href="{% static 'css/charts.css' %}">
   <script src="{% static 'js/treemap.js' %}"></script>
@@ -163,4 +177,20 @@
       </table>
     </div>
   </section>
+{% endblock %}
+
+{%block fb_link %}
+<a href="https://www.facebook.com/sharer/sharer.php?u=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/mosaico/" target="_blank">
+    <svg class="icon">
+      <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
+    </svg>
+</a>
+{% endblock %}
+
+{%block tw_link %}
+<a href="https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Mosaico%20Orçamentário%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/mosaico/" data-size="large" target="_blank">
+    <svg class="icon">
+    <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
+    </svg>
+</a>
 {% endblock %}
