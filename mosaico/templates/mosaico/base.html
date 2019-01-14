@@ -6,6 +6,20 @@
 {% block title %}Mosaico{% endblock %}
 
 {%block head %}
+  <meta property="og:locale" content="pt_BR">
+
+  <meta property="og:title" content="Mosaico Orçamentário - SMESP">
+  <meta property="og:site_name" content="Mosaico Orçamentário - SMESP">
+  <meta property="og:description" content="Conheça o Mosaico Orçamentário da Secretaria da Educação de São Paulo.">
+
+  <meta property="og:type" content="website">
+
+
+  <meta property="og:image" content="{% static 'img/og-mosaico.png' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="867">
+  <meta property="og:image:height" content="284">
+
   <link rel="stylesheet" href="{% static 'css/mosaico.css' %}">
   <link rel="stylesheet" href="{% static 'css/charts.css' %}">
   <script src="{% static 'js/treemap.js' %}"></script>
@@ -15,24 +29,7 @@
 {%block header %}
   <h1>Mosaico Orçamentário</h1>
   <p>Orçamento da Educação ao seu alcance</p>
-{% endblock %}
-
-{%block about %}
-<a href="{% url 'mosaico:sobre' %}">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Saiba mais
-</a>
-{% endblock %}
-
-{%block metodology %}
-<a href="{% url 'mosaico:metodologia' %}">
-    <svg viewBox="0 0 320 320" height="32" class="icon">
-        <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
-    </svg>
-    Metodologia
-</a>
+  {% include '_header_nav.html' with about='mosaico:sobre' methodology='mosaico:metodologia' %}
 {% endblock %}
 
 {%block sections %}
@@ -164,3 +161,7 @@
     </div>
   </section>
 {% endblock %}
+
+{% block fb_link %}https://www.facebook.com/sharer/sharer.php?u=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/mosaico/{% endblock %}
+
+{%block tw_link %}https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Mosaico%20Orçamentário%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/mosaico/{% endblock %}

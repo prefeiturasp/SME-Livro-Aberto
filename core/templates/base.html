@@ -48,16 +48,6 @@
   <header>
     <div class="wrapper">
       {%block header %}{% endblock %}
-      <nav>
-          <ul>
-              <li>
-                  {%block about %}{% endblock %}
-              </li>
-              <li>
-                  {%block metodology %}{% endblock %}
-              </li>
-          </ul>
-      </nav>
     </div>
   </header>
   {%block sections %}{% endblock %}
@@ -69,17 +59,17 @@
       <nav>
         <ul>
           <li>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.facebook.com/EducaPrefSP" target="_blank">
+            <a href="{%block fb_link %}#{% endblock %}" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="https://twitter.com/educaprefsp" target="_blank">
-              <svg class="icon">
+            <a href="{%block tw_link %}#{% endblock %}" data-size="large" target="_blank">
+                <svg class="icon">
                 <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
-              </svg>
+                </svg>
             </a>
           </li>
           <li>
