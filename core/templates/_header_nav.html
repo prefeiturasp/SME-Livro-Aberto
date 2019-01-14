@@ -1,0 +1,25 @@
+{% load static %}
+<nav>
+  <ul>
+    {% if about %}
+      <li>
+        <a href="{% url about %}">
+          <svg viewBox="0 0 320 320" height="32" class="icon">
+            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+          </svg>
+          Saiba mais
+        </a>
+      </li>
+    {% endif %}
+    {% if methodology %}
+      <li>
+        <a href="{% url methodology%}">
+          <svg viewBox="0 0 320 320" height="32" class="icon">
+            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+          </svg>
+          Metodologia
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
