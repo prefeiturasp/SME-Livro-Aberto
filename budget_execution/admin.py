@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import GndGealogia
+from .models import GndGeologia
 
 
-@admin.register(GndGealogia)
-class GndGealogiaAdmin(admin.ModelAdmin):
+@admin.register(GndGeologia)
+class GndGeologiaAdmin(admin.ModelAdmin):
     ordering = ('desc',)
     list_display = ('id', 'desc', 'slug')
