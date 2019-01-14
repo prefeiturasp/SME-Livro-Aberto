@@ -59,10 +59,18 @@
       <nav>
         <ul>
           <li>
-            {%block fb_link %}{% endblock %}
+            <a href="{%block fb_link %}#{% endblock %}" target="_blank">
+              <svg class="icon">
+                <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
+              </svg>
+            </a>
           </li>
           <li>
-            {%block tw_link %}{% endblock %}
+            <a href="{%block tw_link %}#{% endblock %}" data-size="large" target="_blank">
+                <svg class="icon">
+                <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
+                </svg>
+            </a>
           </li>
           <li>
             <a href="https://www.instagram.com/educaprefsp/" target="_blank">
