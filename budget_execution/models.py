@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 
 from django.db import models
 from django.urls import reverse_lazy
@@ -211,12 +212,34 @@ class SubelementoFriendly(models.Model):
     desc = models.CharField(max_length=100)
 
 
+class MinimoLegalManager(models.Manager):
+
+    def create_or_update(self, code, year, desc, dotacao, despesa):
+        ml, created = self.get_or_create(
+            code=code,
+            year=year,
+            defaults={
+                'desc': desc,
+                'dotacao': dotacao,
+                'despesa': despesa,
+            })
+
+        if not created:
+            ml.dotacao += Decimal(dotacao)
+            ml.despesa += Decimal(despesa)
+            ml.save()
+
+        return ml
+
+
 class MinimoLegal(models.Model):
     code = models.IntegerField()
     year = models.DateField()
     desc = models.CharField(max_length=250)
     dotacao = models.DecimalField(max_digits=17, decimal_places=2)
     despesa = models.DecimalField(max_digits=17, decimal_places=2)
+
+    objects = MinimoLegalManager()
 
     class Meta:
         unique_together = ('code', 'year')
