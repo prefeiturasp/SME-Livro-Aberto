@@ -212,8 +212,11 @@ class SubelementoFriendly(models.Model):
 
 
 class MinimoLegal(models.Model):
-    id = models.IntegerField(primary_key=True)
+    code = models.IntegerField()
     year = models.DateField()
     desc = models.CharField(max_length=250)
     dotacao = models.DecimalField(max_digits=17, decimal_places=2)
     despesa = models.DecimalField(max_digits=17, decimal_places=2)
+
+    class Meta:
+        unique_together = ('code', 'year')
