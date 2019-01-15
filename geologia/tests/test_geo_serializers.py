@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
-from budget_execution.models import Execucao, GndGealogia, Subfuncao, Subgrupo
+from budget_execution.models import Execucao, GndGeologia, Subfuncao, Subgrupo
 from geologia.serializers import (
     GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer)
 
@@ -16,11 +16,11 @@ from geologia.serializers import (
 @pytest.fixture
 def orcado_fixture():
     gnds_dict = [
-        {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+        {'gnd_geologia__desc': 'gnd1', 'gnd_geologia__slug': 'g1',
          'orcado': Decimal(10)},
-        {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+        {'gnd_geologia__desc': 'gnd2', 'gnd_geologia__slug': 'g2',
          'orcado': Decimal(20)},
-        {'gnd_gealogia__desc': 'gnd3', 'gnd_gealogia__slug': 'g3',
+        {'gnd_geologia__desc': 'gnd3', 'gnd_geologia__slug': 'g3',
          'orcado': Decimal(30)},
     ]
     orcado_total = Decimal(60)
@@ -30,12 +30,12 @@ def orcado_fixture():
 @pytest.fixture
 def empenhado_fixture():
     gnds_dict = [
-        {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+        {'gnd_geologia__desc': 'gnd1', 'gnd_geologia__slug': 'g1',
          'empenhado': Decimal(10)},
-        {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+        {'gnd_geologia__desc': 'gnd2', 'gnd_geologia__slug': 'g2',
          'empenhado': Decimal(20)},
         # must support None for empenhado
-        {'gnd_gealogia__desc': 'gnd3', 'gnd_gealogia__slug': 'g3',
+        {'gnd_geologia__desc': 'gnd3', 'gnd_geologia__slug': 'g3',
          'empenhado': None},
     ]
     empenhado_total = Decimal(30)
@@ -49,8 +49,8 @@ class TestGeologiaSerializerCore:
 
         expected = [
             {
-                "name": gnd['gnd_gealogia__desc'],
-                "slug": gnd['gnd_gealogia__slug'],
+                "name": gnd['gnd_geologia__desc'],
+                "slug": gnd['gnd_geologia__slug'],
                 "value": gnd['orcado'],
                 "percent": gnd['orcado'] / orcado_total
             }
@@ -70,8 +70,8 @@ class TestGeologiaSerializerCore:
                 gnd['empenhado'] = 0
 
             expected.append({
-                "name": gnd['gnd_gealogia__desc'],
-                "slug": gnd['gnd_gealogia__slug'],
+                "name": gnd['gnd_geologia__desc'],
+                "slug": gnd['gnd_geologia__slug'],
                 "value": gnd['empenhado'],
                 "percent": gnd['empenhado'] / empenhado_total
             })
@@ -84,9 +84,9 @@ class TestGeologiaSerializerCore:
 
     def test_get_empenhado_gnd_list_when_total_is_none(self):
         gnds_dicts = [
-            {'gnd_gealogia__desc': 'gnd1', 'gnd_gealogia__slug': 'g1',
+            {'gnd_geologia__desc': 'gnd1', 'gnd_geologia__slug': 'g1',
              'empenhado': None},
-            {'gnd_gealogia__desc': 'gnd2', 'gnd_gealogia__slug': 'g2',
+            {'gnd_geologia__desc': 'gnd2', 'gnd_geologia__slug': 'g2',
              'empenhado': None},
         ]
         empenhado_total = None
@@ -416,9 +416,9 @@ class TestGeologiaSerializerSubgrupo:
 @pytest.mark.django_db
 class TestGeologiaSerializerGnds:
     def test_serialize_list_of_gnds(self):
-        gnd_1 = mommy.make('GndGealogia',  desc='Consultoria',
+        gnd_1 = mommy.make('GndGeologia',  desc='Consultoria',
                            slug='consulting')
-        gnd_2 = mommy.make('GndGealogia',  desc='Custeio operacional',
+        gnd_2 = mommy.make('GndGeologia',  desc='Custeio operacional',
                            slug='operational')
         gnds = [gnd_1, gnd_2]
         expected = [dict(slug=gnd.slug, desc=gnd.desc) for gnd in gnds]
@@ -432,7 +432,7 @@ class TestGeologiaSerializerGnds:
 @pytest.mark.django_db
 class TestGndGeologiaSerializer:
     def test_serialize_data(self):
-        gnd = mommy.make('GndGealogia',  desc='Consultoria', slug='consulting')
+        gnd = mommy.make('GndGeologia',  desc='Consultoria', slug='consulting')
         expected = dict(slug=gnd.slug, desc=gnd.desc)
         assert expected == GndGeologiaSerializer(gnd).data
 
@@ -441,16 +441,16 @@ class TestGndGeologiaSerializer:
 class TestGeologiaDownloadSerializer:
 
     def test_serializes_camadas_chart_data(self):
-        gnd1 = mommy.make(GndGealogia, desc='gnd1')
-        gnd2 = mommy.make(GndGealogia, desc='gnd2')
-        mommy.make(Execucao, year=date(2017, 1, 1), gnd_gealogia=gnd1,
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
+        mommy.make(Execucao, year=date(2017, 1, 1), gnd_geologia=gnd1,
                    orcado_atualizado=100, empenhado_liquido=5, _quantity=2)
-        mommy.make(Execucao, year=date(2017, 1, 1), gnd_gealogia=gnd2,
+        mommy.make(Execucao, year=date(2017, 1, 1), gnd_geologia=gnd2,
                    orcado_atualizado=150, empenhado_liquido=15, _quantity=2)
 
-        mommy.make(Execucao, year=date(2018, 1, 1), gnd_gealogia=gnd1,
+        mommy.make(Execucao, year=date(2018, 1, 1), gnd_geologia=gnd1,
                    orcado_atualizado=10, empenhado_liquido=0.5, _quantity=2)
-        mommy.make(Execucao, year=date(2018, 1, 1), gnd_gealogia=gnd2,
+        mommy.make(Execucao, year=date(2018, 1, 1), gnd_geologia=gnd2,
                    orcado_atualizado=15, empenhado_liquido=2, _quantity=2)
 
         expected = [
@@ -504,28 +504,28 @@ class TestGeologiaDownloadSerializer:
     def test_serializes_subfuncao_chart_data(self):
         subfuncao1 = mommy.make(Subfuncao, desc='subfuncao1')
         subfuncao2 = mommy.make(Subfuncao, desc='subfuncao2')
-        gnd1 = mommy.make(GndGealogia, desc='gnd1')
-        gnd2 = mommy.make(GndGealogia, desc='gnd2')
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
 
         mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao1,
-                   gnd_gealogia=gnd1, orcado_atualizado=100,
+                   gnd_geologia=gnd1, orcado_atualizado=100,
                    empenhado_liquido=5, _quantity=2)
         mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao1,
-                   gnd_gealogia=gnd2, orcado_atualizado=150,
+                   gnd_geologia=gnd2, orcado_atualizado=150,
                    empenhado_liquido=15, _quantity=2)
 
         mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao2,
-                   gnd_gealogia=gnd1, orcado_atualizado=5,
+                   gnd_geologia=gnd1, orcado_atualizado=5,
                    empenhado_liquido=1, _quantity=2)
         mommy.make(Execucao, year=date(2017, 1, 1), subfuncao=subfuncao2,
-                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   gnd_geologia=gnd2, orcado_atualizado=15,
                    empenhado_liquido=3, _quantity=2)
 
         mommy.make(Execucao, year=date(2018, 1, 1), subfuncao=subfuncao1,
-                   gnd_gealogia=gnd1, orcado_atualizado=10,
+                   gnd_geologia=gnd1, orcado_atualizado=10,
                    empenhado_liquido=0.5, _quantity=2)
         mommy.make(Execucao, year=date(2018, 1, 1), subfuncao=subfuncao1,
-                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   gnd_geologia=gnd2, orcado_atualizado=15,
                    empenhado_liquido=2, _quantity=2)
 
         expected = [
@@ -607,28 +607,28 @@ class TestGeologiaDownloadSerializer:
     def test_serializes_subgrupo_chart_data(self):
         subgrupo1 = mommy.make(Subgrupo, desc='subgrupo1')
         subgrupo2 = mommy.make(Subgrupo, desc='subgrupo2')
-        gnd1 = mommy.make(GndGealogia, desc='gnd1')
-        gnd2 = mommy.make(GndGealogia, desc='gnd2')
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
 
         mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
-                   gnd_gealogia=gnd1, orcado_atualizado=100,
+                   gnd_geologia=gnd1, orcado_atualizado=100,
                    empenhado_liquido=5, _quantity=2)
         mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
-                   gnd_gealogia=gnd2, orcado_atualizado=150,
+                   gnd_geologia=gnd2, orcado_atualizado=150,
                    empenhado_liquido=15, _quantity=2)
 
         mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo2,
-                   gnd_gealogia=gnd1, orcado_atualizado=5,
+                   gnd_geologia=gnd1, orcado_atualizado=5,
                    empenhado_liquido=1, _quantity=2)
         mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo2,
-                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   gnd_geologia=gnd2, orcado_atualizado=15,
                    empenhado_liquido=3, _quantity=2)
 
         mommy.make(Execucao, year=date(2018, 1, 1), subgrupo=subgrupo1,
-                   gnd_gealogia=gnd1, orcado_atualizado=10,
+                   gnd_geologia=gnd1, orcado_atualizado=10,
                    empenhado_liquido=0.5, _quantity=2)
         mommy.make(Execucao, year=date(2018, 1, 1), subgrupo=subgrupo1,
-                   gnd_gealogia=gnd2, orcado_atualizado=15,
+                   gnd_geologia=gnd2, orcado_atualizado=15,
                    empenhado_liquido=2, _quantity=2)
 
         expected = [

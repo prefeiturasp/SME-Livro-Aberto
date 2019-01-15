@@ -1,6 +1,6 @@
 [
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 1,
  "fields": {
   "desc": "Investimentos - Im\u00f3vel e Material Permanente",
@@ -8,7 +8,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 2,
  "fields": {
   "desc": "Investimentos - Obras",
@@ -16,7 +16,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 3,
  "fields": {
   "desc": "Despesas de Exerc\u00edcios Anteriores",
@@ -24,7 +24,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 4,
  "fields": {
   "desc": "Aux\u00edlios e Contribui\u00e7\u00f5es",
@@ -32,7 +32,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 5,
  "fields": {
   "desc": "Custeio operacional",
@@ -40,7 +40,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 6,
  "fields": {
   "desc": "Servi\u00e7os de Terceiros",
@@ -48,7 +48,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 7,
  "fields": {
   "desc": "Pessoal e Encargos",
@@ -56,7 +56,7 @@
  }
 },
 {
- "model": "budget_execution.gndgealogia",
+ "model": "budget_execution.gndgeologia",
  "pk": 8,
  "fields": {
   "desc": "Investimentos - Consultoria",

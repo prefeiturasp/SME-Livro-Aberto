@@ -1,13 +1,13 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from budget_execution.models import GndGealogia
+from budget_execution.models import GndGeologia
 from geologia.exceptions import InvalidChartOptionException
 
 
 class GndGeologiaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GndGealogia
+        model = GndGeologia
         fields = ('desc', 'slug')
 
 
@@ -24,7 +24,7 @@ class GeologiaSerializer:
             'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
             'subgrupo': self.prepare_subgrupo_data(),
             'gnds': GndGeologiaSerializer(
-                GndGealogia.objects.all(), many=True).data,
+                GndGeologia.objects.all(), many=True).data,
         }
 
     # Charts 1 and 2 (camadas and subfuncao)
@@ -55,7 +55,7 @@ class GeologiaSerializer:
     def _get_orcado_data_by_year(self, qs):
         year = qs[0].year
 
-        orcado_by_gnd = qs.values('gnd_gealogia__desc', 'gnd_gealogia__slug') \
+        orcado_by_gnd = qs.values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
         orcado_total = orcado_total['total']
@@ -72,7 +72,7 @@ class GeologiaSerializer:
         year = qs[0].year
 
         empenhado_by_gnd = qs \
-            .values('gnd_gealogia__desc', 'gnd_gealogia__slug') \
+            .values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(empenhado=Sum('empenhado_liquido'))
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
         empenhado_total = empenhado_total['total']
@@ -143,7 +143,7 @@ class GeologiaSerializer:
     def get_subgrupo_orcado_data(self, qs):
         subgrupo = qs[0].subgrupo
 
-        orcado_by_gnd = qs.values('gnd_gealogia__desc', 'gnd_gealogia__slug') \
+        orcado_by_gnd = qs.values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
         orcado_total = orcado_total['total']
@@ -160,7 +160,7 @@ class GeologiaSerializer:
         subgrupo = qs[0].subgrupo
 
         empenhado_by_gnd = qs \
-            .values('gnd_gealogia__desc', 'gnd_gealogia__slug') \
+            .values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(empenhado=Sum('empenhado_liquido'))
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
         empenhado_total = empenhado_total['total']
@@ -177,8 +177,8 @@ class GeologiaSerializer:
     def _get_orcado_gnds_list(self, orcado_by_gnd, orcado_total):
         return [
             {
-                "name": gnd['gnd_gealogia__desc'],
-                "slug": gnd['gnd_gealogia__slug'],
+                "name": gnd['gnd_geologia__desc'],
+                "slug": gnd['gnd_geologia__slug'],
                 "value": gnd['orcado'],
                 "percent": calculate_percent(
                     gnd['orcado'], orcado_total)
@@ -189,8 +189,8 @@ class GeologiaSerializer:
     def _get_empenhado_gnds_list(self, empenhado_by_gnd, empenhado_total):
         return [
             {
-                "name": gnd['gnd_gealogia__desc'],
-                "slug": gnd['gnd_gealogia__slug'],
+                "name": gnd['gnd_geologia__desc'],
+                "slug": gnd['gnd_geologia__slug'],
                 "value": gnd['empenhado'],
                 "percent": calculate_percent(
                     gnd['empenhado'], empenhado_total),
@@ -224,7 +224,7 @@ class GeologiaDownloadSerializer:
     def prepare_camadas_chart_data(self):
         qs = self.queryset.order_by('year')
 
-        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year') \
+        data_by_gnd = qs.values('gnd_geologia__desc', 'year__year') \
             .annotate(orcado=Sum('orcado_atualizado')) \
             .annotate(empenhado=Sum('empenhado_liquido'))
 
@@ -255,7 +255,7 @@ class GeologiaDownloadSerializer:
     def _get_subfuncao_values(self, queryset):
         qs = queryset.order_by('year')
 
-        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year',
+        data_by_gnd = qs.values('gnd_geologia__desc', 'year__year',
                                 'subfuncao__desc') \
             .annotate(orcado=Sum('orcado_atualizado')) \
             .annotate(empenhado=Sum('empenhado_liquido'))
@@ -282,7 +282,7 @@ class GeologiaDownloadSerializer:
 
             gnd_dict = {
                 "ano": year,
-                "gnd": gnd['gnd_gealogia__desc'],
+                "gnd": gnd['gnd_geologia__desc'],
                 "orcado": gnd['orcado'],
                 "orcado_total": orcado_total,
                 "orcado_percentual": calculate_percent(
@@ -314,7 +314,7 @@ class GeologiaDownloadSerializer:
     def _get_subgrupo_values(self, queryset):
         qs = queryset.order_by('subgrupo_id')
 
-        data_by_gnd = qs.values('gnd_gealogia__desc', 'year__year',
+        data_by_gnd = qs.values('gnd_geologia__desc', 'year__year',
                                 'subgrupo_id', 'subgrupo__desc') \
             .annotate(orcado=Sum('orcado_atualizado')) \
             .annotate(empenhado=Sum('empenhado_liquido'))
@@ -342,7 +342,7 @@ class GeologiaDownloadSerializer:
             ret.append({
                 "ano": gnd['year__year'],
                 "subgrupo": gnd['subgrupo__desc'],
-                "gnd": gnd['gnd_gealogia__desc'],
+                "gnd": gnd['gnd_geologia__desc'],
                 "orcado": gnd['orcado'],
                 "orcado_total": orcado_total,
                 "orcado_percentual": calculate_percent(
