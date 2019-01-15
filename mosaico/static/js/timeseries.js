@@ -51,7 +51,7 @@ window.addEventListener('load', function(){
         .attr('class', 'axis axis--y')
         .call(d3.axisLeft(y)
                 .tickSize(-parentWidth)
-                .tickFormat(currency)
+                .tickFormat(shortCurrency)
                 .tickValues(yTicks))
         .selectAll('text').attr('dy', '-0.4em')
                            .attr('x', '0');
@@ -95,29 +95,4 @@ window.addEventListener('load', function(){
             .classed(color(0), true)
             .text('Valor atualizado')
     container.select('table').style('display', 'none')
-
-    let ticks =  document.querySelectorAll(".axis--y .tick > text");
-    
-    for(let tick of ticks) {
-        let texto =  tick.innerHTML;
-        texto = texto.substring(2);
-        texto = texto.replace(/\./g, "");
-
-        if(parseInt(texto) == 0) {
-            texto =  "R$ " + texto;
-            tick.innerHTML = texto;
-            continue;
-        }
-        
-        texto = texto.substring(0,texto.length -2);
-
-        if((texto.length) >= 3 && (texto.length) < 6 ) 
-            texto =  "R$ " + texto.slice(0,2) + "," + texto.slice(2,3) + " mil";
-        else if((texto.length) >= 6 && (texto.length) < 9 ) 
-            texto =  "R$ " + texto.slice(0,2) + "," + texto.slice(2,3) + " mi";
-        else if((texto.length) >= 9 && (texto.length) < 12 ) 
-            texto =  "R$ " + texto.slice(0,2) + "," + texto.slice(2,3) + " bi";
-
-        tick.innerHTML = texto;
-    }
 })
