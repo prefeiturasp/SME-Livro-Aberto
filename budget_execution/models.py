@@ -209,3 +209,11 @@ class GndGeologia(models.Model):
 class SubelementoFriendly(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=100)
+
+
+class MinimoLegal(models.Model):
+    id = models.IntegerField(primary_key=True)
+    year = models.DateField()
+    desc = models.CharField(max_length=250)
+    dotacao = models.DecimalField(max_digits=17, decimal_places=2)
+    despesa = models.DecimalField(max_digits=17, decimal_places=2)
