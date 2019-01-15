@@ -21,6 +21,7 @@ class MinimoLegalSpreadsheetModel(models.Model):
     limit_6percent = models.CharField('Texto limite do grupo de dados - 6%',
                                       max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+    data_extracted = models.BooleanField(default=False, editable=False)
 
     class Meta:
         verbose_name = 'Dados do Mínimo Legal (31%)'
@@ -31,9 +32,13 @@ class MinimoLegalSpreadsheetModel(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # self.extract_data()
+        if not self.data_extracted:
+            self.extract_data()
 
     def extract_data(self):
+        if self.data_extracted:
+            return
+
         data = services.extract_minimo_legal_from_spreadsheet(
             self.title_25percent, self.limit_25percent,
             self.spreadsheet.path)
@@ -46,3 +51,5 @@ class MinimoLegalSpreadsheetModel(models.Model):
                 dotacao=row['Dotação'],
                 despesa=row['Despesa'],
             )
+        self.data_extracted = True
+        self.save()
