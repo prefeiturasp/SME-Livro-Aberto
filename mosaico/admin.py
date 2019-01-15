@@ -9,7 +9,9 @@ class MinimoLegalSpreadsheetAdmin(admin.ModelAdmin):
     def get_changeform_initial_data(self, request):
         return {
             'title_25percent': 'DESPESAS COM AÇÕES TÍPICAS DE MDE',
-            'limit_25percent': 'TOTAL DAS DESPESAS COM AÇÕES TÍPICAS DE MDE',
+            'limit_25percent': (
+                '28- TOTAL DAS DESPESAS COM AÇÕES TÍPICAS DE MDE '
+                '(22+23 + 24 + 25 + 26 + 27)'),
             'title_6percent': ('DESPESAS COM AÇÕES TÍPICAS DO PROGRAMA DE '
                                'EDUCAÇÃO INCLUSIVA'),
             'limit_6percent': (
