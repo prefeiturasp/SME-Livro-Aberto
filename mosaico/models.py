@@ -7,7 +7,7 @@ from mosaico import services
 
 
 class MinimoLegalSpreadsheetModel(models.Model):
-    YEAR_CHOICES = [(y, y) for y in range(2018, date.today().year + 1)]
+    YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
     spreadsheet = models.FileField(
         'Planilha', upload_to='mosaico/minimo_legal_spreadsheets')
