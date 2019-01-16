@@ -1,7 +1,7 @@
 from django.db import models
 
 from budget_execution.models import (
-    Execucao, FonteDeRecursoGrupo, Grupo, GndGealogia, SubelementoFriendly,
+    Execucao, FonteDeRecursoGrupo, Grupo, GndGeologia, SubelementoFriendly,
     Subgrupo)
 
 
@@ -133,11 +133,11 @@ class GNDFromTo(models.Model, FromTo):
         if not execucoes:
             return
 
-        gnd_gealogia, _ = GndGealogia.objects.get_or_create(
+        gnd_geologia, _ = GndGeologia.objects.get_or_create(
             id=self.new_gnd_code, defaults={'desc': self.new_gnd_desc})
 
         for ex in execucoes:
-            ex.gnd_gealogia = gnd_gealogia
+            ex.gnd_geologia = gnd_geologia
             ex.save()
 
 

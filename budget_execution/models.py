@@ -72,7 +72,7 @@ class Execucao(models.Model):
     subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
     fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
                                     null=True)
-    gnd_gealogia = models.ForeignKey('GndGealogia', models.SET_NULL, null=True)
+    gnd_geologia = models.ForeignKey('GndGeologia', models.SET_NULL, null=True)
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
 
@@ -200,7 +200,7 @@ class FonteDeRecursoGrupo(models.Model):
     desc = models.CharField(max_length=100)
 
 
-class GndGealogia(models.Model):
+class GndGeologia(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.CharField(max_length=100)
     slug = models.CharField(max_length=20, null=True)
