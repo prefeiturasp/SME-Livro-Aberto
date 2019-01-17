@@ -115,54 +115,54 @@ class Execucao(models.Model):
 
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class Gnd(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class Elemento(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100, null=True)
+    desc = models.TextField(null=True)
 
 
 class FonteDeRecurso(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class Modalidade(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class Orgao(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
-    initials = models.CharField(max_length=10)
+    desc = models.TextField()
+    initials = models.TextField()
 
 
 class Programa(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class ProjetoAtividade(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=255)
-    type = models.CharField(max_length=50)
+    desc = models.TextField()
+    type = models.TextField()
 
 
 class Subelemento(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 class Subfuncao(models.Model):
     id = models.IntegerField(primary_key=True)
-    desc = models.CharField(max_length=100)
+    desc = models.TextField()
 
 
 # FROM-TO Models
