@@ -262,6 +262,10 @@ class Orcamento(models.Model):
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(blank=True, null=True)
+    # fk is filled when the routine that generates the Execucao objects
+    # is runned.
+    execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
+                                 null=True)
 
     class Meta:
         db_table = 'orcamento'
@@ -312,6 +316,10 @@ class Empenho(models.Model):
     vl_pago_restos = models.BigIntegerField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(blank=True, null=True)
+    # fk is filled when the routine that generates the Execucao objects
+    # is runned.
+    execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
+                                 null=True)
 
     class Meta:
         db_table = 'empenhos'
