@@ -5,6 +5,10 @@ header{
   background-position: center;
 }
 
+header .wrapper nav {
+  visibility: hidden;
+}
+
 /* About Section */
 .wrapper.container {
   display: flex;
