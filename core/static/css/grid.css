@@ -16,14 +16,11 @@ header{
   padding: 4em 1em 2em;
 }
 
+
 header h1,
 header h1 + p{
   text-align: center;
   margin: 1rem 0;
-}
-
-header nav{
-  margin-top: 7rem;
 }
 
 header nav li{

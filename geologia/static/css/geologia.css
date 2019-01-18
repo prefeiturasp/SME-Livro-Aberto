@@ -6,8 +6,8 @@ header{
   background-position: center;
 }
 
-header .wrapper nav {
-  visibility: hidden;
+header .wrapper p {
+  padding-bottom: 6rem;
 }
 
 /* Auxílios e Contribuições */
