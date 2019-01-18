@@ -1,7 +1,7 @@
 from budget_execution.models import Execucao, Orcamento
 
 
-def import_orcamento():
+def import_orcamentos():
     orcamentos = Orcamento.objects.filter(execucao__isnull=True)
 
     for orcamento in orcamentos:
