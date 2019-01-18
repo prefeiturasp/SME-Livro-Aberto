@@ -4,13 +4,59 @@ from django.db import models
 from django.urls import reverse_lazy
 
 
-class ExecucaoQuerySet(models.QuerySet):
+class ExecucaoManager(models.Manager):
+
+    def get_or_create_by_orcamento(self, orcamento):
+        execucao = self.model()
+        execucao.year = date(orcamento.cd_ano_execucao, 1, 1)
+        execucao.orgao = Orgao.objects.get_or_create(
+            id=orcamento.cd_orgao,
+            defaults={"desc": orcamento.ds_orgao,
+                      "initials": orcamento.sg_orgao},
+        )[0]
+        execucao.projeto = ProjetoAtividade.objects.get_or_create(
+            id=orcamento.cd_projeto_atividade,
+            defaults={"desc": orcamento.ds_projeto_atividade,
+                      "type": orcamento.tp_projeto_atividade},
+        )[0]
+        execucao.categoria = Categoria.objects.get_or_create(
+            id=orcamento.ds_categoria_despesa,
+            defaults={"desc": orcamento.ds_categoria},
+        )[0]
+        execucao.gnd = Gnd.objects.get_or_create(
+            id=orcamento.cd_grupo_despesa,
+            defaults={"desc": orcamento.ds_grupo_despesa}
+        )[0]
+        execucao.modalidade = Modalidade.objects.get_or_create(
+            id=orcamento.cd_modalidade,
+            defaults={"desc": orcamento.ds_modalidade}
+        )[0]
+        execucao.elemento = Elemento.objects.get_or_create(
+            id=orcamento.cd_elemento,
+            # elemento.desc is populated by Empenho
+        )[0]
+        execucao.fonte = FonteDeRecurso.objects.get_or_create(
+            id=orcamento.cd_fonte,
+            defaults={"desc": orcamento.ds_fonte}
+        )[0]
+        execucao.subfuncao = Subfuncao.objects.get_or_create(
+            id=orcamento.cd_subfuncao,
+            defaults={"desc": orcamento.ds_subfuncao}
+        )[0]
+        execucao.programa = Programa.objects.get_or_create(
+            id=orcamento.cd_programa,
+            defaults={"desc": orcamento.ds_programa}
+        )[0]
+
+        execucao.orcado_atualizado = orcamento.vl_orcado_atualizado
+        execucao.save()
+        return execucao
 
     def get_by_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)
 
-        return self.get(
+        return self.get_queryset().get(
                 year=date(info[0], 1, 1),
                 orgao_id=info[1],
                 projeto_id=info[2],
@@ -28,7 +74,7 @@ class ExecucaoQuerySet(models.QuerySet):
         info = map(int, indexer.split('.'))
         info = list(info)
 
-        return self.filter(
+        return self.get_queryset().filter(
                 year=date(info[0], 1, 1),
                 orgao_id=info[1],
                 projeto_id=info[2],
@@ -45,7 +91,7 @@ class ExecucaoQuerySet(models.QuerySet):
         info = map(int, code.split('.'))
         info = list(info)
 
-        return self.filter(
+        return self.get_queryset().filter(
                 categoria_id=info[0],
                 gnd_id=info[1],
                 modalidade_id=info[2],
@@ -76,7 +122,7 @@ class Execucao(models.Model):
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
 
-    objects = ExecucaoQuerySet.as_manager()
+    objects = ExecucaoManager()
 
     class Meta:
         unique_together = (
