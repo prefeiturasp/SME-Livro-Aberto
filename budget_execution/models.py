@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 
 from django.db import models
 from django.urls import reverse_lazy
@@ -7,7 +8,22 @@ from django.urls import reverse_lazy
 class ExecucaoManager(models.Manager):
 
     def get_or_create_by_orcamento(self, orcamento):
+        execucoes = self.filter_by_indexer(orcamento.indexer)
+        if not execucoes:
+            execucao = self.create_by_orcamento(orcamento)
+        elif len(execucoes) == 1:
+            execucao = execucoes[0]
+            execucao.orcado_atualizado += Decimal(orcamento.vl_orcado_atualizado)
+            execucao.save()
+        else:
+            # TODO: threat this case
+            raise Exception('Not implemented')
+
+        return execucao
+
+    def create_by_orcamento(self, orcamento):
         execucao = self.model()
+
         execucao.year = date(orcamento.cd_ano_execucao, 1, 1)
         execucao.orgao = Orgao.objects.get_or_create(
             id=orcamento.cd_orgao,
@@ -50,6 +66,7 @@ class ExecucaoManager(models.Manager):
 
         execucao.orcado_atualizado = orcamento.vl_orcado_atualizado
         execucao.save()
+
         return execucao
 
     def get_by_indexer(self, indexer):
