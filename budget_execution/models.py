@@ -8,16 +8,20 @@ from django.urls import reverse_lazy
 class ExecucaoManager(models.Manager):
 
     def get_or_create_by_orcamento(self, orcamento):
+        """
+        If there's more than one existing execucao with the same
+        'year.orgao.projeto.categoria.gnd.modalidade.elemento.fonte' it's
+        because there are subelementos. The orcado_atualizado is the same
+        for all execucoes in this case.
+        """
         execucoes = self.filter_by_indexer(orcamento.indexer)
         if not execucoes:
             execucao = self.create_by_orcamento(orcamento)
-        elif len(execucoes) == 1:
-            execucao = execucoes[0]
-            execucao.orcado_atualizado += Decimal(orcamento.vl_orcado_atualizado)
-            execucao.save()
         else:
-            # TODO: threat this case
-            raise Exception('Not implemented')
+            for execucao in execucoes:
+                execucao.orcado_atualizado += Decimal(
+                    orcamento.vl_orcado_atualizado)
+                execucao.save()
 
         return execucao
 

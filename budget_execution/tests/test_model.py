@@ -1,5 +1,6 @@
 from datetime import date
 from decimal import Decimal
+from itertools import cycle
 
 import pytest
 
@@ -190,6 +191,45 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
 
         assert execucao.orcado_atualizado == Decimal(
             str(round(previous_orcado + orcamento.vl_orcado_atualizado, 2)))
+
+    def test_updates_all_existing_execucao(self):
+        """
+        If there's more than one existing execucao with the same
+        'year.orgao.projeto.categoria.gnd.modalidade.elemento.fonte' it's
+        because there are subelementos. The orcado_atualizado is the same
+        for all execucoes in this case.
+        """
+        previous_orcado = 100
+        mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
+            fonte__id=1, subelemento__id=cycle([1, 2]),
+            orcado_atualizado=previous_orcado, _quantity=2)
+
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_orgao=1,
+            cd_projeto_atividade=1, ds_categoria_despesa=1, cd_grupo_despesa=1,
+            cd_modalidade=1, cd_elemento=1, cd_fonte=1, execucao=None,
+            _fill_optional=True,
+        )
+
+        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+
+        execucoes = Execucao.objects.all()
+        assert 2 == len(execucoes)
+        assert 1 == Orgao.objects.count()
+        assert 1 == ProjetoAtividade.objects.count()
+        assert 1 == Categoria.objects.count()
+        assert 1 == Gnd.objects.count()
+        assert 1 == Modalidade.objects.count()
+        assert 1 == Elemento.objects.count()
+        assert 1 == FonteDeRecurso.objects.count()
+
+        assert ret in execucoes
+
+        for execucao in execucoes:
+            assert execucao.orcado_atualizado == Decimal(
+                str(round(previous_orcado + orcamento.vl_orcado_atualizado, 2)))
 
 
 @pytest.mark.django_db
