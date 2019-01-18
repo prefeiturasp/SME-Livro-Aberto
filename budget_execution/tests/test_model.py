@@ -152,6 +152,17 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
         assert execucao.orcado_atualizado == Decimal(
             str(round(orcamento.vl_orcado_atualizado, 2)))
 
+@pytest.mark.django_db
+class TestExecucaoModel:
+
+    def test_indexer(self):
+        execucao = mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=16, projeto__id=4364,
+            categoria__id=3, gnd__id=1, modalidade__id=90, elemento__id=11,
+            fonte__id=0, subelemento__id=2)
+
+        assert '2018.16.4364.3.1.90.11.0.2' == execucao.indexer
+
 
 @pytest.mark.django_db
 class TestSubgrupoQueryset:
@@ -173,3 +184,17 @@ class TestSubgrupoModel:
         subgrupo = mommy.make(Subgrupo, code=5, grupo=grupo)
 
         assert '10.5' == subgrupo.full_code
+
+
+@pytest.mark.django_db
+class TestOrcamentoModel:
+
+    def test_indexer(self):
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_orgao=16,
+            cd_projeto_atividade=4364, ds_categoria_despesa=3,
+            cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
+            execucao=None, _fill_optional=True,
+        )
+
+        assert '2018.16.4364.3.1.90.11.0' == orcamento.indexer

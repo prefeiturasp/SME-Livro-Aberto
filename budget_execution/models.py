@@ -316,6 +316,14 @@ class Orcamento(models.Model):
     class Meta:
         db_table = 'orcamento'
 
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte}')
+
 
 class Empenho(models.Model):
     """SME dw_orcamento table replica"""
