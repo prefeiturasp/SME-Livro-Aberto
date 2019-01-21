@@ -356,7 +356,7 @@ class Orcamento(models.Model):
     vl_saldo_reserva = models.FloatField(blank=True, null=True)
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
-    dt_data_loaded = models.DateTimeField(blank=True, null=True)
+    dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
@@ -418,7 +418,7 @@ class Empenho(models.Model):
     vl_pago = models.FloatField(blank=True, null=True)
     vl_pago_restos = models.BigIntegerField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
-    dt_data_loaded = models.DateTimeField(blank=True, null=True)
+    dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
