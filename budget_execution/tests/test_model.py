@@ -152,10 +152,20 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
         assert execucao.subfuncao_id == orcamento.cd_subfuncao
         assert execucao.programa_id == orcamento.cd_programa
 
+        assert execucao.year.year == orcamento.cd_ano_execucao
         assert execucao.orcado_atualizado == Decimal(
             str(round(orcamento.vl_orcado_atualizado, 2)))
 
-        # TODO: assert everything.desc
+        assert execucao.orgao.desc == orcamento.ds_orgao
+        assert execucao.orgao.initials == orcamento.sg_orgao
+        assert execucao.projeto.desc == orcamento.ds_projeto_atividade
+        assert execucao.projeto.type == orcamento.tp_projeto_atividade
+        assert execucao.categoria.desc == orcamento.ds_categoria
+        assert execucao.gnd.desc == orcamento.ds_grupo_despesa
+        assert execucao.modalidade.desc == orcamento.ds_modalidade
+        assert execucao.fonte.desc == orcamento.ds_fonte
+        assert execucao.subfuncao.desc == orcamento.ds_subfuncao
+        assert execucao.programa.desc == orcamento.ds_programa
 
     def test_updates_existing_execucao(self):
         previous_orcado = 100
@@ -267,6 +277,7 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
         assert execucao.orcado_atualizado == previous_orcado
 
+        assert execucao.subelemento.desc == empenho.dc_subelemento
         assert execucao.elemento.desc == empenho.dc_elemento
 
     def test_updates_execucao_without_subelemento_when_there_are_others(self):
@@ -369,8 +380,6 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.orcado_atualizado == previous_orcado
         assert execucao.empenhado_liquido is None
         assert execucao.subelemento is None
-
-        # assert subelemento.desc
 
 
 @pytest.mark.django_db
