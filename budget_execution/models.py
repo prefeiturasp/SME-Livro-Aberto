@@ -73,6 +73,22 @@ class ExecucaoManager(models.Manager):
 
         return execucao
 
+    def update_by_empenho(self, empenho):
+        execucoes = self.filter_by_indexer(empenho.indexer)
+        if len(execucoes) == 1:
+            execucao = execucoes[0]
+        else:
+            raise Exception('Not implemented')
+
+        execucao.subelemento = Subelemento.objects.get_or_create(
+            id=empenho.cd_subelemento,
+            defaults={"desc": empenho.dc_subelemento}
+        )[0]
+        execucao.empenhado_liquido = empenho.vl_empenho_liquido
+        execucao.save()
+
+        return execucao
+
     def get_by_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)
@@ -398,3 +414,11 @@ class Empenho(models.Model):
 
     class Meta:
         db_table = 'empenhos'
+
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')

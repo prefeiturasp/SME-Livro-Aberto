@@ -10,7 +10,7 @@ from budget_execution.models import (
 
 
 @pytest.mark.django_db
-class TestGenerateExecucoes:
+class TestImportOrcamento:
 
     def test_import_one_orcamento(self):
         orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
