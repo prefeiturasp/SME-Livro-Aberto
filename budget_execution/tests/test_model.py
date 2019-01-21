@@ -239,7 +239,7 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
 @pytest.mark.django_db
 class TestExecucaoManagerUpdateByEmpenho:
 
-    def test_updates_execucao_without_empenho(self):
+    def test_updates_execucao_without_subelemento(self):
         previous_orcado = 100
         execucao = mommy.make(
             Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
@@ -267,7 +267,50 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
         assert execucao.orcado_atualizado == previous_orcado
 
-    # TODO: def test_doesnt_update_the_wrong_execucao(self)
+    def test_updates_execucao_without_subelemento_when_there_are_others(self):
+        """
+        filter_by_indexer returns more than one execucao. Should update any
+        execucao of this indexer that doesn't have subelemento.
+        """
+        previous_orcado = 100
+        previous_empenhado = 200
+        execucao_with_empenho = mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
+            fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
+            empenhado_liquido=previous_empenhado)
+
+        execucao = mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
+            fonte__id=1, orcado_atualizado=previous_orcado, subelemento=None,
+            empenhado_liquido=None)
+
+        assert 1 == Subelemento.objects.count()
+
+        empenho = mommy.make(
+            Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
+            cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
+            cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
+            execucao=None, _fill_optional=True,
+        )
+
+        ret = Execucao.objects.update_by_empenho(empenho)
+
+        assert 2 == Execucao.objects.count()
+        assert 2 == Subelemento.objects.count()
+
+        execucao.refresh_from_db()
+        assert execucao == ret
+        assert execucao.subelemento_id == empenho.cd_subelemento
+        assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
+        assert execucao.orcado_atualizado == previous_orcado
+
+        execucao_with_empenho.refresh_from_db()
+        assert execucao_with_empenho.subelemento_id == 1
+        assert execucao_with_empenho.empenhado_liquido == previous_empenhado
+        assert execucao_with_empenho.orcado_atualizado == previous_orcado
+
     def test_updates_execucao_with_empenho(self):
         previous_orcado = 100
         previous_empenhado = 222
@@ -296,6 +339,34 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.empenhado_liquido == Decimal(
             previous_empenhado + empenho.vl_empenho_liquido)
         assert execucao.orcado_atualizado == previous_orcado
+
+    def test_execucao_not_found_for_empenho_indexer(self):
+        previous_orcado = 100
+        execucao = mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
+            fonte__id=1, orcado_atualizado=previous_orcado, subelemento=None,
+            empenhado_liquido=None)
+
+        assert 0 == Subelemento.objects.count()
+
+        empenho = mommy.make(
+            Empenho, an_empenho=2018, cd_orgao=2, cd_projeto_atividade=1,
+            cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
+            cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333,
+            execucao=None, _fill_optional=True,
+        )
+
+        ret = Execucao.objects.update_by_empenho(empenho)
+        assert ret is None
+
+        assert 1 == Execucao.objects.count()
+        assert 0 == Subelemento.objects.count()
+
+        execucao.refresh_from_db()
+        assert execucao.orcado_atualizado == previous_orcado
+        assert execucao.empenhado_liquido is None
+        assert execucao.subelemento is None
 
         # move it to test_services
         # empenho.refresh_from_db()

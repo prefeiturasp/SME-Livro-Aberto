@@ -79,19 +79,22 @@ class ExecucaoManager(models.Manager):
         try:
             execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
             execucao.empenhado_liquido += empenho.vl_empenho_liquido
+            execucao.save()
         except Execucao.DoesNotExist:
             if len(execucoes) == 1:
-                execucao = execucoes[0]
+                execucao = execucoes.first()
             else:
-                raise Exception('Not implemented')
+                execucao = execucoes.filter(subelemento__isnull=True).first()
 
-            execucao.subelemento = Subelemento.objects.get_or_create(
-                id=empenho.cd_subelemento,
-                defaults={"desc": empenho.dc_subelemento}
-            )[0]
-            execucao.empenhado_liquido = empenho.vl_empenho_liquido
-
-        execucao.save()
+            if execucao:
+                execucao.subelemento = Subelemento.objects.get_or_create(
+                    id=empenho.cd_subelemento,
+                    defaults={"desc": empenho.dc_subelemento}
+                )[0]
+                execucao.empenhado_liquido = empenho.vl_empenho_liquido
+                execucao.save()
+            else:
+                execucao = None
 
         return execucao
 
