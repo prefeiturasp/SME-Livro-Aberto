@@ -75,16 +75,22 @@ class ExecucaoManager(models.Manager):
 
     def update_by_empenho(self, empenho):
         execucoes = self.filter_by_indexer(empenho.indexer)
-        if len(execucoes) == 1:
-            execucao = execucoes[0]
-        else:
-            raise Exception('Not implemented')
 
-        execucao.subelemento = Subelemento.objects.get_or_create(
-            id=empenho.cd_subelemento,
-            defaults={"desc": empenho.dc_subelemento}
-        )[0]
-        execucao.empenhado_liquido = empenho.vl_empenho_liquido
+        try:
+            execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
+            execucao.empenhado_liquido += empenho.vl_empenho_liquido
+        except Execucao.DoesNotExist:
+            if len(execucoes) == 1:
+                execucao = execucoes[0]
+            else:
+                raise Exception('Not implemented')
+
+            execucao.subelemento = Subelemento.objects.get_or_create(
+                id=empenho.cd_subelemento,
+                defaults={"desc": empenho.dc_subelemento}
+            )[0]
+            execucao.empenhado_liquido = empenho.vl_empenho_liquido
+
         execucao.save()
 
         return execucao
