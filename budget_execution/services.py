@@ -1,4 +1,6 @@
 from budget_execution.models import Execucao, Orcamento, Empenho
+from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
+                                    SubelementoFromTo, GNDFromTo)
 
 
 def import_orcamentos():
@@ -19,3 +21,10 @@ def import_empenhos():
         if execucao:
             empenho.execucao = execucao
             empenho.save()
+
+
+def apply_fromto():
+    DotacaoFromTo.apply_all()
+    FonteDeRecursoFromTo.apply_all()
+    SubelementoFromTo.apply_all()
+    GNDFromTo.apply_all()
