@@ -31,7 +31,8 @@ class FonteDeRecursoFromTo(models.Model, FromTo):
                 f'{self.grupo_code}: {self.grupo_name}')
 
     def apply(self):
-        execucoes = Execucao.objects.filter(fonte_id=self.code)
+        execucoes = Execucao.objects.filter(
+            fonte_id=self.code, fonte_grupo__isnull=True)
         if not execucoes:
             return
 
@@ -60,7 +61,7 @@ class SubelementoFromTo(models.Model, FromTo):
 
     def apply(self):
         execucoes = Execucao.objects.filter_by_subelemento_fromto_code(
-            self.code)
+            self.code).filter(subelemento_friendly__isnull=True)
         if not execucoes:
             return
 
@@ -89,7 +90,8 @@ class DotacaoFromTo(models.Model, FromTo):
                 f'{self.subgrupo_desc} ({self.grupo_desc})')
 
     def apply(self):
-        execucoes = Execucao.objects.filter_by_indexer(self.indexer)
+        execucoes = Execucao.objects.filter_by_indexer(self.indexer) \
+            .filter(subgrupo__isnull=True)
         if not execucoes:
             return
 
@@ -129,7 +131,8 @@ class GNDFromTo(models.Model, FromTo):
 
     def apply(self):
         execucoes = Execucao.objects.filter(
-            gnd_id=self.gnd_code, elemento_id=self.elemento_code)
+            gnd_id=self.gnd_code, elemento_id=self.elemento_code,
+            gnd_geologia__isnull=True)
         if not execucoes:
             return
 
