@@ -15,5 +15,7 @@ def import_empenhos():
 
     for empenho in empenhos:
         execucao = Execucao.objects.update_by_empenho(empenho)
-        empenho.execucao = execucao
-        empenho.save()
+
+        if execucao:
+            empenho.execucao = execucao
+            empenho.save()

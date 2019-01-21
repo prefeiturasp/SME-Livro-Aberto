@@ -75,3 +75,14 @@ class TestImportEmpenho:
         for empenho in empenhos:
             empenho.refresh_from_db()
             assert empenho.execucao == mock_execucao
+
+    @patch.object(Execucao.objects, 'update_by_empenho')
+    def test_ignores_when_update_by_empenho_returns_none(self, mock_update):
+        mock_update.return_value = None
+
+        empenho = mommy.make(Empenho, execucao=None, _fill_optional=True)
+
+        services.import_empenhos()
+
+        empenho.refresh_from_db()
+        assert empenho.execucao is None
