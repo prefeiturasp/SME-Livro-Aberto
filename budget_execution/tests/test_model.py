@@ -368,10 +368,6 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.empenhado_liquido is None
         assert execucao.subelemento is None
 
-        # move it to test_services
-        # empenho.refresh_from_db()
-        # assert empenho.execucao == execucao
-
         # assert populate elemento.desc
         # assert subelemento.desc
 
