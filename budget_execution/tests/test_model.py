@@ -338,7 +338,7 @@ class TestExecucaoManagerUpdateByEmpenho:
         empenho = mommy.make(
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
-            cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333,
+            cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333.33,
             execucao=None, _fill_optional=True,
         )
 
@@ -350,7 +350,7 @@ class TestExecucaoManagerUpdateByEmpenho:
         execucao.refresh_from_db()
         assert execucao == ret
         assert execucao.empenhado_liquido == Decimal(
-            previous_empenhado + empenho.vl_empenho_liquido)
+            str(round(previous_empenhado + empenho.vl_empenho_liquido, 2)))
         assert execucao.orcado_atualizado == previous_orcado
 
     def test_execucao_not_found_for_empenho_indexer(self):

@@ -78,7 +78,7 @@ class ExecucaoManager(models.Manager):
 
         try:
             execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
-            execucao.empenhado_liquido += empenho.vl_empenho_liquido
+            execucao.empenhado_liquido += Decimal(empenho.vl_empenho_liquido)
             execucao.save()
         except Execucao.DoesNotExist:
             if len(execucoes) == 1:
