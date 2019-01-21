@@ -253,7 +253,7 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=222,
-            execucao=None, _fill_optional=True,
+            execucao=None, dc_elemento="elemento_desc", _fill_optional=True,
         )
 
         ret = Execucao.objects.update_by_empenho(empenho)
@@ -266,6 +266,8 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.subelemento_id == empenho.cd_subelemento
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
         assert execucao.orcado_atualizado == previous_orcado
+
+        assert execucao.elemento.desc == empenho.dc_elemento
 
     def test_updates_execucao_without_subelemento_when_there_are_others(self):
         """
@@ -368,7 +370,6 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.empenhado_liquido is None
         assert execucao.subelemento is None
 
-        # assert populate elemento.desc
         # assert subelemento.desc
 
 

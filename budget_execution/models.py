@@ -93,6 +93,9 @@ class ExecucaoManager(models.Manager):
                 )[0]
                 execucao.empenhado_liquido = empenho.vl_empenho_liquido
                 execucao.save()
+
+                execucao.elemento.desc = empenho.dc_elemento
+                execucao.elemento.save()
             else:
                 execucao = None
 
