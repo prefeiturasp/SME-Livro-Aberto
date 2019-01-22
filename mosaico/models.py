@@ -2,7 +2,7 @@ from datetime import date
 
 from django.db import models
 
-from budget_execution.models import MinimoLegal
+from budget_execution.models import MinimoLegalExecucao
 from mosaico import services
 
 
@@ -44,7 +44,7 @@ class MinimoLegalSpreadsheetModel(models.Model):
             self.spreadsheet.path)
 
         for index, row in data.iterrows():
-            MinimoLegal.objects.create_or_update(
+            MinimoLegalExecucao.objects.create_or_update(
                 code=row['Código'],
                 year=date(self.year, 1, 1),
                 desc=row['Descrição'],

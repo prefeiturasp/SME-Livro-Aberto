@@ -454,16 +454,16 @@ class Empenho(models.Model):
 #             ml.save()
 # 
 #         return ml
-# 
-# 
-# class MinimoLegal(models.Model):
-#     code = models.IntegerField()
-#     year = models.DateField()
-#     desc = models.CharField(max_length=250)
-#     dotacao = models.DecimalField(max_digits=17, decimal_places=2)
-#     despesa = models.DecimalField(max_digits=17, decimal_places=2)
-# 
-#     objects = MinimoLegalManager()
-# 
-#     class Meta:
-#         unique_together = ('code', 'year')
+
+
+class MinimoLegalExecucao(models.Model):
+    year = models.DateField()
+    orgao = models.ForeignKey('Orgao', models.PROTECT, null=True)
+    projeto = models.ForeignKey('ProjetoAtividade', models.PROTECT)
+    subfuncao = models.ForeignKey('Subfuncao', models.PROTECT, null=True)
+    programa = models.ForeignKey('Programa', models.PROTECT, null=True)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+
+    class Meta:
+        unique_together = ('year', 'orgao', 'projeto', 'subfuncao', 'programa')
