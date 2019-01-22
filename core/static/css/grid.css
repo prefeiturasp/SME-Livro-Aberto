@@ -16,6 +16,10 @@ header{
   padding: 4em 1em 2em;
 }
 
+.hidden-header {
+  visibility: hidden;
+}
+
 
 header h1,
 header h1 + p{
