@@ -28,12 +28,13 @@ class MinimoLegalSpreadsheetModel(models.Model):
         verbose_name_plural = 'Dados do Mínimo Legal (31%)'
 
     def __str__(self):
-        return f'{self.spreadsheet.name.split("/")[2]}'
+        return f'{self.spreadsheet.name.split("/")[-1]}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.data_extracted:
-            self.extract_data()
+            # self.extract_data()
+            pass
 
     def extract_data(self):
         if self.data_extracted:
@@ -44,6 +45,7 @@ class MinimoLegalSpreadsheetModel(models.Model):
             self.spreadsheet.path)
 
         for index, row in data.iterrows():
+            # TODO refazer?
             MinimoLegalExecucao.objects.create_or_update(
                 code=row['Código'],
                 year=date(self.year, 1, 1),
