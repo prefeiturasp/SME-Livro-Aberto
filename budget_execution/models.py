@@ -436,24 +436,27 @@ class Empenho(models.Model):
             f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
 
 
-# class MinimoLegalManager(models.Manager):
-# 
-#     def create_or_update(self, code, year, desc, dotacao, despesa):
-#         ml, created = self.get_or_create(
-#             code=code,
-#             year=year,
-#             defaults={
-#                 'desc': desc,
-#                 'dotacao': dotacao,
-#                 'despesa': despesa,
-#             })
-# 
-#         if not created:
-#             ml.dotacao += Decimal(dotacao)
-#             ml.despesa += Decimal(despesa)
-#             ml.save()
-# 
-#         return ml
+class MinimoLegalExecucaoManager(models.Manager):
+
+    def create_or_update(self, year, projeto_id, projeto_desc,
+                         orcado_atualizado, empenhado_liquido):
+        projeto, _ = ProjetoAtividade.objects.get_or_create(
+            id=projeto_id, defaults={'desc': projeto_desc})
+
+        ml, created = self.get_or_create(
+            projeto=projeto,
+            year=date(year, 1, 1),
+            defaults={
+                'orcado_atualizado': orcado_atualizado,
+                'empenhado_liquido': empenhado_liquido,
+            })
+
+        if not created:
+            ml.orcado_atualizado += Decimal(orcado_atualizado)
+            ml.empenhado_liquido += Decimal(empenhado_liquido)
+            ml.save()
+
+        return ml
 
 
 class MinimoLegalExecucao(models.Model):
@@ -464,6 +467,8 @@ class MinimoLegalExecucao(models.Model):
     programa = models.ForeignKey('Programa', models.PROTECT, null=True)
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+
+    objects = MinimoLegalExecucaoManager()
 
     class Meta:
         unique_together = ('year', 'orgao', 'projeto', 'subfuncao', 'programa')
