@@ -487,3 +487,24 @@ class TestMinimoLegalExecucaoManagerCreateOrUpdate:
         assert projeto == execs[0].projeto
         assert 250 == execs[0].orcado_atualizado
         assert 125 == execs[0].empenhado_liquido
+
+
+@pytest.mark.django_db
+class TestMinimoLegalPopulateFksFromOrcamento:
+
+    def test_populates_fks(self):
+        projeto = mommy.make(ProjetoAtividade)
+        sme_exec = mommy.make(Execucao, projeto=projeto, orcado_atualizado=444,
+                              empenhado_liquido=555, __fill_optional=True)
+        ml_exec = mommy.make(MinimoLegalExecucao, projeto=projeto, orgao=None,
+                             subfuncao=None, programa=None,
+                             orcado_atualizado=100, empenhado_liquido=200)
+
+        ml_exec.populate_fks_from_sme_execucoes()
+        ml_exec.refresh_from_db()
+
+        assert ml_exec.orgao_id == sme_exec.orgao_id
+        assert ml_exec.subfuncao_id == sme_exec.subfuncao_id
+        assert ml_exec.programa_id == sme_exec.programa_id
+        assert ml_exec.orcado_atualizado == 100
+        assert ml_exec.empenhado_liquido == 200

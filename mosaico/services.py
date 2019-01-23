@@ -19,7 +19,7 @@ def extract_minimo_legal_from_spreadsheet(spreadsheet_obj):
     >>> test_treatment.Despesa.sum()
     14355454684.935474
     """
-    #Le o arquivo
+    # Le o arquivo
     title_limit_tuples = [
         (spreadsheet_obj.title_25percent, spreadsheet_obj.limit_25percent),
         (spreadsheet_obj.title_6percent, spreadsheet_obj.limit_6percent),
@@ -55,8 +55,9 @@ def extract_minimo_legal_from_spreadsheet(spreadsheet_obj):
             .copy()
 
         # divide o código e a Descrição em duas colunas diferentes
-        final_df[['Código', 'Descrição']] = final_df.Descrição.str.split(' - ', n=1, expand=True).\
-            rename(columns={0: 'Código', 1: 'Descrição'})
+        final_df[['Código', 'Descrição']] = \
+            final_df.Descrição.str.split(' - ', n=1, expand=True) \
+            .rename(columns={0: 'Código', 1: 'Descrição'})
 
         dfs.append(final_df)
 

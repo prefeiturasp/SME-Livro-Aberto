@@ -472,3 +472,12 @@ class MinimoLegalExecucao(models.Model):
 
     class Meta:
         unique_together = ('year', 'orgao', 'projeto', 'subfuncao', 'programa')
+
+    def populate_fks_from_sme_execucoes(self):
+        execucao = Execucao.objects.filter(projeto_id=self.projeto_id).first()
+
+        if execucao:
+            self.orgao = execucao.orgao
+            self.subfuncao = execucao.subfuncao
+            self.programa = execucao.programa
+            self.save()
