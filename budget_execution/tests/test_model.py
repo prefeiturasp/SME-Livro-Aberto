@@ -494,13 +494,22 @@ class TestMinimoLegalPopulateFksFromOrcamento:
 
     def test_populates_fks(self):
         projeto = mommy.make(ProjetoAtividade)
+        projeto2 = mommy.make(ProjetoAtividade)
+
         sme_exec = mommy.make(Execucao, projeto=projeto, orcado_atualizado=444,
                               empenhado_liquido=555, __fill_optional=True)
         ml_exec = mommy.make(MinimoLegalExecucao, projeto=projeto, orgao=None,
                              subfuncao=None, programa=None,
                              orcado_atualizado=100, empenhado_liquido=200)
 
-        ml_exec.populate_fks_from_sme_execucoes()
+        sme_exec2 = mommy.make(Execucao, projeto=projeto2, orcado_atualizado=33,
+                               empenhado_liquido=66, __fill_optional=True)
+        ml_exec2 = mommy.make(MinimoLegalExecucao, projeto=projeto2, orgao=None,
+                              subfuncao=None, programa=None,
+                              orcado_atualizado=10, empenhado_liquido=20)
+
+        MinimoLegalExecucao.objects.populate_fks_from_sme_execucao()
+
         ml_exec.refresh_from_db()
 
         assert ml_exec.orgao_id == sme_exec.orgao_id
@@ -508,3 +517,11 @@ class TestMinimoLegalPopulateFksFromOrcamento:
         assert ml_exec.programa_id == sme_exec.programa_id
         assert ml_exec.orcado_atualizado == 100
         assert ml_exec.empenhado_liquido == 200
+
+        ml_exec2.refresh_from_db()
+
+        assert ml_exec2.orgao_id == sme_exec2.orgao_id
+        assert ml_exec2.subfuncao_id == sme_exec2.subfuncao_id
+        assert ml_exec2.programa_id == sme_exec2.programa_id
+        assert ml_exec2.orcado_atualizado == 10
+        assert ml_exec2.empenhado_liquido == 20

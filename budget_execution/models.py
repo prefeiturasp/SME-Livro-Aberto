@@ -458,6 +458,12 @@ class MinimoLegalExecucaoManager(models.Manager):
 
         return ml
 
+    def populate_fks_from_sme_execucao(self):
+        execs = self.get_queryset().filter(subfuncao__isnull=True)
+
+        for ex in execs:
+            ex.populate_fks()
+
 
 class MinimoLegalExecucao(models.Model):
     year = models.DateField()
@@ -473,7 +479,11 @@ class MinimoLegalExecucao(models.Model):
     class Meta:
         unique_together = ('year', 'orgao', 'projeto', 'subfuncao', 'programa')
 
-    def populate_fks_from_sme_execucoes(self):
+    def populate_fks(self):
+        """
+        Search for a SME Execucao with the same ProjetoAtividade to get orgao,
+        subfuncao and programa FKs
+        """
         execucao = Execucao.objects.filter(projeto_id=self.projeto_id).first()
 
         if execucao:
