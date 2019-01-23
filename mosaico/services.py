@@ -3,7 +3,7 @@ import pandas as pd
 
 # EXTRAIR COLUNAS: F, H I
 # COLUNA F: SEPARAR OS VALORES
-def extract_minimo_legal_from_spreadsheet(title, end_quote, file_path):
+def extract_minimo_legal_from_spreadsheet(spreadsheet_obj):
     """
     Esse código tem como função extrair dados de uma categoria específica a ser definida e gerar uma planilha que seja simples de ser utilizada em ações automatizadas.
     :param title: Define a frase que será usada como ponto de partida para a busca. A frase deverá estar na coluna F.
@@ -20,25 +20,45 @@ def extract_minimo_legal_from_spreadsheet(title, end_quote, file_path):
     14355454684.935474
     """
     #Le o arquivo
+    title_limit_tuples = [
+        (spreadsheet_obj.title_25percent, spreadsheet_obj.limit_25percent),
+        (spreadsheet_obj.title_6percent, spreadsheet_obj.limit_6percent),
+    ]
+    file_path = spreadsheet_obj.spreadsheet.path
+
     df = pd.read_excel(file_path,
                        sheet_name=0,
                        usecols='F,H,I',
                        names=['Descrição', 'Dotação', 'Despesa']).fillna('')
-    #define linha de inicio e fim da pesquisa para recuperar o dado entre essas linhas
-    start_idx = df[df['Descrição'] == title].index.values[0]
-    end_idx_temp = df[df['Descrição'] == end_quote].index.values[0]
-    if isinstance(end_idx_temp, list):
-        end_idx = end_idx_temp.values.min()
-    else:
-        end_idx = end_idx_temp
-    cut = df.iloc[start_idx:end_idx]
+    dfs = []
+    for title, end_quote in title_limit_tuples:
+        # define linha de inicio e fim da pesquisa para recuperar o dado entre essas linhas
+        try:
+            start_idx = df[df['Descrição'] == title].index.values[0]
+        except IndexError:
+            raise Exception(f"Text '{title}' not found in spreadsheet")
 
-    #recupera apenas os dados que comecme com 4 dígitos numéricos
-    final_df = cut[cut.Descrição.fillna('').apply(lambda x: x[:4].isdigit())].copy()
+        try:
+            end_idx_temp = df[df['Descrição'] == end_quote].index.values[0]
+        except IndexError:
+            raise Exception(f"Text '{end_quote}' not found in spreadsheet")
 
-    #divide o código e a Descrição em duas colunas diferentes
-    final_df[['Código', 'Descrição']] = final_df.Descrição.str.split(' - ', n=1, expand=True).\
-        rename(columns={0:'Código',1:'Descrição'})
+        if isinstance(end_idx_temp, list):
+            end_idx = end_idx_temp.values.min()
+        else:
+            end_idx = end_idx_temp
+        cut = df.iloc[start_idx:end_idx]
 
-    #escreve em um arquivo de csv
-    return final_df[['Código', 'Descrição', 'Dotação', 'Despesa']]
+        # recupera apenas os dados que comecme com 4 dígitos numéricos
+        final_df = cut[
+            cut.Descrição.fillna('').apply(lambda x: x[:4].isdigit())] \
+            .copy()
+
+        # divide o código e a Descrição em duas colunas diferentes
+        final_df[['Código', 'Descrição']] = final_df.Descrição.str.split(' - ', n=1, expand=True).\
+            rename(columns={0: 'Código', 1: 'Descrição'})
+
+        dfs.append(final_df)
+
+    ret_df = pd.concat(dfs)
+    return ret_df[['Código', 'Descrição', 'Dotação', 'Despesa']]

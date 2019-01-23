@@ -40,18 +40,15 @@ class MinimoLegalSpreadsheetModel(models.Model):
         if self.data_extracted:
             return
 
-        data = services.extract_minimo_legal_from_spreadsheet(
-            self.title_25percent, self.limit_25percent,
-            self.spreadsheet.path)
+        data = services.extract_minimo_legal_from_spreadsheet(self)
 
         for index, row in data.iterrows():
-            # TODO refazer?
             MinimoLegalExecucao.objects.create_or_update(
-                code=row['Código'],
-                year=date(self.year, 1, 1),
-                desc=row['Descrição'],
-                dotacao=row['Dotação'],
-                despesa=row['Despesa'],
+                year=self.year,
+                projeto_id=row['Código'],
+                projeto_desc=row['Descrição'],
+                orcado_atualizado=row['Dotação'],
+                empenhado_liquido=row['Despesa'],
             )
         self.data_extracted = True
         self.save()
