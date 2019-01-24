@@ -491,3 +491,37 @@ class MinimoLegalExecucao(models.Model):
             self.subfuncao = execucao.subfuncao
             self.programa = execucao.programa
             self.save()
+
+
+class MinimoLegalManager(models.Manager):
+
+    def create_or_update(self, year, projeto_id, projeto_desc,
+                         orcado_atualizado, empenhado_liquido):
+        ml, created = self.get_or_create(
+            projeto_id=projeto_id,
+            year=date(year, 1, 1),
+            defaults={
+                'projeto_desc': projeto_desc,
+                'orcado_atualizado': orcado_atualizado,
+                'empenhado_liquido': empenhado_liquido,
+            })
+
+        if not created:
+            ml.orcado_atualizado += Decimal(orcado_atualizado)
+            ml.empenhado_liquido += Decimal(empenhado_liquido)
+            ml.save()
+
+        return ml
+
+
+class MinimoLegal(models.Model):
+    year = models.DateField()
+    projeto_id = models.IntegerField()
+    projeto_desc = models.CharField(max_length=250)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+
+    objects = MinimoLegalManager()
+
+    class Meta:
+        unique_together = ('year', 'projeto_id')

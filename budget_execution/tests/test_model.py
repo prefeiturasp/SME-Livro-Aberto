@@ -23,6 +23,7 @@ from budget_execution.models import (
     Subgrupo,
     Subelemento,
     MinimoLegalExecucao,
+    MinimoLegal,
 )
 
 
@@ -443,6 +444,40 @@ class TestEmpenhoModel:
         )
 
         assert '2018.16.4364.3.1.90.11.0.1' == empenho.indexer
+
+
+@pytest.mark.django_db
+class TestMinimoLegalManagerCreateOrUpdate:
+
+    def test_creates_execucao(self):
+        MinimoLegal.objects.create_or_update(
+            year=2018, projeto_id=1111, projeto_desc="projeto desc",
+            orcado_atualizado=200, empenhado_liquido=100)
+
+        execs = MinimoLegal.objects.all()
+        assert 1 == len(execs)
+        assert date(2018, 1, 1) == execs[0].year
+        assert 1111 == execs[0].projeto_id
+        assert "projeto desc" == execs[0].projeto_desc
+        assert 200 == execs[0].orcado_atualizado
+        assert 100 == execs[0].empenhado_liquido
+
+    def test_updates_existing_execucao(self):
+        mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                   projeto_desc="projeto desc", orcado_atualizado=200,
+                   empenhado_liquido=100)
+
+        MinimoLegal.objects.create_or_update(
+            year=2018, projeto_id=1111, projeto_desc="projeto desc",
+            orcado_atualizado=50, empenhado_liquido=25)
+
+        execs = MinimoLegal.objects.all()
+        assert 1 == len(execs)
+        assert date(2018, 1, 1) == execs[0].year
+        assert 1111 == execs[0].projeto_id
+        assert "projeto desc" == execs[0].projeto_desc
+        assert 250 == execs[0].orcado_atualizado
+        assert 125 == execs[0].empenhado_liquido
 
 
 @pytest.mark.django_db
