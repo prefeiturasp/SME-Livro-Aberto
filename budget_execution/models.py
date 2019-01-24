@@ -163,6 +163,9 @@ class Execucao(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+    # used to differ execucoes from SME and execucoes from Minimo Legal
+    is_minimo_legal = models.BooleanField(default=False)
+
     # FROM-TO Fields
     subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
     fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
