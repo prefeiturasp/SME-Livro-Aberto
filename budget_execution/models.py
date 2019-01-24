@@ -112,10 +112,14 @@ class ExecucaoManager(models.Manager):
         execucao = self.create_by_orcamento(orcamento)
         execucao.orcado_atualizado = minimo_legal.orcado_atualizado
         execucao.empenhado_liquido = minimo_legal.empenhado_liquido
+        execucao.is_minimo_legal = True
         execucao.save()
 
         execucao.projeto.desc = minimo_legal.projeto_desc
         execucao.projeto.save()
+
+        orcamento.execucao = execucao
+        orcamento.save()
 
         return execucao
 
@@ -541,6 +545,8 @@ class MinimoLegal(models.Model):
     projeto_desc = models.CharField(max_length=250)
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+    execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
+                                 null=True)
 
     objects = MinimoLegalManager()
 

@@ -1,4 +1,4 @@
-from budget_execution.models import Execucao, Orcamento, Empenho
+from budget_execution.models import Execucao, Orcamento, Empenho, MinimoLegal
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
@@ -21,6 +21,17 @@ def import_empenhos():
         if execucao:
             empenho.execucao = execucao
             empenho.save()
+
+
+def import_minimo_legal():
+    mls = MinimoLegal.objects.filter(execucao__isnull=True)
+
+    for ml in mls:
+        execucao = Execucao.objects.create_by_minimo_legal(ml)
+
+        if execucao:
+            ml.execucao = execucao
+            ml.save()
 
 
 def apply_fromto():

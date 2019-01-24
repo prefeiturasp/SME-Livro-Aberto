@@ -401,6 +401,7 @@ class TestExecucaoManagerCreateByMinimoLegal:
         execucoes = Execucao.objects.all()
         assert 1 == len(execucoes)
 
+        orcamento.refresh_from_db()
         execucao = execucoes[0]
         assert execucao.projeto.id == 1111
         assert execucao.projeto.desc == "projeto desc"
@@ -409,6 +410,9 @@ class TestExecucaoManagerCreateByMinimoLegal:
         assert execucao.orgao.id == orcamento.cd_orgao
         assert execucao.subfuncao.id == orcamento.cd_subfuncao
         assert execucao.programa.id == orcamento.cd_programa
+        assert execucao.is_minimo_legal
+
+        assert orcamento.execucao == execucao
 
 
 @pytest.mark.django_db
