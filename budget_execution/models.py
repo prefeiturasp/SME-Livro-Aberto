@@ -101,6 +101,24 @@ class ExecucaoManager(models.Manager):
 
         return execucao
 
+    def create_by_minimo_legal(self, minimo_legal):
+        orcamento = Orcamento.objects.get(
+            cd_ano_execucao=minimo_legal.year.year,
+            cd_projeto_atividade=minimo_legal.projeto_id)
+
+        if not orcamento:
+            return
+
+        execucao = self.create_by_orcamento(orcamento)
+        execucao.orcado_atualizado = minimo_legal.orcado_atualizado
+        execucao.empenhado_liquido = minimo_legal.empenhado_liquido
+        execucao.save()
+
+        execucao.projeto.desc = minimo_legal.projeto_desc
+        execucao.projeto.save()
+
+        return execucao
+
     def get_by_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)

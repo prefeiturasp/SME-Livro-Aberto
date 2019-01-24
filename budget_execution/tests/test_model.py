@@ -385,6 +385,33 @@ class TestExecucaoManagerUpdateByEmpenho:
 
 
 @pytest.mark.django_db
+class TestExecucaoManagerCreateByMinimoLegal:
+
+    def test_updates_execucao(self):
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_projeto_atividade=1111,
+            execucao=None, _fill_optional=True)
+
+        ml = mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                        projeto_desc="projeto desc", orcado_atualizado=55,
+                        empenhado_liquido=22)
+
+        Execucao.objects.create_by_minimo_legal(ml)
+
+        execucoes = Execucao.objects.all()
+        assert 1 == len(execucoes)
+
+        execucao = execucoes[0]
+        assert execucao.projeto.id == 1111
+        assert execucao.projeto.desc == "projeto desc"
+        assert execucao.orcado_atualizado == 55
+        assert execucao.empenhado_liquido == 22
+        assert execucao.orgao.id == orcamento.cd_orgao
+        assert execucao.subfuncao.id == orcamento.cd_subfuncao
+        assert execucao.programa.id == orcamento.cd_programa
+
+
+@pytest.mark.django_db
 class TestExecucaoModel:
 
     def test_indexer(self):
