@@ -8,6 +8,7 @@ from rest_framework_csv.renderers import CSVRenderer
 
 from django.urls import reverse
 
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import Execucao, FonteDeRecursoGrupo
 from mosaico.serializers import (
     ElementoSerializer,
@@ -82,6 +83,7 @@ class BaseListView(generics.ListAPIView):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
+        queryset = queryset.filter(orgao__id=SME_ORGAO_ID)
         self.filters = self.request.query_params.dict()
         year = self.request.query_params.get('year')
         if year:
