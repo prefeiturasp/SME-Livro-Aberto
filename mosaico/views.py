@@ -182,10 +182,6 @@ class GruposListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False)
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subgrupo__grupo_id')
-
     def get_timeseries_queryset(self):
         return Execucao.objects.all()
 
@@ -205,10 +201,6 @@ class SubgruposListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         grupo_id = self.kwargs['grupo_id']
         return Execucao.objects.filter(subgrupo__grupo_id=grupo_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subgrupo')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -231,10 +223,6 @@ class ElementosListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
         return Execucao.objects.filter(subgrupo_id=subgrupo_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('elemento')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -260,10 +248,6 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
         elemento_id = self.kwargs['elemento_id']
         return Execucao.objects.filter(
             subgrupo_id=subgrupo_id, elemento_id=elemento_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subelemento')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -292,10 +276,6 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     def get_queryset(self):
         return Execucao.objects.all()
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subfuncao')
-
     def create_breadcrumb(self, queryset):
         year = self.year
         execucao = queryset[0]
@@ -313,10 +293,6 @@ class ProgramasListView(BaseListView, TecnicoViewMixin):
     def get_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
         return Execucao.objects.filter(subfuncao_id=subfuncao_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('programa')
 
     def create_breadcrumb(self, queryset):
         year = self.year
@@ -339,10 +315,6 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         programa_id = self.kwargs['programa_id']
         return Execucao.objects.filter(
             subfuncao_id=subfuncao_id, programa_id=programa_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('projeto')
 
     def create_breadcrumb(self, queryset):
         year = self.year
@@ -379,7 +351,7 @@ class DownloadView(generics.ListAPIView):
         qs = super().filter_queryset(qs)
         if self.section == 'subelementos':
             qs = qs.filter(subelemento__isnull=False)
-        return qs.distinct(self.distinct_field)
+        return qs
 
     def list(self, request, *args, **kwargs):
         self.section = self.kwargs['section']

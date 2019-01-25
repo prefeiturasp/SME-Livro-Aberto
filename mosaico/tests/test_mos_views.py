@@ -248,7 +248,7 @@ class TestGruposListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('subgrupo__grupo')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -256,8 +256,7 @@ class TestGruposListView(BaseTestCase):
         assert expected == response.data['execucoes']
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('subgrupo__grupo')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -310,7 +309,7 @@ class TestSubgruposListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('subgrupo')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -320,8 +319,7 @@ class TestSubgruposListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('subgrupo')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -374,7 +372,7 @@ class TestElementosListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('elemento')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -384,8 +382,7 @@ class TestElementosListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('elemento')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -448,7 +445,7 @@ class TestSubelementosListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('subelemento')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -458,8 +455,7 @@ class TestSubelementosListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('subelemento')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -508,7 +504,7 @@ class TestSubfuncaoListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('subfuncao')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -518,8 +514,7 @@ class TestSubfuncaoListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('subfuncao')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -571,7 +566,7 @@ class TestProgramasListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('programa')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -581,8 +576,7 @@ class TestProgramasListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('programa')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -637,7 +631,7 @@ class TestProjetosAtividadesListView(BaseTestCase):
              _quantity=2)
 
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all().distinct('projeto')
+        execucoes = Execucao.objects.all()
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -647,8 +641,7 @@ class TestProjetosAtividadesListView(BaseTestCase):
         assert expected == data
 
     def test_filters_by_fonte_grupo_querystring_data(self):
-        execucoes = Execucao.objects.filter(fonte_grupo__id=1) \
-            .distinct('projeto')
+        execucoes = Execucao.objects.filter(fonte_grupo__id=1)
         serializer = self.get_serializer(execucoes, fonte=1, year=2018)
         expected = serializer.data
 
@@ -720,12 +713,10 @@ class TestDownloadView(APITestCase):
     def prepare_expected_data(self, section, year=None):
         factory = RequestFactory()
         if year:
-            execucoes = Execucao.objects.filter(year=date(year, 1, 1)).distinct(
-                DISTINCT_FIELD_BY_SECTION[section])
+            execucoes = Execucao.objects.filter(year=date(year, 1, 1))
             request = factory.get(self.base_url(section), {'year': year})
         else:
-            execucoes = Execucao.objects.all().distinct(
-                DISTINCT_FIELD_BY_SECTION[section])
+            execucoes = Execucao.objects.all()
             request = factory.get(self.base_url(section))
 
         serializer_class = SERIALIZERS_BY_SECTION[section]
