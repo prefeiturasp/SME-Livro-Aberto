@@ -121,8 +121,10 @@ class TestBaseListView(APITestCase):
              is_minimo_legal=False, subgrupo__grupo__id=1)
 
         # not expected
+        make('Execucao', year=date.today(), orgao__id=SME_ORGAO_ID,
+             is_minimo_legal=True, subgrupo__grupo__id=2)
         make('Execucao',  year=date.today(), orgao__id=20, is_minimo_legal=True,
-             subgrupo__grupo__id=2)
+             subgrupo__grupo__id=3)
 
         response = self.get()
         assert 1 == len(response.data['execucoes'])
@@ -171,6 +173,34 @@ class TestBaseListView(APITestCase):
         assert set(execucoes_qs) == set(mock_serializer.call_args[0][0])
         assert {"deflate": True} == mock_serializer.call_args[1]
         assert response.context.get('deflate')
+
+
+class TestMinimoLegalFilter(APITestCase):
+
+    def get(self, **kwargs):
+        url = reverse('mosaico:subfuncoes')
+        return self.client.get(url, kwargs)
+
+    def test_minimo_legal_filter(self):
+        exec1 = make('Execucao', year=date.today(), orgao__id=SME_ORGAO_ID,
+                     is_minimo_legal=False, subfuncao__id=1)
+        exec2 = make('Execucao', year=date.today(), orgao__id=SME_ORGAO_ID,
+                     is_minimo_legal=True, subfuncao__id=2)
+        exec3 = make('Execucao',  year=date.today(), orgao__id=20,
+                     is_minimo_legal=True, subfuncao__id=3)
+        # not expected
+        make('Execucao',  year=date.today(), orgao__id=20,
+             is_minimo_legal=False, subfuncao__id=4)
+
+        response = self.get(minimo_legal=False)
+        assert 1 == len(response.data['execucoes'])
+        assert exec1.subfuncao_id \
+            == response.data['execucoes'][0]['subfuncao_id']
+
+        response = self.get(minimo_legal=True)
+        assert 2 == len(response.data['execucoes'])
+        assert set([exec2.subfuncao_id, exec3.subfuncao_id]) \
+            == set([ex['subfuncao_id'] for ex in response.data['execucoes']])
 
 
 class BaseTestCase(APITestCase):
@@ -654,6 +684,7 @@ class TestDownloadView(APITestCase):
         subfuncao = make(Subfuncao, id=1, desc="sub")
 
         make(Execucao,
+             orgao__id=SME_ORGAO_ID,
              subgrupo=subgrupo1,
              elemento__id=1,
              subelemento__id=1,
@@ -664,6 +695,7 @@ class TestDownloadView(APITestCase):
              orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
+             orgao__id=SME_ORGAO_ID,
              subgrupo=subgrupo2,
              elemento__id=1,
              subelemento__id=2,
@@ -674,6 +706,7 @@ class TestDownloadView(APITestCase):
              orcado_atualizado=1,
              _quantity=2)
         make(Execucao,
+             orgao__id=SME_ORGAO_ID,
              subgrupo=subgrupo3,
              elemento__id=2,
              subelemento__id=3,

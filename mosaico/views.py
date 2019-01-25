@@ -48,9 +48,23 @@ class ExecucaoFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name='year', lookup_expr='year')
     fonte = filters.NumberFilter(field_name='fonte_grupo_id')
     grupo_id = filters.CharFilter(method='filter_grupo')
+    minimo_legal = filters.BooleanFilter(method='filter_minimo_legal')
+
+    def filter_queryset(self, queryset):
+        if self.form.cleaned_data['minimo_legal'] is None:
+            self.form.cleaned_data['minimo_legal'] = False
+
+        return super().filter_queryset(queryset)
 
     def filter_grupo(self, queryset, name, value):
         qs = queryset.filter(subgrupo__grupo_id=int(value))
+        return qs
+
+    def filter_minimo_legal(self, queryset, name, value):
+        if value:
+            qs = queryset.filter(is_minimo_legal=True)
+        else:
+            qs = queryset.filter(orgao_id=SME_ORGAO_ID, is_minimo_legal=False)
         return qs
 
     class Meta:
@@ -82,8 +96,8 @@ class BaseListView(generics.ListAPIView):
     template_name = 'mosaico/base.html'
 
     def filter_queryset(self, queryset):
+        # TODO: do the same thing in geologia
         queryset = super().filter_queryset(queryset)
-        queryset = queryset.filter(orgao__id=SME_ORGAO_ID)
         self.filters = self.request.query_params.dict()
         year = self.request.query_params.get('year')
         if year:
@@ -388,12 +402,14 @@ class DownloadView(generics.ListAPIView):
     def _get_distinct_field_name(self):
         return DISTINCT_FIELD_BY_SECTION[self.section]
 
+
 class SobreView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mosaico/sobre.html'
 
     def get(self, request, format=None):
         return Response()
+
 
 class MetodologiaView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -402,12 +418,14 @@ class MetodologiaView(generics.ListAPIView):
     def get(self, request, format=None):
         return Response()
 
+
 class DeflacionamentoView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mosaico/deflacionamento.html'
 
     def get(self, request, format=None):
         return Response()
+
 
 class TutorialView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
