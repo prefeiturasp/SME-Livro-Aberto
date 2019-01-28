@@ -51,7 +51,7 @@ window.addEventListener('load', function(){
         .attr('class', 'axis axis--y')
         .call(d3.axisLeft(y)
                 .tickSize(-parentWidth)
-                .tickFormat(currency)
+                .tickFormat(shortCurrency)
                 .tickValues(yTicks))
         .selectAll('text').attr('dy', '-0.4em')
                            .attr('x', '0');
@@ -84,7 +84,6 @@ window.addEventListener('load', function(){
                 return `Ano: ${year(d)}\nValor: ${currency(serie(d))}`;
             })
     });
-
 
     let legend = container.append('ul')
             .attr('class', 'legend')

@@ -29,7 +29,7 @@
 
   <div id="navbar" class="navbar">
     <div class="navbar-wrapper">
-      <a href="http://patiodigital.prefeitura.sp.gov.br/">
+      <a href="http://patiodigital.prefeitura.sp.gov.br/livroaberto/" target="_blank"
         <img src="{% static 'img/logo_patiodigital_fundoescuro.png' %}" alt="Pátio Digital" />
       </a>
       <a href="#"><img src="{% static 'img/logo_livroaberto.png' %}" alt="Livro Aberto" /></a>
@@ -48,16 +48,6 @@
   <header>
     <div class="wrapper">
       {%block header %}{% endblock %}
-      <nav>
-          <ul>
-              <li>
-                  {%block about %}{% endblock %}
-              </li>
-              <li>
-                  {%block metodology %}{% endblock %}
-              </li>
-          </ul>
-      </nav>
     </div>
   </header>
   {%block sections %}{% endblock %}
@@ -69,17 +59,17 @@
       <nav>
         <ul>
           <li>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.facebook.com/EducaPrefSP" target="_blank">
+            <a href="{%block fb_link %}#{% endblock %}" target="_blank">
               <svg class="icon">
                 <use xlink:href="{% static 'img/icon-facebook.svg' %}#icon-facebook"></use>
               </svg>
             </a>
           </li>
           <li>
-            <a href="https://twitter.com/educaprefsp" target="_blank">
-              <svg class="icon">
+            <a href="{%block tw_link %}#{% endblock %}" data-size="large" target="_blank">
+                <svg class="icon">
                 <use xlink:href="{% static 'img/icon-twitter.svg' %}#icon-twitter"></use>
-              </svg>
+                </svg>
             </a>
           </li>
           <li>
