@@ -22,7 +22,6 @@ from budget_execution.models import (
     Grupo,
     Subgrupo,
     Subelemento,
-    MinimoLegalExecucao,
     MinimoLegal,
 )
 
@@ -509,85 +508,3 @@ class TestMinimoLegalManagerCreateOrUpdate:
         assert "projeto desc" == execs[0].projeto_desc
         assert 250 == execs[0].orcado_atualizado
         assert 125 == execs[0].empenhado_liquido
-
-
-@pytest.mark.django_db
-class TestMinimoLegalExecucaoManagerCreateOrUpdate:
-
-    def test_creates_execucao(self):
-        MinimoLegalExecucao.objects.create_or_update(
-            year=2018, projeto_id=1111, projeto_desc="projeto desc",
-            orcado_atualizado=200, empenhado_liquido=100)
-
-        projetos = ProjetoAtividade.objects.all()
-        projeto = projetos.first()
-        assert 1 == len(projetos)
-        assert 1111 == projeto.id
-        assert "projeto desc" == projeto.desc
-
-        execs = MinimoLegalExecucao.objects.all()
-        assert 1 == len(execs)
-        assert date(2018, 1, 1) == execs[0].year
-        assert projeto == execs[0].projeto
-        assert 200 == execs[0].orcado_atualizado
-        assert 100 == execs[0].empenhado_liquido
-
-    def test_updates_existing_execucao(self):
-        projeto = mommy.make(ProjetoAtividade, id=1111, desc="projeto desc")
-        mommy.make(MinimoLegalExecucao, year=date(2018, 1, 1), projeto=projeto,
-                   orcado_atualizado=200, empenhado_liquido=100)
-
-        MinimoLegalExecucao.objects.create_or_update(
-            year=2018, projeto_id=1111, projeto_desc="projeto desc",
-            orcado_atualizado=50, empenhado_liquido=25)
-
-        projetos = ProjetoAtividade.objects.all()
-        projeto = projetos.first()
-        assert 1 == len(projetos)
-        assert 1111 == projeto.id
-        assert "projeto desc" == projeto.desc
-
-        execs = MinimoLegalExecucao.objects.all()
-        assert 1 == len(execs)
-        assert date(2018, 1, 1) == execs[0].year
-        assert projeto == execs[0].projeto
-        assert 250 == execs[0].orcado_atualizado
-        assert 125 == execs[0].empenhado_liquido
-
-
-@pytest.mark.django_db
-class TestMinimoLegalPopulateFksFromOrcamento:
-
-    def test_populates_fks(self):
-        projeto = mommy.make(ProjetoAtividade)
-        projeto2 = mommy.make(ProjetoAtividade)
-
-        sme_exec = mommy.make(Execucao, projeto=projeto, orcado_atualizado=444,
-                              empenhado_liquido=555, __fill_optional=True)
-        ml_exec = mommy.make(MinimoLegalExecucao, projeto=projeto, orgao=None,
-                             subfuncao=None, programa=None,
-                             orcado_atualizado=100, empenhado_liquido=200)
-
-        sme_exec2 = mommy.make(Execucao, projeto=projeto2, orcado_atualizado=33,
-                               empenhado_liquido=66, __fill_optional=True)
-        ml_exec2 = mommy.make(MinimoLegalExecucao, projeto=projeto2, orgao=None,
-                              subfuncao=None, programa=None,
-                              orcado_atualizado=10, empenhado_liquido=20)
-
-        MinimoLegalExecucao.objects.populate_fks_from_sme_execucao()
-
-        ml_exec.refresh_from_db()
-
-        assert ml_exec.orgao_id == sme_exec.orgao_id
-        assert ml_exec.subfuncao_id == sme_exec.subfuncao_id
-        assert ml_exec.programa_id == sme_exec.programa_id
-        assert ml_exec.orcado_atualizado == 100
-        assert ml_exec.empenhado_liquido == 200
-
-        ml_exec2.refresh_from_db()
-
-        assert ml_exec2.orgao_id == sme_exec2.orgao_id
-        assert ml_exec2.subfuncao_id == sme_exec2.subfuncao_id
-        assert ml_exec2.programa_id == sme_exec2.programa_id
-        assert ml_exec2.orcado_atualizado == 10
-        assert ml_exec2.empenhado_liquido == 20
