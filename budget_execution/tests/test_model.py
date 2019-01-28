@@ -22,6 +22,7 @@ from budget_execution.models import (
     Grupo,
     Subgrupo,
     Subelemento,
+    MinimoLegal,
 )
 
 
@@ -383,6 +384,47 @@ class TestExecucaoManagerUpdateByEmpenho:
 
 
 @pytest.mark.django_db
+class TestExecucaoManagerCreateByMinimoLegal:
+
+    def test_updates_execucao(self):
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_projeto_atividade=1111,
+            execucao=None, _fill_optional=True)
+
+        ml = mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                        projeto_desc="projeto desc", orcado_atualizado=55,
+                        empenhado_liquido=22)
+
+        Execucao.objects.create_by_minimo_legal(ml)
+
+        execucoes = Execucao.objects.all()
+        assert 1 == len(execucoes)
+
+        orcamento.refresh_from_db()
+        execucao = execucoes[0]
+        assert execucao.projeto.id == 1111
+        assert execucao.projeto.desc == "projeto desc"
+        assert execucao.orcado_atualizado == 55
+        assert execucao.empenhado_liquido == 22
+        assert execucao.orgao.id == orcamento.cd_orgao
+        assert execucao.subfuncao.id == orcamento.cd_subfuncao
+        assert execucao.programa.id == orcamento.cd_programa
+        assert execucao.is_minimo_legal
+
+        assert orcamento.execucao == execucao
+
+    def test_do_nothing_if_there_is_no_orcamento(self):
+        ml = mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                        projeto_desc="projeto desc", orcado_atualizado=55,
+                        empenhado_liquido=22)
+
+        result = Execucao.objects.create_by_minimo_legal(ml)
+        assert not result
+        assert 0 == Execucao.objects.count()
+
+
+
+@pytest.mark.django_db
 class TestExecucaoModel:
 
     def test_indexer(self):
@@ -442,3 +484,37 @@ class TestEmpenhoModel:
         )
 
         assert '2018.16.4364.3.1.90.11.0.1' == empenho.indexer
+
+
+@pytest.mark.django_db
+class TestMinimoLegalManagerCreateOrUpdate:
+
+    def test_creates_execucao(self):
+        MinimoLegal.objects.create_or_update(
+            year=2018, projeto_id=1111, projeto_desc="projeto desc",
+            orcado_atualizado=200, empenhado_liquido=100)
+
+        execs = MinimoLegal.objects.all()
+        assert 1 == len(execs)
+        assert date(2018, 1, 1) == execs[0].year
+        assert 1111 == execs[0].projeto_id
+        assert "projeto desc" == execs[0].projeto_desc
+        assert 200 == execs[0].orcado_atualizado
+        assert 100 == execs[0].empenhado_liquido
+
+    def test_updates_existing_execucao(self):
+        mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                   projeto_desc="projeto desc", orcado_atualizado=200,
+                   empenhado_liquido=100)
+
+        MinimoLegal.objects.create_or_update(
+            year=2018, projeto_id=1111, projeto_desc="projeto desc",
+            orcado_atualizado=50, empenhado_liquido=25)
+
+        execs = MinimoLegal.objects.all()
+        assert 1 == len(execs)
+        assert date(2018, 1, 1) == execs[0].year
+        assert 1111 == execs[0].projeto_id
+        assert "projeto desc" == execs[0].projeto_desc
+        assert 250 == execs[0].orcado_atualizado
+        assert 125 == execs[0].empenhado_liquido

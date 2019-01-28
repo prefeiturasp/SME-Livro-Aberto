@@ -6,5 +6,7 @@ def run():
     print("Orcamento imported")
     services.import_empenhos()
     print("Empenhos imported")
+    services.import_minimo_legal()
+    print("Minimo Legal imported")
     services.apply_fromto()
     print("From to applied")

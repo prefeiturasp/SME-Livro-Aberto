@@ -3,6 +3,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework_csv.renderers import CSVRenderer
 
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import Execucao
 from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
 
@@ -10,7 +11,8 @@ from geologia.serializers import GeologiaSerializer, GeologiaDownloadSerializer
 class HomeView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     template_name = 'geologia/base.html'
-    queryset = Execucao.objects.filter(subgrupo__isnull=False)
+    queryset = Execucao.objects.filter(subgrupo__isnull=False,
+                                       orgao__id=SME_ORGAO_ID)
     serializer_class = GeologiaSerializer
 
     def list(self, request):
@@ -19,9 +21,11 @@ class HomeView(generics.ListAPIView):
         serializer = self.get_serializer(qs, subfuncao_id=subfuncao_id)
         return Response(serializer.data)
 
+
 class DownloadView(generics.ListAPIView):
     renderer_classes = [CSVRenderer]
-    queryset = Execucao.objects.filter(subgrupo__isnull=False)
+    queryset = Execucao.objects.filter(subgrupo__isnull=False,
+                                       orgao__id=SME_ORGAO_ID)
     serializer_class = GeologiaDownloadSerializer
 
     def list(self, request, *args, **kwargs):

@@ -123,17 +123,13 @@ class TestTimeseriesSerializer:
 class BaseTestCase:
 
     def get_serializer(self, queryset):
-        query_params = {'year': 2018, 'fonte': 1}
 
         factory = RequestFactory()
-        request = factory.get(self.base_url,
-                              data=query_params)
+        request = factory.get(self.base_url)
         serializer = self.serializer_class
-        filters = query_params
 
         return serializer(queryset, many=True,
-                          context={'request': request,
-                                   'filters': filters})
+                          context={'request': request})
 
     def assert_get_url(self, execucoes, serializer):
         item = serializer.data[0]
@@ -164,23 +160,6 @@ class TestBaseExecucaoSerializer(BaseTestCase):
 
     @pytest.fixture
     def execucoes(self):
-        # not expected
-        mommy.make(
-            Execucao,
-            subgrupo__grupo__id=2,
-            fonte_grupo__id=1,
-            year=date(2018, 1, 1))
-        mommy.make(
-            Execucao,
-            subgrupo__grupo__id=1,
-            fonte_grupo__id=2,
-            year=date(2018, 1, 1))
-        mommy.make(
-            Execucao,
-            subgrupo__grupo__id=1,
-            fonte_grupo__id=1,
-            year=date(2017, 1, 1))
-
         return mommy.make(
             Execucao,
             subgrupo__grupo__id=1,
@@ -228,9 +207,6 @@ class TestBaseExecucaoSerializer(BaseTestCase):
         data = self.get_serializer(qs).data
         assert 0 == data[0]['percentual_empenhado']
 
-    def test_query_params(self, execucoes, serializer):
-        assert '?year=2018&fonte=1' == serializer.child._query_params
-
     def test_serializers_are_subclasses(self):
         assert issubclass(GrupoSerializer, BaseExecucaoSerializer)
         assert issubclass(SubgrupoSerializer, BaseExecucaoSerializer)
@@ -275,19 +251,6 @@ class TestSubgrupoSerializer(BaseTestCase):
     @pytest.fixture
     def execucoes(self):
         subgrupo = mommy.make(Subgrupo, id=1, grupo__id=1)
-        other_subgrupo = mommy.make(Subgrupo, id=2, grupo__id=1)
-
-        # not expected
-        mommy.make(
-            Execucao,
-            subgrupo=other_subgrupo,
-            fonte_grupo__id=1,
-            year=date(2018, 1, 1))
-        mommy.make(
-            Execucao,
-            subgrupo=subgrupo,
-            fonte_grupo__id=1,
-            year=date(2017, 1, 1))
 
         return mommy.make(
             Execucao,
