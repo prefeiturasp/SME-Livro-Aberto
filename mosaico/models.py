@@ -33,8 +33,7 @@ class MinimoLegalSpreadsheetModel(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.data_extracted:
-            # self.extract_data()
-            pass
+            self.extract_data()
 
     def extract_data(self):
         if self.data_extracted:
