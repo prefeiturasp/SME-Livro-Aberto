@@ -413,6 +413,16 @@ class TestExecucaoManagerCreateByMinimoLegal:
 
         assert orcamento.execucao == execucao
 
+    def test_do_nothing_if_there_is_no_orcamento(self):
+        ml = mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
+                        projeto_desc="projeto desc", orcado_atualizado=55,
+                        empenhado_liquido=22)
+
+        result = Execucao.objects.create_by_minimo_legal(ml)
+        assert not result
+        assert 0 == Execucao.objects.count()
+
+
 
 @pytest.mark.django_db
 class TestExecucaoModel:

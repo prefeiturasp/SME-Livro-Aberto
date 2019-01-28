@@ -102,9 +102,9 @@ class ExecucaoManager(models.Manager):
         return execucao
 
     def create_by_minimo_legal(self, minimo_legal):
-        orcamento = Orcamento.objects.get(
+        orcamento = Orcamento.objects.filter(
             cd_ano_execucao=minimo_legal.year.year,
-            cd_projeto_atividade=minimo_legal.projeto_id)
+            cd_projeto_atividade=minimo_legal.projeto_id).first()
 
         if not orcamento:
             return
