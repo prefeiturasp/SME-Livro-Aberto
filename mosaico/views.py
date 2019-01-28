@@ -8,6 +8,7 @@ from rest_framework_csv.renderers import CSVRenderer
 
 from django.urls import reverse
 
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import Execucao, FonteDeRecursoGrupo
 from mosaico.serializers import (
     ElementoSerializer,
@@ -47,9 +48,23 @@ class ExecucaoFilter(filters.FilterSet):
     year = filters.NumberFilter(field_name='year', lookup_expr='year')
     fonte = filters.NumberFilter(field_name='fonte_grupo_id')
     grupo_id = filters.CharFilter(method='filter_grupo')
+    minimo_legal = filters.BooleanFilter(method='filter_minimo_legal')
+
+    def filter_queryset(self, queryset):
+        if self.form.cleaned_data['minimo_legal'] is None:
+            self.form.cleaned_data['minimo_legal'] = False
+
+        return super().filter_queryset(queryset)
 
     def filter_grupo(self, queryset, name, value):
         qs = queryset.filter(subgrupo__grupo_id=int(value))
+        return qs
+
+    def filter_minimo_legal(self, queryset, name, value):
+        if value:
+            qs = queryset.filter(is_minimo_legal=True)
+        else:
+            qs = queryset.filter(orgao_id=SME_ORGAO_ID, is_minimo_legal=False)
         return qs
 
     class Meta:
@@ -91,11 +106,6 @@ class BaseListView(generics.ListAPIView):
             self.year = Execucao.objects.order_by('year').last().year.year
             self.filters['year'] = self.year
             return queryset.filter(year__year=self.year)
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['filters'] = self.filters
-        return context
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -166,10 +176,6 @@ class GruposListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False)
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subgrupo__grupo_id')
-
     def get_timeseries_queryset(self):
         return Execucao.objects.all()
 
@@ -189,10 +195,6 @@ class SubgruposListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         grupo_id = self.kwargs['grupo_id']
         return Execucao.objects.filter(subgrupo__grupo_id=grupo_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subgrupo')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -215,10 +217,6 @@ class ElementosListView(BaseListView, SimplesViewMixin):
     def get_queryset(self):
         subgrupo_id = self.kwargs['subgrupo_id']
         return Execucao.objects.filter(subgrupo_id=subgrupo_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('elemento')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -244,10 +242,6 @@ class SubelementosListView(BaseListView, SimplesViewMixin):
         elemento_id = self.kwargs['elemento_id']
         return Execucao.objects.filter(
             subgrupo_id=subgrupo_id, elemento_id=elemento_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subelemento')
 
     def create_breadcrumb(self, queryset):
         execucao = queryset[0]
@@ -276,10 +270,6 @@ class SubfuncoesListView(BaseListView, TecnicoViewMixin):
     def get_queryset(self):
         return Execucao.objects.all()
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('subfuncao')
-
     def create_breadcrumb(self, queryset):
         year = self.year
         execucao = queryset[0]
@@ -297,10 +287,6 @@ class ProgramasListView(BaseListView, TecnicoViewMixin):
     def get_queryset(self):
         subfuncao_id = self.kwargs['subfuncao_id']
         return Execucao.objects.filter(subfuncao_id=subfuncao_id)
-
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('programa')
 
     def create_breadcrumb(self, queryset):
         year = self.year
@@ -324,10 +310,6 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
         return Execucao.objects.filter(
             subfuncao_id=subfuncao_id, programa_id=programa_id)
 
-    def filter_queryset(self, qs):
-        qs = super().filter_queryset(qs)
-        return qs.distinct('projeto')
-
     def create_breadcrumb(self, queryset):
         year = self.year
         execucao = queryset[0]
@@ -350,11 +332,6 @@ class DownloadView(generics.ListAPIView):
     def get_serializer_class(self):
         return SERIALIZERS_BY_SECTION[self.section]
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['filters'] = self.request.query_params.dict()
-        return context
-
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False) \
             .order_by(self.distinct_field, 'year')
@@ -363,7 +340,7 @@ class DownloadView(generics.ListAPIView):
         qs = super().filter_queryset(qs)
         if self.section == 'subelementos':
             qs = qs.filter(subelemento__isnull=False)
-        return qs.distinct(self.distinct_field)
+        return qs
 
     def list(self, request, *args, **kwargs):
         self.section = self.kwargs['section']
@@ -386,12 +363,14 @@ class DownloadView(generics.ListAPIView):
     def _get_distinct_field_name(self):
         return DISTINCT_FIELD_BY_SECTION[self.section]
 
+
 class SobreView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mosaico/sobre.html'
 
     def get(self, request, format=None):
         return Response()
+
 
 class MetodologiaView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -400,12 +379,14 @@ class MetodologiaView(generics.ListAPIView):
     def get(self, request, format=None):
         return Response()
 
+
 class DeflacionamentoView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mosaico/deflacionamento.html'
 
     def get(self, request, format=None):
         return Response()
+
 
 class TutorialView(generics.ListAPIView):
     renderer_classes = [TemplateHTMLRenderer]

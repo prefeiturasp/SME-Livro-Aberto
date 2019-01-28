@@ -4,7 +4,7 @@ from functools import lru_cache
 from itertools import groupby
 from urllib.parse import urlencode
 
-from django.db.models import Sum
+from django.db.models import Manager, Sum
 from rest_framework import serializers
 
 from budget_execution.models import Execucao, FonteDeRecurso
@@ -41,6 +41,16 @@ class TimeseriesSerializer:
             }
 
         return ret
+
+
+class ExecucaoListSerializer(serializers.ListSerializer):
+
+    def to_representation(self, data):
+        iterable = data.distinct(self.child.Meta.distinct_field)
+
+        return [
+            self.child.to_representation(item) for item in iterable
+        ]
 
 
 class BaseExecucaoSerializer(serializers.ModelSerializer):
@@ -89,26 +99,6 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
             return '?{}'.format(urlencode(params))
         return ''
 
-    # TODO: find a way to use the original queryset used to instantiate
-    # the serializer (`self.instance`) to get the children execucoes.
-    # I have already tried, but had many problems dealing with the distinc()
-    # (tried to find a way to move it from the views to here) and the way
-    # ListSerializer works.
-    def _execucoes(self, obj):
-        execs = Execucao.objects.all()
-        filters = self.context.get('filters')
-
-        if not filters:
-            return execs
-
-        year = filters.get('year', None)
-        fonte = filters.get('fonte', None)
-        if year:
-            execs = execs.filter(year=date(int(year), 1, 1))
-        if fonte:
-            execs = execs.filter(fonte_grupo_id=fonte)
-        return execs
-
 
 # `Simples` visualization serializers
 
@@ -123,10 +113,12 @@ class GrupoSerializer(BaseExecucaoSerializer):
         fields = ('grupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
         next_level = 'subgrupos'
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'subgrupo__grupo'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(
             subgrupo__grupo_id=obj.subgrupo.grupo_id)
 
@@ -140,10 +132,12 @@ class SubgrupoSerializer(BaseExecucaoSerializer):
         fields = ('subgrupo_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
         next_level = 'elementos'
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'subgrupo'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(
             subgrupo_id=obj.subgrupo_id)
 
@@ -157,10 +151,12 @@ class ElementoSerializer(BaseExecucaoSerializer):
         fields = ('elemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
         next_level = 'subelementos'
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'elemento'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(
             subgrupo_id=obj.subgrupo_id,
             elemento_id=obj.elemento_id)
@@ -175,6 +171,8 @@ class SubelementoSerializer(ElementoSerializer):
         model = Execucao
         fields = ('subelemento_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'subelemento'
 
 
 # `Técnico` visualization serializers
@@ -188,10 +186,12 @@ class SubfuncaoSerializer(BaseExecucaoSerializer):
         fields = ('subfuncao_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
         next_level = 'programas'
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'subfuncao'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(subfuncao_id=obj.subfuncao_id)
 
 
@@ -204,10 +204,12 @@ class ProgramaSerializer(BaseExecucaoSerializer):
         fields = ('programa_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado', 'url')
         next_level = 'projetos'
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'programa'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(
             subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id)
@@ -221,10 +223,12 @@ class ProjetoAtividadeSerializer(BaseExecucaoSerializer):
         model = Execucao
         fields = ('projeto_id', 'nome', 'orcado_total',
                   'empenhado_total', 'percentual_empenhado')
+        list_serializer_class = ExecucaoListSerializer
+        distinct_field = 'projeto'
 
     @lru_cache(maxsize=10)
     def _execucoes(self, obj):
-        execs = super()._execucoes(obj)
+        execs = self.instance
         return execs.filter(
             subfuncao_id=obj.subfuncao_id,
             programa_id=obj.programa_id,
