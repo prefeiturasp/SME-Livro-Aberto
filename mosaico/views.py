@@ -96,7 +96,6 @@ class BaseListView(generics.ListAPIView):
     template_name = 'mosaico/base.html'
 
     def filter_queryset(self, queryset):
-        # TODO: do the same thing in geologia
         queryset = super().filter_queryset(queryset)
         self.filters = self.request.query_params.dict()
         year = self.request.query_params.get('year')
