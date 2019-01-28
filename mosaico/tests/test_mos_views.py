@@ -212,10 +212,9 @@ class BaseTestCase(APITestCase):
         factory = RequestFactory()
         request = factory.get(self.base_url, data=query_params)
         serializer = self.serializer_class
-        filters = query_params
 
         return serializer(execucoes, many=True,
-                          context={'request': request, 'filters': filters})
+                          context={'request': request})
 
 
 class TestGruposListView(BaseTestCase):

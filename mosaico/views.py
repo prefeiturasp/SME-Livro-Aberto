@@ -108,11 +108,6 @@ class BaseListView(generics.ListAPIView):
             self.filters['year'] = self.year
             return queryset.filter(year__year=self.year)
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['filters'] = self.filters
-        return context
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
@@ -337,11 +332,6 @@ class DownloadView(generics.ListAPIView):
 
     def get_serializer_class(self):
         return SERIALIZERS_BY_SECTION[self.section]
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['filters'] = self.request.query_params.dict()
-        return context
 
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False) \
