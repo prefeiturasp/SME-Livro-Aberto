@@ -18,11 +18,11 @@ def import_spreadsheet():
 
     for i, row in dataframe.iterrows():
         MinimoLegal.objects.create_or_update(
-            code=row['Código'],
-            year=date(row['Ano'], 1, 1),
-            desc=row['Descrição'],
-            dotacao=row['Dotação'],
-            despesa=row['Despesa'],
+            projeto_id=row['Código'],
+            year=row['Ano'],
+            projeto_desc=row['Descrição'],
+            orcado_atualizado=row['Dotação'],
+            empenhado_liquido=row['Despesa'],
         )
     print('Spreadsheet {} imported'.format(PATH))
 
