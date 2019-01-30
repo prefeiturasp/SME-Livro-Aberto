@@ -366,7 +366,7 @@ class Orcamento(models.Model):
     cd_elemento = models.BigIntegerField(blank=True, null=True)
     cd_fonte = models.BigIntegerField(blank=True, null=True)
     ds_fonte = models.TextField(blank=True, null=True)
-    vl_orcado_inicial = models.BigIntegerField(blank=True, null=True)
+    vl_orcado_inicial = models.FloatField(blank=True, null=True)
     vl_orcado_atualizado = models.FloatField(blank=True, null=True)
     vl_congelado = models.FloatField(blank=True, null=True)
     vl_orcado_disponivel = models.FloatField(blank=True, null=True)
@@ -441,7 +441,7 @@ class Empenho(models.Model):
     vl_empenho_liquido = models.FloatField(blank=True, null=True)
     vl_liquidado = models.FloatField(blank=True, null=True)
     vl_pago = models.FloatField(blank=True, null=True)
-    vl_pago_restos = models.BigIntegerField(blank=True, null=True)
+    vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # fk is filled when the routine that generates the Execucao objects
