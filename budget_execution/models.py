@@ -169,6 +169,11 @@ class ExecucaoManager(models.Manager):
                 elemento_id=info[3],
                 subelemento_id=info[4])
 
+    def get_date_updated(self):
+        dt_updated = self.get_queryset().order_by('-dt_updated') \
+            .first().dt_updated
+        return dt_updated.strftime('%d/%m/%Y')
+
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -195,6 +200,8 @@ class Execucao(models.Model):
     gnd_geologia = models.ForeignKey('GndGeologia', models.SET_NULL, null=True)
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(auto_now=True)
 
     objects = ExecucaoManager()
 
