@@ -127,6 +127,7 @@ class BaseListView(generics.ListAPIView):
             'execucoes': serializer.data,
             'timeseries': tseries_serializer.data,
             'tecnico': self.tecnico,
+            'minimo_legal': self.filters.get('minimo_legal') == 'True',
             'root_url': self.get_root_url(),
             'fontes_de_recurso': self.get_fonte_grupo_filters(),
             'download_full_csv_url': self.get_download_csv_url(),

@@ -43,9 +43,9 @@
           <label for="simple">Visão técnica</label>
         </div>
         <div class="form-item switch">
-          <input id="minimo_legal" type="checkbox" name="minimo_legal" value="True" {% if not tecnico %}disabled{% endif %}>
-          <label for="minimo_legal">SME</label>
+          <input id="minimo_legal" type="checkbox" name="minimo_legal" value="True" {% if not tecnico %}disabled{% endif %} {% if minimo_legal %}checked{% endif %}>
           <label for="minimo_legal">Mínimo legal (31%)</label>
+          <label for="minimo_legal">SME</label>
         </div>
         <div class="form-item">
             <select name="fonte">
