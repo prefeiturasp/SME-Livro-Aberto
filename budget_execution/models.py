@@ -195,6 +195,8 @@ class Execucao(models.Model):
     gnd_geologia = models.ForeignKey('GndGeologia', models.SET_NULL, null=True)
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(auto_now=True)
 
     objects = ExecucaoManager()
 
