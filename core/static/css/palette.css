@@ -61,8 +61,11 @@ form.query label{
   color: #80a684;
 }
 
+form.query input[type=checkbox]:disabled + label,
+form.query input[type=checkbox]:disabled + label + label,
 form.query input[type=checkbox]:not(:checked) + label,
 form.query input[type=checkbox]:checked + label + label,
+form.query input[type=radio]:disabled + label,
 form.query input[type=radio]:not(:checked) + label{
   color: #c6d7c8;
 }

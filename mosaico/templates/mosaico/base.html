@@ -42,11 +42,10 @@
           <label for="simple">Visão simplificada</label>
           <label for="simple">Visão técnica</label>
         </div>
-        <div class="form-item">
-          <input class="radio" type="radio" name="universe" value="">
-          <label>SME</label>
-          <input class="radio" type="radio" name="universe" value="">
-          <label title="Em breve...">Mínimo legal (31%)</label>
+        <div class="form-item switch">
+          <input id="minimo_legal" type="checkbox" name="minimo_legal" value="True" {% if not tecnico %}disabled{% endif %}>
+          <label for="minimo_legal">SME</label>
+          <label for="minimo_legal">Mínimo legal (31%)</label>
         </div>
         <div class="form-item">
             <select name="fonte">
