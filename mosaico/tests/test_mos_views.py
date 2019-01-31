@@ -193,11 +193,13 @@ class TestMinimoLegalFilter(APITestCase):
              is_minimo_legal=False, subfuncao__id=4)
 
         response = self.get(minimo_legal=False)
+        assert not response.data['minimo_legal']
         assert 1 == len(response.data['execucoes'])
         assert exec1.subfuncao_id \
             == response.data['execucoes'][0]['subfuncao_id']
 
         response = self.get(minimo_legal=True)
+        assert response.data['minimo_legal']
         assert 2 == len(response.data['execucoes'])
         assert set([exec2.subfuncao_id, exec3.subfuncao_id]) \
             == set([ex['subfuncao_id'] for ex in response.data['execucoes']])

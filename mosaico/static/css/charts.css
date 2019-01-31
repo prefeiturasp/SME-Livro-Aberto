@@ -13,7 +13,11 @@
 .treemap > li{
   position: absolute;
   overflow: hidden;
+}
+.treemap.empty{
+  padding: 1em;
   box-sizing: border-box;
+  margin-top: 4em;
 }
 .treemap > li div:first-child{
   padding-top: 1em;
