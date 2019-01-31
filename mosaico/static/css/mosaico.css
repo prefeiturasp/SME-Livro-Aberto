@@ -5,6 +5,10 @@ header{
   background-position: center;
 }
 
+header .wrapper p {
+  padding-bottom: 6rem;
+}
+
 /* About Section */
 .wrapper.container {
   display: flex;
