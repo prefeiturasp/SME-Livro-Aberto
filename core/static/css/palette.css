@@ -61,12 +61,38 @@ form.query label{
   color: #80a684;
 }
 
+form.query input[type=checkbox]:disabled + label,
+form.query input[type=checkbox]:disabled + label + label,
 form.query input[type=checkbox]:not(:checked) + label,
 form.query input[type=checkbox]:checked + label + label,
+form.query input[type=radio]:disabled + label,
 form.query input[type=radio]:not(:checked) + label{
   color: #c6d7c8;
 }
 
 tbody tr:nth-child(2n) > *{
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.quanti-0, .quanti-20, .quanti-40, .quanti-60, .quanti-80{
+  color: #fff;
+}
+.quanti-0{
+  background-color: #e94363;
+}
+
+.quanti-20{
+  background-color: #f09564;
+}
+
+.quanti-40{
+  background-color: #edb93b;
+}
+
+.quanti-60{
+  background-color: #66d2b4;
+}
+
+.quanti-80{
+  background-color: #277fcd;
 }
