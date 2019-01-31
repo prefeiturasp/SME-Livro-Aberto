@@ -22,10 +22,10 @@ window.addEventListener('DOMContentLoaded', function(){
 
     function setToolTip(node) {
         let tooltipDiv = document.querySelector("#tooltip");
-        let width = window.innerWidth || 
-                    document.documentElement.clientWidth || 
+        let width = window.innerWidth ||
+                    document.documentElement.clientWidth ||
                     document.body.clientWidth;
-        
+
         width /= 2;
 
         node.data.addEventListener("mousemove", event => {
