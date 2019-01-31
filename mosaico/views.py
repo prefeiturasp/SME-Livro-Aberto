@@ -120,6 +120,8 @@ class BaseListView(generics.ListAPIView):
         tseries_qs = self.get_timeseries_queryset().order_by('year')
         tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
 
+        dt_updated = Execucao.objects.get_date_updated()
+
         return Response({
             'deflate': deflate,
             'year': self.year,
@@ -133,6 +135,7 @@ class BaseListView(generics.ListAPIView):
             'download_full_csv_url': self.get_download_csv_url(),
             'download_filtered_csv_url': self.get_download_csv_url(
                 filtered=True),
+            'dt_updated': dt_updated,
         })
 
     def get_fonte_grupo_filters(self):

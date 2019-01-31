@@ -3,6 +3,7 @@ import pytest
 from datetime import date
 from unittest.mock import patch
 
+from freezegun import freeze_time
 from model_mommy.mommy import make
 from rest_framework.test import APITestCase
 
@@ -173,6 +174,17 @@ class TestBaseListView(APITestCase):
         assert set(execucoes_qs) == set(mock_serializer.call_args[0][0])
         assert {"deflate": True} == mock_serializer.call_args[1]
         assert response.context.get('deflate')
+
+    def test_returns_date_updated(self):
+        with freeze_time('2019-01-01'):
+            make('Execucao', subgrupo__id=1, orgao__id=SME_ORGAO_ID)
+
+        # not expected
+        with freeze_time('2000-01-01'):
+            make('Execucao', subgrupo__id=1, orgao__id=SME_ORGAO_ID)
+
+        response = self.get()
+        assert '01/01/2019' == response.data['dt_updated']
 
 
 class TestMinimoLegalFilter(APITestCase):
