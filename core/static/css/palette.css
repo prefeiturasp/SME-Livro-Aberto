@@ -73,3 +73,26 @@ form.query input[type=radio]:not(:checked) + label{
 tbody tr:nth-child(2n) > *{
   background-color: rgba(255, 255, 255, 0.2);
 }
+
+.quanti-0, .quanti-20, .quanti-40, .quanti-60, .quanti-80{
+  color: #fff;
+}
+.quanti-0{
+  background-color: #e94363;
+}
+
+.quanti-20{
+  background-color: #f09564;
+}
+
+.quanti-40{
+  background-color: #edb93b;
+}
+
+.quanti-60{
+  background-color: #66d2b4;
+}
+
+.quanti-80{
+  background-color: #277fcd;
+}

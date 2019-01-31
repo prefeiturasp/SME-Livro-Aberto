@@ -2,11 +2,11 @@ window.addEventListener('DOMContentLoaded', function(){
     let px = v => v + 'px';
     let value = d => d.dataset.value;
 
-    var color = d3.scaleQuantize()
+    var quantize = d3.scaleQuantize()
         .domain([0, 1])
-        .range(['#e94363', '#f09564', '#edb93b', '#66d2b4', '#277fcd']);
+        .range(['quanti-0', 'quanti-20', 'quanti-40', 'quanti-60', 'quanti-80']);
 
-    function each(f, iterable){
+    function each(f, iterable=[]){
         for(let i = 0; i < iterable.length; i++){
             f(iterable[i]);
         }
@@ -17,8 +17,7 @@ window.addEventListener('DOMContentLoaded', function(){
         node.data.style.height = px(node.y1 - node.y0)
         node.data.style.left = px(node.x0);
         node.data.style.top = px(node.y0);
-        node.data.style.backgroundColor = color(node.data.dataset.execution);
-        node.data.style.color = '#fff';
+        node.data.className = quantize(node.data.dataset.execution);
     }
 
     function setToolTip(node) {

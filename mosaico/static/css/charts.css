@@ -15,15 +15,15 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-.treemap > li div:first-child{
+.treemap div:first-child{
   padding-top: 1em;
 }
-.treemap > li div{
+.treemap div{
   padding-left: 1em;
   white-space: nowrap;
   text-overflow: clip;
 }
-.treemap > li .name{
+.treemap .name{
   font-weight: 700;
   text-shadow: 0 0 2em #000;
 }

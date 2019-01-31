@@ -66,7 +66,7 @@
       <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
-      </nav>
+      {% if execucoes %}
       <ol class="treemap">
           {% for execucao in execucoes %}
           <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
@@ -78,6 +78,9 @@
               </li>
           {% endfor %}
       </ol>
+      {% else%}
+      <div class="empty treemap quanti-80">Não há dados de orçamento para os filtros selecionados.</div>
+      {% endif %}
       <div id="tooltip"></div>
       <footer>
           <div class="legend">
