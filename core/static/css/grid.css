@@ -27,6 +27,12 @@ header h1 + p{
   margin: 1rem 0;
 }
 
+header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 header nav li{
   display: inline-block;
   list-style: none;
