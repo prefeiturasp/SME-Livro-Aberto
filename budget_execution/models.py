@@ -201,7 +201,7 @@ class Execucao(models.Model):
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
     dt_created = models.DateTimeField(auto_now_add=True)
-    dt_updated = models.DateTimeField(auto_now=True)
+    dt_updated = models.DateTimeField(db_index=True, auto_now=True)
 
     objects = ExecucaoManager()
 
@@ -209,6 +209,9 @@ class Execucao(models.Model):
         unique_together = (
             'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
             'elemento', 'fonte', 'subelemento')
+        index_together = [
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte']
 
     @property
     def indexer(self):
@@ -396,6 +399,7 @@ class Orcamento(models.Model):
 
     class Meta:
         db_table = 'orcamento'
+        index_together = ['cd_ano_execucao', 'cd_projeto_atividade']
 
     @property
     def indexer(self):
