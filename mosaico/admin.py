@@ -1,10 +1,12 @@
 from django.contrib import admin
 
+from .forms import MinimoLegalSpreadsheetAdminForm
 from .models import MinimoLegalSpreadsheetModel
 
 
 @admin.register(MinimoLegalSpreadsheetModel)
 class MinimoLegalSpreadsheetAdmin(admin.ModelAdmin):
+    form = MinimoLegalSpreadsheetAdminForm
 
     def get_changeform_initial_data(self, request):
         return {

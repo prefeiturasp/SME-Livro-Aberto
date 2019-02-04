@@ -25,7 +25,7 @@ class TestMinimoLegalSpreadsheetModel:
             ssheet_obj.spreadsheet.delete()
 
     def test_extract_data(self, file_fixture):
-        ssheet_obj = mommy.make(
+        mommy.make(
             MinimoLegalSpreadsheetModel,
             year=2018,
             spreadsheet=File(file_fixture),
@@ -33,8 +33,7 @@ class TestMinimoLegalSpreadsheetModel:
             limit_25percent="25 PERCENT TEST FINISH",
             title_6percent="6 PERCENT TEST BEGIN",
             limit_6percent="6 PERCENT TEST FINISH",
-        )
-        ssheet_obj.extract_data()
+        )  # extract_data is called on save
 
         mls = MinimoLegal.objects.all().order_by('id')
         assert 5 == len(mls)
