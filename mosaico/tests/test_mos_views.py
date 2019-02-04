@@ -176,12 +176,13 @@ class TestBaseListView(APITestCase):
         assert response.context.get('deflate')
 
     def test_returns_date_updated(self):
+        subgrupo = make(Subgrupo, grupo__id=1)
         with freeze_time('2019-01-01'):
-            make('Execucao', subgrupo__id=1, orgao__id=SME_ORGAO_ID)
+            make('Execucao', subgrupo=subgrupo, orgao__id=SME_ORGAO_ID)
 
         # not expected
         with freeze_time('2000-01-01'):
-            make('Execucao', subgrupo__id=1, orgao__id=SME_ORGAO_ID)
+            make('Execucao', subgrupo=subgrupo, orgao__id=SME_ORGAO_ID)
 
         response = self.get()
         assert '01/01/2019' == response.data['dt_updated']

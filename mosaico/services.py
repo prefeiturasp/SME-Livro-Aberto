@@ -28,7 +28,7 @@ def extract_minimo_legal_from_spreadsheet(spreadsheet_obj):
 
     df = pd.read_excel(file_path,
                        sheet_name=0,
-                       usecols='F,H,I',
+                       usecols='D,F,G',
                        names=['Descrição', 'Dotação', 'Despesa']).fillna('')
     dfs = []
     for title, end_quote in title_limit_tuples:
