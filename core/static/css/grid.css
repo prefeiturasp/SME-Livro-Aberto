@@ -16,6 +16,10 @@ header{
   padding: 4em 1em 2em;
 }
 
+header .wrapper p {
+  padding-bottom: 6rem;
+}
+
 .hidden-header {
   visibility: hidden;
 }
@@ -91,7 +95,6 @@ fieldset{
 .form-item:last-child{
   margin-right: 0em;
 }
-
 
 .breadcrumb {
   display: flex;
@@ -182,7 +185,6 @@ tr > *:first-child::before{
 .chart svg{
   width: 100%;
 }
-
 
 /* Extra small devices (portrait phones, less than 576px) */
 /* No media query since this is the default in Bootstrap */
@@ -460,3 +462,5 @@ tr > *:first-child::before{
 .table__about td {
   text-align: center;
 }
+
+
