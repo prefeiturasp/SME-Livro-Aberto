@@ -213,3 +213,244 @@ tr > *:first-child::before{
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
 }
+
+/* Inner Pages */
+.wrapper.container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  width: 300px;
+  align-self: flex-start;
+}
+
+.sidebar .card {
+  padding: 0 6% 6%;
+  overflow: hidden;
+}
+
+.sidebar .voltar {
+  display: block;
+  padding: 0 0 0 25px;
+  margin: 28px 0 10px 5px;
+  background-image: url(../img/voltar.png);
+  background-repeat: no-repeat;
+  background-position: top 3px left;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.sidebar h1 {
+  margin: 0 0 30px 0;
+}
+
+.card.sobre {
+  background: #80A684;
+}
+
+.sidebar ul {
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  margin: 30px 0;
+  border-radius: 5px;
+  border: 1px solid #80A684;
+}
+
+.sidebar ul li {
+  width: 100%;
+  display: flex;
+}
+
+.sidebar ul li.active {
+  background: #80A684;
+}
+
+.sidebar ul li a {
+  display: block;
+  width: 100%;
+  padding: 10px;
+}
+
+.main {
+  background: #fff;
+}
+
+.main h2 {
+  margin: 0 0 20px;
+  position: relative;
+}
+
+.main h2:before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 62px;
+  height: 1px;
+}
+
+.verde h2:before {
+  background: #80A684;
+}
+
+.verde img {
+  max-width: 100%;
+}
+
+.main p {
+  margin: 0 0 20px;
+}
+
+.main ul {
+  margin-left: 5%;
+  padding-inline-start: 2em;
+}
+
+.main ul li {
+  max-width: 385px;
+  padding: .5em 1em;
+}
+
+.main ul li ul {
+  margin: 20px 0 0 0;
+  align-items: center;
+}
+
+.list--border {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
+.list--border li {
+  border: solid 1px #80A684;
+}
+
+.list--inline {
+  display: block;
+  list-style: none;
+  padding-left: 0 !important;
+  width: 100%;
+}
+
+.list--inline li  {
+  display: inline-block;
+  padding: 5px !important;
+  color: #80A684;
+}
+
+.main ul li ul li {
+  border: none;
+  padding: 0;
+  max-width: 80px;
+}
+
+.verde li,
+.verde blockquote {
+  border-color: #80A684;
+}
+
+.main h3 {
+  margin: 0 0 10px 0;
+}
+
+.main ul li h3 {
+  margin: 0;
+}
+
+.main .txt {
+  padding: 5% 5% 0;
+}
+
+@media (min-width: 768px) {
+  .wrapper.container {
+    flex-wrap: nowrap;
+  }
+  .main {
+    max-width: 70%;
+  }
+
+  .main ul {
+    flex-wrap: wrap;
+  }
+  .main ul.ciclo li {
+    padding: 3% 4%;
+    width: 100%;
+  }
+
+  .list--border {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    list-style: none;
+    flex-wrap: nowrap !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .list--border li {
+    border: solid 1px #80A684;
+  }
+  
+  .list--inline {
+    flex-wrap: nowrap;
+    display: flex;
+    list-style: none;
+    padding-left: 0 !important;
+    width: 100%;
+  }
+  
+  .list--inline li  {
+    padding: 5px !important;
+    color: #80A684;
+  }
+}
+
+.main ul.ciclo li {
+  border: none;
+  text-align: center;
+}
+
+.ciclo--text-left li {
+  text-align: left !important;
+}
+
+.main blockquote {
+  border-width: 1px;
+  border-style: solid;
+  padding: 3%;
+  margin: 30px 0;
+}
+
+.main blockquote h5 {
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.table__about {
+  width: auto;
+  margin: 0 auto;
+}
+
+.table__about th {
+  background: #80A684;
+  color: #fff;
+  border: solid 1px #80A684;
+}
+
+.table__about td {
+  border: solid 1px #80A684;
+  border-top: none;
+}
+
+.table__about th,
+.table__about td {
+  text-align: center;
+}
