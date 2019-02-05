@@ -1,0 +1,2 @@
+class TextNotFoundInSpreadsheet(Exception):
+    pass

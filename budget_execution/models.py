@@ -101,6 +101,28 @@ class ExecucaoManager(models.Manager):
 
         return execucao
 
+    def create_by_minimo_legal(self, minimo_legal):
+        orcamento = Orcamento.objects.filter(
+            cd_ano_execucao=minimo_legal.year.year,
+            cd_projeto_atividade=minimo_legal.projeto_id).first()
+
+        if not orcamento:
+            return
+
+        execucao = self.create_by_orcamento(orcamento)
+        execucao.orcado_atualizado = minimo_legal.orcado_atualizado
+        execucao.empenhado_liquido = minimo_legal.empenhado_liquido
+        execucao.is_minimo_legal = True
+        execucao.save()
+
+        execucao.projeto.desc = minimo_legal.projeto_desc
+        execucao.projeto.save()
+
+        orcamento.execucao = execucao
+        orcamento.save()
+
+        return execucao
+
     def get_by_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)
@@ -147,6 +169,11 @@ class ExecucaoManager(models.Manager):
                 elemento_id=info[3],
                 subelemento_id=info[4])
 
+    def get_date_updated(self):
+        dt_updated = self.get_queryset().order_by('-dt_updated') \
+            .first().dt_updated
+        return dt_updated.strftime('%d/%m/%Y')
+
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -163,6 +190,9 @@ class Execucao(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+    # used to differ execucoes from SME and execucoes from Minimo Legal
+    is_minimo_legal = models.BooleanField(default=False)
+
     # FROM-TO Fields
     subgrupo = models.ForeignKey('Subgrupo', models.SET_NULL, null=True)
     fonte_grupo = models.ForeignKey('FonteDeRecursoGrupo', models.SET_NULL,
@@ -170,6 +200,8 @@ class Execucao(models.Model):
     gnd_geologia = models.ForeignKey('GndGeologia', models.SET_NULL, null=True)
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(db_index=True, auto_now=True)
 
     objects = ExecucaoManager()
 
@@ -177,6 +209,9 @@ class Execucao(models.Model):
         unique_together = (
             'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
             'elemento', 'fonte', 'subelemento')
+        index_together = [
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte']
 
     @property
     def indexer(self):
@@ -341,7 +376,7 @@ class Orcamento(models.Model):
     cd_elemento = models.BigIntegerField(blank=True, null=True)
     cd_fonte = models.BigIntegerField(blank=True, null=True)
     ds_fonte = models.TextField(blank=True, null=True)
-    vl_orcado_inicial = models.BigIntegerField(blank=True, null=True)
+    vl_orcado_inicial = models.FloatField(blank=True, null=True)
     vl_orcado_atualizado = models.FloatField(blank=True, null=True)
     vl_congelado = models.FloatField(blank=True, null=True)
     vl_orcado_disponivel = models.FloatField(blank=True, null=True)
@@ -364,6 +399,7 @@ class Orcamento(models.Model):
 
     class Meta:
         db_table = 'orcamento'
+        index_together = ['cd_ano_execucao', 'cd_projeto_atividade']
 
     @property
     def indexer(self):
@@ -416,7 +452,7 @@ class Empenho(models.Model):
     vl_empenho_liquido = models.FloatField(blank=True, null=True)
     vl_liquidado = models.FloatField(blank=True, null=True)
     vl_pago = models.FloatField(blank=True, null=True)
-    vl_pago_restos = models.BigIntegerField(blank=True, null=True)
+    vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # fk is filled when the routine that generates the Execucao objects
@@ -434,3 +470,39 @@ class Empenho(models.Model):
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
             f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
+
+
+class MinimoLegalManager(models.Manager):
+
+    def create_or_update(self, year, projeto_id, projeto_desc,
+                         orcado_atualizado, empenhado_liquido):
+        ml, created = self.get_or_create(
+            projeto_id=projeto_id,
+            year=date(year, 1, 1),
+            defaults={
+                'projeto_desc': projeto_desc,
+                'orcado_atualizado': orcado_atualizado,
+                'empenhado_liquido': empenhado_liquido,
+            })
+
+        if not created:
+            ml.orcado_atualizado += Decimal(orcado_atualizado)
+            ml.empenhado_liquido += Decimal(empenhado_liquido)
+            ml.save()
+
+        return ml
+
+
+class MinimoLegal(models.Model):
+    year = models.DateField()
+    projeto_id = models.IntegerField()
+    projeto_desc = models.CharField(max_length=250)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2)
+    execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
+                                 null=True)
+
+    objects = MinimoLegalManager()
+
+    class Meta:
+        unique_together = ('year', 'projeto_id')

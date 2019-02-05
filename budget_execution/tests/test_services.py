@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import date
 from unittest.mock import patch
 
 from model_mommy import mommy
@@ -9,6 +10,7 @@ from budget_execution.models import (
     Execucao,
     Orcamento,
     Empenho,
+    MinimoLegal,
 )
 
 
@@ -86,3 +88,35 @@ class TestImportEmpenho:
 
         empenho.refresh_from_db()
         assert empenho.execucao is None
+
+
+@pytest.mark.django_db
+class TestImportMinimoLegal:
+
+    def test_import_minimo_legal(self):
+        orcamento = mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+                               _fill_optional=True)
+        orcamento2 = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+                                _fill_optional=True)
+
+        ml = mommy.make(MinimoLegal, year=date(2017, 1, 1), execucao=None,
+                        projeto_id=orcamento.cd_projeto_atividade,
+                        _fill_optional=True)
+        ml2 = mommy.make(MinimoLegal, year=date(2018, 1, 1), execucao=None,
+                         projeto_id=orcamento2.cd_projeto_atividade,
+                         _fill_optional=True)
+
+        services.import_minimo_legal()
+
+        execucoes = Execucao.objects.all().order_by('year')
+        assert 2 == len(execucoes)
+
+        orcamento.refresh_from_db()
+        ml.refresh_from_db()
+        assert orcamento.execucao == execucoes[0]
+        assert ml.execucao == execucoes[0]
+
+        orcamento2.refresh_from_db()
+        ml2.refresh_from_db()
+        assert orcamento2.execucao == execucoes[1]
+        assert ml2.execucao == execucoes[1]

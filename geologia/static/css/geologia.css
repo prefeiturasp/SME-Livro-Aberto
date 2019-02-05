@@ -6,6 +6,10 @@ header{
   background-position: center;
 }
 
+header .wrapper p {
+  padding-bottom: 6rem;
+}
+
 /* Auxílios e Contribuições */
 .contributions{
   fill: #edb93b;

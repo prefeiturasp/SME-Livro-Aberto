@@ -10,6 +10,7 @@ from budget_execution.models import Empenho, Orcamento
 
 
 def import_orcamento():
+    # replace with the path for any dump csv of dw_orcamento
     df = pandas.read_csv(
         '/home/diego/Projects/fgv/transparencia/dump-csv/replica-orcamento.csv')
 
@@ -27,6 +28,7 @@ def import_orcamento():
 
 
 def import_empenhos():
+    # replace with the path for any dump csv of dw_empenhos
     df = pandas.read_csv(
         '/home/diego/Projects/fgv/transparencia/dump-csv/replica-empenhos.csv')
 
