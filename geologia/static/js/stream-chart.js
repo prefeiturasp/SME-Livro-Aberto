@@ -1,19 +1,3 @@
-function year(tr){
-    return parseInt(tr.querySelector('[data-year]').dataset.year);
-}
-
-function value(tr){
-    return parseFloat(tr.querySelector('[data-value]').dataset.value);
-}
-
-function name(tr){
-    return tr.querySelector('[data-name]').dataset.name;
-}
-
-function item(tr){
-    return {'year': year(tr), 'value': value(tr), 'name': name(tr)};
-}
-
 function emptyObj(keys){
     let obj = {};
     keys.forEach(key => {
@@ -31,17 +15,17 @@ window.addEventListener('load', function(){
     width = parentWidth - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
     svg.attr('height', height + margin.top + margin.bottom);
-    let grds = ['contributions', 'operational', 'previous', 'consulting',
-              'realty', 'construction', 'people', 'outsourced'];
 
+    let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
+    let gnds = Array.from(legendItems, item => item.dataset.gnd)
     let rows = document.querySelectorAll('.stream-chart tbody tr');
 
     stack = d3.stack()
-        .keys(grds)
+        .keys(gnds)
         .offset(d3['stackOffsetExpand'])
 
-    let grouped = Array.from(rows, item).reduce(function(accumulator, curr){
-        accumulator[curr.year] = accumulator[curr.year] || emptyObj(grds);
+    let grouped = Array.from(rows, row => row.dataset).reduce(function(accumulator, curr){
+        accumulator[curr.year] = accumulator[curr.year] || emptyObj(gnds);
         accumulator[curr.year][curr.name] = curr.value;
         return accumulator;
     }, {});
