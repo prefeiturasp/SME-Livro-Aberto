@@ -1,10 +1,12 @@
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import Execucao, Orcamento, Empenho, MinimoLegal
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
 def import_orcamentos():
-    orcamentos = Orcamento.objects.filter(execucao__isnull=True)
+    orcamentos = Orcamento.objects.filter(execucao__isnull=True,
+                                          cd_orgao=SME_ORGAO_ID)
 
     for orcamento in orcamentos:
         execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
@@ -13,7 +15,8 @@ def import_orcamentos():
 
 
 def import_empenhos():
-    empenhos = Empenho.objects.filter(execucao__isnull=True)
+    empenhos = Empenho.objects.filter(execucao__isnull=True,
+                                      cd_orgao=SME_ORGAO_ID)
 
     for empenho in empenhos:
         execucao = Execucao.objects.update_by_empenho(empenho)
