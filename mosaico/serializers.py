@@ -48,9 +48,12 @@ class ExecucaoListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         iterable = data.distinct(self.child.Meta.distinct_field)
 
-        return [
+        serialized_items = [
             self.child.to_representation(item) for item in iterable
         ]
+        # TODO: add test for this sort
+        return sorted(serialized_items, key=lambda i: i['orcado_total'],
+                      reverse=True)
 
 
 class BaseExecucaoSerializer(serializers.ModelSerializer):
