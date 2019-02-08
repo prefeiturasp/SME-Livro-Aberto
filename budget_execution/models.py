@@ -1,3 +1,5 @@
+import math
+
 from datetime import date
 from decimal import Decimal
 
@@ -20,7 +22,7 @@ class ExecucaoManager(models.Manager):
         else:
             for execucao in execucoes:
                 execucao.orcado_atualizado += Decimal(
-                    orcamento.vl_orcado_atualizado)
+                    filter_nan(orcamento.vl_orcado_atualizado))
                 execucao.save()
 
         return execucao
@@ -68,7 +70,8 @@ class ExecucaoManager(models.Manager):
             defaults={"desc": orcamento.ds_programa}
         )[0]
 
-        execucao.orcado_atualizado = orcamento.vl_orcado_atualizado
+        execucao.orcado_atualizado = filter_nan(orcamento.vl_orcado_atualizado)
+
         execucao.save()
 
         return execucao
@@ -78,7 +81,8 @@ class ExecucaoManager(models.Manager):
 
         try:
             execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
-            execucao.empenhado_liquido += Decimal(empenho.vl_empenho_liquido)
+            execucao.empenhado_liquido += Decimal(
+                filter_nan(empenho.vl_empenho_liquido))
             execucao.save()
         except Execucao.DoesNotExist:
             if len(execucoes) == 1:
@@ -91,7 +95,8 @@ class ExecucaoManager(models.Manager):
                     id=empenho.cd_subelemento,
                     defaults={"desc": empenho.dc_subelemento}
                 )[0]
-                execucao.empenhado_liquido = empenho.vl_empenho_liquido
+                execucao.empenhado_liquido = filter_nan(
+                    empenho.vl_empenho_liquido)
                 execucao.save()
 
                 execucao.elemento.desc = empenho.dc_elemento
@@ -110,8 +115,15 @@ class ExecucaoManager(models.Manager):
             return
 
         execucao = self.create_by_orcamento(orcamento)
-        execucao.orcado_atualizado = minimo_legal.orcado_atualizado
-        execucao.empenhado_liquido = minimo_legal.empenhado_liquido
+        execucao.orcado_atualizado = filter_nan(minimo_legal.orcado_atualizado)
+
+        empenhado = filter_nan(minimo_legal.empenhado_liquido)
+        if empenhado:
+            execucao.empenhado_liquido = empenhado
+        else:
+            # filter_nan returns 0, but we want it saved as None
+            execucao.empenhado_liquido = None
+
         execucao.is_minimo_legal = True
         execucao.save()
 
@@ -506,3 +518,11 @@ class MinimoLegal(models.Model):
 
     class Meta:
         unique_together = ('year', 'projeto_id')
+
+
+# TODO: add test for the NaN verification
+def filter_nan(value):
+    if (type(value) == float or type(value) == Decimal) and math.isnan(value):
+        return 0
+    else:
+        return value
