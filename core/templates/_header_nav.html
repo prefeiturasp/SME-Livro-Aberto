@@ -25,5 +25,7 @@
       <li class='hidden-header'></li>
     {% endif %}
   </ul>
-  <div>Atualizado em: {{ dt_updated }}</div>
+  {% if methodology and about %}
+    <div>Atualizado em: {{ dt_updated }}</div>
+  {% endif %}
 </nav>
