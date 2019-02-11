@@ -42,11 +42,10 @@
           <label for="simple">Visão simplificada</label>
           <label for="simple">Visão técnica</label>
         </div>
-        <div class="form-item">
-          <input class="radio" type="radio" name="universe" value="">
-          <label>SME</label>
-          <input class="radio" type="radio" name="universe" value="">
-          <label title="Em breve...">Mínimo legal (31%)</label>
+        <div class="form-item switch">
+          <input id="minimo_legal" type="checkbox" name="minimo_legal" value="True" {% if not tecnico %}disabled{% endif %} {% if minimo_legal %}checked{% endif %}>
+          <label for="minimo_legal">Mínimo legal (31%)</label>
+          <label for="minimo_legal">SME</label>
         </div>
         <div class="form-item">
             <select name="fonte">
@@ -67,7 +66,7 @@
       <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
-      </nav>
+      {% if execucoes %}
       <ol class="treemap">
           {% for execucao in execucoes %}
           <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
@@ -79,6 +78,9 @@
               </li>
           {% endfor %}
       </ol>
+      {% else%}
+      <div class="empty treemap quanti-80">Não há dados de orçamento para os filtros selecionados.</div>
+      {% endif %}
       <div id="tooltip"></div>
       <footer>
           <div class="legend">

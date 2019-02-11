@@ -3,6 +3,7 @@ import pytest
 from datetime import date
 from unittest.mock import patch
 
+from freezegun import freeze_time
 from model_mommy.mommy import make
 from rest_framework.test import APITestCase
 
@@ -174,6 +175,18 @@ class TestBaseListView(APITestCase):
         assert {"deflate": True} == mock_serializer.call_args[1]
         assert response.context.get('deflate')
 
+    def test_returns_date_updated(self):
+        subgrupo = make(Subgrupo, grupo__id=1)
+        with freeze_time('2019-01-01'):
+            make('Execucao', subgrupo=subgrupo, orgao__id=SME_ORGAO_ID)
+
+        # not expected
+        with freeze_time('2000-01-01'):
+            make('Execucao', subgrupo=subgrupo, orgao__id=SME_ORGAO_ID)
+
+        response = self.get()
+        assert '01/01/2019' == response.data['dt_updated']
+
 
 class TestMinimoLegalFilter(APITestCase):
 
@@ -193,11 +206,13 @@ class TestMinimoLegalFilter(APITestCase):
              is_minimo_legal=False, subfuncao__id=4)
 
         response = self.get(minimo_legal=False)
+        assert not response.data['minimo_legal']
         assert 1 == len(response.data['execucoes'])
         assert exec1.subfuncao_id \
             == response.data['execucoes'][0]['subfuncao_id']
 
         response = self.get(minimo_legal=True)
+        assert response.data['minimo_legal']
         assert 2 == len(response.data['execucoes'])
         assert set([exec2.subfuncao_id, exec3.subfuncao_id]) \
             == set([ex['subfuncao_id'] for ex in response.data['execucoes']])

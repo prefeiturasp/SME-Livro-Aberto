@@ -21,5 +21,9 @@
         </a>
       </li>
     {% endif %}
+    {% if not methodology and not about %}
+      <li class='hidden-header'></li>
+    {% endif %}
   </ul>
+  <div>Atualizado em: {{ dt_updated }}</div>
 </nav>

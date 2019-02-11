@@ -6,6 +6,7 @@ from unittest.mock import patch
 from model_mommy import mommy
 
 from budget_execution import services
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
     Execucao,
     Orcamento,
@@ -19,7 +20,7 @@ class TestImportOrcamento:
 
     def test_import_one_orcamento(self):
         orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
-                               _fill_optional=True)
+                               cd_orgao=SME_ORGAO_ID, _fill_optional=True)
         services.import_orcamentos()
 
         execucoes = Execucao.objects.all()
@@ -29,11 +30,14 @@ class TestImportOrcamento:
         orcamento.refresh_from_db()
         assert orcamento.execucao == execucao
 
-    def test_import_all_orcamentos(self):
+    def test_import_only_orcamentos_from_orgao_sme(self):
         orcamento1 = mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
-                                _fill_optional=True)
+                                cd_orgao=SME_ORGAO_ID, _fill_optional=True)
         orcamento2 = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
-                                _fill_optional=True)
+                                cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+        # not expected
+        mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+                   cd_orgao=66, _fill_optional=True)
         services.import_orcamentos()
 
         execucoes = Execucao.objects.all().order_by('year')
@@ -46,10 +50,10 @@ class TestImportOrcamento:
 
     def test_ignores_orcamento_already_with_execucao_fk(self):
         orcamento = mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
-                               _fill_optional=True)
+                               cd_orgao=SME_ORGAO_ID, _fill_optional=True)
         # not expected
         mommy.make(Orcamento, cd_ano_execucao=2018, execucao__id=1,
-                   _fill_optional=True)
+                   cd_orgao=SME_ORGAO_ID, _fill_optional=True)
 
         services.import_orcamentos()
 
@@ -65,18 +69,23 @@ class TestImportOrcamento:
 class TestImportEmpenho:
 
     @patch.object(Execucao.objects, 'update_by_empenho')
-    def test_import_empenhos(self, mock_update):
+    def test_import_only_empenhos_from_orgao_sme(self, mock_update):
         mock_execucao = mommy.make(Execucao)
         mock_update.return_value = mock_execucao
 
         empenhos = mommy.make(Empenho, execucao=None, _fill_optional=True,
-                              _quantity=3)
+                              cd_orgao=SME_ORGAO_ID, _quantity=3)
+
+        not_expected = mommy.make(Empenho, execucao=None, _fill_optional=True,
+                                  cd_orgao=55)
 
         services.import_empenhos()
 
         for empenho in empenhos:
             empenho.refresh_from_db()
             assert empenho.execucao == mock_execucao
+
+        assert not_expected.execucao is None
 
     @patch.object(Execucao.objects, 'update_by_empenho')
     def test_ignores_when_update_by_empenho_returns_none(self, mock_update):

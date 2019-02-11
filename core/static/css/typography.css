@@ -73,6 +73,89 @@ thead th{
   font-weight: 700;
 }
 
+/* inner pages */
+.sidebar .voltar {
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.sidebar h1 {
+  color: #fff;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+}
+
+.sidebar p {
+  color: #fff;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 27px;
+}
+
+.sidebar ul li {
+  text-align: center;
+}
+
+.sidebar ul li a {
+  color: #80A684;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.sidebar ul li.active a {
+  color: #fff;
+}
+
+.main {
+  padding-top: 2em;
+}
+
+.main h2 {
+  font-weight: 900;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.main h2 span {
+  font-weight: 400;
+  text-transform: none;
+}
+
+.verde h2,
+.verde i,
+.verde h3,
+.verde span,
+.verde .list,
+.verde .color,
+.verde blockquote {
+  color: #80A684;
+}
+
+.main ul li ul li {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.main h3 {
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.main ul li h3 {
+  text-transform: none;
+}
+
+.main .txt {
+  font-weight: 300;
+  color: #4c4c4c;
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 /* No media query since this is the default in Bootstrap */
 

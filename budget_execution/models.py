@@ -1,3 +1,5 @@
+import math
+
 from datetime import date
 from decimal import Decimal
 
@@ -20,7 +22,7 @@ class ExecucaoManager(models.Manager):
         else:
             for execucao in execucoes:
                 execucao.orcado_atualizado += Decimal(
-                    orcamento.vl_orcado_atualizado)
+                    filter_nan(orcamento.vl_orcado_atualizado))
                 execucao.save()
 
         return execucao
@@ -68,7 +70,8 @@ class ExecucaoManager(models.Manager):
             defaults={"desc": orcamento.ds_programa}
         )[0]
 
-        execucao.orcado_atualizado = orcamento.vl_orcado_atualizado
+        execucao.orcado_atualizado = filter_nan(orcamento.vl_orcado_atualizado)
+
         execucao.save()
 
         return execucao
@@ -78,7 +81,8 @@ class ExecucaoManager(models.Manager):
 
         try:
             execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
-            execucao.empenhado_liquido += Decimal(empenho.vl_empenho_liquido)
+            execucao.empenhado_liquido += Decimal(
+                filter_nan(empenho.vl_empenho_liquido))
             execucao.save()
         except Execucao.DoesNotExist:
             if len(execucoes) == 1:
@@ -91,7 +95,8 @@ class ExecucaoManager(models.Manager):
                     id=empenho.cd_subelemento,
                     defaults={"desc": empenho.dc_subelemento}
                 )[0]
-                execucao.empenhado_liquido = empenho.vl_empenho_liquido
+                execucao.empenhado_liquido = filter_nan(
+                    empenho.vl_empenho_liquido)
                 execucao.save()
 
                 execucao.elemento.desc = empenho.dc_elemento
@@ -110,8 +115,15 @@ class ExecucaoManager(models.Manager):
             return
 
         execucao = self.create_by_orcamento(orcamento)
-        execucao.orcado_atualizado = minimo_legal.orcado_atualizado
-        execucao.empenhado_liquido = minimo_legal.empenhado_liquido
+        execucao.orcado_atualizado = filter_nan(minimo_legal.orcado_atualizado)
+
+        empenhado = filter_nan(minimo_legal.empenhado_liquido)
+        if empenhado:
+            execucao.empenhado_liquido = empenhado
+        else:
+            # filter_nan returns 0, but we want it saved as None
+            execucao.empenhado_liquido = None
+
         execucao.is_minimo_legal = True
         execucao.save()
 
@@ -169,6 +181,11 @@ class ExecucaoManager(models.Manager):
                 elemento_id=info[3],
                 subelemento_id=info[4])
 
+    def get_date_updated(self):
+        dt_updated = self.get_queryset().order_by('-dt_updated') \
+            .first().dt_updated
+        return dt_updated.strftime('%d/%m/%Y')
+
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -195,6 +212,8 @@ class Execucao(models.Model):
     gnd_geologia = models.ForeignKey('GndGeologia', models.SET_NULL, null=True)
     subelemento_friendly = models.ForeignKey(
         'SubelementoFriendly', models.SET_NULL, null=True)
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(db_index=True, auto_now=True)
 
     objects = ExecucaoManager()
 
@@ -202,6 +221,9 @@ class Execucao(models.Model):
         unique_together = (
             'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
             'elemento', 'fonte', 'subelemento')
+        index_together = [
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte']
 
     @property
     def indexer(self):
@@ -366,7 +388,7 @@ class Orcamento(models.Model):
     cd_elemento = models.BigIntegerField(blank=True, null=True)
     cd_fonte = models.BigIntegerField(blank=True, null=True)
     ds_fonte = models.TextField(blank=True, null=True)
-    vl_orcado_inicial = models.BigIntegerField(blank=True, null=True)
+    vl_orcado_inicial = models.FloatField(blank=True, null=True)
     vl_orcado_atualizado = models.FloatField(blank=True, null=True)
     vl_congelado = models.FloatField(blank=True, null=True)
     vl_orcado_disponivel = models.FloatField(blank=True, null=True)
@@ -389,6 +411,7 @@ class Orcamento(models.Model):
 
     class Meta:
         db_table = 'orcamento'
+        index_together = ['cd_ano_execucao', 'cd_projeto_atividade']
 
     @property
     def indexer(self):
@@ -441,7 +464,7 @@ class Empenho(models.Model):
     vl_empenho_liquido = models.FloatField(blank=True, null=True)
     vl_liquidado = models.FloatField(blank=True, null=True)
     vl_pago = models.FloatField(blank=True, null=True)
-    vl_pago_restos = models.BigIntegerField(blank=True, null=True)
+    vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # fk is filled when the routine that generates the Execucao objects
@@ -495,3 +518,11 @@ class MinimoLegal(models.Model):
 
     class Meta:
         unique_together = ('year', 'projeto_id')
+
+
+# TODO: add test for the NaN verification
+def filter_nan(value):
+    if (type(value) == float or type(value) == Decimal) and math.isnan(value):
+        return 0
+    else:
+        return value
