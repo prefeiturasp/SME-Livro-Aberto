@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import (Deflator, DotacaoFromTo, GNDFromTo, FonteDeRecursoFromTo,
+from .models import (Deflator, DotacaoFromTo, DotacaoFromToSpreadsheet,
+                     GNDFromTo, FonteDeRecursoFromTo,
                      SubelementoFromTo)
 
 
@@ -23,6 +24,11 @@ class DotacaoFromToAdmin(admin.ModelAdmin):
     def subgrupo_full_code(self, obj):
         return f'{obj.subgrupo_code} ({obj.grupo_code}.{obj.subgrupo_code})'
     subgrupo_full_code.short_desc = 'Código do Subgrupo'
+
+
+@admin.register(DotacaoFromToSpreadsheet)
+class DotacaoFromToSpreadsheetAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(GNDFromTo)

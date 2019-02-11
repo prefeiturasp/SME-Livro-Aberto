@@ -106,6 +106,20 @@ class DotacaoFromTo(models.Model, FromTo):
             ex.save()
 
 
+class DotacaoFromToSpreadsheet(models.Model):
+    spreadsheet = models.FileField(
+        'Planilha', upload_to='from_to_handler/dotacao_spreadsheets')
+    created_at = models.DateTimeField(auto_now_add=True)
+    data_extracted = models.BooleanField(default=False, editable=False)
+
+    class Meta:
+        verbose_name = 'Planilha De-Para: Dotações Subgrupos Grupos'
+        verbose_name_plural = 'Planilha De-Para: Dotações Subgrupos Grupos'
+
+    def __str__(self):
+        return f'{self.spreadsheet.name.split("/")[-1]}'
+
+
 class GNDFromTo(models.Model, FromTo):
     """
     Adds a new name to Grupo de Natureza de Despesa based on the original name
