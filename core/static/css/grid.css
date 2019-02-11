@@ -396,11 +396,11 @@ tr > *:first-child::before{
     padding-left: 0 !important;
     margin: 0 !important;
   }
-  
+
   .list--border li {
     border: solid 1px #80A684;
   }
-  
+
   .list--inline {
     flex-wrap: nowrap;
     display: flex;
@@ -408,7 +408,7 @@ tr > *:first-child::before{
     padding-left: 0 !important;
     width: 100%;
   }
-  
+
   .list--inline li  {
     padding: 5px !important;
     color: #80A684;
