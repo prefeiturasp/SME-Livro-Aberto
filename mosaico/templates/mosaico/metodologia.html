@@ -15,7 +15,7 @@
 {%block header %}
   <h1>Mosaico Orçamentário</h1>
   <p>Orçamento da Educação ao seu alcance</p>
-  {% include '_header_nav.html' %}
+  {% include '_header_nav.html' with about='mosaico:sobre'%}
 {% endblock %}
 
 {%block sections %}
@@ -24,7 +24,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="card sobre">
-                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
                 <h1>Meto<br/>dolo<br/>gia</h1>
                 <p>Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.</p>
             </div>
@@ -36,72 +36,72 @@
         <!-- End Sidebar -->
 
         <div class="main">
-            
+
             <div class="metodologia_mosaico">
                 <div class="txt">
-                    
+
                     <h2>Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.</h2>
-                    
+
                     <p>Para unificar as duas fontes de dados, utilizamos um código de dotação orçamentária específico, construído a partir de uma série de atributos das despesas.</p>
-                    
-                    <p>Exemplo: 2018.16.2828.3.3.50.39.00</p>    
-                    
+
+                    <p>Exemplo: 2018.16.2828.3.3.50.39.00</p>
+
                     <p>Os primeiros quatro dígitos contemplam o <strong>ANO</strong> de execução.</p>
 
                     <p>Os próximos dois dígitos, sempre “16” neste caso, identificam o <strong>órgão</strong> de governo ou unidade administrativa. O universo utilizado foi o da Secretaria Municipal de Educação (SME/SP).</p>
-                    
+
                     <p>O <strong>PROJETO/ATIVIDADE</strong> é identificado pelos próximos quatro dígitos. Trata-se de um instrumento utilizado para alcançar o objetivo de um programa de governo, envolvendo um conjunto de operações limitadas no tempo das quais resulta um produto específico (projeto) ou um conjunto de operações contínuas e permanentes (atividade). O atributo também é utilizado como categoria mais granular na visualização técnica.</p>
-        
+
                     <p>Em seguida, a <strong>CATEGORIA</strong> é identificada pelo próximo dígito. Trata-se da categoria econômica, isto é, o efeito econômico da realização da despesa. Uma despesa pode ser corrente ou de capital, nesse sentido.</p>
-                    
+
                     <p>O próximo dígito refere-se ao <strong>GRUPO DE NATUREZA DE DESPESA</strong>, que é uma classe de gasto mais específica que a categoria. Basicamente, uma despesa corrente pode ser de Pessoal e Encargos Sociais, Juros e Encargos da Dívida ou Outras Despesas Correntes, enquanto que uma <strong>despesa de capital</strong> pode ser de Investimentos, Inversões Financeiras ou Amortização da Dívida.</p>
-                    
+
                     <p>Os próximos dois dígitos indexam a <strong>MODALIDADE DE APLICAÇÃO</strong>, que mostra de que forma são aplicados os recursos, se diretamente ou transferidos para execução de outro ente.</p>
-                    
+
                     <p>Em seguida, temos os dois dígitos representativos do <strong>ELEMENTO DE DESPESA</strong>, que tem por finalidade identificar os objetos imediatos de cada despesa, tais como vencimentos e vantagens fixas, juros, diárias, material de consumo, serviços de terceiros prestados sob qualquer forma, subvenções sociais, obras e instalações, equipamentos e material permanente, auxílios, amortização e outros que a Administração Pública utiliza para a consecução de seus fins. O atributo é também utilizado na visualização amigável.</p>
-                    
+
                     <p>Por fim, temos a <strong>FONTE DE RECURSO</strong> nos dois últimos dígitos, que mostra de onde vem os recursos para custeio daquela despesa (pode ser proveniente do próprio Tesouro Municipal, ou de transferências de outros entes, fundos multigovernamentais etc). Uma desagregação a partir deste atributo aparece também no seletor no canto direito superior do Mosaico.</p>
-                    
+
                     <p>A partir das dotações, associamos cada despesa à tipologia alternativa de grupos e subgrupos. Essas categorias foram criadas pensando em nomenclaturas mais familiares para o cidadão, refletindo as características principais das despesas em Educação.</p>
-                    
+
                     <p>Além disso, usamos os seguintes atributos na <strong>visualização amigável:</strong></p>
-                    
+
                     <p>O <strong>SUBELEMENTO DE DESPESA</strong> é o atributo mais granular da visualização amigável e remete a um detalhamento do elemento de despesa. Por exemplo: um elemento pode ser material de consumo, enquanto que um subelemento traz mais informação sobre a despesa, por exemplo, de material escolar, um subconjunto da despesa de material de consumo. Vale ressaltar que a ferramenta usa uma nomenclatura ligeiramente diferente da original dos subelementos, usando uma linguagem também mais amigável.</p>
-                    
+
                     <p>E na <strong>visualização técnica:</strong></p>
-                    
+
                     <ul>
                         <li>A <strong>SUBFUNÇÃO</strong> representa uma partição da função, visando agregar determinado subconjunto de despesas do setor público. Por exemplo, a função Educação se subdivide em subfunções como Educação Infantil, Educação Básica, etc.;</li>
                         <li>O <strong>PROGRAMA</strong> é um elemento estruturante das finalidades das despesas públicas dentro do orçamento. Toda ação do Governo está estruturada em programas orientados para a realização dos objetivos estratégicos definidos para o período do PPA, ou seja, quatro anos. Um programa se subdivide em ações que, no caso, são captadas pelos projetos/atividades.</li>
                     </ul>
-                    
+
                     <p>Por fim, usamos as seguintes referências para os <strong>valores das despesas:</strong></p>
-                    
+
                     <p>O <strong>VALOR ORÇADO ATUALIZADO</strong> remete ao valor previsto para gasto em cada rubrica. É importante ressaltar que, estes valores são alterados ao longo do ano, seja via créditos (extraordinários, adicionais e suplementares) ou via dotações canceladas. Os valores informados se referem ao número mais atualizado, após alterações e podem, portanto diferir do valor inicial previsto na Lei Orçamentária Anual (LOA).</p>
-                    
+
                     <p>O <strong>VALOR EMPENHADO LÍQUIDO</strong> remete ao montante que foi executado do ponto de vista orçamentário: trata-se de toda reserva financeira realizada para atender fins específicos. As despesas empenhadas precisam ainda ser liquidadas e pagas para completarem o ciclo, mas a contabilidade pública usa o empenho como critério de execução. A ideia de “líquido” se refere ao fato de que empenhos podem eventualmente ser cancelados, de modo que a métrica utilizada na ferramenta já desconta esses cancelamentos.</p>
-        
-        
+
+
                 </div>
-    
+
                 <div class="txt verde">
                     <p><b>OBSERVAÇÃO</b></p>
-        
+
                     <p><b class="color">1)</b> A programação financeira mensal não está disponível na base de dados. Isto significa que não constam na base os valores disponíveis para gasto por mês para rubrica utilizada na ferramenta, constando apenas valores orçados (atualizados) anuais.</p>
 
                     <p><b class="color">2)</b> Para acompanhar a execução dos gastos no ano corrente adotamos a premissa de disponibilização mensal linear do montante orçado para o ano; ou seja, a cada mês estaria disponibilizado o duodécimo do orçamento total do ano para aquela rubrica. Calculamos, então, o percentual de execução da rubrica no ano aberto contabilizando o pago até o mês corrente dividido pelo orçamento até o mês corrente (utilizando a fórmula abaixo):</p>
-    
+
                     <p><img src="../../static/img/mtd_2.png" style="width: 70px !important;"></p>
-    
+
                     <p>Onde:<br>
                         <strong>n</strong> é o número de meses até o momento;<br>
                         <strong>p</strong> é o valor pago no mês <strong>i</strong>; e <br>
                         <strong>A</strong> é o valor autorizado para o ano.<br>
                     </p>
                 </div>
-                       
-            </div>     
-                           
+
+            </div>
+
         </div>
 
     </div>
