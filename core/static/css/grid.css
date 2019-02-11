@@ -20,11 +20,6 @@ header .wrapper p {
   padding-bottom: 6rem;
 }
 
-.hidden-header {
-  visibility: hidden;
-}
-
-
 header h1,
 header h1 + p{
   text-align: center;
