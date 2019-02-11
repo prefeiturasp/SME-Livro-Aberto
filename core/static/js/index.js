@@ -35,7 +35,9 @@ window.addEventListener("DOMContentLoaded", function(){
             form.submit();
     }
     for(form of document.forms){
-        form.go.remove();
-        form.addEventListener('change', submit);
+        if(form.go){
+            form.go.remove();
+            form.addEventListener('change', submit);
+        }
     }
 });
