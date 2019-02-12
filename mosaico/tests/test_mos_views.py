@@ -188,6 +188,12 @@ class TestBaseListView(APITestCase):
         response = self.get()
         assert '01/01/2019' == response.data['dt_updated']
 
+    def test_empty_state(self):
+        response = self.get()
+        assert None == response.data['year']
+        assert None == response.data['dt_updated']
+        assert 0 == len(response.data['execucoes'])
+
 
 class TestMinimoLegalFilter(APITestCase):
 

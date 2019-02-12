@@ -103,7 +103,8 @@ class BaseListView(generics.ListAPIView):
             self.year = int(year)
             return queryset
         else:
-            self.year = Execucao.objects.order_by('year').last().year.year
+            last = Execucao.objects.order_by('year').last()
+            self.year = last.year.year if last else None
             self.filters['year'] = self.year
             return queryset.filter(year__year=self.year)
 
@@ -113,14 +114,14 @@ class BaseListView(generics.ListAPIView):
 
         if queryset:
             breadcrumb = self.create_breadcrumb(queryset)
+            dt_updated = Execucao.objects.get_date_updated()
         else:
             breadcrumb = []
+            dt_updated = None
 
         deflate = bool(self.request.GET.get('deflate', None))
         tseries_qs = self.get_timeseries_queryset().order_by('year')
         tseries_serializer = TimeseriesSerializer(tseries_qs, deflate=deflate)
-
-        dt_updated = Execucao.objects.get_date_updated()
 
         return Response({
             'deflate': deflate,
