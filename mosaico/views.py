@@ -162,7 +162,14 @@ class BaseListView(generics.ListAPIView):
         return csv_url
 
     def get_timeseries_queryset(self):
-        return self.get_queryset()
+        queryset = self.get_queryset()
+        if 'minimo_legal' not in self.filters \
+                or self.filters['minimo_legal'] is False:
+            queryset = queryset.filter(orgao_id=SME_ORGAO_ID,
+                                       is_minimo_legal=False)
+        else:
+            queryset = queryset.filter(is_minimo_legal=True)
+        return queryset
 
     def create_breadcrumb(self, queryset):
         raise NotImplemented
@@ -179,9 +186,6 @@ class GruposListView(BaseListView, SimplesViewMixin):
 
     def get_queryset(self):
         return Execucao.objects.filter(subgrupo_id__isnull=False)
-
-    def get_timeseries_queryset(self):
-        return Execucao.objects.all()
 
     def create_breadcrumb(self, queryset):
         params = self.request.query_params
