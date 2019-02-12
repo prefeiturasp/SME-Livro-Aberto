@@ -8,6 +8,9 @@ Projeto de Transparência Orçamentária da Secretaria Municipal da Educação d
 Rode as migrações. Além de criar as tabelas da aplicação, criará também as tabelas `orcamento` e `empenhos` que serão populadas pela SME e servirão de base para a geração das execuções.
 `python manage.py migrate`
 
+Carregue os dados das gnds
+`python manage.py loaddata data/gnds.json`
+
 Carregue os dados dos De-Para
 `python manage.py loaddata data/fromto.json`
 
