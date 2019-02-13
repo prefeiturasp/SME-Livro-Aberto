@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from datetime import date
@@ -5,11 +7,14 @@ from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
+from django.core.files import File
+
 from budget_execution.models import (
     Execucao, FonteDeRecursoGrupo, GndGeologia, Grupo, SubelementoFriendly,
     Subgrupo)
 from from_to_handler.models import (
-    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo, SubelementoFromTo)
+    DotacaoFromTo, FonteDeRecursoFromTo, FromTo, GNDFromTo, SubelementoFromTo,
+    DotacaoFromToSpreadsheet)
 
 
 @pytest.mark.django_db
@@ -75,6 +80,44 @@ class TestDotacaoGrupoSubgrupoFromTo:
 
         for ft in fts:
             ft.apply.assert_called_once_with()
+
+
+class TestDotacaoGrupoSubgrupoFromToSpreadsheet:
+
+    @pytest.fixture()
+    def file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_DotacaoFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in DotacaoFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    def test_extract_data(self, file_fixture):
+        ssheet = mommy.make(
+            DotacaoFromToSpreadsheet,
+            spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = DotacaoFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        assert fts[0].indexer == '2018.16.1079.4.4.90.39.00'
+        assert fts[0].grupo_code == 10
+        assert fts[0].grupo_desc == 'Grupo'
+        assert fts[0].subgrupo_code == 1
+        assert fts[0].subgrupo_desc == 'Subgrupo'
+
+        assert fts[1].indexer == '2018.16.1090.4.4.90.51.00'
+        assert fts[1].grupo_code == 55
+        assert fts[1].grupo_desc == 'Outro grupo'
+        assert fts[1].subgrupo_code == 2
+        assert fts[1].subgrupo_desc == 'Outro subgrupo'
+
+        ssheet.refresh_from_db()
+        assert ssheet.extracted
 
 
 @pytest.mark.django_db

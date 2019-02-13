@@ -110,7 +110,7 @@ class DotacaoFromToSpreadsheet(models.Model):
     spreadsheet = models.FileField(
         'Planilha', upload_to='from_to_handler/dotacao_spreadsheets')
     created_at = models.DateTimeField(auto_now_add=True)
-    data_extracted = models.BooleanField(default=False, editable=False)
+    extracted = models.BooleanField(default=False, editable=False)
 
     class Meta:
         verbose_name = 'Planilha De-Para: Dotações Subgrupos Grupos'
@@ -118,6 +118,21 @@ class DotacaoFromToSpreadsheet(models.Model):
 
     def __str__(self):
         return f'{self.spreadsheet.name.split("/")[-1]}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.extracted:
+            self.extract_data()
+
+    def extract_data(self):
+        from from_to_handler import services
+
+        if self.extracted:
+            return
+
+        services.extract_dotacao_fromto_spreadsheet(self)
+        self.extracted = True
+        self.save()
 
 
 class GNDFromTo(models.Model, FromTo):
