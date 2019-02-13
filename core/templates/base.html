@@ -29,19 +29,21 @@
 
   <div id="navbar" class="navbar">
     <div class="navbar-wrapper">
-      <a href="http://patiodigital.prefeitura.sp.gov.br/livroaberto/" target="_blank"
-        <img src="{% static 'img/logo_patiodigital_fundoescuro.png' %}" alt="Pátio Digital" />
-      </a>
-      <a href="#"><img src="{% static 'img/logo_livroaberto.png' %}" alt="Livro Aberto" /></a>
+      <div class="navbar-logos">
+        <a href="http://patiodigital.prefeitura.sp.gov.br/livroaberto/" target="_blank">
+          <img src="{% static 'img/logo_patiodigital.svg' %}" alt="Pátio Digital" />
+        </a>
+        <a href="http://patiodigital.prefeitura.sp.gov.br/livroaberto/"><img src="{% static 'img/logo_livroaberto.svg' %}" alt="Livro Aberto" /></a>
+      </div>
       <a class="menu-toggle" href="#" id="menu-toggle"><img src="{% static 'img/menu.png' %}" alt="Menu" /></a>
     </div>
   </div>
 
   <div class="menu" id="menu">
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Geologia</a></li>
-      <li><a href="#">Mosaico Orçamentário</a></li>
+      <li><a href="https://livroaberto.sme.prefeitura.sp.gov.br/">Home</a></li>
+      <li><a href="{% url 'geologia_urls:home' %}">Geologia</a></li>
+      <li><a href="{% url 'mosaico_urls:grupos' %}">Mosaico Orçamentário</a></li>
     </ul>
   </div>
 
