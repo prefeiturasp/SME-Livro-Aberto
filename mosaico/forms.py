@@ -12,4 +12,4 @@ class MinimoLegalSpreadsheetAdminForm(forms.ModelForm):
         if MinimoLegalSpreadsheetModel.objects \
                 .filter(spreadsheet__endswith=spreadsheet_name).exists():
             raise ValidationError('Planilha já importada')
-        return self.cleaned_data.get('spreadsheet')
+        return self.cleaned_data

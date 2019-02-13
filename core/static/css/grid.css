@@ -16,10 +16,9 @@ header{
   padding: 4em 1em 2em;
 }
 
-.hidden-header {
-  visibility: hidden;
+header .wrapper p {
+  padding-bottom: 6rem;
 }
-
 
 header h1,
 header h1 + p{
@@ -91,7 +90,6 @@ fieldset{
 .form-item:last-child{
   margin-right: 0em;
 }
-
 
 .breadcrumb {
   display: flex;
@@ -182,7 +180,6 @@ tr > *:first-child::before{
 .chart svg{
   width: 100%;
 }
-
 
 /* Extra small devices (portrait phones, less than 576px) */
 /* No media query since this is the default in Bootstrap */
@@ -399,11 +396,11 @@ tr > *:first-child::before{
     padding-left: 0 !important;
     margin: 0 !important;
   }
-  
+
   .list--border li {
     border: solid 1px #80A684;
   }
-  
+
   .list--inline {
     flex-wrap: nowrap;
     display: flex;
@@ -411,7 +408,7 @@ tr > *:first-child::before{
     padding-left: 0 !important;
     width: 100%;
   }
-  
+
   .list--inline li  {
     padding: 5px !important;
     color: #80A684;
@@ -460,3 +457,5 @@ tr > *:first-child::before{
 .table__about td {
   text-align: center;
 }
+
+

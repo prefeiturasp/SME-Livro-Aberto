@@ -133,7 +133,8 @@ class BaseTestCase:
 
     def assert_get_url(self, execucoes, serializer):
         item = serializer.data[0]
-        expected = self.next_level_base_url + serializer.child._query_params
+        expected = self.next_level_base_url(item) \
+            + serializer.child._query_params
         assert expected == item['url']
 
     def get_filtered_queryset(self):
@@ -149,9 +150,8 @@ class TestBaseExecucaoSerializer(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:grupos')
 
-    @property
-    def next_level_base_url(self):
-        return reverse('mosaico:subgrupos', args=[1])
+    def next_level_base_url(self, item):
+        return reverse('mosaico:subgrupos', args=[item['grupo_id']])
 
     @pytest.fixture
     def serializer(self):
@@ -238,9 +238,8 @@ class TestSubgrupoSerializer(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:subgrupos', args=[1])
 
-    @property
-    def next_level_base_url(self):
-        return reverse('mosaico:elementos', args=[1, 1])
+    def next_level_base_url(self, item):
+        return reverse('mosaico:elementos', args=[1, item['subgrupo_id']])
 
     @pytest.fixture
     def serializer(self):
@@ -278,9 +277,9 @@ class TestElementoSerializer(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:elementos', args=[1, 1])
 
-    @property
-    def next_level_base_url(self):
-        return reverse('mosaico:subelementos', args=[1, 1, 1])
+    def next_level_base_url(self, item):
+        return reverse('mosaico:subelementos',
+                       args=[1, 1, item['elemento_id']])
 
     @pytest.fixture
     def execucoes(self):
@@ -377,9 +376,8 @@ class TestSubfuncaoSerializer(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:subfuncoes')
 
-    @property
-    def next_level_base_url(self):
-        return reverse('mosaico:programas', args=[1])
+    def next_level_base_url(self, item):
+        return reverse('mosaico:programas', args=[item['subfuncao_id']])
 
     @pytest.fixture
     def execucoes(self):
@@ -421,9 +419,8 @@ class TestProgramaSerializer(BaseTestCase):
     def base_url(self):
         return reverse('mosaico:programas', args=[1])
 
-    @property
-    def next_level_base_url(self):
-        return reverse('mosaico:projetos', args=[1, 1])
+    def next_level_base_url(self, item):
+        return reverse('mosaico:projetos', args=[1, item['programa_id']])
 
     @pytest.fixture
     def execucoes(self):

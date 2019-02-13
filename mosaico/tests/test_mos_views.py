@@ -36,6 +36,7 @@ from mosaico.serializers import (
     SubelementoSerializer,
     SubgrupoSerializer,
     SubfuncaoSerializer,
+    TimeseriesSerializer,
 )
 
 
@@ -166,7 +167,7 @@ class TestBaseListView(APITestCase):
 
     @patch('mosaico.views.TimeseriesSerializer')
     def test_calls_serializer_with_deflate_true(self, mock_serializer):
-        make(Execucao, _quantity=2)
+        make(Execucao, orgao__id=SME_ORGAO_ID, subgrupo__id=1, _quantity=2)
         execucoes_qs = Execucao.objects.all().order_by('year')
 
         response = self.get(deflate=True, year=2018)
@@ -217,6 +218,45 @@ class TestMinimoLegalFilter(APITestCase):
         assert set([exec2.subfuncao_id, exec3.subfuncao_id]) \
             == set([ex['subfuncao_id'] for ex in response.data['execucoes']])
 
+    def test_minimo_legal_timeseries(self):
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=True,
+             _quantity=2)
+        make(Execucao,
+             orgao__id=1,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=True,
+             _quantity=2)
+
+        # not expected
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=False,
+             _quantity=2)
+        make(Execucao,
+             orgao__id=1,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=False,
+             _quantity=2)
+
+        execucoes = Execucao.objects \
+            .filter(is_minimo_legal=True) \
+            .order_by('year')
+        expected = TimeseriesSerializer(execucoes, deflate=False).data
+        response = self.get(year=2018, minimo_legal=True)
+        assert expected == response.data['timeseries']
+
 
 class BaseTestCase(APITestCase):
 
@@ -261,8 +301,15 @@ class TestGruposListView(BaseTestCase):
              year=date(2018, 1, 1),
              _quantity=2)
 
+        # not expected
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subgrupo=None,
+             fonte_grupo__id=2,
+             year=date(2018, 1, 1))
+
     def test_serializes_execucoes_data(self):
-        execucoes = Execucao.objects.all()
+        execucoes = Execucao.objects.filter(subgrupo__isnull=False)
         serializer = self.get_serializer(execucoes, year=2018)
         expected = serializer.data
 
@@ -287,6 +334,39 @@ class TestGruposListView(BaseTestCase):
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
         assert issubclass(GruposListView, BaseListView)
         assert issubclass(GruposListView, SimplesViewMixin)
+
+    def test_get_timeseries_queryset(self):
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subgrupo__grupo__id=3,
+             fonte_grupo__id=2,
+             year=date(2017, 1, 1),
+             is_minimo_legal=False,
+             _quantity=2)
+
+        # not_expected
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subgrupo__grupo__id=3,
+             fonte_grupo__id=2,
+             year=date(2017, 1, 1),
+             is_minimo_legal=True,
+             _quantity=2)
+        make(Execucao,
+             orgao__id=1,
+             subgrupo__grupo__id=3,
+             fonte_grupo__id=2,
+             year=date(2017, 1, 1),
+             is_minimo_legal=False,
+             _quantity=2)
+
+        execucoes = Execucao.objects \
+            .filter(subgrupo__isnull=False, orgao_id=SME_ORGAO_ID,
+                    is_minimo_legal=False) \
+            .order_by('year')
+        expected = TimeseriesSerializer(execucoes, deflate=False).data
+        response = self.get(year=2018)
+        assert expected == response.data['timeseries']
 
 
 class TestSubgruposListView(BaseTestCase):
@@ -545,6 +625,37 @@ class TestSubfuncaoListView(BaseTestCase):
     def test_issubclass_of_baselistview_and_simplesviewmixin(self):
         assert issubclass(SubfuncoesListView, BaseListView)
         assert issubclass(SubfuncoesListView, TecnicoViewMixin)
+
+    def test_get_timeseries_queryset(self):
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             _quantity=2)
+
+        # not expected
+        make(Execucao,
+             orgao__id=SME_ORGAO_ID,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=True,
+             _quantity=2)
+        make(Execucao,
+             orgao__id=1,
+             subfuncao__id=1,
+             fonte_grupo__id=1,
+             year=date(2017, 1, 1),
+             is_minimo_legal=True,
+             _quantity=2)
+
+        execucoes = Execucao.objects \
+            .filter(orgao_id=SME_ORGAO_ID, is_minimo_legal=False) \
+            .order_by('year')
+        expected = TimeseriesSerializer(execucoes, deflate=False).data
+        response = self.get(year=2018)
+        assert expected == response.data['timeseries']
 
 
 class TestProgramasListView(BaseTestCase):
