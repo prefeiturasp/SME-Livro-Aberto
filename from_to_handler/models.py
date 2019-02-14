@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from budget_execution.models import (
@@ -104,6 +105,42 @@ class DotacaoFromTo(models.Model, FromTo):
         for ex in execucoes:
             ex.subgrupo = subgrupo
             ex.save()
+
+
+class DotacaoFromToSpreadsheet(models.Model):
+    spreadsheet = models.FileField(
+        'Planilha', upload_to='from_to_handler/dotacao_spreadsheets')
+    created_at = models.DateTimeField(auto_now_add=True)
+    extracted = models.BooleanField(default=False, editable=False)
+    # fields used to store which FromTos where successfully added
+    added_fromtos = ArrayField(models.CharField(max_length=28), null=True,
+                               editable=False)
+    not_added_fromtos = ArrayField(models.CharField(max_length=28), null=True,
+                                   editable=False)
+
+    class Meta:
+        verbose_name = 'Planilha De-Para: Dotações Subgrupos Grupos'
+        verbose_name_plural = 'Planilha De-Para: Dotações Subgrupos Grupos'
+
+    def __str__(self):
+        return f'{self.spreadsheet.name.split("/")[-1]}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.extracted:
+            self.extract_data()
+
+    def extract_data(self):
+        from from_to_handler import services
+
+        if self.extracted:
+            return
+
+        added, not_added = services.extract_dotacao_fromto_spreadsheet(self)
+        self.added_fromtos = added
+        self.not_added_fromtos = not_added
+        self.extracted = True
+        self.save()
 
 
 class GNDFromTo(models.Model, FromTo):

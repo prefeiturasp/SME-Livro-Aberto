@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
-from .models import (Deflator, DotacaoFromTo, GNDFromTo, FonteDeRecursoFromTo,
+from .models import (Deflator, DotacaoFromTo, DotacaoFromToSpreadsheet,
+                     GNDFromTo, FonteDeRecursoFromTo,
                      SubelementoFromTo)
 
 
@@ -23,6 +24,25 @@ class DotacaoFromToAdmin(admin.ModelAdmin):
     def subgrupo_full_code(self, obj):
         return f'{obj.subgrupo_code} ({obj.grupo_code}.{obj.subgrupo_code})'
     subgrupo_full_code.short_desc = 'Código do Subgrupo'
+
+
+@admin.register(DotacaoFromToSpreadsheet)
+class DotacaoFromToSpreadsheetAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'added_fromtos', 'not_added_fromtos')
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.added_fromtos:
+            messages.info(
+                request, f'Novos De-Paras adicionados: {obj.added_fromtos}')
+        else:
+            messages.error(request, 'Nenhum novo De-Para adicionado')
+
+        if obj.not_added_fromtos:
+            messages.error(
+                request, ('De-Paras não adicionados pois já existiam no banco: '
+                          f'{obj.not_added_fromtos}')
+            )
 
 
 @admin.register(GNDFromTo)
