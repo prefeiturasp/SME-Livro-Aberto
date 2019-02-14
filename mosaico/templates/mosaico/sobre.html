@@ -15,7 +15,7 @@
 {%block header %}
   <h1>Mosaico Orçamentário</h1>
   <p>Orçamento da Educação ao seu alcance</p>
-  {% include '_header_nav.html' %}
+  {% include '_header_nav.html' with methodology='mosaico:metodologia'%}
 {% endblock %}
 
 {%block sections %}
@@ -24,7 +24,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="card sobre">
-                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" /> 
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
                 <h1>So<br/>bre</h1>
                 <p>
                     Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.
@@ -70,122 +70,122 @@
                                 </ul>
                             </li>
                         </ul>
-    
+
                         <div class="txt">
                             <p>O último nível na linguagem <b>simplificada</b> o subelemento de despesa, descreve com o que especificamente a despesa está sendo efetuada.</p>
                         </div>
-   
+
                         <div class="txt">
                             <p>O <b>tamanho</b> dos retângulos representa a proporção do orçamento (valor orçado atualizado) para aquela rubrica em relação às demais:</p>
-                            
+
                             <img src="../../static/img/sobre_mosaico.png">
                             <p>As <b>cores dos retângulos</b> representam a medida de execução do orçamento em questão. Isto é, o quanto do orçado atualizado foi, de fato, aplicado (o “empenhado”, já descontando eventuais cancelamentos de despesa):</p>
                             <img src="../../static/img/sobre_percent.png">
-    
+
                             <p>Como o subelemento de despesa é uma categoria que só existe para os empenhos de despesa e não para o orçamento – conforme definido pela Lei Orçamentária (exemplo: não se autoriza verba para Material Hospitalar especificamente, mas sim para Materiais de Consumo, em geral) –, as cores associadas aos subelementos são “herdadas” da categoria maior, ou seja, do respectivo elemento de despesa</p>
-    
+
                             <p>A ferramenta permite mostrar os dados de dois conjuntos de informação distintos: (i) o órgão orçamentário “Secretaria Municipal de Educação”; e (ii) a função orçamentária “Educação” ampliada, incluindo todas as despesas que são contabilizadas para o cumprimento do mínimo legal de gastos em ensino.</p>
-    
+
                             <p>No segundo caso, a visualização é útil para mostrar quais despesas contam para o cumprimento de requisitos legais do município de São Paulo em termos de gastos com Educação. A Constituição Federal assegura, em seu artigo 212, no âmbito dos municípios, a aplicação de “vinte e cinco por cento, no mínimo, da receita resultante de impostos, compreendida a proveniente de transferências, na manutenção e desenvolvimento do ensino”.</p>
-                            
+
                             <p>Além disso, a Lei Orgânica Municipal de São Paulo assegura um percentual adicional de seis por cento, totalizando, portanto, trinta e um por cento como limite mínimo de gastos para manutenção e desenvolvimento do ensino. Parte dessas despesas contabilizadas não estão, no entanto, atreladas à função Educação e não são necessariamente executadas pela SME, por isso trata-se de um universo distinto de informações.</p>
-    
+
                         </div>
                     </div>
                     <!-- End Parte 1 -->
-    
+
                     <!-- Part 2 -->
-    
+
                     <div class="content verde">
                         <div class="txt">
                             <h2>Sobre <span> &#x276f; O Ciclo Orçamentário</span></h2>
-    
+
                             <p>O ciclo orçamentário é o processo pelo qual o orçamento público é planejado e formulado. Ele é composto por três peças principais:</p>
-    
+
                             <ul class="ciclo ciclo--text-left">
                                 <li>O Plano Plurianual (PPA);</li>
                                 <li>A Lei de Diretrizes Orçamentárias (LDO); e</li>
                                 <li>A Lei Orçamentária Anual (LOA)</li>
                             </ul>
-    
+
                             <p>O ciclo tem início a cada primeiro ano de mandato do chefe do executivo, quando é elaborado o PPA, instrumento que faz o planejamento estratégico para os quatro anos posteriores. A LDO indica as prioridades e as metas do orçamento anual, considerando os cenários macroeconômico e fiscal. A partir das diretrizes descritas pela LDO, ocorre finalmente a formulação e aprovação da LOA, que autoriza a quantidade de recursos destinados aos órgãos públicos em cada ano, segundo as classificações pertinentes às despesas e detalhadas as fontes da receita.</p>
-    
+
                             <p><b>Por meio destas três leis o orçamento é proposto, aprovado, executado e avaliado continuamente.</b></p>
-    
+
                             <img src="../../static/img/sobre_image1.png">
-    
+
                         </div>
-                        
+
                     </div>
                     <!-- End Part 2 -->
-    
+
                     <!-- Part 3 -->
                     <div class="content verde">
                         <div class="txt">
                             <h2>Sobre <span> &#x276f; O Processo de Execução</span></h2>
-    
+
                             <p>Definidos os valores destinados às rubricas, cabe aos órgãos responsáveis a execução do orçamento previsto. Nem sempre há execução total do valor orçado. Quando ocorre sobra de recursos, os valores ao final do exercício não acumulam para o ano seguinte, eles são estornados e devem ser redistribuídos segundo a LOA do ano seguinte.</p>
-    
+
                             <p>Se durante o exercício forem necessários mais recursos, o orçamento público pode sofrer alterações. O recurso para determinada conta pode ser ampliado por meio de crédito suplementar, crédito especial ou por decreto de abertura de crédito extraordinário. Desta forma, o chamado “valor orçado atualizado” pode variar ao longo do ano.</p>
-    
+
                             <p>As despesas passam por algumas fases antes de serem efetivamente realizadas. A partir da dotação autorizada pela LOA, os recursos destinados a determinado fim devem ser empenhados. Empenhar significa reservar aquele valor para cobrir o pagamento de algum bem ou serviço compatível com os fins estabelecidos pela rubrica na qual se inclui. Apenas depois que o serviço foi concluído ou bem adquirido foi entregue, o valor é liquidado. O pagamento daquela despesa é então realizado, fase em que a administração pública efetivamente quita seu débito com o credor.</p>
-    
+
                             <p>Como esclarecido anteriormente, recursos não pagos em um período não acumulam para o ano seguinte. No entanto, se houver valores já empenhados, isto é, comprometidos a algum pagamento, porém não liquidados (os chamados “restos a pagar não processados”) ou pagos (“restos a pagar processados”) até a data de 31 de dezembro daquele ano, os valores são mantidos e inscritos em Restos a Pagar, de forma a transferir o recurso para o exercício posterior. Além disso, recursos empenhados podem ser cancelados, por isso utiliza-se o “empenhado líquido” (que já considera eventuais cancelamentos) como referência para execução.</p>
                         </div>
                     </div>
                     <!-- End Part 3 -->
-    
+
                     <!-- Part 4 -->
                     <div class="content verde">
                         <div class="txt">
                             <h2>Sobre <span> &#x276f; As Classificações</span></h2>
-    
+
                             <p>As classificações orçamentárias são úteis para formular, apresentar, executar e controlar o orçamento em todo o ciclo orçamentário, garantindo um processo mais sistematizado e uniformizado e favorecendo a transparência.</p>
-    
+
                             <p>As classificações devem facilitar a formulação de um orçamento que esteja em consonância com os objetivos das políticas, além de refletir com precisão o que o governo se propõe a fazer com os recursos disponíveis e proporcionar uma estrutura de controle administrativo para monitoramento do orçamento aprovado pelo Legislativo.</p>
-    
+
                             <p>Existem várias classificações possíveis, segundo quatro lógicas distintas:</p>
-    
+
                         </div>
-    
+
                         <blockquote>
                             <h5>01. Istitucional</h5>
                             Evidencia as unidades administrativas responsáveis pela execução da despesa. Exemplo:
                             <b class="color">(Órgão - Unidade Orçamentária) ⇔ (Secretaria de Educação - Gabinete do Secretário).</b>
                         </blockquote>
-    
+
                         <blockquote>
                             <h5>02. funcional</h5>
                             Fornece as bases para a apresentação de dados sobre os gastos públicos nos principais segmentos em que atuam as organizações do Estado. Exemplo:
                             <b class="color">(Função - Subfunção) ⇔ (Educação - Educação Infantil).</b>
                         </blockquote>
-    
+
                         <blockquote>
                             <h5>03. segundo a natureza da despesa</h5>
                             Fornece indicações mais detalhadas sobre a destinação da despesa e como ela será aplicada. Exemplo:
                             <b class="color">(Grupo de Natureza de Despesa - Elemento de Despesa) ⇔ (Investimentos - Obras e Instalações).</b>
                         </blockquote>
-    
+
                         <blockquote>
                             <h5>04. programática</h5>
                             Especifica os gastos até o nível de programa; sua finalidade é demonstrar as realizações do governo. Exemplo:
                             <b class="color">(Programa - Projeto/Atividade) ⇔ (Desenvolvimento e Manutenção da Educação - Ações de Educação Integral).</b>
                         </blockquote>
-                        
+
                         <div class="txt">
 
                             <p>Para o Mosaico, foram utilizados, na navegação por linguagem técnica, atributos das classificações funcional e programática. Já na linguagem simplificada, foi criada uma tipologia alternativa, para viabilizar o uso da ferramenta sem exigir conhecimento prévio sobre categorias orçamentárias. Além disso, essa navegação usa atributos da classificação segundo a natureza da despesa: o elemento e o subelemento de despesa. Essas categorias também tiveram sua nomenclatura original reformulada para uma linguagem mais acessível.</p>
-    
+
                             <p>Essa tipologia alternativa é contemplada por áreas principais de gastos em Educação: os grupos e subgrupos. Grupos são categorias mais amplas que subgrupos. Por exemplo: uma despesa de pagamento de fornecedores de serviço de transporte escolar será categorizada no Subgrupo “Transporte Escolar”, que faz parte do Grupo “Apoio ao Aluno”.</p>
-    
+
                             <p>A tipologia foi elaborada em conjunto entre a SME e a FGV/DAPP por meio da análise de outros atributos das despesas, em especial, o agrupamento das ações orçamentárias (Projeto/Atividade).</p>
-                        
+
                         </div>
-                        
+
                     </div>
                     <!-- End Part 4 -->
-                
-            </div>            
+
+            </div>
         </div>
     </div>
 {% endblock %}
