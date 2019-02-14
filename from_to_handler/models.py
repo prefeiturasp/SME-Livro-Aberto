@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from budget_execution.models import (
@@ -111,6 +112,11 @@ class DotacaoFromToSpreadsheet(models.Model):
         'Planilha', upload_to='from_to_handler/dotacao_spreadsheets')
     created_at = models.DateTimeField(auto_now_add=True)
     extracted = models.BooleanField(default=False, editable=False)
+    # fields used to store which FromTos where successfully added
+    added_fromtos = ArrayField(models.CharField(max_length=28), null=True,
+                               editable=False)
+    not_added_fromtos = ArrayField(models.CharField(max_length=28), null=True,
+                                   editable=False)
 
     class Meta:
         verbose_name = 'Planilha De-Para: Dotações Subgrupos Grupos'
