@@ -104,13 +104,15 @@ class TestDotacaoGrupoSubgrupoFromToSpreadsheet:
         fts = DotacaoFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        assert fts[0].indexer == '2018.16.1079.4.4.90.39.00'
+        indexers = ['2018.16.1079.4.4.90.39.00', '2018.16.1090.4.4.90.51.00']
+
+        assert fts[0].indexer == indexers[0]
         assert fts[0].grupo_code == 10
         assert fts[0].grupo_desc == 'Grupo'
         assert fts[0].subgrupo_code == 1
         assert fts[0].subgrupo_desc == 'Subgrupo'
 
-        assert fts[1].indexer == '2018.16.1090.4.4.90.51.00'
+        assert fts[1].indexer == indexers[1]
         assert fts[1].grupo_code == 55
         assert fts[1].grupo_desc == 'Outro grupo'
         assert fts[1].subgrupo_code == 2
@@ -118,6 +120,44 @@ class TestDotacaoGrupoSubgrupoFromToSpreadsheet:
 
         ssheet.refresh_from_db()
         assert ssheet.extracted
+        assert indexers == ssheet.added_fromtos
+        assert [] == ssheet.not_added_fromtos
+
+    def test_extract_data_when_indexer_already_exists(self, file_fixture):
+        mommy.make(
+            DotacaoFromTo,
+            indexer='2018.16.1079.4.4.90.39.00',
+            grupo_code=66,
+            grupo_desc='old grupo',
+            subgrupo_code=6,
+            subgrupo_desc='old subgrupo')
+
+        ssheet = mommy.make(
+            DotacaoFromToSpreadsheet,
+            spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = DotacaoFromTo.objects.all()
+        assert 2 == len(fts)
+
+        indexers = ['2018.16.1079.4.4.90.39.00', '2018.16.1090.4.4.90.51.00']
+
+        assert fts[0].indexer == indexers[0]
+        assert fts[0].grupo_code == 66
+        assert fts[0].grupo_desc == 'old grupo'
+        assert fts[0].subgrupo_code == 6
+        assert fts[0].subgrupo_desc == 'old subgrupo'
+
+        assert fts[1].indexer == indexers[1]
+        assert fts[1].grupo_code == 55
+        assert fts[1].grupo_desc == 'Outro grupo'
+        assert fts[1].subgrupo_code == 2
+        assert fts[1].subgrupo_desc == 'Outro subgrupo'
+
+        ssheet.refresh_from_db()
+        assert ssheet.extracted
+        assert [indexers[1]] == ssheet.added_fromtos
+        assert [indexers[0]] == ssheet.not_added_fromtos
 
 
 @pytest.mark.django_db

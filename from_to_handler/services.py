@@ -1,4 +1,4 @@
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from openpyxl import load_workbook
 
 from from_to_handler.models import DotacaoFromTo
@@ -11,6 +11,8 @@ def extract_dotacao_fromto_spreadsheet(ssheet_obj):
 
     row = 2
     row_is_valid = True
+    added = []
+    not_added = []
     while row_is_valid:
         indexer = ws['a' + str(row)].value
         if not indexer:
@@ -28,8 +30,13 @@ def extract_dotacao_fromto_spreadsheet(ssheet_obj):
         dot.subgrupo_code = subgrupo_code
         dot.subgrupo_desc = subgrupo_desc
         try:
-            dot.save()
+            with transaction.atomic():
+                dot.save()
+            added.append(dot.indexer)
         except IntegrityError:
-            pass
+            # add to dot.not_added
+            not_added.append(dot.indexer)
 
         row += 1
+
+    return added, not_added

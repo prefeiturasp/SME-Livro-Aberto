@@ -136,7 +136,9 @@ class DotacaoFromToSpreadsheet(models.Model):
         if self.extracted:
             return
 
-        services.extract_dotacao_fromto_spreadsheet(self)
+        added, not_added = services.extract_dotacao_fromto_spreadsheet(self)
+        self.added_fromtos = added
+        self.not_added_fromtos = not_added
         self.extracted = True
         self.save()
 
