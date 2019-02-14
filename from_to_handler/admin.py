@@ -28,6 +28,8 @@ class DotacaoFromToAdmin(admin.ModelAdmin):
 
 @admin.register(DotacaoFromToSpreadsheet)
 class DotacaoFromToSpreadsheetAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'added_fromtos', 'not_added_fromtos')
+
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if obj.added_fromtos:
