@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from .models import (Deflator, DotacaoFromTo, DotacaoFromToSpreadsheet,
                      GNDFromTo, FonteDeRecursoFromTo,
@@ -28,7 +28,19 @@ class DotacaoFromToAdmin(admin.ModelAdmin):
 
 @admin.register(DotacaoFromToSpreadsheet)
 class DotacaoFromToSpreadsheetAdmin(admin.ModelAdmin):
-    pass
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.added_fromtos:
+            messages.info(
+                request, f'Novos De-Paras adicionados: {obj.added_fromtos}')
+        else:
+            messages.error(request, 'Nenhum novo De-Para adicionado')
+
+        if obj.not_added_fromtos:
+            messages.error(
+                request, ('De-Paras não adicionados pois já existiam no banco: '
+                          f'{obj.not_added_fromtos}')
+            )
 
 
 @admin.register(GNDFromTo)
