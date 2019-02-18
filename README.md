@@ -3,6 +3,10 @@ Projeto de Transparência Orçamentária da Secretaria Municipal da Educação d
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/e03a41104c1e2a928c2e/maintainability)](https://codeclimate.com/github/prefeiturasp/SME-Livro-Aberto/maintainability)
 
+## Desenvolvimento
+
+Para configurações do ambiente de desenvolvimento, acesse [CONTRIBUTING](CONTRIBUTING.md).
+
 ## Configuração inicial da aplicação
 
 Rode as migrações. Além de criar as tabelas da aplicação, criará também as tabelas `orcamento` e `empenhos` que serão populadas pela SME e servirão de base para a geração das execuções.
