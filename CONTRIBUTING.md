@@ -22,6 +22,14 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
+If you want a functional data filled app, download [budget data](https://github.com/prefeiturasp/SME-Livro-Aberto/wiki/dev-data.tar.gz) from the [project wiki](https://github.com/prefeiturasp/SME-Livro-Aberto/wiki), unarchive it, and then load it to the database:
+
+```bash
+$ curl https://github.com/prefeiturasp/SME-Livro-Aberto/wiki/dev-data.tar.gz -o dev-data.tar.gz
+$ tar -xvzf dev-data.tar.gz
+$ pipenv run python manage.py loaddata data/budget_execution.json
+```
+
 To run tests:
 ```bash
 $ python manage.py test
