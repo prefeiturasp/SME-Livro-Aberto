@@ -10,16 +10,32 @@ Para configurações do ambiente de desenvolvimento, acesse [CONTRIBUTING](CONTR
 ## Configuração inicial da aplicação
 
 Rode as migrações. Além de criar as tabelas da aplicação, criará também as tabelas `orcamento` e `empenhos` que serão populadas pela SME e servirão de base para a geração das execuções.
-`python manage.py migrate`
 
-Carregue os dados das gnds
-`python manage.py loaddata data/gnds.json`
+```bash
+$ python manage.py migrate
+```
 
-Carregue os dados dos De-Para
-`python manage.py loaddata data/fromto.json`
+Carregue os dados das gnds:
+
+```bash
+$ python manage.py loaddata data/gnds.json
+```
+
+Carregue os dados dos De-Para:
+
+```bash
+$ python manage.py loaddata data/fromto.json
+```
+
 
 Para carregar os dados do Mínimo Legal de 2014 a 2017:
-`python manage.py loaddata data/minimo_legal_2014_2017.json`
+
+```bash
+$ python manage.py loaddata data/minimo_legal_2014_2017.json
+```
 
 É necessário que as tabelas `orcamento` e `empenhos` já tenham sido populadas antes de rodar o script abaixo, que irá gerar as execuções. Os dados das duas tabelas serão importados e os De-Para aplicados:
-`python manage.py runscript generate_execucoes`
+
+```bash
+$ python manage.py runscript generate_execucoes
+```
