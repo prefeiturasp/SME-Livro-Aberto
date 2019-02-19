@@ -14,12 +14,19 @@ STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage'
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/livro-aberto
 ```
 
-Finally, you run migrations and start the server
+Finally, run migrations and start the server:
 
 ```bash
-$ pipenv shell # or prefix the following commands with `pipenv run`
-$ python manage.py migrate
-$ python manage.py runserver
+$ pipenv run python manage.py migrate
+$ pipenv run python manage.py runserver
+```
+
+If you want a functional data filled app, download [budget data](https://github.com/prefeiturasp/SME-Livro-Aberto/wiki/dev-data.tar.gz) from the [project wiki](https://github.com/prefeiturasp/SME-Livro-Aberto/wiki), unarchive it, and then load it to the database:
+
+```bash
+$ curl https://github.com/prefeiturasp/SME-Livro-Aberto/wiki/dev-data.tar.gz -o dev-data.tar.gz
+$ tar -xvzf dev-data.tar.gz
+$ pipenv run python manage.py loaddata data/budget_execution.json
 ```
 
 To run tests:
