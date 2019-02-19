@@ -61,5 +61,33 @@ window.addEventListener('load', function(){
         .attr('d', area)
         .attr('class', d => d.key);
 
+    const xAxis = svg.append("g")
+        .attr('class', 'axis axis--x')
+        .attr('font-size', '1em')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
+
+    xAxis.append('line')
+      .attr('x2', x.range()[1])
+      .attr('stroke', '#000')
+
+    xAxis.selectAll('circle')
+      .data(years)
+      .enter().append('circle')
+      .attr('r', 4)
+      .attr('cx', x)
+      .attr('cy', 0)
+      .attr('stroke', '#000')
+      .attr('fill', 'currentColor')
+
+    xAxis.selectAll('text')
+      .data(years)
+      .enter().append('text')
+      .attr('x', x)
+      .attr('y', 0)
+      .attr('dy', '1.5em')
+      .attr('fill', 'currentColor')
+      .text(d => d3.format("d")(d));
+
     table.style.display = 'none';
 })
