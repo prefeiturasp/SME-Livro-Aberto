@@ -32,16 +32,15 @@
 .menu {
     left: 0;
     right: 0;
-    opacity: 0;
     z-index: 999;
     color: #fff;
-    position: fixed;
     background: #444;
     padding: .625rem 1.25rem;
-    visibility: hidden;
-    transition: visibility .25s, opacity .25s linear;
+    display: none;
     border-bottom: 1px #333 solid;
     box-shadow: 0px 1px #fff;
+    position: absolute;
+    top: 4.4rem;
 }
 
 .menu ul {
@@ -70,8 +69,7 @@
 }
 
 .show {
-    opacity: 1;
-    visibility: visible;
+    display: block !important;
 }
 
 @media (min-width: 768px) {
