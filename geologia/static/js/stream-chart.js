@@ -65,28 +65,23 @@ window.addEventListener('load', function(){
         .attr('class', 'axis axis--x')
         .attr('font-size', '1em')
         .attr('text-anchor', 'middle')
+        .attr('fill', 'currentColor')
+        .attr('stroke', '#000')
         .attr('transform', 'translate(' + margin.left + ',' + height + ')')
 
-    xAxis.append('line')
-      .attr('x2', x.range()[1])
-      .attr('stroke', '#000')
+    xAxis.append('line').attr('x2', x.range()[1])
 
-    xAxis.selectAll('circle')
+    const ticks = xAxis.selectAll('g.tick')
       .data(years)
-      .enter().append('circle')
-      .attr('r', 4)
-      .attr('cx', x)
-      .attr('cy', 0)
-      .attr('stroke', '#000')
-      .attr('fill', 'currentColor')
+      .enter().append('g')
+      .attr('class', 'tick')
+      .attr('transform', d => 'translate(' + x(d) + ',0)')
 
-    xAxis.selectAll('text')
-      .data(years)
-      .enter().append('text')
-      .attr('x', x)
-      .attr('y', 0)
+    ticks.append('circle').attr('r', 4)
+
+    ticks.append('text')
+      .attr('stroke', 'none')
       .attr('dy', '1.5em')
-      .attr('fill', 'currentColor')
       .text(d => d3.format("d")(d));
 
     table.style.display = 'none';
