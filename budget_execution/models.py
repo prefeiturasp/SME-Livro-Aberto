@@ -85,24 +85,48 @@ class ExecucaoManager(models.Manager):
                 filter_nan(empenho.vl_empenho_liquido))
             execucao.save()
         except Execucao.DoesNotExist:
-            if len(execucoes) == 1:
-                execucao = execucoes.first()
-            else:
-                execucao = execucoes.filter(subelemento__isnull=True).first()
+            execucao_without_subelemento = execucoes.filter(
+                subelemento__isnull=True).first()
 
-            if execucao:
-                execucao.subelemento = Subelemento.objects.get_or_create(
-                    id=empenho.cd_subelemento,
-                    defaults={"desc": empenho.dc_subelemento}
-                )[0]
-                execucao.empenhado_liquido = filter_nan(
-                    empenho.vl_empenho_liquido)
-                execucao.save()
-
-                execucao.elemento.desc = empenho.dc_elemento
-                execucao.elemento.save()
+            if execucao_without_subelemento:
+                execucao = self.update_with_new_subelemento_by_empenho(
+                    execucao_without_subelemento, empenho)
             else:
-                execucao = None
+                # creating new execucao based on an existing one with
+                # same indexer
+                base_execucao = execucoes.order_by("-orcado_atualizado").first()
+                execucao = self.create_by_existing_one_and_empenho(
+                    base_execucao, empenho)
+
+        return execucao
+
+    def update_with_new_subelemento_by_empenho(self, execucao, empenho):
+        execucao.subelemento = Subelemento.objects.get_or_create(
+            id=empenho.cd_subelemento,
+            defaults={"desc": empenho.dc_subelemento}
+        )[0]
+        execucao.empenhado_liquido = filter_nan(
+            empenho.vl_empenho_liquido)
+        execucao.save()
+
+        execucao.elemento.desc = empenho.dc_elemento
+        execucao.elemento.save()
+
+        return execucao
+
+    def create_by_existing_one_and_empenho(self, execucao, empenho):
+        if not execucao:
+            return None
+
+        execucao.id = None
+        execucao.orcado_atualizado = 0
+        execucao.subelemento = Subelemento.objects.get_or_create(
+            id=empenho.cd_subelemento,
+            defaults={"desc": empenho.dc_subelemento}
+        )[0]
+        execucao.empenhado_liquido = filter_nan(
+            empenho.vl_empenho_liquido)
+        execucao.save()
 
         return execucao
 
