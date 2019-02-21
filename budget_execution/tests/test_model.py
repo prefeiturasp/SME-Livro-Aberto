@@ -284,7 +284,7 @@ class TestExecucaoManagerUpdateByEmpenho:
     def test_updates_execucao_without_subelemento_when_there_are_others(self):
         """
         filter_by_indexer returns more than one execucao. Should update any
-        execucao of this indexer that doesn't have subelemento.
+        execucao of this indexer that doesn't have subelemento if there's one
         """
         previous_orcado = 100
         previous_empenhado = 200
@@ -319,6 +319,49 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao.subelemento_id == empenho.cd_subelemento
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
         assert execucao.orcado_atualizado == previous_orcado
+
+        execucao_with_empenho.refresh_from_db()
+        assert execucao_with_empenho.subelemento_id == 1
+        assert execucao_with_empenho.empenhado_liquido == previous_empenhado
+        assert execucao_with_empenho.orcado_atualizado == previous_orcado
+
+    def test_creates_new_execucao_when_theres_no_one_without_subelemento(self):
+        """
+        filter_by_indexer returns more than one execucao and there's no one
+        without subelemento. A new execucao should be created with same data as
+        another one with the same indexer, but with correct subelemento and
+        empenhado_liquido (from Empenho) and orcado_atualizado == 0 (so it won't
+        affect the Sum of orcado_total) It won't an execucao with
+        orcado_atualizado == 0 to appear on the chart, because, at subelemento
+        level, we show the values of the previous level (elemento), so it will
+        always be a sum.
+        """
+        previous_orcado = 100
+        previous_empenhado = 200
+        execucao_with_empenho = mommy.make(
+            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
+            fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
+            empenhado_liquido=previous_empenhado)
+
+        assert 1 == Execucao.objects.count()
+        assert 1 == Subelemento.objects.count()
+
+        empenho = mommy.make(
+            Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
+            cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
+            cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
+            execucao=None, _fill_optional=True,
+        )
+
+        ret = Execucao.objects.update_by_empenho(empenho)
+
+        assert 2 == Execucao.objects.count()
+        assert 2 == Subelemento.objects.count()
+
+        assert ret.subelemento_id == empenho.cd_subelemento
+        assert ret.empenhado_liquido == empenho.vl_empenho_liquido
+        assert ret.orcado_atualizado == 0
 
         execucao_with_empenho.refresh_from_db()
         assert execucao_with_empenho.subelemento_id == 1
