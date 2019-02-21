@@ -61,5 +61,28 @@ window.addEventListener('load', function(){
         .attr('d', area)
         .attr('class', d => d.key);
 
+    const xAxis = svg.append("g")
+        .attr('class', 'axis axis--x')
+        .attr('font-size', '1em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'currentColor')
+        .attr('stroke', '#000')
+        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
+
+    xAxis.append('line').attr('x2', x.range()[1])
+
+    const ticks = xAxis.selectAll('g.tick')
+      .data(years)
+      .enter().append('g')
+      .attr('class', 'tick')
+      .attr('transform', d => 'translate(' + x(d) + ',0)')
+
+    ticks.append('circle').attr('r', 4)
+
+    ticks.append('text')
+      .attr('stroke', 'none')
+      .attr('dy', '1.5em')
+      .text(d => d3.format("d")(d));
+
     table.style.display = 'none';
 })
