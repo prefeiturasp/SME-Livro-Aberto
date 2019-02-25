@@ -55,6 +55,26 @@ window.addEventListener('load', function(){
         .y0(d => y(d[0]))
         .y1(d => y(d[1]));
 
+    const bgData = [data[0], data[0], data[data.length - 1], data[data.length - 1]]
+    const bgLayers = stack(bgData)
+    const bgDomain = [x.invert(0), x.domain()[0], x.domain()[1], x.invert(parentWidth)];
+
+    const bgArea = d3.area()
+        .curve(d3.curveMonotoneX)
+        .x((d, i) => x(bgDomain[i]))
+        .y0(d => y(d[0]))
+        .y1(d => y(d[1]));
+
+    const background = svg.append("g")
+        .attr('class', 'background')
+        .style('opacity', 0.5)
+
+    background.selectAll('path')
+      .data(bgLayers)
+      .enter().append('path')
+        .attr('d', bgArea)
+        .attr('class', d => d.key);
+
     const foreground = svg.append("g")
         .attr('class', 'foreground')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
