@@ -11,7 +11,7 @@ window.addEventListener('load', function(){
     let table = container.querySelector('table');
     let svg = d3.select(container).append('svg');
     let parentWidth = parseInt(getComputedStyle(svg.node())['width']);
-    var margin = {top: 0, right: 0, bottom: 40, left: 0},
+    var margin = {top: 0, right: 40, bottom: 40, left: 40},
     width = parentWidth - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
     svg.attr('height', height + margin.top + margin.bottom);
@@ -55,19 +55,24 @@ window.addEventListener('load', function(){
         .y0(d => y(d[0]))
         .y1(d => y(d[1]));
 
-    const path = svg.selectAll('path')
+    const foreground = svg.append("g")
+        .attr('class', 'foreground')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+    foreground.selectAll('path')
       .data(layers)
       .enter().append('path')
         .attr('d', area)
         .attr('class', d => d.key);
 
-    const xAxis = svg.append("g")
+
+    const xAxis = foreground.append("g")
         .attr('class', 'axis axis--x')
         .attr('font-size', '1em')
         .attr('text-anchor', 'middle')
         .attr('fill', 'currentColor')
         .attr('stroke', '#000')
-        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
+        .attr('transform', 'translate(0,' + height + ')')
 
     xAxis.append('line').attr('x2', x.range()[1])
 
