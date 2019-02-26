@@ -6,6 +6,23 @@ function emptyObj(keys){
     return obj;
 }
 
+function getStreamData(rows, legendItems){
+    let grouped = Array.from(rows, row => row.dataset).reduce(function(accumulator, curr){
+        accumulator[curr.year] = accumulator[curr.year] || emptyObj(legendItems);
+        accumulator[curr.year][curr.name] = curr.value;
+        return accumulator;
+    }, {});
+
+    let stream = {}
+    stream.data = []
+    stream.years = []
+    for(key in grouped){
+        stream.years.push(key)
+        stream.data.push(grouped[key])
+    }
+    return stream
+}
+
 window.addEventListener('load', function(){
     let container = document.querySelector('.stream-chart');
     let table = container.querySelector('table');
@@ -30,27 +47,16 @@ window.addEventListener('load', function(){
     let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
     let gnds = Array.from(legendItems, item => item.dataset.gnd)
     let rows = document.querySelectorAll('.stream-chart tbody tr');
+    let stream = getStreamData(rows, gnds);
 
     stack = d3.stack()
         .keys(gnds)
         .offset(d3['stackOffsetExpand'])
 
-    let grouped = Array.from(rows, row => row.dataset).reduce(function(accumulator, curr){
-        accumulator[curr.year] = accumulator[curr.year] || emptyObj(gnds);
-        accumulator[curr.year][curr.name] = curr.value;
-        return accumulator;
-    }, {});
-
-    let data = []
-    let years = []
-    for(key in grouped){
-        years.push(key)
-        data.push(grouped[key])
-    }
-    const layers = stack(data)
+    const layers = stack(stream.data)
 
     const x = d3.scaleLinear()
-        .domain(d3.extent(years))
+        .domain(d3.extent(stream.years))
         .range([0, width]);
 
     const y = d3.scaleLinear()
@@ -107,7 +113,7 @@ window.addEventListener('load', function(){
     xAxis.append('line').attr('x2', x.range()[1])
 
     const ticks = xAxis.selectAll('g.tick')
-      .data(years)
+      .data(stream.years)
       .enter().append('g')
       .attr('class', 'tick')
       .attr('transform', d => 'translate(' + x(d) + ',0)')
