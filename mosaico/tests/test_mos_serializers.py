@@ -1,6 +1,6 @@
 import pytest
 
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 from itertools import cycle
 
@@ -184,15 +184,6 @@ class TestBaseExecucaoSerializer(BaseTestCase):
         orcado = sum(execucao.orcado_atualizado for execucao in execucoes)
         empenhado = sum(execucao.empenhado_liquido for execucao in execucoes)
         expected = empenhado / orcado
-        assert str(expected) == str(data[0]['percentual_empenhado'])
-
-    @pytest.mark.freeze_time('2018-06-01')
-    def test_proporcional_percentual_empenhado(self, execucoes, serializer):
-        data = serializer.data
-        orcado = sum(execucao.orcado_atualizado for execucao in execucoes)
-        empenhado = sum(execucao.empenhado_liquido for execucao in execucoes)
-        current_month = datetime.now().date().month
-        expected = empenhado / ((current_month / 12) * orcado)
         assert str(expected) == str(data[0]['percentual_empenhado'])
 
     def test_get_percentual_with_empenhado_null(self):

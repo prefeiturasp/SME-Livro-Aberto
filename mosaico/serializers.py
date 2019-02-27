@@ -1,10 +1,8 @@
-from datetime import date, datetime
-from decimal import Decimal
 from functools import lru_cache
 from itertools import groupby
 from urllib.parse import urlencode
 
-from django.db.models import Manager, Sum
+from django.db.models import Sum
 from rest_framework import serializers
 
 from budget_execution.models import Execucao, FonteDeRecurso
@@ -79,15 +77,8 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
         orcado = self.get_orcado_total(obj)
         empenhado = self.get_empenhado_total(obj)
 
-        current_date = datetime.now().date()
-        if obj.year.year == current_date.year:
-            current_month = current_date.month
-            proportion_factor = Decimal(current_month / 12)
-        else:
-            proportion_factor = 1
-
         if empenhado:
-            return empenhado / (proportion_factor * orcado)
+            return empenhado / orcado
         else:
             return 0
 
