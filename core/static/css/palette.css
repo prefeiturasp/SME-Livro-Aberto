@@ -53,6 +53,7 @@ svg.icon{
   fill: currentColor;
 }
 
+.axis--x,
 input[type=text],
 select,
 .breadcrumb a,

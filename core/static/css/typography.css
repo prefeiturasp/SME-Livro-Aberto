@@ -35,6 +35,7 @@ header nav a{
   text-decoration: none;
 }
 
+.axis--x,
 input[type=text],
 select,
 a.btn,
