@@ -11,10 +11,21 @@ window.addEventListener('load', function(){
     let table = container.querySelector('table');
     let svg = d3.select(container).append('svg');
     let parentWidth = parseInt(getComputedStyle(svg.node())['width']);
-    var margin = {top: 0, right: 0, bottom: 40, left: 0},
-    width = parentWidth - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-    svg.attr('height', height + margin.top + margin.bottom);
+    let parentHeight = 500;
+
+    svg.attr('height', parentHeight)
+       .style('left', 0)
+       .style('right', 0)
+       .style('position', 'absolute');
+    let fullWidth = parseInt(getComputedStyle(svg.node())['width']);
+    d3.select(container).style('height', parentHeight + 'px');
+
+    let side = (fullWidth - parentWidth) / 2;
+
+    let margin = {top: 0, right: side, bottom: 40, left: side};
+    let width = fullWidth - margin.left - margin.right;
+    let height = parentHeight - margin.top - margin.bottom;
+
 
     let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
     let gnds = Array.from(legendItems, item => item.dataset.gnd)
@@ -55,19 +66,43 @@ window.addEventListener('load', function(){
         .y0(d => y(d[0]))
         .y1(d => y(d[1]));
 
-    const path = svg.selectAll('path')
+    const bgData = [data[0], data[0], data[data.length - 1], data[data.length - 1]]
+    const bgLayers = stack(bgData)
+    const bgDomain = [0, side, width, fullWidth];
+
+    const bgArea = d3.area()
+        .x((d, i) => bgDomain[i])
+        .y0(d => y(d[0]))
+        .y1(d => y(d[1]));
+
+    const background = svg.append("g")
+        .attr('class', 'background')
+        .style('opacity', 0.5)
+
+    background.selectAll('path')
+      .data(bgLayers)
+      .enter().append('path')
+        .attr('d', bgArea)
+        .attr('class', d => d.key);
+
+    const foreground = svg.append("g")
+        .attr('class', 'foreground')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+    foreground.selectAll('path')
       .data(layers)
       .enter().append('path')
         .attr('d', area)
         .attr('class', d => d.key);
 
-    const xAxis = svg.append("g")
+
+    const xAxis = foreground.append("g")
         .attr('class', 'axis axis--x')
         .attr('font-size', '1em')
         .attr('text-anchor', 'middle')
         .attr('fill', 'currentColor')
         .attr('stroke', '#000')
-        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
+        .attr('transform', 'translate(0,' + height + ')')
 
     xAxis.append('line').attr('x2', x.range()[1])
 
