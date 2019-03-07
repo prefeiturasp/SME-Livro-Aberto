@@ -6,106 +6,111 @@ function emptyObj(keys){
     return obj;
 }
 
+function groupData(rows, value){
+    let rollup = array => array[0]? value(array[0]) : 0;
+    return d3.nest()
+        .key(d => d.dataset.year)
+        .key(d => d.dataset.name)
+        .rollup(rollup)
+        .object(rows);
+}
+
+function getStreamData(grouped, gnds, years){
+    let data = [];
+    years.forEach(function(year){
+        grouped[year] = grouped[year] || emptyObj(gnds);
+        data.push(grouped[year]);
+    });
+    return data;
+}
+
+function updateData(selection, layers, x, y){
+    const area = d3.area()
+        .curve(d3.curveMonotoneX)
+        .x(x)
+        .y0(d => y(d[0]))
+        .y1(d => y(d[1]));
+
+    selection.selectAll('path')
+      .data(layers)
+      .enter().append('path')
+      .attr('class', d => d.key);
+
+    selection.selectAll('path').transition().attr('d', area);
+}
+
 window.addEventListener('load', function(){
     let container = document.querySelector('.stream-chart');
     let table = container.querySelector('table');
     let svg = d3.select(container).append('svg');
-    let parentWidth = parseInt(getComputedStyle(svg.node())['width']);
-    let parentHeight = 500;
 
+    let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
+    let gnds = Array.from(legendItems, item => item.dataset.gnd);
+    let rows = document.querySelectorAll('.stream-chart tbody tr');
+
+    let getValue = row => +row.dataset.value;
+    let getExecution = row => row.dataset.value * row.dataset.execution;
+
+    let years = Object.keys(groupData(rows, getValue)).sort();
+
+    let executionSwitch = document.getElementById('executed-switch');
+    let streamChart = new StreamChart(svg, years, gnds);
+
+    executionSwitch.addEventListener('change', function(){
+        let value = this.checked? getExecution : getValue;
+        let data = getStreamData(groupData(rows, value), gnds, years);
+        streamChart.render(data);
+    });
+
+    executionSwitch.dispatchEvent(new Event('change'));
+    table.style.display = 'none';
+})
+
+function StreamChart(svg, years, gnds){
+    const parentNode = svg.node().parentNode,
+          getDimension = (node, attr) => parseFloat(getComputedStyle(node)[attr]),
+          parentWidth = getDimension(parentNode, 'width'),
+          parentHeight = 500;
+
+    d3.select(parentNode).style('height', parentHeight + 'px');
     svg.attr('height', parentHeight)
        .style('left', 0)
        .style('right', 0)
        .style('position', 'absolute');
-    let fullWidth = parseInt(getComputedStyle(svg.node())['width']);
-    d3.select(container).style('height', parentHeight + 'px');
 
-    let side = (fullWidth - parentWidth) / 2;
+    const fullWidth = getDimension(svg.node(), 'width'),
+          side = (fullWidth - parentWidth) / 2,
+          margin = {top: 0, right: side, bottom: 40, left: side};
 
-    let margin = {top: 0, right: side, bottom: 40, left: side};
-    let width = fullWidth - margin.left - margin.right;
-    let height = parentHeight - margin.top - margin.bottom;
-
-
-    let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
-    let gnds = Array.from(legendItems, item => item.dataset.gnd)
-    let rows = document.querySelectorAll('.stream-chart tbody tr');
-
-    stack = d3.stack()
-        .keys(gnds)
-        .offset(d3['stackOffsetExpand'])
-
-    let grouped = Array.from(rows, row => row.dataset).reduce(function(accumulator, curr){
-        accumulator[curr.year] = accumulator[curr.year] || emptyObj(gnds);
-        accumulator[curr.year][curr.name] = curr.value;
-        return accumulator;
-    }, {});
-
-    let data = []
-    let years = []
-    for(key in grouped){
-        years.push(key)
-        data.push(grouped[key])
-    }
-    const layers = stack(data)
+    const height = parentHeight - margin.top - margin.bottom;
 
     const x = d3.scaleLinear()
         .domain(d3.extent(years))
-        .range([0, width]);
-
-    const y = d3.scaleLinear()
-        .range([height, 0])
-        .domain([
-            d3.min(layers, l => d3.min(l, d => d[0])),
-            d3.max(layers, l => d3.max(l, d => d[1]))
-        ]);
-
-    const area = d3.area()
-        .curve(d3.curveMonotoneX)
-        .x((d, i) => x(i + x.domain()[0]))
-        .y0(d => y(d[0]))
-        .y1(d => y(d[1]));
-
-    const bgData = [data[0], data[0], data[data.length - 1], data[data.length - 1]]
-    const bgLayers = stack(bgData)
-    const bgDomain = [0, side, width, fullWidth];
-
-    const bgArea = d3.area()
-        .x((d, i) => bgDomain[i])
-        .y0(d => y(d[0]))
-        .y1(d => y(d[1]));
+        .range([0, parentWidth]);
 
     const background = svg.append("g")
         .attr('class', 'background')
         .style('opacity', 0.5)
 
-    background.selectAll('path')
-      .data(bgLayers)
-      .enter().append('path')
-        .attr('d', bgArea)
-        .attr('class', d => d.key);
-
     const foreground = svg.append("g")
         .attr('class', 'foreground')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-    foreground.selectAll('path')
-      .data(layers)
-      .enter().append('path')
-        .attr('d', area)
-        .attr('class', d => d.key);
+    const stack = d3.stack()
+        .keys(gnds)
+        .offset(d3['stackOffsetExpand'])
 
-
-    const xAxis = foreground.append("g")
+    const xAxis = svg.append("g")
         .attr('class', 'axis axis--x')
         .attr('font-size', '1em')
         .attr('text-anchor', 'middle')
         .attr('fill', 'currentColor')
         .attr('stroke', '#000')
-        .attr('transform', 'translate(0,' + height + ')')
+        .attr('transform', 'translate(' + margin.left + ',' + height + ')')
 
     xAxis.append('line').attr('x2', x.range()[1])
 
+    const data = d3.range(x.domain()[0], x.domain()[1] + 1)
     const ticks = xAxis.selectAll('g.tick')
       .data(years)
       .enter().append('g')
@@ -119,5 +124,21 @@ window.addEventListener('load', function(){
       .attr('dy', '1.5em')
       .text(d => d3.format("d")(d));
 
-    table.style.display = 'none';
-})
+    this.render = function (data){
+        const layers = stack(data);
+
+        const y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([
+                d3.min(layers, l => d3.min(l, d => d[0])),
+                d3.max(layers, l => d3.max(l, d => d[1]))
+            ]);
+
+        const bgData = [data[0], data[0], data[data.length - 1], data[data.length - 1]]
+        const bgLayers = stack(bgData)
+        const bgDomain = [0, side, parentWidth, fullWidth];
+
+        updateData(background, bgLayers, (d, i) => bgDomain[i], y);
+        updateData(foreground, layers, (d, i) => x(i + x.domain()[0]), y);
+    }
+}
