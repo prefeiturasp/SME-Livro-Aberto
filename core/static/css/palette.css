@@ -1,4 +1,4 @@
-header h1 + p {
+body > header h1 + p {
   color: #b1d51b;
 }
 
@@ -17,7 +17,7 @@ section#data-table thead th{
   background-color: #c3f570;
 }
 
-header,
+body > header,
 section#social{
   background-color: #222b34;
   color: #fff;

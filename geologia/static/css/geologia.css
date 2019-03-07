@@ -1,4 +1,4 @@
-header{
+body > header{
   background-color: #693d89;
   background-image: url('../img/bkg-geologia-header.svg');
   background-repeat: no-repeat;
@@ -6,7 +6,7 @@ header{
   background-position: center;
 }
 
-header .wrapper p {
+body > header .wrapper p {
   padding-bottom: 6rem;
 }
 
