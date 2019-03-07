@@ -6,24 +6,22 @@ function emptyObj(keys){
     return obj;
 }
 
-function getStreamData(rows, gnds, executed){
-    let grouped = Array.from(rows, row => row.dataset).reduce(function(accumulator, curr){
-        accumulator[curr.year] = accumulator[curr.year] || emptyObj(gnds);
-        accumulator[curr.year][curr.name] = curr.value;
-        if(executed){
-            accumulator[curr.year][curr.name] *= curr.execution;
-        }
-        return accumulator;
-    }, {});
+function groupData(rows, value){
+    let rollup = array => array[0]? value(array[0]) : 0;
+    return d3.nest()
+        .key(d => d.dataset.year)
+        .key(d => d.dataset.name)
+        .rollup(rollup)
+        .object(rows);
+}
 
-    let data = []
-    let years = []
-    for(key in grouped){
-        years.push(key)
-        data.push(grouped[key])
-    }
-
-    return {data: data, years: years}
+function getStreamData(grouped, gnds, years){
+    let data = [];
+    years.forEach(function(year){
+        grouped[year] = grouped[year] || emptyObj(gnds);
+        data.push(grouped[year]);
+    });
+    return data;
 }
 
 function updateData(selection, layers, x, y){
@@ -50,24 +48,29 @@ window.addEventListener('load', function(){
     let gnds = Array.from(legendItems, item => item.dataset.gnd);
     let rows = document.querySelectorAll('.stream-chart tbody tr');
 
+    let getValue = row => +row.dataset.value;
+    let getExecution = row => row.dataset.value * row.dataset.execution;
+
+    let years = Object.keys(groupData(rows, getValue)).sort();
+
     let executionSwitch = document.getElementById('executed-switch');
-    let stream = getStreamData(rows, gnds, executionSwitch.checked);
-    let streamChart = new StreamChart(svg, stream.years, gnds);
-    streamChart.render(stream.data);
+    let streamChart = new StreamChart(svg, years, gnds);
 
     executionSwitch.addEventListener('change', function(){
-        let stream = getStreamData(rows, gnds, this.checked);
-        streamChart.render(stream.data);
+        let value = this.checked? getExecution : getValue;
+        let data = getStreamData(groupData(rows, value), gnds, years);
+        streamChart.render(data);
     });
 
+    executionSwitch.dispatchEvent(new Event('change'));
     table.style.display = 'none';
 })
 
 function StreamChart(svg, years, gnds){
-    const parentNode = svg.node().parentNode;
-    let getDimension = (node, attr) => parseFloat(getComputedStyle(node)[attr]);
-    let parentWidth = getDimension(parentNode, 'width');
-    let parentHeight = 500;
+    const parentNode = svg.node().parentNode,
+          getDimension = (node, attr) => parseFloat(getComputedStyle(node)[attr]),
+          parentWidth = getDimension(parentNode, 'width'),
+          parentHeight = 500;
 
     d3.select(parentNode).style('height', parentHeight + 'px');
     svg.attr('height', parentHeight)
@@ -75,9 +78,9 @@ function StreamChart(svg, years, gnds){
        .style('right', 0)
        .style('position', 'absolute');
 
-    let fullWidth = getDimension(svg.node(), 'width');
-    let side = (fullWidth - parentWidth) / 2;
-    let margin = {top: 0, right: side, bottom: 40, left: side};
+    const fullWidth = getDimension(svg.node(), 'width'),
+          side = (fullWidth - parentWidth) / 2,
+          margin = {top: 0, right: side, bottom: 40, left: side};
 
     const height = parentHeight - margin.top - margin.bottom;
 
@@ -107,6 +110,7 @@ function StreamChart(svg, years, gnds){
 
     xAxis.append('line').attr('x2', x.range()[1])
 
+    const data = d3.range(x.domain()[0], x.domain()[1] + 1)
     const ticks = xAxis.selectAll('g.tick')
       .data(years)
       .enter().append('g')
