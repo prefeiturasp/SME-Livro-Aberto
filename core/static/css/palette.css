@@ -62,6 +62,15 @@ form.query label{
   color: #80a684;
 }
 
+.card{
+  box-shadow: #c0c0c0 0 0 0.5em;
+}
+
+.card header{
+  background-color: #80a684;
+  color: #fff;
+}
+
 form.query input[type=checkbox]:disabled + label,
 form.query input[type=checkbox]:disabled + label + label,
 form.query input[type=checkbox]:not(:checked) + label,
