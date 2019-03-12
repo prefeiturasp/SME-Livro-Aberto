@@ -1,4 +1,4 @@
-header{
+body > header{
   background-color: #693d89;
   background-image: url('../img/bkg-geologia-header.svg');
   background-repeat: no-repeat;
@@ -6,7 +6,7 @@ header{
   background-position: center;
 }
 
-header .wrapper p {
+body > header .wrapper p {
   padding-bottom: 6rem;
 }
 
@@ -170,4 +170,37 @@ header .wrapper p {
   overflow: hidden;
   background-color: currentColor;
   font-size: 2em;
+}
+
+.card-wrapper{
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+.card{
+  display: inline-block;
+  border-radius: 0.5em;
+  width: 18em;
+  margin: 1em;
+  overflow: hidden;
+}
+
+.card header{
+  padding: 1em;
+  border-bottom: solid 1px;
+  border-radius: 0.5em 0.5em 0 0;
+}
+
+.card header .title{
+  margin: 0;
+}
+
+.card .body{
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.card table tr > *{
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }

@@ -1,4 +1,4 @@
-header h1 + p {
+body > header h1 + p {
   color: #b1d51b;
 }
 
@@ -17,7 +17,7 @@ section#data-table thead th{
   background-color: #c3f570;
 }
 
-header,
+body > header,
 section#social{
   background-color: #222b34;
   color: #fff;
@@ -60,6 +60,19 @@ select,
 button, input[type=submit], .btn,
 form.query label{
   color: #80a684;
+}
+
+.card{
+  box-shadow: #777 0 0 0.5em;
+}
+
+.card header{
+  background-color: #80a684;
+  color: #fff;
+}
+
+.card .body{
+  background-color: #fff;
 }
 
 form.query input[type=checkbox]:disabled + label,

@@ -1,4 +1,4 @@
-header{
+body > header{
   background-color: #277fcd;
   background-image: url('../img/bkg-mosaico-header.svg');
   background-repeat: no-repeat;
