@@ -63,12 +63,16 @@ form.query label{
 }
 
 .card{
-  box-shadow: #c0c0c0 0 0 0.5em;
+  box-shadow: #777 0 0 0.5em;
 }
 
 .card header{
   background-color: #80a684;
   color: #fff;
+}
+
+.card .body{
+  background-color: #fff;
 }
 
 form.query input[type=checkbox]:disabled + label,
