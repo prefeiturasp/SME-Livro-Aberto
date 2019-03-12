@@ -116,6 +116,12 @@ function StreamChart(svg, years, gnds){
       .enter().append('g')
       .attr('class', 'tick')
       .attr('transform', d => 'translate(' + x(d) + ',0)')
+      .style('cursor', 'pointer')
+      .on('click', function(d){
+        activeCard && activeCard.style('display', 'none');
+        activeCard = container.select(`.card[data-year="${d}"]`);
+        activeCard.style('display', 'inline-block');
+      })
 
     ticks.append('circle').attr('r', 4)
 
@@ -135,14 +141,8 @@ function StreamChart(svg, years, gnds){
     var activeCard;
 
     ticks.append('text')
-      .style('cursor', 'pointer')
       .attr('stroke', 'none')
       .attr('dy', '1.5em')
-      .on('click', function(d){
-        activeCard && activeCard.style('display', 'none');
-        activeCard = container.select(`.card[data-year="${d}"]`);
-        activeCard.style('display', 'inline-block');
-      })
       .text(d => d3.format("d")(d));
 
     this.render = function (data){
