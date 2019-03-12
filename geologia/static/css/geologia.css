@@ -180,8 +180,9 @@ body > header .wrapper p {
 .card{
   display: inline-block;
   border-radius: 0.5em;
-  width: 17em;
+  width: 18em;
   margin: 1em;
+  overflow: hidden;
 }
 
 .card header{
