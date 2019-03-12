@@ -119,9 +119,30 @@ function StreamChart(svg, years, gnds){
 
     ticks.append('circle').attr('r', 4)
 
+    var container = d3.select('.stream-chart');
+
+    container.selectAll('.card')
+        .data(years)
+        .style('display', 'none')
+        .style('position', 'absolute')
+        .style('margin-left', function(d){
+            const width = parseFloat(getComputedStyle(this)['width']);
+            return - (width / 2) + 'px';
+        })
+        .style('left', d => (x(d) + margin.left) + 'px')
+        .style('z-index', 2);
+
+    var activeCard;
+
     ticks.append('text')
+      .style('cursor', 'pointer')
       .attr('stroke', 'none')
       .attr('dy', '1.5em')
+      .on('click', function(d){
+        activeCard && activeCard.style('display', 'none');
+        activeCard = container.select(`.card[data-year="${d}"]`);
+        activeCard.style('display', 'inline-block');
+      })
       .text(d => d3.format("d")(d));
 
     this.render = function (data){
