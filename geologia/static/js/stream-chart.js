@@ -112,22 +112,12 @@ function StreamChart(svg, years, gnds){
 
     const data = d3.range(x.domain()[0], x.domain()[1] + 1)
 
-    var activeCard, activeTick;
-
     const ticks = xAxis.selectAll('g.tick')
       .data(years)
       .enter().append('g')
       .attr('class', 'tick')
       .attr('transform', d => 'translate(' + x(d) + ',0)')
       .style('cursor', 'pointer')
-      .on('click', function(d){
-        activeTick && activeTick.classed('active', false);
-        activeTick = d3.select(this);
-        activeTick.classed('active', true);
-        activeCard && activeCard.style('display', 'none');
-        activeCard = container.select(`.card[data-year="${d}"]`);
-        activeCard.style('display', 'inline-block');
-      })
       .on('mouseover', function(d){
         d3.select(this).classed('active', true);
         container.select(`.card[data-year="${d}"]`).style('display', 'inline-block');
