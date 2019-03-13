@@ -135,40 +135,7 @@
       </fieldset>
       </form>
       <div class="bar-chart chart">
-          <table>
-              <thead>
-                  <tr>
-                      <th>Ano</th>
-                      <th>Valores</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% with greater_total=subfuncao.empenhado|dictsort:"total"|last %}
-                  {% for year in subfuncao.empenhado %}
-                          <tr>
-                          <th data-year="{{ year.year }}">{{ year.year }}</th>
-                          <td class="bar-parent">
-                              <div class="bar" style="width: {% widthratio year.total greater_total.total 100 %}%">
-                              {% for item in year.gnds%}
-                                  <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
-                                  <span class="value fg-{{item.slug}}" data-execution="{{ item.percent|unlocalize }}"
-                                            style="width: {% widthratio item.percent 1 100 %}%">
-                                          {% widthratio item.percent 1 100 %}%
-                                      </span>
-                              {% endfor %}
-                              </div>
-                          </td>
-                          </tr>
-                  {% endfor %}
-              </tbody>
-              <tfoot>
-                  <tr>
-                      <td>R$ 0</td>
-                      <td>R$ {{ greater_total.total|intcomma }}</td>
-                  </tr>
-              </tfoot>
-              {% endwith %}
-          </table>
+          {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
       </div>
     </div>
   </section>
