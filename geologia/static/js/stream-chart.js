@@ -128,6 +128,14 @@ function StreamChart(svg, years, gnds){
         activeCard = container.select(`.card[data-year="${d}"]`);
         activeCard.style('display', 'inline-block');
       })
+      .on('mouseover', function(d){
+        d3.select(this).classed('active', true);
+        container.select(`.card[data-year="${d}"]`).style('display', 'inline-block');
+      })
+      .on('mouseout', function(d){
+        d3.select(this).classed('active', false);
+        container.select(`.card[data-year="${d}"]`).style('display', 'none');
+      })
 
     ticks.append('line').attr('y2', - height)
 
