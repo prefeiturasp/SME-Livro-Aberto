@@ -8,7 +8,7 @@ h1{
   font-weight: 300;
 }
 
-header h1 + p{
+body > header h1 + p{
   font-size: 1.5em;
   font-weight: 700;
   font-family: 'Ubuntu', sans-serif;
@@ -16,7 +16,7 @@ header h1 + p{
   text-transform: uppercase;
 }
 
-header nav{
+body > header nav{
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -31,7 +31,7 @@ h2 > em{
   font-weight: bold;
 }
 
-header nav a{
+body > header nav a{
   text-decoration: none;
 }
 

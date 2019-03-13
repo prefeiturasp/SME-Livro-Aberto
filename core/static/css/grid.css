@@ -12,27 +12,27 @@ body > *{
   max-width: 1200px;
 }
 
-header{
+body > header{
   padding: 4em 1em 2em;
 }
 
-header .wrapper p {
+body > header .wrapper p {
   padding-bottom: 6rem;
 }
 
-header h1,
-header h1 + p{
+body > header h1,
+body > header h1 + p{
   text-align: center;
   margin: 1rem 0;
 }
 
-header nav {
+body > header nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-header nav li{
+body > header nav li{
   display: inline-block;
   list-style: none;
   margin-right: 2em;
