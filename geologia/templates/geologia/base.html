@@ -70,7 +70,7 @@
           </table>
           <div class="card-wrapper">
           {% for year in camadas.empenhado %}
-          <div class="card">
+              <div class="card" data-year="{{ year.year }}">
               <header>
                   <h3 class="title">{{ year.year }}</h3>
                   <div class="value">

@@ -173,12 +173,14 @@ body > header .wrapper p {
 }
 
 .card-wrapper{
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
+  margin-left: -1em;
 }
 
 .card{
   display: inline-block;
+  vertical-align: top;
   border-radius: 0.5em;
   width: 18em;
   margin: 1em;
@@ -196,11 +198,18 @@ body > header .wrapper p {
 }
 
 .card .body{
-  padding-top: 1em;
-  padding-bottom: 1em;
+  padding-bottom: 0.5em;
 }
 
 .card table tr > *{
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+}
+
+.tick line{
+  display: none;
+}
+
+.tick.active line{
+  display: block;
 }
