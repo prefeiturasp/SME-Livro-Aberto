@@ -562,6 +562,7 @@ class OrcamentoRaw(models.Model):
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
+    execucao_id = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'orcamento_raw_load'
@@ -622,6 +623,7 @@ class EmpenhoRaw(models.Model):
     vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
+    execucao_id = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'empenhos_raw_load'
