@@ -70,32 +70,7 @@
           </table>
           <div class="card-wrapper">
           {% for year in camadas.empenhado %}
-              <div class="card" data-year="{{ year.year }}">
-              <header>
-                  <h3 class="title">{{ year.year }}</h3>
-                  <div class="value">
-                      {% if year.total %}R$ {{ year.total|intcomma }}{% else %}-{% endif %}
-                  </div>
-              </header>
-              <div class="body">
-                  <table>
-                      <tbody>
-                              {% for item in year.gnds%}
-                                  <tr data-name="{{ item.slug}}"
-                                      data-year="{{ year.year }}"
-                                      data-value="{{ item.value|unlocalize }}"
-                                      data-execution="{{ item.percent|unlocalize }}">
-                                      <td>
-                                          <span class="fg-{{ item.slug }}" title="{{ item.name }}">●</span>
-                                          {% widthratio item.percent 1 100 %}%
-                                      </td>
-                                      <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
-                                  </tr>
-                              {% endfor %}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
+              {% include 'geologia/_card.html' with year=year%}
           {% endfor %}
           </div>
       </div>
@@ -103,10 +78,7 @@
       <ul class="legend">
           {% for gnd in gnds %}
           <li class="fg-{{ gnd.slug }}" data-gnd="{{ gnd.slug }}">
-              <svg class="icon">
-                  <use xlink:href="{% get_static_prefix %}img/{{gnd.slug}}.svg#icon"></use>
-              </svg>
-              {{ gnd.desc }}
+              {% include 'geologia/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
           </li>
           {% endfor %}
       </ul>
@@ -134,41 +106,41 @@
         </div>
       </fieldset>
       </form>
-      <div class="bar-chart chart">
-          <table>
-              <thead>
-                  <tr>
-                      <th>Ano</th>
-                      <th>Valores</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% with greater_total=subfuncao.empenhado|dictsort:"total"|last %}
-                  {% for year in subfuncao.empenhado %}
-                          <tr>
-                          <th data-year="{{ year.year }}">{{ year.year }}</th>
-                          <td class="bar-parent">
-                              <div class="bar" style="width: {% widthratio year.total greater_total.total 100 %}%">
-                              {% for item in year.gnds%}
-                                  <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
-                                  <span class="value fg-{{item.slug}}" data-execution="{{ item.percent|unlocalize }}"
-                                            style="width: {% widthratio item.percent 1 100 %}%">
-                                          {% widthratio item.percent 1 100 %}%
-                                      </span>
-                              {% endfor %}
-                              </div>
+      <div class="chart">
+          {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
+          <aside>
+             {% for year in subfuncao.empenhado %}
+                <div class="card" data-year="{{ year.year }}">
+                  <header>
+                    <h3 class="title">{{ year.year }}</h3>
+                    <small>Orçamento total</small>
+                    <div class="value">
+                      {% if year.total %}R$ {{ year.total|intcomma }}{% else %}-{% endif %}
+                    </div>
+                  </header>
+                  <div class="body">
+                    <table>
+                      <tbody>
+                        {% for item in year.gnds%}
+                        <tr data-name="{{ item.slug}}"
+                            data-year="{{ year.year }}"
+                            data-value="{{ item.value|unlocalize }}"
+                            data-execution="{{ item.percent|unlocalize }}">
+                          <td>
+                            <span class="fg-{{ item.slug }}" title="{{ item.name }}">
+                                {% include 'geologia/_gnd_item.html' with slug=item.slug %}
+                            </span>
+                            {% widthratio item.percent 1 100 %}%
                           </td>
-                          </tr>
-                  {% endfor %}
-              </tbody>
-              <tfoot>
-                  <tr>
-                      <td>R$ 0</td>
-                      <td>R$ {{ greater_total.total|intcomma }}</td>
-                  </tr>
-              </tfoot>
-              {% endwith %}
-          </table>
+                          <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+             {% endfor %}
+          </div>
       </div>
     </div>
   </section>
