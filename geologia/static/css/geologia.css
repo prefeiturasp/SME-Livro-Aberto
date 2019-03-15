@@ -118,12 +118,44 @@ body > header .wrapper p {
   text-align: center;
 }
 
+@media (min-width: 768px) {
+  .chart{
+    display: flex;
+  }
+
+  .bar-chart{
+    width: calc(100%*2/3);
+  }
+
+  .chart aside{
+    width: calc(100%*1/3);
+  }
+
+  .bar-chart + aside .card{
+    margin: 0 0 1em 4em;
+  }
+}
+
+.bar-chart{
+  table-layout: fixed;
+}
+
+.bar-chart tr > *:first-child{
+  width: 4em;
+}
+
 .bar-chart thead{
   display: none;
 }
 
+.bar-chart tbody tr:first-child > *{
+  padding-top: 1em;
+}
+
 .bar-chart tr > *{
   padding-left: 0;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 .bar-chart tbody tr > *{
@@ -178,11 +210,14 @@ body > header .wrapper p {
   margin-left: -1em;
 }
 
-.card{
+.card-wrapper .card{
   display: inline-block;
+  width: 18em;
+}
+
+.card{
   vertical-align: top;
   border-radius: 0.5em;
-  width: 18em;
   margin: 1em;
   overflow: hidden;
 }
@@ -204,6 +239,11 @@ body > header .wrapper p {
 .card table tr > *{
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+}
+
+.card table tr > * svg.icon{
+  font-size: 2em;
+  margin-right: .5em;
 }
 
 .tick line{
