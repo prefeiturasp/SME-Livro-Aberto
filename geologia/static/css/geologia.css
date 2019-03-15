@@ -235,6 +235,11 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+.card table tr > * svg.icon{
+  font-size: 2em;
+  margin-right: .5em;
+}
+
 .tick line{
   display: none;
 }

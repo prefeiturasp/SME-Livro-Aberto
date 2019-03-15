@@ -69,6 +69,7 @@ nav ul{
 svg.icon{
   vertical-align: middle;
   height: 1em;
+  width: 1em;
   padding-bottom: .2em;
 }
 
@@ -177,7 +178,7 @@ tr > *:first-child::before{
   margin: 2em 0;
 }
 
-.chart svg{
+.chart > svg{
   width: 100%;
 }
 
