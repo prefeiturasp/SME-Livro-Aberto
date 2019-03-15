@@ -148,8 +148,14 @@ body > header .wrapper p {
   display: none;
 }
 
+.bar-chart tbody tr:first-child > *{
+  padding-top: 1em;
+}
+
 .bar-chart tr > *{
   padding-left: 0;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 .bar-chart tbody tr > *{
