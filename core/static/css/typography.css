@@ -31,6 +31,10 @@ h2 > em{
   font-weight: bold;
 }
 
+aside h3{
+  font-size: 2.5em;
+}
+
 body > header nav a{
   text-decoration: none;
 }
