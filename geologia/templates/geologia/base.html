@@ -110,7 +110,7 @@
           {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
           <aside>
              {% for year in subfuncao.empenhado %}
-                <div class="card" data-year="{{ year.year }}">
+                <div id="por-programa-{{ year.year }}" class="card" data-year="{{ year.year }}">
                   <header>
                     <h3 class="title">{{ year.year }}</h3>
                     <small>Orçamento total</small>

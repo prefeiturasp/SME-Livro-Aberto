@@ -184,6 +184,24 @@ body > header .wrapper p {
   background-color: currentColor;
 }
 
+.bar-chart a{
+  text-decoration: none;
+}
+
+.bar-chart + aside{
+  position: relative;
+}
+
+.bar-chart + aside .card{
+  position: absolute;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.bar-chart + aside .card:target{
+  opacity: 1;
+}
+
 .bar-parent{
   padding-right: 0;
 }
