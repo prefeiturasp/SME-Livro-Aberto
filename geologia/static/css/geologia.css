@@ -198,6 +198,10 @@ body > header .wrapper p {
   transition: opacity 500ms ease-in-out;
 }
 
+.bar-chart + aside .card table tr > *{
+  padding-bottom: 0;
+}
+
 .bar-chart + aside .card:target{
   opacity: 1;
 }
