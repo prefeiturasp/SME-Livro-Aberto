@@ -210,8 +210,7 @@ body > header .wrapper p {
   padding-bottom: 0;
 }
 
-.bar-chart + aside .card.active,
-.bar-chart + aside .card:target{
+.bar-chart + aside .card.active{
   opacity: 1;
 }
 
