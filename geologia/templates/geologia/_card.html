@@ -11,6 +11,7 @@
     <table>
       <tbody>
         {% for item in year.gnds%}
+        {% if item.slug %}
         <tr data-name="{{ item.slug}}"
             data-year="{{ year.year }}"
             data-value="{{ item.value|unlocalize }}"
@@ -21,6 +22,7 @@
           </td>
           <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
         </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>
