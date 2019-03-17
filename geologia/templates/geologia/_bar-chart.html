@@ -10,8 +10,8 @@
   <tbody>
     {% with greater_total=subfuncao.empenhado|dictsort:"total"|last %}
     {% for year in subfuncao.empenhado %}
-    <tr>
-        <th data-year="{{ year.year }}">
+    <tr data-year="{{ year.year }}">
+        <th>
             <a href="#por-programa-{{ year.year }}">{{ year.year }}</a>
         </th>
       <td class="bar-parent">

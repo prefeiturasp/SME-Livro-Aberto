@@ -21,6 +21,7 @@
 
   <link rel="stylesheet" href="{% static 'css/geologia.css' %}">
   <script src="{% static 'js/stream-chart.js' %}"></script>
+  <script src="{% static 'js/bar-chart.js' %}"></script>
 {% endblock %}
 
 {%block header %}
@@ -110,7 +111,7 @@
           {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
           <aside>
              {% for year in subfuncao.empenhado %}
-                <div id="por-programa-{{ year.year }}" class="card" data-year="{{ year.year }}">
+                 <div id="por-programa-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
                   <header>
                     <h3 class="title">{{ year.year }}</h3>
                     <small>Orçamento total</small>
