@@ -184,6 +184,36 @@ body > header .wrapper p {
   background-color: currentColor;
 }
 
+.bar-chart a{
+  display: block;
+  text-decoration: none;
+  outline: 0;
+}
+
+.bar-chart a:focus,
+.bar-chart a:active,
+.bar-chart a:hover{
+  background-color: #f2f2f2;
+}
+
+.bar-chart + aside{
+  position: relative;
+}
+
+.bar-chart + aside .card{
+  position: absolute;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.bar-chart + aside .card table tr > *{
+  padding-bottom: 0;
+}
+
+.bar-chart + aside .card.active{
+  opacity: 1;
+}
+
 .bar-parent{
   padding-right: 0;
 }
