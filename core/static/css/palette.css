@@ -114,3 +114,9 @@ tbody tr:nth-child(2n) > *{
 .quanti-80{
   background-color: #277fcd;
 }
+
+.bar-chart a:focus,
+.bar-chart a:active,
+.bar-chart a:hover{
+  background-color: #ecf3ec;
+}

@@ -190,12 +190,6 @@ body > header .wrapper p {
   outline: 0;
 }
 
-.bar-chart a:focus,
-.bar-chart a:active,
-.bar-chart a:hover{
-  background-color: #f2f2f2;
-}
-
 .bar-chart + aside{
   position: relative;
 }
