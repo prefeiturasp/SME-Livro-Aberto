@@ -92,9 +92,6 @@
       <h2>Volume de gastos por <em>programa</em></h2>
       <form action="" method="get" class="query">
       <fieldset>
-        <legend>
-          Valores:
-        </legend>
         <div class="form-item">
           <label for="query"></label>
           <input class="text" id="query" type="text" name="" value="">
@@ -143,7 +140,7 @@
                   </div>
                 </div>
              {% endfor %}
-          </div>
+          </aside>
       </div>
     </div>
   </section>
@@ -152,9 +149,6 @@
       <h2>Volume de gastos por <em>função</em></h2>
       <form action="" method="get" class="query">
       <fieldset>
-        <legend>
-          Valores:
-        </legend>
         <div class="form-item switch">
           <input class="radio" type="radio" name="break" checked id="by-orgao">
           <label for="by-orgao">Orçamento atualizado</label>
@@ -163,6 +157,50 @@
         </div>
       </fieldset>
       </form>
+      <div class="chart">
+          <div class="punch-card">
+          </div>
+          <aside>
+             {% for year in subgrupo.empenhado %}
+                 <div id="por-funcao-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
+                  <header>
+                    <h3 class="title">{{ year.year }}</h3>
+                    <ul>
+                    {% for y in subgrupo.empenhado %}
+                        <li {% if year.year == y.year %}class="active"{% endif %}>
+                            <a href="#por-funcao-{{ y.year }}" title="{{y.year}}">●</a></li>
+                    {% endfor %}
+                    </ul>
+                  </header>
+                  <div class="body">
+                    <table>
+                      <tbody>
+                        {% for item in year.subgrupos %}
+                        <tr data-name="{{ item.slug}}"
+                            data-year="{{ year.year }}"
+                            data-value="{{ item.value|unlocalize }}"
+                            data-execution="{{ item.percent|unlocalize }}">
+                          <td>{{ item.subgrupo }}</td>
+                          <td class="bar-parent">
+                            <div class="bar" style="width: 100%">
+                              {% for item in item.gnds%}
+                              <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>
+                              <span class="value fg-{{item.slug}}" data-execution="{{ item.percent|unlocalize }}"
+                                                                   style="width: {% widthratio item.percent 1 100 %}%">
+                                {% widthratio item.percent 1 100 %}%
+                              </span>
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+             {% endfor %}
+          </aside>
+      </div>
     </div>
   </section>
 {% endblock %}

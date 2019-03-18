@@ -184,16 +184,11 @@ body > header .wrapper p {
   background-color: currentColor;
 }
 
+.card header ul li a,
 .bar-chart a{
   display: block;
   text-decoration: none;
   outline: 0;
-}
-
-.bar-chart a:focus,
-.bar-chart a:active,
-.bar-chart a:hover{
-  background-color: #f2f2f2;
 }
 
 .bar-chart + aside{
@@ -254,12 +249,33 @@ body > header .wrapper p {
 
 .card header{
   padding: 1em;
-  border-bottom: solid 1px;
   border-radius: 0.5em 0.5em 0 0;
 }
 
 .card header .title{
   margin: 0;
+}
+
+.card header ul{
+  padding: 0;
+  margin: 1em 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card header ul li{
+  list-style: none;
+  display: block;
+  font-size: .5em;
+}
+
+.card header ul li a{
+  transition: all 100ms;
+}
+
+.card header ul li.active a,
+.card header ul li a:hover{
+  transform: scale(3) translateY(-0.1em);
 }
 
 .card .body{
@@ -282,4 +298,26 @@ body > header .wrapper p {
 
 .tick.active line{
   display: block;
+}
+
+#por-funcao aside > .card .body table{
+  table-layout: fixed;
+  margin: 1em 0 0.5em;
+}
+
+#por-funcao aside > .card .body table tr > *{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
+}
+
+#por-funcao aside > .card .body{
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
 }
