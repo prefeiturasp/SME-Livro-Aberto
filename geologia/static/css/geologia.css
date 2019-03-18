@@ -309,16 +309,19 @@ body > header .wrapper p {
 }
 
 #por-funcao aside > .card .body table{
-  font-size: 0.8em;
-  line-height: 1em;
-  text-transform: uppercase;
   table-layout: fixed;
+  margin: 1em 0 0.5em;
 }
 
 #por-funcao aside > .card .body table tr > *{
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
 }
 
 #por-funcao aside > .card .body{
