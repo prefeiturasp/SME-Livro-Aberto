@@ -33,12 +33,12 @@
   <section id="camadas">
     <div class="wrapper">
       <h2>Conheça as <em>camadas</em> do orçamento</h2>
-      <p>Veja a distribuição de gastos em educação na Prefeitura de São Paulo pelas naturezas de despezas ao longo dos anos.</p>
+      <p>Veja a distribuição de gastos em educação na Prefeitura de São Paulo pelas naturezas de despesa ao longo dos anos.</p>
       <form action="" method="get" class="query">
       <fieldset>
         <div class="form-item switch">
           <input type="checkbox" name="executed" id="executed-switch">
-          <label for="executed-switch">Orçamento executado</label>
+          <label for="executed-switch">Orçamento atualizado</label>
           <label for="executed-switch">Empenhado</label>
         </div>
       </fieldset>
@@ -84,16 +84,16 @@
           {% endfor %}
       </ul>
       <div class="actions">
-		  <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Dados por natureza</a>
+		  <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Download dos Dados por natureza</a>
       </div>
   </section>
   <section id="por-programa">
     <div class="wrapper">
-      <h2>Volume de gastos por <em>programa</em></h2>
+      <h2>Volume de gastos por <em>subfunção</em></h2>
       <form action="" method="get" class="query">
       <fieldset>
         <legend>
-          Valores:
+          Subfunção:
         </legend>
         <div class="form-item">
           <label for="query"></label>
@@ -149,11 +149,11 @@
   </section>
   <section id="por-funcao">
     <div class="wrapper">
-      <h2>Volume de gastos por <em>função</em></h2>
+      <h2>Volume de gastos por <em>subgrupo</em></h2>
       <form action="" method="get" class="query">
       <fieldset>
         <legend>
-          Valores:
+          Subgrupo:
         </legend>
         <div class="form-item switch">
           <input class="radio" type="radio" name="break" checked id="by-orgao">
