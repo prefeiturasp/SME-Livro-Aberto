@@ -157,6 +157,9 @@
         </div>
       </fieldset>
       </form>
+      <div class="chart">
+          <div class="punch-card">
+          </div>
           <aside>
              {% for year in subgrupo.empenhado %}
                  <div id="por-funcao-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
@@ -199,6 +202,7 @@
                 </div>
              {% endfor %}
           </aside>
+      </div>
     </div>
   </section>
 {% endblock %}
