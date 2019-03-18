@@ -307,3 +307,22 @@ body > header .wrapper p {
 .tick.active line{
   display: block;
 }
+
+#por-funcao aside > .card .body table{
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
+  table-layout: fixed;
+}
+
+#por-funcao aside > .card .body table tr > *{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#por-funcao aside > .card .body{
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
+}

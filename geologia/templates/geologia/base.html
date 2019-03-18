@@ -180,9 +180,7 @@
                             data-year="{{ year.year }}"
                             data-value="{{ item.value|unlocalize }}"
                             data-execution="{{ item.percent|unlocalize }}">
-                          <td>
-                              {{ item.subgrupo }}
-                          </td>
+                          <td>{{ item.subgrupo }}</td>
                           <td class="bar-parent">
                             <div class="bar" style="width: 100%">
                               {% for item in item.gnds%}
