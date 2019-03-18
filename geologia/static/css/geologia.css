@@ -184,6 +184,7 @@ body > header .wrapper p {
   background-color: currentColor;
 }
 
+.card header ul li a,
 .bar-chart a{
   display: block;
   text-decoration: none;
@@ -270,9 +271,7 @@ body > header .wrapper p {
 }
 
 .card header ul li a{
-  text-decoration: none;
   transition: all 100ms;
-  display: block;
 }
 
 .card header ul li.active a,
