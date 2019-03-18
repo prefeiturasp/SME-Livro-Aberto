@@ -169,8 +169,9 @@
                   <header>
                     <h3 class="title">{{ year.year }}</h3>
                     <ul>
-                    {% for year in subgrupo.empenhado %}
-                        <li><a href="#por-funcao-{{ year.year }}" title="{{year.year}}">●</a></li>
+                    {% for y in subgrupo.empenhado %}
+                        <li {% if year.year == y.year %}class="active"{% endif %}>
+                            <a href="#por-funcao-{{ y.year }}" title="{{y.year}}">●</a></li>
                     {% endfor %}
                     </ul>
                   </header>

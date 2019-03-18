@@ -262,6 +262,30 @@ body > header .wrapper p {
   margin: 0;
 }
 
+.card header ul{
+  padding: 0;
+  margin: 1em 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card header ul li{
+  list-style: none;
+  display: block;
+  font-size: .5em;
+}
+
+.card header ul li a{
+  text-decoration: none;
+  transition: all 100ms;
+  display: block;
+}
+
+.card header ul li.active a,
+.card header ul li a:hover{
+  transform: scale(3) translateY(-0.1em);
+}
+
 .card .body{
   padding-bottom: 0.5em;
 }
