@@ -158,6 +158,7 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+.punchcard .axis,
 .bar-chart tbody tr > *{
   border-right: solid 1px #d1d1d1;
 }
@@ -316,8 +317,79 @@ body > header .wrapper p {
   text-transform: uppercase;
 }
 
+.punchcard .column header,
+.punchcard .gnd .desc,
 #por-funcao aside > .card .body{
   font-size: 0.8em;
   line-height: 1em;
   text-transform: uppercase;
+}
+
+.punchcard .column{
+  text-align: center;
+}
+
+.punchcard .column header{
+  font-weight: bold;
+}
+
+.punchcard li{
+  width: 15em;
+  height: 15em;
+  margin: -7em -7.5em -2em;
+  list-style: none;
+  display: flex;
+}
+
+.punchcard li .execution{
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.punchcard li .desc{
+  font-weight: bold;
+}
+
+.punchcard li .gnd,
+.punchcard li .gnd *{
+  transition: all 200ms;
+}
+
+.punchcard li .gnd{
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  color: #fff;
+  padding: 2em;
+  margin: auto;
+  box-sizing: border-box;
+  opacity: .7;
+}
+
+.punchcard li .gnd:hover{
+  width: 100%;
+  height: 100%;
+  opacity: .9;
+}
+
+.punchcard li .gnd *{
+  opacity: 0;
+}
+
+.punchcard li .gnd:hover *{
+  opacity: 1;
+}
+
+.punchcard li .gnd .icon{
+  font-size: 2em;
+  display: block;
+  margin: auto;
+}
+
+.punchcard .axis{
+  font-size: 0.8em;
+  width: 0;
+  padding: 0;
+  margin: 8em 0 4em 50%;
+  height: 64em;
 }

@@ -158,7 +158,25 @@
       </fieldset>
       </form>
       <div class="chart">
-          <div class="punch-card">
+          <div class="punchcard">
+              <div class="column">
+                  <header>Alimentação escolar</header>
+                  <ul class="axis">
+                  {% for gnd in gnds %}
+                      <li data-gnd="{{ gnd.slug }}">
+                          <div  class="{{ gnd.slug }} gnd">
+                              {% include 'geologia/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
+                              <div class="execution">
+                                    74%
+                              </div>
+                              <div class="value">
+                                  R$ 456.576.124,00
+                              </div>
+                          </div>
+                      </li>
+                  {% endfor %}
+                  </div>
+              </div>
           </div>
           <aside>
              {% for year in subgrupo.empenhado %}
