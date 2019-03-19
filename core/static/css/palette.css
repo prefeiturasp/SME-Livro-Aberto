@@ -115,6 +115,7 @@ tbody tr:nth-child(2n) > *{
   background-color: #277fcd;
 }
 
+.bar,
 #por-funcao aside > .card .body table tr:hover > *,
 .bar-chart a:focus,
 .bar-chart a:active,
