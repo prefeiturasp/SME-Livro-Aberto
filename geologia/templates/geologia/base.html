@@ -162,7 +162,7 @@
               <div class="column">
                   <header>Alimentação escolar</header>
                   <ul class="axis">
-                  {% for gnd in gnds %}
+                  {% for gnd in gnds reversed %}
                       <li data-gnd="{{ gnd.slug }}">
                           <div  class="{{ gnd.slug }} gnd">
                               {% include 'geologia/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}

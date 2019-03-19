@@ -395,6 +395,8 @@ body > header .wrapper p {
   margin: 2em 0 5em 50%;
   height: 55em;
   position: relative;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 
