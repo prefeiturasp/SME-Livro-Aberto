@@ -123,6 +123,7 @@ body > header .wrapper p {
     display: flex;
   }
 
+  .punchcard,
   .bar-chart{
     width: calc(100%*2/3);
   }
@@ -131,6 +132,7 @@ body > header .wrapper p {
     width: calc(100%*1/3);
   }
 
+  .punchcard + aside .card,
   .bar-chart + aside .card{
     margin: 0 0 1em 4em;
   }
@@ -158,6 +160,7 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+.punchcard .axis,
 .bar-chart tbody tr > *{
   border-right: solid 1px #d1d1d1;
 }
@@ -184,34 +187,33 @@ body > header .wrapper p {
   background-color: currentColor;
 }
 
+.card header ul li a,
 .bar-chart a{
   display: block;
   text-decoration: none;
   outline: 0;
 }
 
-.bar-chart a:focus,
-.bar-chart a:active,
-.bar-chart a:hover{
-  background-color: #f2f2f2;
-}
-
-.bar-chart + aside{
+.chart * + aside{
   position: relative;
 }
 
-.bar-chart + aside .card{
+.chart * + aside .card{
   position: absolute;
   opacity: 0;
   transition: opacity 500ms ease-in-out;
+  max-height: 100%;
+  overflow-y: auto;
+  z-index: 0;
+}
+
+.chart * + aside .card.active{
+  opacity: 1;
+  z-index: 1;
 }
 
 .bar-chart + aside .card table tr > *{
   padding-bottom: 0;
-}
-
-.bar-chart + aside .card.active{
-  opacity: 1;
 }
 
 .bar-parent{
@@ -254,12 +256,33 @@ body > header .wrapper p {
 
 .card header{
   padding: 1em;
-  border-bottom: solid 1px;
   border-radius: 0.5em 0.5em 0 0;
 }
 
 .card header .title{
   margin: 0;
+}
+
+.card header ul{
+  padding: 0;
+  margin: 1em 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card header ul li{
+  list-style: none;
+  display: block;
+  font-size: .5em;
+}
+
+.card header ul li a{
+  transition: all 100ms;
+}
+
+.card header ul li.active a,
+.card header ul li a:hover{
+  transform: scale(3) translateY(-0.1em);
 }
 
 .card .body{
@@ -282,4 +305,137 @@ body > header .wrapper p {
 
 .tick.active line{
   display: block;
+}
+
+#por-funcao aside > .card .body table{
+  table-layout: fixed;
+  margin: 1em 0 0.5em;
+}
+
+#por-funcao aside > .card .body table tr > *{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
+}
+
+.punchcard .column header,
+.punchcard .gnd .desc,
+#por-funcao aside > .card .body{
+  font-size: 0.8em;
+  line-height: 1em;
+  text-transform: uppercase;
+}
+
+#por-funcao aside > .card .body table tr.active > *{
+  font-weight: bold;
+}
+
+.punchcard{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.punchcard .column{
+  text-align: center;
+}
+
+.punchcard .column header{
+  font-weight: bold;
+  width: 20em;
+  height: 3em;
+}
+
+.punchcard li{
+  width: 13em;
+  height: 13em;
+  margin: 0em -6.5em -6em;
+  list-style: none;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.punchcard li .execution{
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.punchcard li .desc{
+  font-weight: bold;
+}
+
+.punchcard .column,
+.punchcard li .gnd,
+.punchcard li .gnd *{
+  transition: all 500ms;
+}
+
+.punchcard li .gnd{
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  color: #fff;
+  margin: auto;
+  box-sizing: border-box;
+  opacity: .7;
+}
+
+.punchcard li .gnd:hover{
+  width: 100% !important;
+  height: 100% !important;
+  opacity: .9;
+  padding: 1em;
+  z-index: 1;
+}
+
+.punchcard li .gnd *{
+  opacity: 0;
+}
+
+.punchcard li .gnd:hover *{
+  opacity: 1;
+}
+
+.punchcard li .gnd .icon{
+  font-size: 2em;
+  display: block;
+  margin: auto;
+}
+
+.punchcard .axis{
+  font-size: 0.8em;
+  width: 0;
+  padding: 0;
+  margin: 2em 0 5em 50%;
+  height: 55em;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+
+.punchcard .axis::before,
+.punchcard li::after{
+  content: '';
+  border-radius: 50%;
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  position: absolute;
+  left: 50%;
+  margin: -0.25em;
+  background-color: #000;
+}
+
+.punchcard .axis::before{
+  top: 0;
+}
+
+.punchcard li::after{
+  top: 50%;
 }

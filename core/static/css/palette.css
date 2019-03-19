@@ -54,6 +54,9 @@ svg.icon{
   fill: currentColor;
 }
 
+
+.card header ul li.active a,
+.card header ul li a:hover,
 .axis--x,
 input[type=text],
 select,
@@ -110,4 +113,13 @@ tbody tr:nth-child(2n) > *{
 
 .quanti-80{
   background-color: #277fcd;
+}
+
+.bar,
+#por-funcao aside > .card .body table tr.active > *,
+#por-funcao aside > .card .body table tr:hover > *,
+.bar-chart a:focus,
+.bar-chart a:active,
+.bar-chart a:hover{
+  background-color: #ecf3ec;
 }
