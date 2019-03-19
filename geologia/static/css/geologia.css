@@ -424,7 +424,7 @@ body > header .wrapper p {
   height: 0.5em;
   position: absolute;
   left: 50%;
-  margin-left: -0.25em;
+  margin: -0.25em;
   background-color: #000;
 }
 
