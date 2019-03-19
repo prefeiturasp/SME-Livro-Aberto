@@ -420,6 +420,10 @@ body > header .wrapper p {
   background-color: #000;
 }
 
+.punchcard .axis::before{
+  top: 0;
+}
+
 .punchcard li::after{
   top: 50%;
 }
