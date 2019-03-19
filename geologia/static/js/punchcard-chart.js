@@ -17,11 +17,15 @@ window.addEventListener('load', function(){
     nav.selectAll('tr')
        .style('cursor', 'pointer')
        .on('click', function(){
-         d3.select(this).call(toggleActive);
-         const actives = nav.node().querySelectorAll('tr.active');
-         const bars = nav.node().querySelectorAll('tr.active .bar');
+         const selection = d3.select(this);
 
-         const columns = container.selectAll('.column').data(actives);
+         let actives = nav.node().querySelectorAll('tr.active');
+         const crowded = ! selection.classed('active') && actives.length == 3;
+         if(crowded) d3.select(actives[0]).call(toggleActive);
+
+         selection.call(toggleActive);
+         actives = nav.node().querySelectorAll('tr.active');
+         const bars = nav.node().querySelectorAll('tr.active .bar');
 
          const headers = container.selectAll('.column header').data(actives);
          headers.text(d => d.dataset.name);
