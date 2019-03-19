@@ -331,6 +331,10 @@ body > header .wrapper p {
   text-transform: uppercase;
 }
 
+#por-funcao aside > .card .body table tr.active > *{
+  font-weight: bold;
+}
+
 .punchcard{
   display: flex;
   justify-content: space-evenly;

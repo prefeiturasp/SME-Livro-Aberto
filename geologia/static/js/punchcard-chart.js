@@ -1,3 +1,7 @@
+function toggleActive(selection){
+    selection.classed('active', !selection.classed('active'));
+}
+
 window.addEventListener('load', function(){
     let punchcard = d3.select('.punchcard');
     let container = d3.select(punchcard.node().parentNode);
@@ -9,4 +13,12 @@ window.addEventListener('load', function(){
         nav.select(id).classed('active', true);
         d3.event.preventDefault();
       })
+    nav.selectAll('tr')
+       .style('cursor', 'pointer')
+       .on('click', function(){
+         const actives = nav.selectAll('tr.active');
+           punchcard.selectAll('.column')
+               .data(actives);
+         d3.select(this).call(toggleActive);
+       })
 })

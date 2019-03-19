@@ -116,6 +116,7 @@ tbody tr:nth-child(2n) > *{
 }
 
 .bar,
+#por-funcao aside > .card .body table tr.active > *,
 #por-funcao aside > .card .body table tr:hover > *,
 .bar-chart a:focus,
 .bar-chart a:active,
