@@ -31,8 +31,14 @@ window.addEventListener('load', function(){
          headers.text(d => d.dataset.name);
          headers.exit().text('');
 
-         const items = container.selectAll('.column ul.axis').data(bars);
-         const gnds = items.selectAll('.gnd')
+         const items = container.selectAll('.column').data(bars);
+           items.enter().merge(items)
+               .style('position', 'relative')
+               .style('opacity', '1')
+           items.exit()
+               .style('position', 'absolute')
+               .style('opacity', '0')
+         const gnds = items.selectAll('ul.axis .gnd')
            .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
            gnds.style('height', d => d.dataset.percent + '%')
              .style('width', d => d.dataset.percent + '%')
