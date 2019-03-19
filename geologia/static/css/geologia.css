@@ -358,6 +358,7 @@ body > header .wrapper p {
   list-style: none;
   display: flex;
   position: relative;
+  overflow: hidden;
 }
 
 .punchcard li .execution{
