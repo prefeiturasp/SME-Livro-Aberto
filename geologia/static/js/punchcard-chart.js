@@ -7,6 +7,29 @@ window.addEventListener('load', function(){
     let container = d3.select(punchcard.node().parentNode);
     let nav = container.select('aside');
 
+    function updatePuchcard(actives){
+        const bars = nav.node().querySelectorAll('tr.active .bar');
+
+        const headers = container.selectAll('.column header').data(actives);
+        headers.text(d => d.dataset.name);
+        headers.exit().text('');
+
+        const items = container.selectAll('.column').data(bars);
+        items.enter().merge(items)
+            .style('position', 'relative')
+            .style('opacity', '1')
+        items.exit()
+            .style('position', 'absolute')
+            .style('opacity', '0')
+        const gnds = items.selectAll('ul.axis .gnd')
+            .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
+        gnds.style('height', d => d.dataset.percent + '%')
+            .style('width', d => d.dataset.percent + '%')
+        gnds.exit()
+            .style('height', 0)
+            .style('width', 0)
+    }
+
     nav.selectAll('header a')
       .on('click', function(){
         const id =  new URL(this.href).hash
@@ -27,25 +50,6 @@ window.addEventListener('load', function(){
 
          selection.call(toggleActive);
          actives = nav.node().querySelectorAll('tr.active');
-         const bars = nav.node().querySelectorAll('tr.active .bar');
-
-         const headers = container.selectAll('.column header').data(actives);
-         headers.text(d => d.dataset.name);
-         headers.exit().text('');
-
-         const items = container.selectAll('.column').data(bars);
-           items.enter().merge(items)
-               .style('position', 'relative')
-               .style('opacity', '1')
-           items.exit()
-               .style('position', 'absolute')
-               .style('opacity', '0')
-         const gnds = items.selectAll('ul.axis .gnd')
-           .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
-           gnds.style('height', d => d.dataset.percent + '%')
-             .style('width', d => d.dataset.percent + '%')
-           gnds.exit()
-               .style('height', 0)
-               .style('width', 0)
+         updatePuchcard(actives);
        })
 })
