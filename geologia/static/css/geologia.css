@@ -194,22 +194,26 @@ body > header .wrapper p {
   outline: 0;
 }
 
-.bar-chart + aside{
+.chart * + aside{
   position: relative;
 }
 
-.bar-chart + aside .card{
+.chart * + aside .card{
   position: absolute;
   opacity: 0;
   transition: opacity 500ms ease-in-out;
+  max-height: 100%;
+  overflow-y: auto;
+  z-index: 0;
+}
+
+.chart * + aside .card.active{
+  opacity: 1;
+  z-index: 1;
 }
 
 .bar-chart + aside .card table tr > *{
   padding-bottom: 0;
-}
-
-.bar-chart + aside .card.active{
-  opacity: 1;
 }
 
 .bar-parent{
@@ -327,6 +331,10 @@ body > header .wrapper p {
   text-transform: uppercase;
 }
 
+#por-funcao aside > .card .body table tr.active > *{
+  font-weight: bold;
+}
+
 .punchcard{
   display: flex;
   justify-content: space-evenly;
@@ -338,6 +346,8 @@ body > header .wrapper p {
 
 .punchcard .column header{
   font-weight: bold;
+  width: 20em;
+  height: 3em;
 }
 
 .punchcard li{
@@ -347,6 +357,7 @@ body > header .wrapper p {
   list-style: none;
   display: flex;
   position: relative;
+  overflow: hidden;
 }
 
 .punchcard li .execution{
@@ -358,9 +369,10 @@ body > header .wrapper p {
   font-weight: bold;
 }
 
+.punchcard .column,
 .punchcard li .gnd,
 .punchcard li .gnd *{
-  transition: all 200ms;
+  transition: all 500ms;
 }
 
 .punchcard li .gnd{
@@ -369,15 +381,15 @@ body > header .wrapper p {
   border-radius: 50%;
   color: #fff;
   margin: auto;
-  padding: 1em;
   box-sizing: border-box;
   opacity: .7;
 }
 
 .punchcard li .gnd:hover{
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   opacity: .9;
+  padding: 1em;
   z-index: 1;
 }
 
@@ -416,7 +428,7 @@ body > header .wrapper p {
   height: 0.5em;
   position: absolute;
   left: 50%;
-  margin-left: -0.25em;
+  margin: -0.25em;
   background-color: #000;
 }
 
