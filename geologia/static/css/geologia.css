@@ -346,6 +346,8 @@ body > header .wrapper p {
 
 .punchcard .column header{
   font-weight: bold;
+  width: 20em;
+  height: 3em;
 }
 
 .punchcard li{
