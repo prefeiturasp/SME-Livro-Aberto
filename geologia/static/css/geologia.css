@@ -194,22 +194,22 @@ body > header .wrapper p {
   outline: 0;
 }
 
-.bar-chart + aside{
+.chart * + aside{
   position: relative;
 }
 
-.bar-chart + aside .card{
+.chart * + aside .card{
   position: absolute;
   opacity: 0;
   transition: opacity 500ms ease-in-out;
 }
 
-.bar-chart + aside .card table tr > *{
-  padding-bottom: 0;
+.chart * + aside .card.active{
+  opacity: 1;
 }
 
-.bar-chart + aside .card.active{
-  opacity: 1;
+.bar-chart + aside .card table tr > *{
+  padding-bottom: 0;
 }
 
 .bar-parent{
