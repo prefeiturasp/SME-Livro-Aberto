@@ -342,7 +342,6 @@ body > header .wrapper p {
 
 .punchcard .column{
   text-align: center;
-  transition: all 200ms;
 }
 
 .punchcard .column header{
@@ -370,9 +369,10 @@ body > header .wrapper p {
   font-weight: bold;
 }
 
+.punchcard .column,
 .punchcard li .gnd,
 .punchcard li .gnd *{
-  transition: all 200ms;
+  transition: all 500ms;
 }
 
 .punchcard li .gnd{
