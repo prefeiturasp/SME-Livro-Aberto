@@ -123,6 +123,7 @@ body > header .wrapper p {
     display: flex;
   }
 
+  .punchcard,
   .bar-chart{
     width: calc(100%*2/3);
   }
@@ -131,6 +132,7 @@ body > header .wrapper p {
     width: calc(100%*1/3);
   }
 
+  .punchcard + aside .card,
   .bar-chart + aside .card{
     margin: 0 0 1em 4em;
   }
@@ -158,6 +160,7 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+.punchcard .axis,
 .bar-chart tbody tr > *{
   border-right: solid 1px #d1d1d1;
 }
@@ -316,8 +319,111 @@ body > header .wrapper p {
   text-transform: uppercase;
 }
 
+.punchcard .column header,
+.punchcard .gnd .desc,
 #por-funcao aside > .card .body{
   font-size: 0.8em;
   line-height: 1em;
   text-transform: uppercase;
+}
+
+.punchcard{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.punchcard .column{
+  text-align: center;
+}
+
+.punchcard .column header{
+  font-weight: bold;
+}
+
+.punchcard li{
+  width: 13em;
+  height: 13em;
+  margin: 0em -6.5em -6em;
+  list-style: none;
+  display: flex;
+  position: relative;
+}
+
+.punchcard li .execution{
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.punchcard li .desc{
+  font-weight: bold;
+}
+
+.punchcard li .gnd,
+.punchcard li .gnd *{
+  transition: all 200ms;
+}
+
+.punchcard li .gnd{
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  color: #fff;
+  margin: auto;
+  padding: 1em;
+  box-sizing: border-box;
+  opacity: .7;
+}
+
+.punchcard li .gnd:hover{
+  width: 100%;
+  height: 100%;
+  opacity: .9;
+  z-index: 1;
+}
+
+.punchcard li .gnd *{
+  opacity: 0;
+}
+
+.punchcard li .gnd:hover *{
+  opacity: 1;
+}
+
+.punchcard li .gnd .icon{
+  font-size: 2em;
+  display: block;
+  margin: auto;
+}
+
+.punchcard .axis{
+  font-size: 0.8em;
+  width: 0;
+  padding: 0;
+  margin: 2em 0 5em 50%;
+  height: 55em;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+
+.punchcard .axis::before,
+.punchcard li::after{
+  content: '';
+  border-radius: 50%;
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  position: absolute;
+  left: 50%;
+  margin-left: -0.25em;
+  background-color: #000;
+}
+
+.punchcard .axis::before{
+  top: 0;
+}
+
+.punchcard li::after{
+  top: 50%;
 }
