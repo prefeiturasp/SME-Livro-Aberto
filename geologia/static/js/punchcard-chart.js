@@ -22,6 +22,8 @@ window.addEventListener('load', function(){
          let actives = nav.node().querySelectorAll('tr.active');
          const crowded = ! selection.classed('active') && actives.length == 3;
          if(crowded) d3.select(actives[0]).call(toggleActive);
+         const empty = selection.classed('active') && actives.length == 1;
+         if(empty) return;
 
          selection.call(toggleActive);
          actives = nav.node().querySelectorAll('tr.active');
