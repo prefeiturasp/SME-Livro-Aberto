@@ -342,6 +342,7 @@ body > header .wrapper p {
 
 .punchcard .column{
   text-align: center;
+  transition: all 200ms;
 }
 
 .punchcard .column header{
