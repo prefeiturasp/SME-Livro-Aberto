@@ -12,9 +12,19 @@ class GndGeologiaSerializer(serializers.ModelSerializer):
 
 
 class SubfuncaoSerializer(serializers.ModelSerializer):
+    selecionado = serializers.SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        self.subfuncao_id = kwargs.pop('subfuncao_id', False)
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model = Subfuncao
-        fields = ('id', 'desc')
+        fields = ('id', 'desc', 'selecionado')
+
+    def get_selecionado(self, obj):
+        param = self.subfuncao_id
+        return param and obj.id == int(param)
 
 
 class GeologiaSerializer:
@@ -32,7 +42,9 @@ class GeologiaSerializer:
             'gnds': GndGeologiaSerializer(
                 GndGeologia.objects.all(), many=True).data,
             'subfuncoes': SubfuncaoSerializer(
-                Subfuncao.objects.all(), many=True).data,
+                Subfuncao.objects.all(),
+                many=True,
+                subfuncao_id=self._subfuncao_id).data,
         }
 
     # Charts 1 and 2 (camadas and subfuncao)
