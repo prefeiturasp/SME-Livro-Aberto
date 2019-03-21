@@ -54,5 +54,5 @@ window.addEventListener('load', function(){
          actives = nav.node().querySelectorAll('tr.active');
          updatePuchcard(actives);
        })
-    nav.node().querySelector('tr').dispatchEvent(new Event('click'));
+    nav.node().querySelector('header a').dispatchEvent(new Event('click'));
 })
