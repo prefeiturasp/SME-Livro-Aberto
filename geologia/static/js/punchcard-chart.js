@@ -21,11 +21,13 @@ window.addEventListener('load', function(){
             .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
         gnds.style('height', d => d.dataset.percent + '%')
             .style('width', d => d.dataset.percent + '%')
-            .select('.percent').text(d => d.dataset.percent + '%')
+        gnds.select('.percent').text(d => d.dataset.percent + '%')
+        gnds.select('.value').text(d => 'R$ ' + d.dataset.currencyValue)
         gnds.exit()
             .style('height', 0)
             .style('width', 0)
-            .select('.percent').text('0%')
+        gnds.exit().select('.percent').text('0%')
+        gnds.exit().select('.value').text('R$ 0,00')
     }
 
     nav.selectAll('header a')

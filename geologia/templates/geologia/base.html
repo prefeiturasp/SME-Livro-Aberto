@@ -168,12 +168,8 @@
                       <li>
                           <div data-gnd="{{ gnd.slug }}" class="{{ gnd.slug }} gnd">
                               {% include 'geologia/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
-                              <div class="percent">
-                                    0%
-                              </div>
-                              <div class="value">
-                                  R$ 456.576.124,00
-                              </div>
+                              <div class="percent">0%</div>
+                              <div class="value">R$ 0</div>
                           </div>
                       </li>
                   {% endfor %}
@@ -200,7 +196,7 @@
                         <tr data-name="{{ item.subgrupo }}"
                             data-year="{{ year.year }}"
                             data-value="{{ item.value|unlocalize }}"
-                            data-execution="{{ item.percent|unlocalize }}">
+                            >
                           <td>{{ item.subgrupo }}</td>
                           <td class="bar-parent">
                             <div class="bar" style="width: 100%">
@@ -210,6 +206,7 @@
                                 data-group="{{ item.subgrupo}}"
                                 data-name="{{ item.slug}}"
                                 data-value="{{ item.value|unlocalize }}"
+                                data-currency-value="{% if item.value %}{{ item.value|intcomma }}{% else %}-{% endif %}"
                                 data-percent="{% widthratio item.percent 1 100 %}"
                                 style="width: {% widthratio item.percent 1 100 %}%">
                                 {% widthratio item.percent 1 100 %}%
