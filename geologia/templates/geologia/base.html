@@ -94,8 +94,12 @@
       <form action="" method="get" class="query">
       <fieldset>
         <div class="form-item">
-          <label for="query"></label>
-          <input class="text" id="query" type="text" name="" value="">
+            <select name="subfuncao">
+                  <option value="">Selecione a subfunção</option>
+              {% for subfuncao in subfuncoes %}
+                  <option value="{{subfuncao.id}}" {% if subfuncao.selecionado %}selected{%endif%}>{{ subfuncao.desc }}</option>
+              {% endfor %}
+            </select>
         </div>
         <div class="form-item switch">
           <input class="radio" type="radio" name="break" checked id="by-orgao">
