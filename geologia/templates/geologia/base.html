@@ -87,15 +87,20 @@
       <div class="actions">
 		  <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Download dos Dados por natureza</a>
       </div>
+  </div>
   </section>
-  <section id="por-programa">
+  <section id="por-subfuncao">
     <div class="wrapper">
       <h2>Volume de gastos por <em>subfunção</em></h2>
-      <form action="" method="get" class="query">
+      <form action="#por-subfuncao" method="get" class="query">
       <fieldset>
         <div class="form-item">
-          <label for="query"></label>
-          <input class="text" id="query" type="text" name="" value="">
+            <select name="subfuncao_id">
+                  <option value="">Selecione a subfunção</option>
+              {% for subfuncao in subfuncoes %}
+                  <option value="{{subfuncao.id}}" {% if subfuncao.selecionado %}selected{%endif%}>{{ subfuncao.desc }}</option>
+              {% endfor %}
+            </select>
         </div>
         <div class="form-item switch">
           <input class="radio" type="radio" name="break" checked id="by-orgao">
@@ -103,13 +108,14 @@
           <input class="radio" type="radio" name="break" value="" id="by-area">
           <label for="by-area">Empenhado</label>
         </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
       </fieldset>
       </form>
       <div class="chart">
           {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
           <aside>
              {% for year in subfuncao.empenhado %}
-                 <div id="por-programa-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
+                 <div id="por-subfuncao-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
                   <header>
                     <h3 class="title">{{ year.year }}</h3>
                     <small>Orçamento total</small>
