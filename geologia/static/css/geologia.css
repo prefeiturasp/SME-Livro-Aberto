@@ -367,7 +367,7 @@ body > header .wrapper p {
   overflow: hidden;
 }
 
-.punchcard li .execution{
+.punchcard li .percent{
   font-size: 2em;
   font-weight: bold;
 }

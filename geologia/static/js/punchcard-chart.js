@@ -21,9 +21,11 @@ window.addEventListener('load', function(){
             .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
         gnds.style('height', d => d.dataset.percent + '%')
             .style('width', d => d.dataset.percent + '%')
+            .select('.percent').text(d => d.dataset.percent + '%')
         gnds.exit()
             .style('height', 0)
             .style('width', 0)
+            .select('.percent').text('0%')
     }
 
     nav.selectAll('header a')
