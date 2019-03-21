@@ -36,7 +36,7 @@ window.addEventListener('load', function(){
         nav.select('.card.active').classed('active', false);
         nav.selectAll('tr.active').classed('active', false);
         nav.select(id).classed('active', true)
-            .select('tr').node().dispatchEvent(new Event('click'));
+            .selectAll('tr:nth-child(-n+3)').dispatch('click');
         d3.event.preventDefault();
       })
     nav.selectAll('tr')
