@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from budget_execution.models import GndGeologia
+from budget_execution.models import GndGeologia, Subfuncao
 from geologia.exceptions import InvalidChartOptionException
 
 
@@ -9,6 +9,12 @@ class GndGeologiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = GndGeologia
         fields = ('desc', 'slug')
+
+
+class SubfuncaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subfuncao
+        fields = ('id', 'desc')
 
 
 class GeologiaSerializer:
@@ -25,6 +31,8 @@ class GeologiaSerializer:
             'subgrupo': self.prepare_subgrupo_data(),
             'gnds': GndGeologiaSerializer(
                 GndGeologia.objects.all(), many=True).data,
+            'subfuncoes': SubfuncaoSerializer(
+                Subfuncao.objects.all(), many=True).data,
         }
 
     # Charts 1 and 2 (camadas and subfuncao)
