@@ -34,7 +34,9 @@ window.addEventListener('load', function(){
       .on('click', function(){
         const id =  new URL(this.href).hash
         nav.select('.card.active').classed('active', false);
-        nav.select(id).classed('active', true);
+        nav.selectAll('tr.active').classed('active', false);
+        nav.select(id).classed('active', true)
+            .select('tr').node().dispatchEvent(new Event('click'));
         d3.event.preventDefault();
       })
     nav.selectAll('tr')
