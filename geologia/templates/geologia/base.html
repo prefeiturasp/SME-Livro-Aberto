@@ -94,7 +94,7 @@
       <form action="#por-subfuncao" method="get" class="query">
       <fieldset>
         <div class="form-item">
-            <select name="subfuncao">
+            <select name="subfuncao_id">
                   <option value="">Selecione a subfunção</option>
               {% for subfuncao in subfuncoes %}
                   <option value="{{subfuncao.id}}" {% if subfuncao.selecionado %}selected{%endif%}>{{ subfuncao.desc }}</option>
