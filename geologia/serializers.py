@@ -24,7 +24,7 @@ class GeologiaSerializer:
             'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
             'subgrupo': self.prepare_subgrupo_data(),
             'gnds': GndGeologiaSerializer(
-                GndGeologia.objects.all(), many=True).data,
+                GndGeologia.objects.order_by('desc').all(), many=True).data,
         }
 
     # Charts 1 and 2 (camadas and subfuncao)
@@ -73,7 +73,8 @@ class GeologiaSerializer:
 
         empenhado_by_gnd = qs \
             .values('gnd_geologia__desc', 'gnd_geologia__slug') \
-            .annotate(empenhado=Sum('empenhado_liquido'))
+            .annotate(empenhado=Sum('empenhado_liquido')) \
+            .order_by('gnd_geologia__desc')
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
         empenhado_total = empenhado_total['total']
 

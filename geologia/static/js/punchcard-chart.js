@@ -15,19 +15,19 @@ window.addEventListener('load', function(){
         headers.exit().text('');
 
         const items = container.selectAll('.column').data(bars);
-        items.enter().merge(items)
-            .style('position', 'relative')
-            .style('opacity', '1')
-        items.exit()
-            .style('position', 'absolute')
-            .style('opacity', '0')
+        items.enter().merge(items).classed('active', true)
+        items.exit().classed('active', false)
         const gnds = items.selectAll('ul.axis .gnd')
             .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
         gnds.style('height', d => d.dataset.percent + '%')
             .style('width', d => d.dataset.percent + '%')
+        gnds.select('.percent').text(d => d.dataset.percent + '%')
+        gnds.select('.value').text(d => 'R$ ' + d.dataset.currencyValue)
         gnds.exit()
             .style('height', 0)
             .style('width', 0)
+        gnds.exit().select('.percent').text('0%')
+        gnds.exit().select('.value').text('R$ 0,00')
     }
 
     nav.selectAll('header a')
@@ -52,4 +52,5 @@ window.addEventListener('load', function(){
          actives = nav.node().querySelectorAll('tr.active');
          updatePuchcard(actives);
        })
+    nav.node().querySelector('tr').dispatchEvent(new Event('click'));
 })
