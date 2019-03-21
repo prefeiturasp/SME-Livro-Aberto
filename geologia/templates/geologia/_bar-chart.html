@@ -12,10 +12,10 @@
     {% for year in subfuncao.empenhado %}
     <tr data-year="{{ year.year }}">
         <th>
-            <a href="#por-programa-{{ year.year }}">{{ year.year }}</a>
+            <a href="#por-subfuncao-{{ year.year }}">{{ year.year }}</a>
         </th>
       <td class="bar-parent">
-        <a href="#por-programa-{{ year.year }}">
+        <a href="#por-subfuncao-{{ year.year }}">
         <div class="bar" style="width: {% widthratio year.total greater_total.total 100 %}%">
           {% for item in year.gnds%}
           <span class="label" data-name="{{ item.name }}">{{ item.name }}</span>

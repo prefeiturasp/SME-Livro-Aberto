@@ -9,7 +9,8 @@ from model_mommy import mommy
 
 from budget_execution.models import Execucao, GndGeologia, Subfuncao, Subgrupo
 from geologia.serializers import (
-    GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer)
+    GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer,
+    SubfuncaoSerializer)
 
 
 @pytest.mark.django_db
@@ -430,11 +431,41 @@ class TestGeologiaSerializerGnds:
 
 
 @pytest.mark.django_db
+class TestGeologiaSerializerSubfuncoes:
+    def test_serialize_list_of_gnds(self):
+        subfuncao_1 = mommy.make('Subfuncao',  desc='Turismo')
+        subfuncao_2 = mommy.make('Subfuncao',  desc='Educação Infantil')
+        subfuncoes = [subfuncao_1, subfuncao_2]
+        expected = [dict(id=subfuncao.id, desc=subfuncao.desc,
+                         selecionado=False)
+                    for subfuncao in subfuncoes]
+
+        # selected funcao
+        subfuncao_3 = mommy.make('Subfuncao',  desc='Selected Function')
+        expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
+                             selecionado=True))
+
+        queryset = Execucao.objects.all()
+        serialized = GeologiaSerializer(queryset,
+                                        subfuncao_id=subfuncao_3.id).data
+
+        assert expected == serialized.get('subfuncoes')
+
+
+@pytest.mark.django_db
 class TestGndGeologiaSerializer:
     def test_serialize_data(self):
         gnd = mommy.make('GndGeologia',  desc='Consultoria', slug='consulting')
         expected = dict(slug=gnd.slug, desc=gnd.desc)
         assert expected == GndGeologiaSerializer(gnd).data
+
+
+@pytest.mark.django_db
+class TestSubfuncaoSerializer:
+    def test_serialize_data(self):
+        subfuncao = mommy.make('Subfuncao',  desc='Turismo')
+        expected = dict(id=subfuncao.id, desc=subfuncao.desc, selecionado=False)
+        assert expected == SubfuncaoSerializer(subfuncao).data
 
 
 @pytest.mark.django_db
