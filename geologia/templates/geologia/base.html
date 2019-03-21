@@ -88,10 +88,10 @@
 		  <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Download dos Dados por natureza</a>
       </div>
   </section>
-  <section id="por-programa">
+  <section id="por-subfuncao">
     <div class="wrapper">
       <h2>Volume de gastos por <em>subfunção</em></h2>
-      <form action="" method="get" class="query">
+      <form action="#por-subfuncao" method="get" class="query">
       <fieldset>
         <div class="form-item">
             <select name="subfuncao">
@@ -113,7 +113,7 @@
           {% include 'geologia/_bar-chart.html' with subfuncao=subfuncao %}
           <aside>
              {% for year in subfuncao.empenhado %}
-                 <div id="por-programa-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
+                 <div id="por-subfuncao-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
                   <header>
                     <h3 class="title">{{ year.year }}</h3>
                     <small>Orçamento total</small>
