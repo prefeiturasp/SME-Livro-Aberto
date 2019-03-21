@@ -49,6 +49,10 @@ form.query label{
   font-weight: 700;
 }
 
+select{
+  font-size: 1em;
+}
+
 .breadcrumb a,
 a.btn{
   text-decoration: none;
