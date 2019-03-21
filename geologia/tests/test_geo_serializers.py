@@ -436,11 +436,18 @@ class TestGeologiaSerializerSubfuncoes:
         subfuncao_1 = mommy.make('Subfuncao',  desc='Turismo')
         subfuncao_2 = mommy.make('Subfuncao',  desc='Educação Infantil')
         subfuncoes = [subfuncao_1, subfuncao_2]
-        expected = [dict(id=subfuncao.id, desc=subfuncao.desc)
+        expected = [dict(id=subfuncao.id, desc=subfuncao.desc,
+                         selecionado=False)
                     for subfuncao in subfuncoes]
 
+        # selected funcao
+        subfuncao_3 = mommy.make('Subfuncao',  desc='Selected Function')
+        expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
+                             selecionado=True))
+
         queryset = Execucao.objects.all()
-        serialized = GeologiaSerializer(queryset).data
+        serialized = GeologiaSerializer(queryset,
+                                        subfuncao_id=subfuncao_3.id).data
 
         assert expected == serialized.get('subfuncoes')
 
@@ -457,7 +464,7 @@ class TestGndGeologiaSerializer:
 class TestSubfuncaoSerializer:
     def test_serialize_data(self):
         subfuncao = mommy.make('Subfuncao',  desc='Turismo')
-        expected = dict(id=subfuncao.id, desc=subfuncao.desc)
+        expected = dict(id=subfuncao.id, desc=subfuncao.desc, selecionado=False)
         assert expected == SubfuncaoSerializer(subfuncao).data
 
 
