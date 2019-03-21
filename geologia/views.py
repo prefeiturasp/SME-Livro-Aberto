@@ -31,9 +31,15 @@ class DownloadView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         qs = self.get_queryset()
         chart = self.kwargs['chart']
-        serializer = self.get_serializer(qs, chart=chart)
+
+        subfuncao_id = self.request.GET.get('subfuncao_id', None)
+        serializer = self.get_serializer(qs, chart=chart,
+                                         subfuncao_id=subfuncao_id)
 
         filename = f'geologia_{chart}'
+        if subfuncao_id:
+            filename += '_filtrado'
+
         headers = {
             'Content-Disposition': f'attachment; filename={filename}.csv'
         }
