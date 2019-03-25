@@ -60,7 +60,7 @@
           {% endfor %}
       </ul>
       <div class="actions">
-		  <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Download dos Dados por natureza</a>
+          <a class="btn" href="{% url 'geologia:download' chart='camadas'%}">Download dos Dados por natureza</a>
       </div>
   </div>
   </section>
@@ -123,6 +123,9 @@
                 </div>
              {% endfor %}
           </aside>
+      </div>
+      <div class="actions">
+          <a class="btn" href="{% url 'geologia:download' chart='subfuncao'%}">Download dos Dados por subfunção</a>
       </div>
     </div>
   </section>
@@ -203,6 +206,9 @@
                 </div>
              {% endfor %}
           </aside>
+      </div>
+      <div class="actions">
+          <a class="btn" href="{% url 'geologia:download' chart='subgrupo'%}">Download dos Dados por subgrupo</a>
       </div>
     </div>
   </section>
