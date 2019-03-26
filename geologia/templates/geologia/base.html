@@ -47,7 +47,7 @@
       <div class="stream-chart chart">
           <div class="card-wrapper">
           {% for year in camadas.empenhado %}
-              {% include 'geologia/_card.html' with year=year%}
+              {% include 'geologia/_card.html' with title=year.year data=year%}
           {% endfor %}
           </div>
       </div>
@@ -181,7 +181,10 @@
                             data-year="{{ year.year }}"
                             data-value="{{ item.value|unlocalize }}"
                             >
-                          <td>{{ item.subgrupo }}</td>
+                            <th>
+                                <span>{{ item.subgrupo }}</span>
+                              {% include 'geologia/_card.html' with title=item.subgrupo data=item%}
+                            </th>
                           <td class="bar-parent">
                             <div class="bar" style="width: 100%">
                               {% for item in item.gnds%}
