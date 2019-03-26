@@ -35,8 +35,10 @@ window.addEventListener('load', function(){
         const id =  new URL(this.href).hash
         nav.select('.card.active').classed('active', false);
         nav.selectAll('tr.active').classed('active', false);
-        nav.select(id).classed('active', true)
-            .selectAll('tr:nth-child(-n+3)').dispatch('click');
+        const curr = nav.select(id).classed('active', true)
+        const first = curr.select('tr:first-child').dispatch('click');
+        const second = d3.select(first.node().nextElementSibling).dispatch('click');
+        d3.select(second.node().nextElementSibling).dispatch('click');
         d3.event.preventDefault();
       })
     nav.selectAll('tr')

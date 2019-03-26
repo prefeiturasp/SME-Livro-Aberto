@@ -2,4 +2,4 @@
 <svg class="icon">
   <use xlink:href="{% get_static_prefix %}img/{{slug}}.svg#icon"></use>
 </svg>
-<span class="desc">{{ desc }}</span>
+{% if desc %}<span class="desc">{{ desc }}</span>{% endif %}

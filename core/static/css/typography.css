@@ -31,7 +31,7 @@ h2 > em{
   font-weight: bold;
 }
 
-aside h3{
+aside > .card > header h3{
   font-size: 2.5em;
   line-height: 1.1;
 }
