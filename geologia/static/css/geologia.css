@@ -206,6 +206,17 @@ body > header .wrapper p {
   margin-bottom: 0;
 }
 
+aside tr .card{
+  position: absolute;
+  margin-left: -20em;
+  margin-top: -5em;
+  width: 20em;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+  max-height: 0;
+}
+
+aside tr:hover .card,
 .chart * + aside .card.active{
   opacity: 1;
   z-index: 1;
@@ -216,7 +227,7 @@ body > header .wrapper p {
   padding-bottom: 0;
 }
 
-.bar-parent{
+.bar-chart .bar-parent{
   padding-right: 0;
 }
 
@@ -233,6 +244,10 @@ body > header .wrapper p {
   text-indent: 100%;
   overflow: hidden;
   background-color: currentColor;
+  font-size: 0.5em;
+}
+
+.bar-chart .bar span.value{
   font-size: 2em;
 }
 
@@ -294,6 +309,11 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+aside .card table tr > *{
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
 .card table tr > * svg.icon{
   font-size: 2em;
   margin-right: .5em;
@@ -312,14 +332,13 @@ body > header .wrapper p {
   margin: 1em 0 0.5em;
 }
 
-#por-funcao aside > .card .body table tr > *{
+#por-funcao aside > .card .body th > span{
+  display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding-left: 1rem;
-  padding-right: 1rem;
   font-size: 0.8em;
-  line-height: 1em;
+  line-height: 1rem;
   text-transform: uppercase;
 }
 
@@ -327,11 +346,10 @@ body > header .wrapper p {
 .punchcard .gnd .desc,
 #por-funcao aside > .card .body{
   font-size: 0.8em;
-  line-height: 1em;
   text-transform: uppercase;
 }
 
-#por-funcao aside > .card .body table tr.active > *{
+#por-funcao aside > .card .body table tr.active > * > span{
   font-weight: bold;
 }
 
