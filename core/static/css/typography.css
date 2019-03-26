@@ -31,7 +31,7 @@ h2 > em{
   font-weight: bold;
 }
 
-aside h3{
+aside > .card > header h3{
   font-size: 2.5em;
   line-height: 1.1;
 }
@@ -47,6 +47,10 @@ a.btn,
 form.query label{
   text-transform: uppercase;
   font-weight: 700;
+}
+
+select{
+  font-size: 1em;
 }
 
 .breadcrumb a,

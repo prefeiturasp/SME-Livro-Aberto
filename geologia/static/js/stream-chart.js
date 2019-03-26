@@ -41,17 +41,17 @@ function updateData(selection, layers, x, y){
 
 window.addEventListener('load', function(){
     let container = document.querySelector('.stream-chart');
-    let table = container.querySelector('table');
     let svg = d3.select(container).append('svg');
 
     let legendItems = document.querySelectorAll('#camadas ul.legend [data-gnd]');
     let gnds = Array.from(legendItems, item => item.dataset.gnd);
-    let rows = document.querySelectorAll('.stream-chart tbody tr');
 
     let getValue = row => +row.dataset.value;
     let getExecution = row => row.dataset.value * row.dataset.execution;
 
-    let years = Object.keys(groupData(rows, getValue)).sort();
+    let cards = container.querySelectorAll('.card-wrapper .card');
+    let years = Array.from(cards, card => card.dataset.year).sort();
+    let rows = container.querySelectorAll('.card-wrapper .card tr');
 
     let executionSwitch = document.getElementById('executed-switch');
     let streamChart = new StreamChart(svg, years, gnds);
@@ -63,7 +63,6 @@ window.addEventListener('load', function(){
     });
 
     executionSwitch.dispatchEvent(new Event('change'));
-    table.style.display = 'none';
 })
 
 function StreamChart(svg, years, gnds){

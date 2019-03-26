@@ -57,9 +57,9 @@ class TestHomeView(APITestCase):
 
 class TestDownloadView(APITestCase):
 
-    def get(self, chart):
+    def get(self, chart, **kwargs):
         url = self.base_url(chart)
-        return self.client.get(url)
+        return self.client.get(url, kwargs)
 
     def base_url(self, chart):
         return reverse('geologia:download', args=[chart])
@@ -71,6 +71,7 @@ class TestDownloadView(APITestCase):
         subgrupo1 = mommy.make(Subgrupo, id=1, grupo__id=1)
         subgrupo2 = mommy.make(Subgrupo, id=2, grupo__id=1)
         subfuncao = mommy.make(Subfuncao, id=1, desc="sub")
+        subfuncao2 = mommy.make(Subfuncao, id=2)
 
         mommy.make(Execucao,
                    gnd_geologia=gnd1,
@@ -85,7 +86,7 @@ class TestDownloadView(APITestCase):
                    subgrupo=subgrupo2,
                    orgao__id=SME_ORGAO_ID,
                    elemento__id=1,
-                   subfuncao=subfuncao,
+                   subfuncao=subfuncao2,
                    year=date(2018, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
@@ -107,11 +108,14 @@ class TestDownloadView(APITestCase):
                    orcado_atualizado=1,
                    _quantity=2)
 
-    def prepare_expected_data(self, chart):
+    def prepare_expected_data(self, chart, subfuncao_id=None):
         factory = RequestFactory()
 
         execucoes = Execucao.objects.filter(subgrupo__isnull=False,
                                             orgao__id=SME_ORGAO_ID)
+        if subfuncao_id:
+            execucoes = execucoes.filter(subfuncao_id=subfuncao_id)
+
         request = factory.get(self.base_url(chart))
 
         return GeologiaDownloadSerializer(
@@ -135,4 +139,9 @@ class TestDownloadView(APITestCase):
     def test_downloads_subgrupo_chart_data(self):
         expected = self.prepare_expected_data('subgrupo')
         data = self.get('subgrupo').data
+        assert expected == data
+
+    def test_filters_subfuncao_chart_download_data(self):
+        expected = self.prepare_expected_data('subfuncao', subfuncao_id=2)
+        data = self.get('subfuncao', subfuncao_id=2).data
         assert expected == data

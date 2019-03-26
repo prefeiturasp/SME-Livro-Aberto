@@ -132,8 +132,7 @@ body > header .wrapper p {
     width: calc(100%*1/3);
   }
 
-  .punchcard + aside .card,
-  .bar-chart + aside .card{
+  aside > .card{
     margin: 0 0 1em 4em;
   }
 }
@@ -198,25 +197,37 @@ body > header .wrapper p {
   position: relative;
 }
 
-.chart * + aside .card{
-  position: absolute;
+.chart * + aside > .card{
   opacity: 0;
   transition: opacity 500ms ease-in-out;
-  max-height: 100%;
+  max-height: 0;
   overflow-y: auto;
   z-index: 0;
+  margin-bottom: 0;
 }
 
+aside tr .card{
+  position: absolute;
+  margin-left: -20em;
+  margin-top: -5em;
+  width: 20em;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+  max-height: 0;
+}
+
+aside tr:hover .card,
 .chart * + aside .card.active{
   opacity: 1;
   z-index: 1;
+  max-height: 100%;
 }
 
-.bar-chart + aside .card table tr > *{
+.bar-chart + aside > .card table tr > *{
   padding-bottom: 0;
 }
 
-.bar-parent{
+.bar-chart .bar-parent{
   padding-right: 0;
 }
 
@@ -233,6 +244,10 @@ body > header .wrapper p {
   text-indent: 100%;
   overflow: hidden;
   background-color: currentColor;
+  font-size: 0.5em;
+}
+
+.bar-chart .bar span.value{
   font-size: 2em;
 }
 
@@ -294,6 +309,11 @@ body > header .wrapper p {
   padding-bottom: 0.5em;
 }
 
+aside .card table tr > *{
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
 .card table tr > * svg.icon{
   font-size: 2em;
   margin-right: .5em;
@@ -307,31 +327,29 @@ body > header .wrapper p {
   display: block;
 }
 
-#por-funcao aside > .card .body table{
+#por-subgrupo aside > .card .body table{
   table-layout: fixed;
   margin: 1em 0 0.5em;
 }
 
-#por-funcao aside > .card .body table tr > *{
+#por-subgrupo aside > .card .body th > span{
+  display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding-left: 1rem;
-  padding-right: 1rem;
   font-size: 0.8em;
-  line-height: 1em;
+  line-height: 1rem;
   text-transform: uppercase;
 }
 
 .punchcard .column header,
 .punchcard .gnd .desc,
-#por-funcao aside > .card .body{
+#por-subgrupo aside > .card .body{
   font-size: 0.8em;
-  line-height: 1em;
   text-transform: uppercase;
 }
 
-#por-funcao aside > .card .body table tr.active > *{
+#por-subgrupo aside > .card .body table tr.active > * > span{
   font-weight: bold;
 }
 

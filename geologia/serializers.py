@@ -227,9 +227,10 @@ class GeologiaSerializer:
 
 class GeologiaDownloadSerializer:
 
-    def __init__(self, queryset, chart, *args, **kwargs):
+    def __init__(self, queryset, chart, subfuncao_id=None, *args, **kwargs):
         self.queryset = queryset
         self.chart = chart
+        self.subfuncao_id = int(subfuncao_id) if subfuncao_id else subfuncao_id
 
     @property
     def data(self):
@@ -263,6 +264,9 @@ class GeologiaDownloadSerializer:
 
     def prepare_subfuncao_chart_data(self):
         qs = self.queryset
+
+        if self.subfuncao_id:
+            qs = qs.filter(subfuncao_id=self.subfuncao_id)
 
         subfuncoes = qs.order_by('subfuncao_id').values('subfuncao_id') \
             .distinct()

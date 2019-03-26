@@ -1,19 +1,19 @@
 {% load humanize %}
 {% load l10n %}
-<div class="card" data-year="{{ year.year }}">
+<div class="card" data-year="{{ title }}">
   <header>
-    <h3 class="title">{{ year.year }}</h3>
+    <h3 class="title">{{ title }}</h3>
     <div class="value">
-      {% if year.total %}R$ {{ year.total|intcomma }}{% else %}-{% endif %}
+      {% if data.total %}R$ {{ data.total|intcomma }}{% else %}-{% endif %}
     </div>
   </header>
   <div class="body">
     <table>
       <tbody>
-        {% for item in year.gnds%}
+        {% for item in data.gnds%}
         {% if item.slug %}
         <tr data-name="{{ item.slug}}"
-            data-year="{{ year.year }}"
+            data-year="{{ title }}"
             data-value="{{ item.value|unlocalize }}"
             data-execution="{{ item.percent|unlocalize }}">
           <td>
