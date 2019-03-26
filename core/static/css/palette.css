@@ -17,7 +17,7 @@ section#data-table thead th{
   background-color: #c3f570;
 }
 
-aside .card header,
+aside > .card > header,
 body > header,
 section#social{
   background-color: #222b34;
