@@ -90,6 +90,10 @@
           {% include 'geologia/_bar-chart.html' with data=subfuncao.empenhado type='empenhado' %}
           {% include 'geologia/_bar-chart-aside.html' with data=subfuncao.empenhado type='empenhado' %}
       </div>
+      <div class="chart">
+          {% include 'geologia/_bar-chart.html' with data=subfuncao.orcado type='orcado'%}
+          {% include 'geologia/_bar-chart-aside.html' with data=subfuncao.orcado type='orcado' %}
+      </div>
       <div class="actions">
           <a class="btn" href="{% url 'geologia:download' chart='subfuncao'%}">Download dos Dados por subfunção</a>
       </div>
