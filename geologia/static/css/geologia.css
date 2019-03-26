@@ -199,17 +199,18 @@ body > header .wrapper p {
 }
 
 .chart * + aside .card{
-  position: absolute;
   opacity: 0;
   transition: opacity 500ms ease-in-out;
-  max-height: 100%;
+  max-height: 0;
   overflow-y: auto;
   z-index: 0;
+  margin-bottom: 0;
 }
 
 .chart * + aside .card.active{
   opacity: 1;
   z-index: 1;
+  max-height: 100%;
 }
 
 .bar-chart + aside .card table tr > *{
