@@ -327,12 +327,12 @@ aside .card table tr > *{
   display: block;
 }
 
-#por-funcao aside > .card .body table{
+#por-subgrupo aside > .card .body table{
   table-layout: fixed;
   margin: 1em 0 0.5em;
 }
 
-#por-funcao aside > .card .body th > span{
+#por-subgrupo aside > .card .body th > span{
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -344,12 +344,12 @@ aside .card table tr > *{
 
 .punchcard .column header,
 .punchcard .gnd .desc,
-#por-funcao aside > .card .body{
+#por-subgrupo aside > .card .body{
   font-size: 0.8em;
   text-transform: uppercase;
 }
 
-#por-funcao aside > .card .body table tr.active > * > span{
+#por-subgrupo aside > .card .body table tr.active > * > span{
   font-weight: bold;
 }
 
