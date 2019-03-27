@@ -128,7 +128,8 @@ body > header .wrapper p {
     width: calc(100%*2/3);
   }
 
-  .chart aside{
+  .punchcard + *,
+  .bar-chart + *{
     width: calc(100%*1/3);
   }
 
@@ -193,11 +194,11 @@ body > header .wrapper p {
   outline: 0;
 }
 
-.chart * + aside{
+aside{
   position: relative;
 }
 
-.chart * + aside > .card{
+aside > .card{
   opacity: 0;
   transition: opacity 500ms ease-in-out;
   max-height: 0;
@@ -217,7 +218,7 @@ aside tr .card{
 }
 
 aside tr:hover .card,
-.chart * + aside .card.active{
+aside .card.active{
   opacity: 1;
   z-index: 1;
   max-height: 100%;
@@ -364,9 +365,24 @@ aside .card table tr > *{
   opacity: 0;
 }
 
+.chart-set{
+  position: relative;
+  margin: 2em 0;
+}
+
+.chart-set > *{
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  margin: 0;
+  z-index: 0;
+}
+
+.chart-set > *.active,
 .punchcard .column.active{
   position: relative;
   opacity: 1;
+  z-index: 1;
 }
 
 .punchcard .column header{
@@ -394,6 +410,7 @@ aside .card table tr > *{
   font-weight: bold;
 }
 
+#por-subfuncao .chart,
 .punchcard .column,
 .punchcard li .gnd,
 .punchcard li .gnd *{
