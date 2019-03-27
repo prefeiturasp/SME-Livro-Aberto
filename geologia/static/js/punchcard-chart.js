@@ -5,10 +5,10 @@ function toggleActive(selection){
 window.addEventListener('load', function(){
     let punchcard = d3.select('.punchcard');
     let container = d3.select(punchcard.node().parentNode);
-    let nav = container.select('aside');
+    let nav = container.selectAll('aside');
 
     function updatePuchcard(actives){
-        const bars = nav.node().querySelectorAll('tr.active .bar');
+        const bars = actives[0].parentNode.querySelectorAll('tr.active .bar');
 
         const headers = container.selectAll('.column header').data(actives);
         headers.text(d => d.dataset.name);
@@ -35,29 +35,44 @@ window.addEventListener('load', function(){
 
     nav.selectAll('header a')
       .on('click', function(){
-        const id =  new URL(this.href).hash
-        nav.select('.card.active').classed('active', false);
-        nav.selectAll('tr.active').classed('active', false);
-        const curr = nav.select(id).classed('active', true)
-        const first = curr.select('tr:first-child').dispatch('click');
-        const second = d3.select(first.node().nextElementSibling).dispatch('click');
-        d3.select(second.node().nextElementSibling).dispatch('click');
+        const id =  new URL(this.href).hash;
+        const curr = container.select(id);
+        const prev = container.selectAll('.chart-set .card.active');
+        prev.classed('active', false);
+        prev.selectAll('tr.active').classed('active', false);
+        curr.classed('active', true)
+
+        const first = curr.select('tr:first-child');
+        const second = d3.select(first.node().nextElementSibling);
+        const third = d3.select(second.node().nextElementSibling);
+        first.dispatch('click');
+        second.dispatch('click');
+        third.dispatch('click');
+
         d3.event.preventDefault();
       })
     nav.selectAll('tr')
        .style('cursor', 'pointer')
        .on('click', function(){
          const selection = d3.select(this);
-
-         let actives = nav.node().querySelectorAll('tr.active');
-         const crowded = ! selection.classed('active') && actives.length == 3;
-         if(crowded) d3.select(actives[0]).call(toggleActive);
-         const empty = selection.classed('active') && actives.length == 1;
+         let actives = container.selectAll('tr.active');
+         const crowded = ! selection.classed('active') && actives.size() == 3;
+         if(crowded) d3.select(actives.node()).call(toggleActive);
+         const empty = selection.classed('active') && actives.size() == 1;
          if(empty) return;
 
          selection.call(toggleActive);
-         actives = nav.node().querySelectorAll('tr.active');
-         updatePuchcard(actives);
+         actives = container.selectAll('tr.active');
+         updatePuchcard(actives.nodes());
        })
-    nav.node().querySelector('header a').dispatchEvent(new Event('click'));
+
+    d3.select('#por-subgrupo-filtro').on('change', function(){
+        const container = d3.select('#por-subgrupo');
+        container.select('.chart-set > :nth-child(1)').classed('active', this.checked);
+        container.select('.chart-set > :nth-child(2)').classed('active', !this.checked);
+        container.select('.chart-set > .active header a').dispatch('click');
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+    }).dispatch('change');
+
 })
