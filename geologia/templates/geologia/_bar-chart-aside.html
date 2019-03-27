@@ -1,0 +1,37 @@
+{% load humanize %}
+{% load l10n %}
+<aside>
+  {% for year in data %}
+  <div id="por-subfuncao-{{ type }}-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
+    <header>
+      <h3 class="title">{{ year.year }}</h3>
+      <small>Orçamento total</small>
+      <div class="value">
+        {% if year.total %}R$ {{ year.total|intcomma }}{% else %}-{% endif %}
+      </div>
+    </header>
+    <div class="body">
+      <table>
+        <tbody>
+          {% for item in year.gnds%}
+          {% if item.slug %}
+          <tr data-name="{{ item.slug}}"
+              data-year="{{ year.year }}"
+              data-value="{{ item.value|unlocalize }}"
+              data-execution="{{ item.percent|unlocalize }}">
+            <td>
+              <span class="fg-{{ item.slug }}" title="{{ item.name }}">
+                {% include 'geologia/_gnd_item.html' with slug=item.slug %}
+              </span>
+              {% widthratio item.percent 1 100 %}%
+            </td>
+            <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endfor %}
+</aside>

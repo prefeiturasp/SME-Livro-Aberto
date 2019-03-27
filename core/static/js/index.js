@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", function(){
         let input = eventHandler.target;
         if(input.name == 'simples')
             window.location = input.dataset.href;
-        else
+        else if(input.name != 'source') // TODO: improve this solution
             form.submit();
     }
     for(form of document.forms){

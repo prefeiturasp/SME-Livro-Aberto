@@ -17,11 +17,14 @@ window.addEventListener('load', function(){
         const items = container.selectAll('.column').data(bars);
         items.enter().merge(items).classed('active', true)
         items.exit().classed('active', false)
+
+        const percent = d => d.dataset.percent + '%';
+
         const gnds = items.selectAll('ul.axis .gnd')
             .data(d => d.querySelectorAll('.value'), function(d){return d ? d.dataset.name : this.dataset.gnd})
-        gnds.style('height', d => d.dataset.percent + '%')
-            .style('width', d => d.dataset.percent + '%')
-        gnds.select('.percent').text(d => d.dataset.percent + '%')
+        gnds.style('height', percent)
+            .style('width', percent)
+        gnds.select('.percent').text(percent)
         gnds.select('.value').text(d => 'R$ ' + d.dataset.currencyValue)
         gnds.exit()
             .style('height', 0)
