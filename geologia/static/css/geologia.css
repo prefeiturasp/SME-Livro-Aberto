@@ -128,7 +128,8 @@ body > header .wrapper p {
     width: calc(100%*2/3);
   }
 
-  .chart aside{
+  .punchcard + *,
+  .bar-chart + *{
     width: calc(100%*1/3);
   }
 
