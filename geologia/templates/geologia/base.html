@@ -132,54 +132,10 @@
               </div>
               {% endfor %}
           </div>
-          <aside>
-             {% for year in subgrupo.empenhado %}
-                 <div id="por-subgrupo-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
-                  <header>
-                    <h3 class="title">{{ year.year }}</h3>
-                    <ul>
-                    {% for y in subgrupo.empenhado %}
-                        <li {% if year.year == y.year %}class="active"{% endif %}>
-                            <a href="#por-subgrupo-{{ y.year }}" title="{{y.year}}">●</a></li>
-                    {% endfor %}
-                    </ul>
-                  </header>
-                  <div class="body">
-                    <table>
-                      <tbody>
-                        {% for item in year.subgrupos %}
-                        <tr data-name="{{ item.subgrupo }}"
-                            data-year="{{ year.year }}"
-                            data-value="{{ item.value|unlocalize }}"
-                            >
-                            <th>
-                                <span>{{ item.subgrupo }}</span>
-                              {% include 'geologia/_card.html' with title=item.subgrupo data=item%}
-                            </th>
-                          <td class="bar-parent">
-                            <div class="bar" style="width: 100%">
-                              {% for item in item.gnds%}
-                              <span class="label">{{ item.name }}</span>
-                              <span class="value fg-{{item.slug}}"
-                                data-group="{{ item.subgrupo}}"
-                                data-name="{{ item.slug}}"
-                                data-value="{{ item.value|unlocalize }}"
-                                data-currency-value="{% if item.value %}{{ item.value|intcomma }}{% else %}-{% endif %}"
-                                data-percent="{% widthratio item.percent 1 100 %}"
-                                style="width: {% widthratio item.percent 1 100 %}%">
-                                {% widthratio item.percent 1 100 %}%
-                              </span>
-                              {% endfor %}
-                            </div>
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-             {% endfor %}
-          </aside>
+          <div class="chart-set">
+              {% include 'geologia/_punchcard-chart-aside.html' with data=subgrupo.empenhado type='empenhado' %}
+              {% include 'geologia/_punchcard-chart-aside.html' with data=subgrupo.orcado type='orcado' %}
+          </div>
       </div>
       <div class="actions">
           <a class="btn" href="{% url 'geologia:download' chart='subgrupo'%}">Download dos Dados por subgrupo</a>
