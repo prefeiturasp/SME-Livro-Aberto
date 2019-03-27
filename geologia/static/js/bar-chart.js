@@ -16,4 +16,12 @@ window.addEventListener('load', function(){
             d3.event.preventDefault();
             d3.event.stopPropagation();
         });
+
+    d3.select('#por-subfuncao-filtro').on('change', function(){
+        const container = d3.select('#por-subfuncao');
+        container.select('.chart').classed('active', this.checked);
+        container.select('.chart + .chart').classed('active', !this.checked);
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+    }).dispatch('change');
 })
