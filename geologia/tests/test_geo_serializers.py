@@ -465,8 +465,6 @@ class TestGeologiaSerializerSubfuncoes:
         expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
                              selecionado=True))
 
-        mommy.make(Execucao, subgrupo__id=1, subfuncao=subfuncao_1)
-
         queryset = Execucao.objects.all()
         serialized = GeologiaSerializer(queryset,
                                         subfuncao_id=subfuncao_3.id).data

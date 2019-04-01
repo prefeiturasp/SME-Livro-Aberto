@@ -206,9 +206,12 @@ class ExecucaoManager(models.Manager):
                 subelemento_id=info[4])
 
     def get_date_updated(self):
-        dt_updated = self.get_queryset().order_by('-dt_updated') \
-            .first().dt_updated
-        return dt_updated.strftime('%d/%m/%Y')
+        last_execucao = self.get_queryset().order_by('-dt_updated') \
+            .first()
+        if last_execucao:
+            return last_execucao.dt_updated.strftime('%d/%m/%Y')
+        else:
+            return None
 
 
 class Execucao(models.Model):
