@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from budget_execution.models import GndGeologia, Subfuncao
+from budget_execution.models import Execucao, GndGeologia, Subfuncao
 from geologia.exceptions import InvalidChartOptionException
 
 
@@ -45,6 +45,7 @@ class GeologiaSerializer:
                 Subfuncao.objects.all(),
                 many=True,
                 subfuncao_id=self._subfuncao_id).data,
+            'dt_updated': Execucao.objects.get_date_updated(),
         }
 
     # Charts 1 and 2 (camadas and subfuncao)
