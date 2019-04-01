@@ -5,6 +5,7 @@ from decimal import Decimal
 from itertools import cycle
 from unittest.mock import Mock, patch
 
+from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, GndGeologia, Subfuncao, Subgrupo
@@ -100,6 +101,23 @@ class TestGeologiaSerializerCore:
         assert 0 == serializer._calculate_percent(None, 100)
         assert 0 == serializer._calculate_percent(10, None)
         assert 0.1 == serializer._calculate_percent(10, 100)
+
+    @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
+    @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
+    def test_returns_date_updated(self, mock_orcado, mock_empenhado):
+        mock_orcado.return_value = 'mock_o'
+        mock_empenhado.return_value = 'mock_e'
+
+        subgrupo = mommy.make(Subgrupo, grupo__id=1)
+        with freeze_time('2019-01-01'):
+            mommy.make('Execucao', subgrupo=subgrupo)
+
+        # not expected
+        with freeze_time('2000-01-01'):
+            mommy.make('Execucao', subgrupo=subgrupo)
+
+        serializer = GeologiaSerializer(Execucao.objects.all())
+        assert '01/01/2019' == serializer.data['dt_updated']
 
 
 @pytest.mark.django_db
@@ -417,6 +435,8 @@ class TestGeologiaSerializerSubgrupo:
 @pytest.mark.django_db
 class TestGeologiaSerializerGnds:
     def test_serialize_list_of_gnds(self):
+        mommy.make(Execucao, subgrupo__id=1)
+
         gnd_1 = mommy.make('GndGeologia',  desc='Consultoria',
                            slug='consulting')
         gnd_2 = mommy.make('GndGeologia',  desc='Custeio operacional',
@@ -444,6 +464,8 @@ class TestGeologiaSerializerSubfuncoes:
         subfuncao_3 = mommy.make('Subfuncao',  desc='Selected Function')
         expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
                              selecionado=True))
+
+        mommy.make(Execucao, subgrupo__id=1, subfuncao=subfuncao_1)
 
         queryset = Execucao.objects.all()
         serialized = GeologiaSerializer(queryset,
