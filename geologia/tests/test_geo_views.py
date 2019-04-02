@@ -54,6 +54,19 @@ class TestHomeView(APITestCase):
         response = self.get(subfuncao_id=1)
         assert serializer.data == response.data
 
+    def test_filters_execucoes_from_minimo_legal(self):
+        mommy.make(Execucao, subgrupo__id=1, orgao__id=SME_ORGAO_ID,
+                   is_minimo_legal=False, _quantity=2)
+        mommy.make(Execucao, subgrupo__id=1, orgao__id=SME_ORGAO_ID,
+                   is_minimo_legal=True, _quantity=2)
+        execucoes = Execucao.objects.filter(subgrupo__isnull=False,
+                                            is_minimo_legal=False,
+                                            orgao__id=SME_ORGAO_ID)
+        serializer = GeologiaSerializer(execucoes)
+
+        response = self.get()
+        assert serializer.data == response.data
+
 
 class TestDownloadView(APITestCase):
 
@@ -107,11 +120,21 @@ class TestDownloadView(APITestCase):
                    year=date(2017, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
+        mommy.make(Execucao,
+                   is_minimo_legal=True,
+                   gnd_geologia=gnd1,
+                   subgrupo=subgrupo1,
+                   subfuncao=subfuncao,
+                   orgao__id=SME_ORGAO_ID,
+                   year=date(2018, 1, 1),
+                   orcado_atualizado=1,
+                   _quantity=2)
 
     def prepare_expected_data(self, chart, subfuncao_id=None):
         factory = RequestFactory()
 
         execucoes = Execucao.objects.filter(subgrupo__isnull=False,
+                                            is_minimo_legal=False,
                                             orgao__id=SME_ORGAO_ID)
         if subfuncao_id:
             execucoes = execucoes.filter(subfuncao_id=subfuncao_id)
