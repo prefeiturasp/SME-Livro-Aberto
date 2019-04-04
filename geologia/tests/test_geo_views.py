@@ -30,13 +30,14 @@ class TestHomeView(APITestCase):
         response = self.get()
         assert serializer.data == response.data
 
-    def test_filters_execucoes_without_subgrupo_and_without_sme_orgao(self):
+    def test_filters_execucoes_without_sme_orgao(self):
         mommy.make(Execucao, subgrupo=None, orgao__id=SME_ORGAO_ID, _quantity=2)
-        mommy.make(Execucao, subgrupo__id=1, _quantity=2)
         mommy.make(Execucao, subgrupo__id=1, orgao__id=SME_ORGAO_ID,
                    _quantity=2)
-        execucoes = Execucao.objects.filter(subgrupo__isnull=False,
-                                            orgao__id=SME_ORGAO_ID)
+        # not expected
+        mommy.make(Execucao, subgrupo__id=1, orgao__id=99, _quantity=2)
+
+        execucoes = Execucao.objects.filter(orgao__id=SME_ORGAO_ID)
         serializer = GeologiaSerializer(execucoes)
 
         response = self.get()
