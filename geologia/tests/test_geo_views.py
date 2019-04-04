@@ -104,9 +104,7 @@ class TestDownloadView(APITestCase):
                    year=date(2018, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
-
-        # not expected
-        mommy.make(Execucao,
+        mommy.make(Execucao,  # not expected for subgrupo
                    gnd_geologia=gnd1,
                    subgrupo=None,
                    subfuncao=subfuncao,
@@ -114,6 +112,16 @@ class TestDownloadView(APITestCase):
                    year=date(2017, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
+        mommy.make(Execucao,  # not expected for subgrupo
+                   gnd_geologia=gnd1,
+                   subgrupo=subgrupo1,
+                   subfuncao=subfuncao,
+                   orgao__id=SME_ORGAO_ID,
+                   year=date(2009, 1, 1),
+                   orcado_atualizado=1,
+                   _quantity=2)
+
+        # not expected
         mommy.make(Execucao,
                    gnd_geologia=gnd1,
                    subgrupo=subgrupo1,
@@ -134,11 +142,14 @@ class TestDownloadView(APITestCase):
     def prepare_expected_data(self, chart, subfuncao_id=None):
         factory = RequestFactory()
 
-        execucoes = Execucao.objects.filter(subgrupo__isnull=False,
-                                            is_minimo_legal=False,
+        execucoes = Execucao.objects.filter(is_minimo_legal=False,
                                             orgao__id=SME_ORGAO_ID)
         if subfuncao_id:
             execucoes = execucoes.filter(subfuncao_id=subfuncao_id)
+
+        if chart == 'subgrupo':
+            execucoes = execucoes.filter(year__year__gte=2010,
+                                         subgrupo__isnull=False)
 
         request = factory.get(self.base_url(chart))
 

@@ -24,8 +24,7 @@ class HomeView(generics.ListAPIView):
 
 class DownloadView(generics.ListAPIView):
     renderer_classes = [CSVRenderer]
-    queryset = Execucao.objects.filter(subgrupo__isnull=False,
-                                       is_minimo_legal=False,
+    queryset = Execucao.objects.filter(is_minimo_legal=False,
                                        orgao__id=SME_ORGAO_ID)
     serializer_class = GeologiaDownloadSerializer
 
