@@ -30,13 +30,14 @@ class TestHomeView(APITestCase):
         response = self.get()
         assert serializer.data == response.data
 
-    def test_filters_execucoes_without_subgrupo_and_without_sme_orgao(self):
+    def test_filters_execucoes_without_sme_orgao(self):
         mommy.make(Execucao, subgrupo=None, orgao__id=SME_ORGAO_ID, _quantity=2)
-        mommy.make(Execucao, subgrupo__id=1, _quantity=2)
         mommy.make(Execucao, subgrupo__id=1, orgao__id=SME_ORGAO_ID,
                    _quantity=2)
-        execucoes = Execucao.objects.filter(subgrupo__isnull=False,
-                                            orgao__id=SME_ORGAO_ID)
+        # not expected
+        mommy.make(Execucao, subgrupo__id=1, orgao__id=99, _quantity=2)
+
+        execucoes = Execucao.objects.filter(orgao__id=SME_ORGAO_ID)
         serializer = GeologiaSerializer(execucoes)
 
         response = self.get()
@@ -103,9 +104,7 @@ class TestDownloadView(APITestCase):
                    year=date(2018, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
-
-        # not expected
-        mommy.make(Execucao,
+        mommy.make(Execucao,  # not expected for subgrupo
                    gnd_geologia=gnd1,
                    subgrupo=None,
                    subfuncao=subfuncao,
@@ -113,6 +112,16 @@ class TestDownloadView(APITestCase):
                    year=date(2017, 1, 1),
                    orcado_atualizado=1,
                    _quantity=2)
+        mommy.make(Execucao,  # not expected for subgrupo
+                   gnd_geologia=gnd1,
+                   subgrupo=subgrupo1,
+                   subfuncao=subfuncao,
+                   orgao__id=SME_ORGAO_ID,
+                   year=date(2009, 1, 1),
+                   orcado_atualizado=1,
+                   _quantity=2)
+
+        # not expected
         mommy.make(Execucao,
                    gnd_geologia=gnd1,
                    subgrupo=subgrupo1,
@@ -133,11 +142,14 @@ class TestDownloadView(APITestCase):
     def prepare_expected_data(self, chart, subfuncao_id=None):
         factory = RequestFactory()
 
-        execucoes = Execucao.objects.filter(subgrupo__isnull=False,
-                                            is_minimo_legal=False,
+        execucoes = Execucao.objects.filter(is_minimo_legal=False,
                                             orgao__id=SME_ORGAO_ID)
         if subfuncao_id:
             execucoes = execucoes.filter(subfuncao_id=subfuncao_id)
+
+        if chart == 'subgrupo':
+            execucoes = execucoes.filter(year__year__gte=2010,
+                                         subgrupo__isnull=False)
 
         request = factory.get(self.base_url(chart))
 

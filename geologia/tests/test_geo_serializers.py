@@ -262,12 +262,18 @@ class TestGeologiaSerializerSubgrupo:
         execs_2017 = mommy.make(
             Execucao,
             year=date(2017, 1, 1),
+            subgrupo__id=1,
             _quantity=2)
         execs_2018 = mommy.make(
             Execucao,
             year=date(2018, 1, 1),
+            subgrupo__id=1,
             _quantity=2)
-        execucoes = Execucao.objects.all()
+
+        # not expected
+        mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=None)
+
+        execucoes = Execucao.objects.filter(subgrupo__isnull=False)
 
         serializer = GeologiaSerializer(execucoes)
         ret = serializer.prepare_subgrupo_data()
@@ -294,12 +300,14 @@ class TestGeologiaSerializerSubgrupo:
         # not expected
         mommy.make(
             Execucao,
-            year=date(2009, 1, 1))
+            year=date(2009, 1, 1),
+            subgrupo__id=1)
 
         exec_2010 = mommy.make(
             Execucao,
-            year=date(2010, 1, 1))
-        execucoes = Execucao.objects.all()
+            year=date(2010, 1, 1),
+            subgrupo__id=1)
+        execucoes = Execucao.objects.filter(subgrupo__isnull=False)
 
         serializer = GeologiaSerializer(execucoes)
         ret = serializer.prepare_subgrupo_data()
