@@ -110,7 +110,8 @@ class GeologiaSerializer:
 
     # Chart 3: Subgrupo
     def prepare_subgrupo_data(self):
-        qs = self.queryset.filter(year__year__gte=2010)
+        qs = self.queryset.filter(year__year__gte=2010,
+                                  subgrupo__isnull=False)
 
         years = qs.order_by('year').values('year').distinct()
 
@@ -326,7 +327,8 @@ class GeologiaDownloadSerializer:
         return ret
 
     def prepare_subgrupo_chart_data(self):
-        qs = self.queryset.filter(year__year__gte=2010)
+        qs = self.queryset.filter(year__year__gte=2010,
+                                  subgrupo__isnull=False)
 
         years = qs.order_by('year').values('year').distinct()
         ret = []
