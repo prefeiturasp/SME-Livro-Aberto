@@ -42,19 +42,20 @@ window.addEventListener('load', function(){
     let gnds = Array.from(legendItems, item => item.dataset.gnd);
 
     let getValue = row => +row.dataset.value;
-    let getExecution = row => row.dataset.value * row.dataset.execution;
 
-    let cards = container.querySelectorAll('.card-wrapper .card');
+    let cards = container.querySelectorAll('.card-wrapper:first-child .card');
     let years = Array.from(cards, card => card.dataset.year).sort();
-    let rows = container.querySelectorAll('.card-wrapper .card tr');
 
     let executionSwitch = document.getElementById('executed-switch');
     let streamChart = new StreamChart(svg, years, gnds);
 
     executionSwitch.addEventListener('change', function(){
-        let value = this.checked? getExecution : getValue;
-        let data = getStreamData(groupData(rows, value), gnds, years);
-        streamChart.render(data);
+        let cardContainerClass = this.checked? 'orcado': 'empenhado';
+        let cardContainerSelector = `.card-wrapper.${cardContainerClass}`;
+        let rows = container.querySelectorAll(`${cardContainerSelector} .card tr`);
+        let data = getStreamData(groupData(rows, getValue), gnds, years);
+        let cardContainer = d3.select(cardContainerSelector);
+        streamChart.render(data, cardContainer);
     });
 
     executionSwitch.dispatchEvent(new Event('change'));
@@ -111,22 +112,12 @@ function StreamChart(svg, years, gnds){
       .enter().append('g')
       .attr('class', 'tick')
       .attr('transform', d => 'translate(' + x(d) + ',0)')
-      .style('cursor', 'pointer')
-      .on('mouseover', function(d){
-        d3.select(this).classed('active', true);
-        container.select(`.card[data-year="${d}"]`).style('display', 'inline-block');
-      })
-      .on('mouseout', function(d){
-        d3.select(this).classed('active', false);
-        container.select(`.card[data-year="${d}"]`).style('display', 'none');
-      })
 
     ticks.append('line').attr('y2', - height)
 
     ticks.append('circle').attr('r', 4)
 
-    var container = d3.select('.stream-chart');
-
+    const container = d3.selectAll('.stream-chart .card-wrapper');
     container.selectAll('.card')
         .data(years)
         .style('display', 'none')
@@ -143,7 +134,7 @@ function StreamChart(svg, years, gnds){
       .attr('dy', '1.5em')
       .text(d => d3.format("d")(d));
 
-    this.render = function (data){
+    this.render = function (data, cardContainer){
         const layers = stack(data);
 
         const y = d3.scaleLinear()
@@ -156,6 +147,16 @@ function StreamChart(svg, years, gnds){
         const bgData = [data[0], data[0], data[data.length - 1], data[data.length - 1]]
         const bgLayers = stack(bgData)
         const bgDomain = [0, side, parentWidth, fullWidth];
+
+        const ticks = xAxis.selectAll('g.tick')
+          .on('mouseover', function(d){
+            d3.select(this).classed('active', true);
+            cardContainer.select(`.card[data-year="${d}"]`).style('display', 'inline-block');
+          })
+          .on('mouseout', function(d){
+            d3.select(this).classed('active', false);
+            cardContainer.select(`.card[data-year="${d}"]`).style('display', 'none');
+          })
 
         updateData(background, bgLayers, (d, i) => bgDomain[i], y);
         updateData(foreground, layers, (d, i) => x(i + x.domain()[0]), y);
