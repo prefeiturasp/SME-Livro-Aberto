@@ -16,12 +16,7 @@ function groupData(rows, value){
 }
 
 function getStreamData(grouped, gnds, years){
-    let data = [];
-    years.forEach(function(year){
-        grouped[year] = grouped[year] || emptyObj(gnds);
-        data.push(grouped[year]);
-    });
-    return data;
+    return years.map(year => Object.assign(emptyObj(gnds), grouped[year]));
 }
 
 function updateData(selection, layers, x, y){
