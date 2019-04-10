@@ -121,6 +121,7 @@ body > header .wrapper p {
 @media (min-width: 768px) {
   .chart{
     display: flex;
+    flex-wrap: wrap;
   }
 
   .punchcard,
