@@ -40,11 +40,8 @@ class GeologiaSerializer:
             'subfuncao': self.prepare_data(subfuncao_id=self._subfuncao_id),
             'subgrupo': self.prepare_subgrupo_data(),
             'gnds': GndGeologiaSerializer(
-                GndGeologia.objects.order_by('desc').all(), many=True).data,
-            'subfuncoes': SubfuncaoSerializer(
-                Subfuncao.objects.all().order_by('desc'),
-                many=True,
-                subfuncao_id=self._subfuncao_id).data,
+                GndGeologia.objects.all().order_by('desc'), many=True).data,
+            'subfuncoes': self.prepare_subfuncoes(),
             'dt_updated': Execucao.objects.get_date_updated(),
         }
 
@@ -225,6 +222,17 @@ class GeologiaSerializer:
         if value is None or not total:
             return 0
         return value / total
+
+    def prepare_subfuncoes(self):
+        # We need to get the subfuncoes from the execucoes queryset because
+        # there's no way to tell which subfuncoes are from SME and which aren't.
+        # Only the Execucao model has a fk to Orgao.
+        subfuncoes = [execucao.subfuncao
+                      for execucao in self.queryset.distinct('subfuncao')]
+        subfuncoes.sort(key=lambda s: s.desc)
+
+        return SubfuncaoSerializer(subfuncoes, subfuncao_id=self._subfuncao_id,
+                                   many=True).data
 
 
 class GeologiaDownloadSerializer:

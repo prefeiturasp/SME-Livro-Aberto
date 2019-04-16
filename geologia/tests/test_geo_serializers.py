@@ -472,9 +472,16 @@ class TestGeologiaSerializerSubfuncoes:
         subfuncao_3 = mommy.make('Subfuncao',  desc='Selected Function')
         expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
                              selecionado=True))
-
         expected.sort(key=lambda s: s['desc'])
+
+        mommy.make(
+            Execucao, subfuncao=cycle([subfuncao_1, subfuncao_2, subfuncao_3]),
+            _quantity=3)
         queryset = Execucao.objects.all()
+
+        # not expected
+        mommy.make('Subfuncao')
+
         serialized = GeologiaSerializer(queryset,
                                         subfuncao_id=subfuncao_3.id).data
 
