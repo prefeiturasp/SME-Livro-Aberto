@@ -329,16 +329,19 @@ class TestGeologiaSerializerSubgrupo:
     def test_get_subgrupo_year_orcado_data(self, mock_orcado):
         mock_orcado.return_value = 'mock_o'
 
+        subgrupo1 = mommy.make(Subgrupo, desc="Uniceu")
+        subgrupo2 = mommy.make(Subgrupo, desc="Alimentação Escolar")
+
         year = date(2018, 1, 1)
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subgrupo__id=1,
+            subgrupo=subgrupo1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subgrupo__id=2,
+            subgrupo=subgrupo2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 
@@ -352,7 +355,7 @@ class TestGeologiaSerializerSubgrupo:
 
         assert expected == ret
 
-        execs = [execs_sub1, execs_sub2]
+        execs = [execs_sub2, execs_sub1]  # Alphabetical order
         for exec_subgrupo, call in zip(execs, mock_orcado.mock_calls):
             assert set(exec_subgrupo) == set(call[1][0])
 
@@ -360,16 +363,19 @@ class TestGeologiaSerializerSubgrupo:
     def test_get_subgrupo_year_empenhado_data(self, mock_empenhado):
         mock_empenhado.return_value = 'mock_e'
 
+        subgrupo1 = mommy.make(Subgrupo, desc="Uniceu")
+        subgrupo2 = mommy.make(Subgrupo, desc="Alimentação Escolar")
+
         year = date(2018, 1, 1)
         execs_sub1 = mommy.make(
             Execucao,
             year=year,
-            subgrupo__id=1,
+            subgrupo=subgrupo1,
             _quantity=2)
         execs_sub2 = mommy.make(
             Execucao,
             year=year,
-            subgrupo__id=2,
+            subgrupo=subgrupo2,
             _quantity=2)
         execucoes = Execucao.objects.all()
 
@@ -383,7 +389,7 @@ class TestGeologiaSerializerSubgrupo:
 
         assert expected == ret
 
-        execs = [execs_sub1, execs_sub2]
+        execs = [execs_sub2, execs_sub1]  # Alphabetical order
         for exec_subgrupo, call in zip(execs, mock_empenhado.mock_calls):
             assert set(exec_subgrupo) == set(call[1][0])
 
