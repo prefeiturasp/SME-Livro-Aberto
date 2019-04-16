@@ -128,7 +128,7 @@ class GeologiaSerializer:
 
     def get_subgrupo_year_orcado_data(self, qs):
         year = qs[0].year
-        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
+        subgrupos = qs.order_by('subgrupo__desc').values('subgrupo_id') \
             .distinct()
 
         ret = {
@@ -145,7 +145,7 @@ class GeologiaSerializer:
 
     def get_subgrupo_year_empenhado_data(self, qs):
         year = qs[0].year
-        subgrupos = qs.order_by('subgrupo_id').values('subgrupo_id') \
+        subgrupos = qs.order_by('subgrupo__desc').values('subgrupo_id') \
             .distinct()
 
         ret = {
