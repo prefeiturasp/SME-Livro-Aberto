@@ -42,7 +42,7 @@ class GeologiaSerializer:
             'gnds': GndGeologiaSerializer(
                 GndGeologia.objects.order_by('desc').all(), many=True).data,
             'subfuncoes': SubfuncaoSerializer(
-                Subfuncao.objects.all(),
+                Subfuncao.objects.all().order_by('desc'),
                 many=True,
                 subfuncao_id=self._subfuncao_id).data,
             'dt_updated': Execucao.objects.get_date_updated(),

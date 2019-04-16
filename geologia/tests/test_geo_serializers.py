@@ -460,7 +460,7 @@ class TestGeologiaSerializerGnds:
 
 @pytest.mark.django_db
 class TestGeologiaSerializerSubfuncoes:
-    def test_serialize_list_of_gnds(self):
+    def test_serialize_list_of_subfuncoes(self):
         subfuncao_1 = mommy.make('Subfuncao',  desc='Turismo')
         subfuncao_2 = mommy.make('Subfuncao',  desc='Educação Infantil')
         subfuncoes = [subfuncao_1, subfuncao_2]
@@ -473,6 +473,7 @@ class TestGeologiaSerializerSubfuncoes:
         expected.append(dict(id=subfuncao_3.id, desc=subfuncao_3.desc,
                              selecionado=True))
 
+        expected.sort(key=lambda s: s['desc'])
         queryset = Execucao.objects.all()
         serialized = GeologiaSerializer(queryset,
                                         subfuncao_id=subfuncao_3.id).data
