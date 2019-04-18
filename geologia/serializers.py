@@ -392,21 +392,30 @@ class GeologiaDownloadSerializer:
         ret = []
         for gnd in data_by_gnd:
             subgrupo_id = gnd['subgrupo_id']
+            year = gnd['year__year']
+            year_date = date(year, 1, 1)
+
+            orcado = deflate(gnd['orcado'], year_date)
+            empenhado = deflate(gnd['empenhado'], year_date)
+
             orcado_total = orcado_total_by_subgrupo[subgrupo_id]
+            orcado_total = deflate(orcado_total, year_date)
+
             empenhado_total = empenhado_total_by_subgrupo[subgrupo_id]
+            empenhado_total = deflate(empenhado_total, year_date)
 
             ret.append({
-                "ano": gnd['year__year'],
-                "subgrupo": gnd['subgrupo__desc'],
+                "ano": year,
                 "gnd": gnd['gnd_geologia__desc'],
-                "orcado": gnd['orcado'],
+                "subgrupo": gnd['subgrupo__desc'],
+                "orcado": orcado,
                 "orcado_total": orcado_total,
                 "orcado_percentual": calculate_percent(
-                    gnd['orcado'], orcado_total),
-                "empenhado": gnd['empenhado'],
+                    orcado, orcado_total),
+                "empenhado": empenhado,
                 "empenhado_total": empenhado_total,
                 "empenhado_percentual": calculate_percent(
-                    gnd['empenhado'], empenhado_total),
+                    empenhado, empenhado_total),
             })
 
         return ret

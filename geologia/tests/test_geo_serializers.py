@@ -902,3 +902,62 @@ class TestGeologiaDownloadSerializer:
         assert len(expected) == len(serializer.data)
         for item in expected:
             assert item in serializer.data
+
+    def test_deflator_is_applied_to_subgrupo_chart_data(self, deflators):
+        subgrupo1 = mommy.make(Subgrupo, desc='subgrupo1')
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
+
+        e1 = mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                        gnd_geologia=gnd1, orcado_atualizado=100,
+                        empenhado_liquido=5)
+        e2 = mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                        gnd_geologia=gnd2, orcado_atualizado=150,
+                        empenhado_liquido=15)
+
+        deflator = Deflator.objects.get(year__year=2017)
+
+        orcado_1 = e1.orcado_atualizado / deflator.index_number
+        empenhado_1 = e1.empenhado_liquido / deflator.index_number
+        orcado_2 = e2.orcado_atualizado / deflator.index_number
+        empenhado_2 = e2.empenhado_liquido / deflator.index_number
+
+        orcado_total = orcado_1 + orcado_2
+        orcado_percentual_1 = orcado_1 / orcado_total
+        orcado_percentual_2 = orcado_2 / orcado_total
+
+        empenhado_total = empenhado_1 + empenhado_2
+        empenhado_percentual_1 = empenhado_1 / empenhado_total
+        empenhado_percentual_2 = empenhado_2 / empenhado_total
+
+        expected = [
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "subgrupo": 'subgrupo1',
+                "orcado": orcado_1,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_1,
+                "empenhado": empenhado_1,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_1,
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "subgrupo": 'subgrupo1',
+                "orcado": orcado_2,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_2,
+                "empenhado": empenhado_2,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_2,
+            },
+        ]
+
+        execucoes = Execucao.objects.all()
+        serializer = GeologiaDownloadSerializer(execucoes, 'subgrupo')
+
+        assert len(expected) == len(serializer.data)
+        for item in expected:
+            assert item in serializer.data
