@@ -79,7 +79,8 @@ class GeologiaSerializer:
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
         orcado_total = self._deflate(orcado_total['total'], year)
 
-        orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
+        orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total,
+                                                 year)
 
         return {
             "year": year.strftime("%Y"),
@@ -97,8 +98,8 @@ class GeologiaSerializer:
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
         empenhado_total = self._deflate(empenhado_total['total'], year)
 
-        empenhado_gnds = self._get_empenhado_gnds_list(empenhado_by_gnd,
-                                                       empenhado_total)
+        empenhado_gnds = self._get_empenhado_gnds_list(
+            empenhado_by_gnd, empenhado_total, year)
 
         return {
             "year": year.strftime("%Y"),
@@ -163,13 +164,15 @@ class GeologiaSerializer:
 
     def get_subgrupo_orcado_data(self, qs):
         subgrupo = qs[0].subgrupo
+        year = qs[0].year
 
         orcado_by_gnd = qs.values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
-        orcado_total = self._deflate(orcado_total['total'])
+        orcado_total = self._deflate(orcado_total['total'], year)
 
-        orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
+        orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total,
+                                                 year)
 
         return {
             "subgrupo": subgrupo.desc,
@@ -179,15 +182,16 @@ class GeologiaSerializer:
 
     def get_subgrupo_empenhado_data(self, qs):
         subgrupo = qs[0].subgrupo
+        year = qs[0].year
 
         empenhado_by_gnd = qs \
             .values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(empenhado=Sum('empenhado_liquido'))
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
-        empenhado_total = self._deflate(empenhado_total['total'])
+        empenhado_total = self._deflate(empenhado_total['total'], year)
 
-        empenhado_gnds = self._get_empenhado_gnds_list(empenhado_by_gnd,
-                                                       empenhado_total)
+        empenhado_gnds = self._get_empenhado_gnds_list(
+            empenhado_by_gnd, empenhado_total, year)
 
         return {
             "subgrupo": subgrupo.desc,
@@ -195,29 +199,35 @@ class GeologiaSerializer:
             "gnds": empenhado_gnds,
         }
 
-    def _get_orcado_gnds_list(self, orcado_by_gnd, orcado_total):
-        return [
-            {
+    def _get_orcado_gnds_list(self, orcado_by_gnd, orcado_total, year):
+        ret = []
+        for gnd in orcado_by_gnd:
+            orcado = self._deflate(gnd['orcado'], year)
+            gnd_dict = {
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['orcado'],
+                "value": orcado,
                 "percent": calculate_percent(
-                    gnd['orcado'], orcado_total)
+                    orcado, orcado_total)
             }
-            for gnd in orcado_by_gnd
-        ]
+            ret.append(gnd_dict)
 
-    def _get_empenhado_gnds_list(self, empenhado_by_gnd, empenhado_total):
-        return [
-            {
+        return ret
+
+    def _get_empenhado_gnds_list(self, empenhado_by_gnd, empenhado_total, year):
+        ret = []
+        for gnd in empenhado_by_gnd:
+            empenhado = self._deflate(gnd['empenhado'], year)
+            gnd_dict = {
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['empenhado'],
+                "value": empenhado,
                 "percent": calculate_percent(
-                    gnd['empenhado'], empenhado_total),
+                    empenhado, empenhado_total)
             }
-            for gnd in empenhado_by_gnd
-        ]
+            ret.append(gnd_dict)
+
+        return ret
 
     def _calculate_percent(self, value, total):
         if value is None or not total:
@@ -225,11 +235,12 @@ class GeologiaSerializer:
         return value / total
 
     def _deflate(self, value, year):
-        try:
-            deflator = Deflator.objects.get(year=year)
-            value = value / deflator.index_number
-        except Deflator.DoesNotExist:
-            pass
+        if value:
+            try:
+                deflator = Deflator.objects.get(year=year)
+                value = value / deflator.index_number
+            except Deflator.DoesNotExist:
+                pass
         return value
 
     def prepare_subfuncoes(self):

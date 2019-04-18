@@ -9,6 +9,7 @@ from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, GndGeologia, Subfuncao, Subgrupo
+from from_to_handler.models import Deflator
 from geologia.serializers import (
     GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer,
     SubfuncaoSerializer)
@@ -46,41 +47,64 @@ def empenhado_fixture():
 
 @pytest.mark.django_db
 class TestGeologiaSerializerCore:
+
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
+
     def test_get_orcado_gnds_list(self, orcado_fixture):
         gnds, orcado_total = orcado_fixture
 
-        expected = [
-            {
+        deflator = Deflator.objects.get(year__year=2017)
+
+        expected = []
+        for gnd in gnds:
+            orcado = gnd['orcado'] / deflator.index_number
+
+            gnd_dict = {
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['orcado'],
-                "percent": gnd['orcado'] / orcado_total
+                "value": orcado,
+                "percent": orcado / orcado_total
             }
-            for gnd in gnds
-        ]
+            expected.append(gnd_dict)
 
         serializer = GeologiaSerializer([])
-        ret = serializer._get_orcado_gnds_list(gnds, orcado_total)
+        ret = serializer._get_orcado_gnds_list(gnds, orcado_total,
+                                               deflator.year)
 
         assert expected == ret
 
     def test_get_empenhado_gnds_list(self, empenhado_fixture):
         gnds, empenhado_total = empenhado_fixture
+
+        deflator = Deflator.objects.get(year__year=2018)
+
         expected = []
         for gnd in gnds:
             if gnd['empenhado'] is None:
                 gnd['empenhado'] = 0
 
+            empenhado = gnd['empenhado'] / deflator.index_number
+
             expected.append({
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['empenhado'],
-                "percent": gnd['empenhado'] / empenhado_total
+                "value": empenhado,
+                "percent": empenhado / empenhado_total
             })
 
         serializer = GeologiaSerializer([])
         ret = serializer._get_empenhado_gnds_list(
-            gnds, empenhado_total)
+            gnds, empenhado_total, deflator.year)
 
         assert expected == ret
 
@@ -94,7 +118,8 @@ class TestGeologiaSerializerCore:
         empenhado_total = None
 
         serializer = GeologiaSerializer([])
-        assert serializer._get_empenhado_gnds_list(gnds_dicts, empenhado_total)
+        assert serializer._get_empenhado_gnds_list(gnds_dicts, empenhado_total,
+                                                   year=date(2017, 1, 1))
 
     def test_calculate_percent(self):
         serializer = GeologiaSerializer([])
