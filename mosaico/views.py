@@ -1,6 +1,7 @@
 from urllib.parse import urlencode
 
 from django_filters import rest_framework as filters
+from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
@@ -334,7 +335,7 @@ class ProjetosAtividadesListView(BaseListView, TecnicoViewMixin):
 
 
 class DownloadView(generics.ListAPIView):
-    renderer_classes = [CSVRenderer]
+    renderer_classes = [XLSXRenderer, CSVRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoFilter
 
@@ -362,9 +363,11 @@ class DownloadView(generics.ListAPIView):
         filename = f'mosaico_{self.kwargs["section"]}'
         if self.request.GET.get('filter'):
             filename += "_filtrado"
+        file_extension = request.accepted_renderer.format
+        filename += f'.{file_extension}'
 
         headers = {
-            'Content-Disposition': f'attachment; filename={filename}.csv'
+            'Content-Disposition': f'attachment; filename={filename}'
         }
         response = Response(serializer.data, headers=headers)
         return response
