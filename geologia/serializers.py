@@ -2,6 +2,7 @@ from django.db.models import Sum
 from rest_framework import serializers
 
 from budget_execution.models import Execucao, GndGeologia, Subfuncao
+from from_to_handler.models import Deflator
 from geologia.exceptions import InvalidChartOptionException
 
 
@@ -76,7 +77,7 @@ class GeologiaSerializer:
         orcado_by_gnd = qs.values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
-        orcado_total = orcado_total['total']
+        orcado_total = self._deflate(orcado_total['total'], year)
 
         orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
 
@@ -94,7 +95,7 @@ class GeologiaSerializer:
             .annotate(empenhado=Sum('empenhado_liquido')) \
             .order_by('gnd_geologia__desc')
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
-        empenhado_total = empenhado_total['total']
+        empenhado_total = self._deflate(empenhado_total['total'], year)
 
         empenhado_gnds = self._get_empenhado_gnds_list(empenhado_by_gnd,
                                                        empenhado_total)
@@ -166,7 +167,7 @@ class GeologiaSerializer:
         orcado_by_gnd = qs.values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(orcado=Sum('orcado_atualizado'))
         orcado_total = qs.aggregate(total=Sum('orcado_atualizado'))
-        orcado_total = orcado_total['total']
+        orcado_total = self._deflate(orcado_total['total'])
 
         orcado_gnds = self._get_orcado_gnds_list(orcado_by_gnd, orcado_total)
 
@@ -183,7 +184,7 @@ class GeologiaSerializer:
             .values('gnd_geologia__desc', 'gnd_geologia__slug') \
             .annotate(empenhado=Sum('empenhado_liquido'))
         empenhado_total = qs.aggregate(total=Sum('empenhado_liquido'))
-        empenhado_total = empenhado_total['total']
+        empenhado_total = self._deflate(empenhado_total['total'])
 
         empenhado_gnds = self._get_empenhado_gnds_list(empenhado_by_gnd,
                                                        empenhado_total)
@@ -222,6 +223,14 @@ class GeologiaSerializer:
         if value is None or not total:
             return 0
         return value / total
+
+    def _deflate(self, value, year):
+        try:
+            deflator = Deflator.objects.get(year=year)
+            value = value / deflator.index_number
+        except Deflator.DoesNotExist:
+            pass
+        return value
 
     def prepare_subfuncoes(self):
         # We need to get the subfuncoes from the execucoes queryset because
