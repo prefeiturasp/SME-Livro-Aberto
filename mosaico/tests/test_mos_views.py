@@ -190,8 +190,8 @@ class TestBaseListView(APITestCase):
 
     def test_empty_state(self):
         response = self.get()
-        assert None == response.data['year']
-        assert None == response.data['dt_updated']
+        assert response.data['year'] is None
+        assert response.data['dt_updated'] is None
         assert 0 == len(response.data['execucoes'])
 
 
@@ -855,8 +855,11 @@ class TestDownloadView(APITestCase):
             execucoes, many=True, context={'request': request}).data
 
     def test_uses_correct_renderer(self):
-        response = self.get('grupos')
+        response = self.get('grupos', format='csv')
         assert 'csv' == response.accepted_renderer.format
+
+        response = self.get('grupos', format='xlsx')
+        assert 'xlsx' == response.accepted_renderer.format
 
     def test_downloads_grupos_data(self):
         expected = self.prepare_expected_data('grupos')
