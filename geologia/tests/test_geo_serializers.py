@@ -9,6 +9,7 @@ from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution.models import Execucao, GndGeologia, Subfuncao, Subgrupo
+from from_to_handler.models import Deflator
 from geologia.serializers import (
     GeologiaDownloadSerializer, GeologiaSerializer, GndGeologiaSerializer,
     SubfuncaoSerializer)
@@ -46,41 +47,64 @@ def empenhado_fixture():
 
 @pytest.mark.django_db
 class TestGeologiaSerializerCore:
+
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
+
     def test_get_orcado_gnds_list(self, orcado_fixture):
         gnds, orcado_total = orcado_fixture
 
-        expected = [
-            {
+        deflator = Deflator.objects.get(year__year=2017)
+
+        expected = []
+        for gnd in gnds:
+            orcado = gnd['orcado'] / deflator.index_number
+
+            gnd_dict = {
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['orcado'],
-                "percent": gnd['orcado'] / orcado_total
+                "value": orcado,
+                "percent": orcado / orcado_total
             }
-            for gnd in gnds
-        ]
+            expected.append(gnd_dict)
 
         serializer = GeologiaSerializer([])
-        ret = serializer._get_orcado_gnds_list(gnds, orcado_total)
+        ret = serializer._get_orcado_gnds_list(gnds, orcado_total,
+                                               deflator.year)
 
         assert expected == ret
 
     def test_get_empenhado_gnds_list(self, empenhado_fixture):
         gnds, empenhado_total = empenhado_fixture
+
+        deflator = Deflator.objects.get(year__year=2018)
+
         expected = []
         for gnd in gnds:
             if gnd['empenhado'] is None:
                 gnd['empenhado'] = 0
 
+            empenhado = gnd['empenhado'] / deflator.index_number
+
             expected.append({
                 "name": gnd['gnd_geologia__desc'],
                 "slug": gnd['gnd_geologia__slug'],
-                "value": gnd['empenhado'],
-                "percent": gnd['empenhado'] / empenhado_total
+                "value": empenhado,
+                "percent": empenhado / empenhado_total
             })
 
         serializer = GeologiaSerializer([])
         ret = serializer._get_empenhado_gnds_list(
-            gnds, empenhado_total)
+            gnds, empenhado_total, deflator.year)
 
         assert expected == ret
 
@@ -94,7 +118,8 @@ class TestGeologiaSerializerCore:
         empenhado_total = None
 
         serializer = GeologiaSerializer([])
-        assert serializer._get_empenhado_gnds_list(gnds_dicts, empenhado_total)
+        assert serializer._get_empenhado_gnds_list(gnds_dicts, empenhado_total,
+                                                   year=date(2017, 1, 1))
 
     def test_calculate_percent(self):
         serializer = GeologiaSerializer([])
@@ -122,6 +147,18 @@ class TestGeologiaSerializerCore:
 
 @pytest.mark.django_db
 class TestGeologiaSerializerCamadas:
+
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
 
     @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
     @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
@@ -161,6 +198,9 @@ class TestGeologiaSerializerCamadas:
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        orcado_total = orcado_total / deflator.index_number
+
         mommy.make(
             Execucao,
             year=year,
@@ -185,6 +225,9 @@ class TestGeologiaSerializerCamadas:
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        empenhado_total = empenhado_total / deflator.index_number
+
         mommy.make(
             Execucao,
             year=year,
@@ -252,6 +295,18 @@ class TestGeologiaSerializerSubfuncao:
 
 @pytest.mark.django_db
 class TestGeologiaSerializerSubgrupo:
+
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
 
     @patch.object(GeologiaSerializer, 'get_subgrupo_year_empenhado_data')
     @patch.object(GeologiaSerializer, 'get_subgrupo_year_orcado_data')
@@ -399,6 +454,9 @@ class TestGeologiaSerializerSubgrupo:
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        orcado_total = orcado_total / deflator.index_number
+
         subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
@@ -425,6 +483,9 @@ class TestGeologiaSerializerSubgrupo:
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        empenhado_total = empenhado_total / deflator.index_number
+
         subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
@@ -513,6 +574,18 @@ class TestSubfuncaoSerializer:
 @pytest.mark.django_db
 class TestGeologiaDownloadSerializer:
 
+    @pytest.fixture
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
+
     def test_serializes_camadas_chart_data(self):
         gnd1 = mommy.make(GndGeologia, desc='gnd1')
         gnd2 = mommy.make(GndGeologia, desc='gnd2')
@@ -569,6 +642,56 @@ class TestGeologiaDownloadSerializer:
             },
         ]
 
+        execucoes = Execucao.objects.all()
+        serializer = GeologiaDownloadSerializer(execucoes, 'camadas')
+
+        assert expected == serializer.data
+
+    def test_deflator_is_applied_to_camadas_chart_data(self, deflators):
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
+        e1 = mommy.make(Execucao, year=date(2017, 1, 1), gnd_geologia=gnd1,
+                        orcado_atualizado=100, empenhado_liquido=5)
+        e2 = mommy.make(Execucao, year=date(2017, 1, 1), gnd_geologia=gnd2,
+                        orcado_atualizado=200, empenhado_liquido=10)
+
+        deflator = Deflator.objects.get(year__year=2017)
+
+        orcado_1 = e1.orcado_atualizado / deflator.index_number
+        empenhado_1 = e1.empenhado_liquido / deflator.index_number
+        orcado_2 = e2.orcado_atualizado / deflator.index_number
+        empenhado_2 = e2.empenhado_liquido / deflator.index_number
+
+        orcado_total = orcado_1 + orcado_2
+        orcado_percentual_1 = orcado_1 / orcado_total
+        orcado_percentual_2 = orcado_2 / orcado_total
+
+        empenhado_total = empenhado_1 + empenhado_2
+        empenhado_percentual_1 = empenhado_1 / empenhado_total
+        empenhado_percentual_2 = empenhado_2 / empenhado_total
+
+        expected = [
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "orcado": orcado_1,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_1,
+                "empenhado": empenhado_1,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_1,
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "orcado": orcado_2,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_2,
+                "empenhado": empenhado_2,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_2,
+            },
+        ]
         execucoes = Execucao.objects.all()
         serializer = GeologiaDownloadSerializer(execucoes, 'camadas')
 
@@ -770,6 +893,65 @@ class TestGeologiaDownloadSerializer:
                 "empenhado": Decimal(4),
                 "empenhado_total": Decimal(5),
                 "empenhado_percentual": Decimal('0.8'),
+            },
+        ]
+
+        execucoes = Execucao.objects.all()
+        serializer = GeologiaDownloadSerializer(execucoes, 'subgrupo')
+
+        assert len(expected) == len(serializer.data)
+        for item in expected:
+            assert item in serializer.data
+
+    def test_deflator_is_applied_to_subgrupo_chart_data(self, deflators):
+        subgrupo1 = mommy.make(Subgrupo, desc='subgrupo1')
+        gnd1 = mommy.make(GndGeologia, desc='gnd1')
+        gnd2 = mommy.make(GndGeologia, desc='gnd2')
+
+        e1 = mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                        gnd_geologia=gnd1, orcado_atualizado=100,
+                        empenhado_liquido=5)
+        e2 = mommy.make(Execucao, year=date(2017, 1, 1), subgrupo=subgrupo1,
+                        gnd_geologia=gnd2, orcado_atualizado=150,
+                        empenhado_liquido=15)
+
+        deflator = Deflator.objects.get(year__year=2017)
+
+        orcado_1 = e1.orcado_atualizado / deflator.index_number
+        empenhado_1 = e1.empenhado_liquido / deflator.index_number
+        orcado_2 = e2.orcado_atualizado / deflator.index_number
+        empenhado_2 = e2.empenhado_liquido / deflator.index_number
+
+        orcado_total = orcado_1 + orcado_2
+        orcado_percentual_1 = orcado_1 / orcado_total
+        orcado_percentual_2 = orcado_2 / orcado_total
+
+        empenhado_total = empenhado_1 + empenhado_2
+        empenhado_percentual_1 = empenhado_1 / empenhado_total
+        empenhado_percentual_2 = empenhado_2 / empenhado_total
+
+        expected = [
+            {
+                "ano": 2017,
+                "gnd": 'gnd1',
+                "subgrupo": 'subgrupo1',
+                "orcado": orcado_1,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_1,
+                "empenhado": empenhado_1,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_1,
+            },
+            {
+                "ano": 2017,
+                "gnd": 'gnd2',
+                "subgrupo": 'subgrupo1',
+                "orcado": orcado_2,
+                "orcado_total": orcado_total,
+                "orcado_percentual": orcado_percentual_2,
+                "empenhado": empenhado_2,
+                "empenhado_total": empenhado_total,
+                "empenhado_percentual": empenhado_percentual_2,
             },
         ]
 

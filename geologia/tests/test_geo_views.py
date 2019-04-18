@@ -161,7 +161,7 @@ class TestDownloadView(APITestCase):
         response = self.get('camadas', format='csv')
         assert 'csv' == response.accepted_renderer.format
 
-        response = self.get('camadas', format='xlsx')
+        response = self.get('camadas')
         assert 'xlsx' == response.accepted_renderer.format
 
     def test_downloads_camadas_chart_data(self):
