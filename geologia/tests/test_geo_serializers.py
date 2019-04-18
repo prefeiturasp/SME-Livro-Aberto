@@ -148,6 +148,18 @@ class TestGeologiaSerializerCore:
 @pytest.mark.django_db
 class TestGeologiaSerializerCamadas:
 
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
+
     @patch.object(GeologiaSerializer, '_get_empenhado_data_by_year')
     @patch.object(GeologiaSerializer, '_get_orcado_data_by_year')
     def test_prepare_camadas_data(self, mock_orcado, mock_empenhado):
@@ -186,6 +198,9 @@ class TestGeologiaSerializerCamadas:
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        orcado_total = orcado_total / deflator.index_number
+
         mommy.make(
             Execucao,
             year=year,
@@ -210,6 +225,9 @@ class TestGeologiaSerializerCamadas:
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        empenhado_total = empenhado_total / deflator.index_number
+
         mommy.make(
             Execucao,
             year=year,
@@ -277,6 +295,18 @@ class TestGeologiaSerializerSubfuncao:
 
 @pytest.mark.django_db
 class TestGeologiaSerializerSubgrupo:
+
+    @pytest.fixture(autouse=True)
+    def deflators(self):
+        mommy.make(
+            Deflator,
+            year=date(2017, 1, 1),
+            index_number=Decimal(0.2))
+
+        mommy.make(
+            Deflator,
+            year=date(2018, 1, 1),
+            index_number=Decimal(0.5))
 
     @patch.object(GeologiaSerializer, 'get_subgrupo_year_empenhado_data')
     @patch.object(GeologiaSerializer, 'get_subgrupo_year_orcado_data')
@@ -424,6 +454,9 @@ class TestGeologiaSerializerSubgrupo:
         gnds, orcado_total = orcado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        orcado_total = orcado_total / deflator.index_number
+
         subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
@@ -450,6 +483,9 @@ class TestGeologiaSerializerSubgrupo:
         gnds, empenhado_total = empenhado_fixture
 
         year = date(2017, 1, 1)
+        deflator = Deflator.objects.get(year=year)
+        empenhado_total = empenhado_total / deflator.index_number
+
         subgrupo = mommy.make(Subgrupo, id=1)
         mommy.make(
             Execucao,
