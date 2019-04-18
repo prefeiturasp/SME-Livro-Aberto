@@ -1,3 +1,4 @@
+from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
@@ -23,7 +24,7 @@ class HomeView(generics.ListAPIView):
 
 
 class DownloadView(generics.ListAPIView):
-    renderer_classes = [CSVRenderer]
+    renderer_classes = [XLSXRenderer, CSVRenderer]
     queryset = Execucao.objects.filter(is_minimo_legal=False,
                                        orgao__id=SME_ORGAO_ID)
     serializer_class = GeologiaDownloadSerializer
@@ -39,9 +40,11 @@ class DownloadView(generics.ListAPIView):
         filename = f'geologia_{chart}'
         if subfuncao_id:
             filename += '_filtrado'
+        file_extension = request.accepted_renderer.format
+        filename += f'.{file_extension}'
 
         headers = {
-            'Content-Disposition': f'attachment; filename={filename}.csv'
+            'Content-Disposition': f'attachment; filename={filename}'
         }
         response = Response(serializer.data, headers=headers)
         return response
