@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 from django.db.models import Sum
 from rest_framework import serializers
 
@@ -432,6 +433,7 @@ def deflate(value, year):
         try:
             deflator = Deflator.objects.get(year=year)
             value = value / deflator.index_number
+            value = value.quantize(Decimal('.01'))
         except Deflator.DoesNotExist:
             pass
     return value
