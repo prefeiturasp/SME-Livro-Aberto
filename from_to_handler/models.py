@@ -187,8 +187,6 @@ class Deflator(models.Model):
     index_number = models.DecimalField('Número índice',
                                        max_digits=4, decimal_places=3,
                                        help_text='Set de 2018 = 1')
-    variation_percent = models.DecimalField('Var %', max_digits=5,
-                                            decimal_places=2)
 
     class Meta:
         verbose_name = 'Deflator'

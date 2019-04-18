@@ -8,7 +8,7 @@ from .models import (Deflator, DotacaoFromTo, DotacaoFromToSpreadsheet,
 @admin.register(Deflator)
 class DeflatorAdmin(admin.ModelAdmin):
     ordering = ('year',)
-    list_display = ('year_str', 'index_number', 'variation_percent')
+    list_display = ('year_str', 'index_number')
 
     def year_str(self, obj):
         return f'{obj.year.strftime("%Y")}'
