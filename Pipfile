@@ -17,6 +17,7 @@ django-filter = "*"
 djangorestframework-csv = "*"
 pandas = "*"
 xlrd = "*"
+drf-renderer-xlsx = "*"
 
 [dev-packages]
 ipdb = "*"
