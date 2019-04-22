@@ -118,20 +118,20 @@ body > header .wrapper p {
   text-align: center;
 }
 
+.chart-note {
+  padding: 1.5em 1em !important;
+  font-style: italic;
+  font-size: .85em;
+}
+
 @media (min-width: 768px) {
   .chart{
     display: flex;
-    flex-wrap: wrap;
-  }
-
-  .punchcard,
-  .bar-chart{
-    width: calc(100%*2/3);
   }
 
   .punchcard + *,
   .bar-chart + *{
-    max-width: calc(100%*1/3);
+    flex-basis: 35%;
   }
 
   aside > .card{
@@ -140,6 +140,7 @@ body > header .wrapper p {
 }
 
 .bar-chart{
+  flex: 1;
   table-layout: fixed;
 }
 
