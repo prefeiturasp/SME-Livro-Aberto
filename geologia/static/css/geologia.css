@@ -311,6 +311,10 @@ aside .card.active{
   padding-bottom: 0.5em;
 }
 
+.card table tr > * + *{
+  padding-left: 0;
+}
+
 aside .card table tr > *{
   padding-top: 0.25em;
   padding-bottom: 0.25em;

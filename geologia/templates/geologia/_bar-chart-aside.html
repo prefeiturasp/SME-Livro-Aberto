@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load l10n %}
+{% load format %}
 <aside>
   {% for year in data %}
   <div id="por-subfuncao-{{ type }}-{{ year.year }}" class="card {%if forloop.first %}active{%endif%}" data-year="{{ year.year }}">
@@ -23,7 +24,7 @@
               <span class="fg-{{ item.slug }}" title="{{ item.name }}">
                 {% include 'geologia/_gnd_item.html' with slug=item.slug %}
               </span>
-              {% widthratio item.percent 1 100 %}%
+              {{ item.percent | percentage | floatformat:2 }}%
             </td>
             <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
           </tr>
