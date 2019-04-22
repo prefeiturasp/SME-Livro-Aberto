@@ -28,6 +28,12 @@ class ExecucaoManager(models.Manager):
         return execucao
 
     def create_by_orcamento(self, orcamento):
+        if orcamento.ds_projeto_atividade is None:
+            return {
+                "error": (f"orcamento id {orcamento.id}: column "
+                          "ds_projeto_atividade can't be null")
+            }
+
         execucao = self.model()
 
         execucao.year = date(orcamento.cd_ano_execucao, 1, 1)

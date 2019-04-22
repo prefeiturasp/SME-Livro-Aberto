@@ -10,8 +10,11 @@ def import_orcamentos():
 
     for orcamento in orcamentos:
         execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
-        orcamento.execucao = execucao
-        orcamento.save()
+        if isinstance(execucao, Execucao):
+            orcamento.execucao = execucao
+            orcamento.save()
+        else:
+            print(execucao['error'])
 
 
 def import_empenhos():
