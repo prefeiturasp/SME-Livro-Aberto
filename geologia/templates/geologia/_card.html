@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load l10n %}
+{% load format %}
 <div class="card" data-year="{{ title }}">
   <header>
     <h3 class="title">{{ title }}</h3>
@@ -18,7 +19,7 @@
             data-execution="{{ item.percent|unlocalize }}">
           <td>
             <span class="fg-{{ item.slug }}" title="{{ item.name }}">●</span>
-            {% widthratio item.percent 1 100 %}%
+            {{ item.percent | percentage | floatformat:2 }}%
           </td>
           <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
         </tr>
