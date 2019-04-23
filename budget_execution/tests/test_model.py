@@ -168,6 +168,14 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
         assert execucao.subfuncao.desc == orcamento.ds_subfuncao
         assert execucao.programa.desc == orcamento.ds_programa
 
+    def test_print_error_when_ds_projeto_atividade_is_none(self):
+        orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+                               ds_projeto_atividade=None,
+                               _fill_optional=True)
+        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+        assert (f"orcamento id {orcamento.id}: column "
+                "ds_projeto_atividade can't be null") == ret['error']
+
     def test_updates_existing_execucao(self):
         previous_orcado = 100
         mommy.make(
