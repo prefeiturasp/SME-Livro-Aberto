@@ -160,12 +160,22 @@ function StreamChart(svg, years, gnds){
             d3.select(this).classed('active', false);
             cardContainer.select(`.card[data-year="${d}"]`).style('display', 'none');
           })
-        foreground.on('mousemove', function(){
-            let coord = d3.mouse(this);
-            let year = Math.round(x.invert(coord[0]));
+        function mousemove(){
+            let currYear;
+            return function(){
+                let xCoord = d3.mouse(this)[0] - margin.left;
+                let year = Math.round(x.invert(xCoord));
+                if(currYear == year) return;
+                xAxis.select('.active').dispatch('mouseout')
+                xAxis.select(`.year-${year}`).dispatch('mouseover')
+            }
+        }
+
+        svg.on('mousemove', mousemove())
+        .on('mouseout', function(d){
             xAxis.select('.active').dispatch('mouseout')
-            xAxis.select(`.year-${year}`).dispatch('mouseover')
         })
+        cardContainer.selectAll('.card').style('pointer-events', 'none');
 
         updateData(background, bgLayers, (d, i) => bgDomain[i], y);
         updateData(foreground, layers, (d, i) => x(i + x.domain()[0]), y);
