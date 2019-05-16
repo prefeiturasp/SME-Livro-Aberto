@@ -91,6 +91,7 @@ function StreamChart(svg, years, gnds){
         .attr('class', 'foreground')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
+
     const stack = d3.stack()
         .keys(gnds)
         .offset(d3['stackOffsetExpand'])
@@ -149,7 +150,9 @@ function StreamChart(svg, years, gnds){
         const bgDomain = [0, side, parentWidth, fullWidth];
 
         const ticks = xAxis.selectAll('g.tick')
+          .attr('class', d => 'tick year-' + d)
           .on('mouseover', function(d){
+            xAxis.select('.active').dispatch('mouseout')
             d3.select(this).classed('active', true);
             cardContainer.select(`.card[data-year="${d}"]`).style('display', 'inline-block');
           })
@@ -157,6 +160,12 @@ function StreamChart(svg, years, gnds){
             d3.select(this).classed('active', false);
             cardContainer.select(`.card[data-year="${d}"]`).style('display', 'none');
           })
+        foreground.on('mousemove', function(){
+            let coord = d3.mouse(this);
+            let year = Math.round(x.invert(coord[0]));
+            xAxis.select('.active').dispatch('mouseout')
+            xAxis.select(`.year-${year}`).dispatch('mouseover')
+        })
 
         updateData(background, bgLayers, (d, i) => bgDomain[i], y);
         updateData(foreground, layers, (d, i) => x(i + x.domain()[0]), y);
