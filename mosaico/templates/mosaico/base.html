@@ -65,6 +65,7 @@
       </fieldset>
       <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
+      <p>Navegue para descobrir como se distribui o orçamento da Educação na cidade de São Paulo. Ao clicar em uma caixa, a ferramenta mostra mais detalhes sobre tal despesa. As cores simbolizam quanto da verba autorizada foi executada até o momento.</p>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
       {% if execucoes %}
       <ol class="treemap">
@@ -97,6 +98,7 @@
   <section id="budget-over-time">
     <div class="wrapper">
       <h2>Orçamento x <em>Tempo</em></h2>
+      <p>Acompanhe a evolução dos gastos no tempo. Ao clicar em qualquer caixa no gráfico acima, a série atualiza para mostrar a evolução da despesa selecionada.</p>
       <form action="#budget-over-time" method="get" class="query">
           <input type="hidden" name="year" value="{{year}}" />
       {% for fonte in fontes_de_recurso %}
@@ -139,6 +141,7 @@
   <section id="data-table">
     <div class="wrapper">
       <h2><em>Tabela</em> de Dados</h2>
+      <p>Entenda no detalhe os números por trás do primeiro gráfico.</p>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='data-table' %}
       <table>
           <thead>
