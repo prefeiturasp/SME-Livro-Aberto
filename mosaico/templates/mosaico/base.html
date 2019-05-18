@@ -1,4 +1,5 @@
 {% extends 'base.html'  %}
+{% load utils %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -68,15 +69,17 @@
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mosaico' %}
       {% if execucoes %}
       <ol class="treemap">
+      {% with sum_orcado_total=execucoes|sum_of:'orcado_total' %}
           {% for execucao in execucoes %}
           <li data-execution="{{ execucao.percentual_empenhado|unlocalize}}" data-value="{{ execucao.orcado_total|unlocalize }}">
                   <a href="{{ execucao.url}}#mosaico">
                   <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
                   <div class="name">{{ execucao.nome }}</div>
-                  <div class="execution">{% widthratio execucao.percentual_empenhado 1 100 %}%</div>
+                  <div class="execution">{% widthratio execucao.orcado_total sum_orcado_total 100 %}%</div>
                   </a>
               </li>
           {% endfor %}
+      {% endwith%}
       </ol>
       {% else%}
       <div class="empty treemap quanti-80">Não há dados de orçamento para os filtros selecionados.</div>
