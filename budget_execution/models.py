@@ -437,6 +437,9 @@ class Orcamento(models.Model):
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
+    # instance in orcamento_raw_load table, source of the orcamento data
+    orcamento_raw = models.ForeignKey('OrcamentoRaw', models.SET_NULL,
+                                      null=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
