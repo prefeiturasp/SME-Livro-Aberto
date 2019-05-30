@@ -388,7 +388,6 @@ class SubelementoFriendly(models.Model):
 
 class Orcamento(models.Model):
     """SME dw_orcamento table replica"""
-    id = models.IntegerField(primary_key=True)
     cd_key = models.TextField(blank=True, null=True)
     dt_inicial = models.DateTimeField(blank=True, null=True)
     dt_final = models.DateTimeField(blank=True, null=True)
