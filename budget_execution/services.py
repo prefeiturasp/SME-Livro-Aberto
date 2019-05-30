@@ -1,7 +1,15 @@
 from budget_execution.constants import SME_ORGAO_ID
-from budget_execution.models import Execucao, Orcamento, Empenho, MinimoLegal
+from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw,
+                                     Empenho, MinimoLegal)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
+
+
+def load_data_from_orcamento_raw():
+    orcamentos_raw = OrcamentoRaw.objects.all()
+
+    for orc_raw in orcamentos_raw:
+        Orcamento.objects.create_from_orcamento_raw(orc_raw)
 
 
 def import_orcamentos():

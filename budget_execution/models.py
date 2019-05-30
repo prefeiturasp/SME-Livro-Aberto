@@ -4,6 +4,7 @@ from datetime import date
 from decimal import Decimal
 
 from django.db import models
+from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
 
 
@@ -386,6 +387,20 @@ class SubelementoFriendly(models.Model):
     desc = models.CharField(max_length=100)
 
 
+class OrcamentoManager(models.Manager):
+
+    def create_from_orcamento_raw(self, orcamento_raw):
+        orc_raw_dict = model_to_dict(orcamento_raw)
+
+        orcamento = self.model()
+
+        orc_raw_dict.pop('id')
+        for field, value in orc_raw_dict.items():
+            setattr(orcamento, field, value)
+
+        orcamento.save()
+        return orcamento
+
 class Orcamento(models.Model):
     """SME dw_orcamento table replica"""
     cd_key = models.TextField(blank=True, null=True)
@@ -443,6 +458,8 @@ class Orcamento(models.Model):
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+
+    objects = OrcamentoManager()
 
     class Meta:
         db_table = 'orcamento'
