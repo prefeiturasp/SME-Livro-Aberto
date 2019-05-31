@@ -12,8 +12,50 @@ from budget_execution.models import (
     Orcamento,
     OrcamentoRaw,
     Empenho,
+    EmpenhoRaw,
     MinimoLegal,
 )
+
+
+@pytest.mark.django_db
+class TestLoadOrcamentoFromRawTable:
+
+    def test_load_from_orcamento_raw(self):
+        orcamento_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        assert 0 == Orcamento.objects.count()
+
+        services.load_data_from_orcamento_raw()
+
+        assert 1 == Orcamento.objects.count()
+
+        orcamento = Orcamento.objects.first()
+        assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
+
+
+@pytest.mark.django_db
+class TestLoadEmpenhoFromRawTable:
+
+    def test_load_from_empenho_raw(self):
+        empenho_raw = mommy.make(
+            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='1',            # needed because this is a these are
+            cd_fonte_de_recurso='5',    # text fields. this modeling came from
+            cd_projeto_atividade='5',   # SME
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+        assert 0 == Empenho.objects.count()
+
+        services.load_data_from_empenho_raw()
+
+        assert 1 == Empenho.objects.count()
+
+        empenho = Empenho.objects.first()
+        assert empenho.an_empenho == empenho_raw.an_empenho
 
 
 @pytest.mark.django_db
@@ -130,21 +172,3 @@ class TestImportMinimoLegal:
         ml2.refresh_from_db()
         assert orcamento2.execucao == execucoes[1]
         assert ml2.execucao == execucoes[1]
-
-
-@pytest.mark.django_db
-class TestLoadOrcamentoFromRawTable:
-
-    def test_load_from_orcamento_raw(self):
-        orcamento_raw = mommy.make(
-            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
-            _fill_optional=True)
-
-        assert 0 == Orcamento.objects.count()
-
-        services.load_data_from_orcamento_raw()
-
-        assert 1 == Orcamento.objects.count()
-
-        orcamento = Orcamento.objects.first()
-        assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao

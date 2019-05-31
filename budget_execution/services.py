@@ -1,6 +1,6 @@
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw,
-                                     Empenho, MinimoLegal)
+                                     Empenho, EmpenhoRaw, MinimoLegal)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
@@ -14,6 +14,17 @@ def load_data_from_orcamento_raw():
             Orcamento.objects.create_from_orcamento_raw(orc_raw))
 
     return len(orcamentos)
+
+
+def load_data_from_empenho_raw():
+    empenhos_raw = EmpenhoRaw.objects.all()
+
+    empenhos = []
+    for emp_raw in empenhos_raw:
+        empenhos.append(
+            Empenho.objects.create_from_empenho_raw(emp_raw))
+
+    return len(empenhos)
 
 
 def import_orcamentos():

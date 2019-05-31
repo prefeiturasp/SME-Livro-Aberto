@@ -706,9 +706,9 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
     def empenho_raw(self):
         return mommy.make(
             EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
-            cd_elemento='1',  # needed because this is a text field
-            cd_fonte_de_recurso='5',
-            cd_projeto_atividade='5',
+            cd_elemento='1',            # needed because this is a these are
+            cd_fonte_de_recurso='5',    # text fields. this modeling came from
+            cd_projeto_atividade='5',   # SME
             cd_subfuncao='5',
             cd_unidade='5',
             _fill_optional=True)
