@@ -656,8 +656,55 @@ class TestOrcamentoModel:
 @pytest.mark.django_db
 class TestEmpenhoManagerCreateFromEmpenhoRaw:
 
-    def test_create_new_empenho(self):
-        emp_raw = mommy.make(
+    def assert_fields(self, emp, emp_raw):
+        assert emp.execucao is None
+        assert emp.empenho_raw == emp_raw
+        assert emp.cd_key == emp_raw.cd_key
+        assert emp.an_empenho == emp_raw.an_empenho
+        assert emp.cd_categoria == emp_raw.cd_categoria
+        assert emp.cd_elemento == emp_raw.cd_elemento
+        assert emp.cd_empenho == emp_raw.cd_empenho
+        assert emp.cd_empresa == emp_raw.cd_empresa
+        assert emp.cd_fonte_de_recurso == emp_raw.cd_fonte_de_recurso
+        assert emp.cd_funcao == emp_raw.cd_funcao
+        assert emp.cd_grupo == emp_raw.cd_grupo
+        assert emp.cd_item_despesa == emp_raw.cd_item_despesa
+        assert emp.cd_modalidade == emp_raw.cd_modalidade
+        assert emp.cd_orgao == emp_raw.cd_orgao
+        assert emp.cd_programa == emp_raw.cd_programa
+        assert emp.cd_projeto_atividade == emp_raw.cd_projeto_atividade
+        assert emp.cd_subelemento == emp_raw.cd_subelemento
+        assert emp.cd_subfuncao == emp_raw.cd_subfuncao
+        assert emp.cd_unidade == emp_raw.cd_unidade
+        assert emp.dt_empenho == emp_raw.dt_empenho
+        assert emp.mes_empenho == emp_raw.mes_empenho
+        assert emp.nm_empresa == emp_raw.nm_empresa
+        assert emp.dc_cpf_cnpj == emp_raw.dc_cpf_cnpj
+        assert emp.cd_reserva == emp_raw.cd_reserva
+        assert emp.dc_categoria_economica == emp_raw.dc_categoria_economica
+        assert emp.dc_elemento == emp_raw.dc_elemento
+        assert emp.dc_fonte_de_recurso == emp_raw.dc_fonte_de_recurso
+        assert emp.dc_funcao == emp_raw.dc_funcao
+        assert emp.dc_item_despesa == emp_raw.dc_item_despesa
+        assert emp.dc_orgao == emp_raw.dc_orgao
+        assert emp.dc_programa == emp_raw.dc_programa
+        assert emp.dc_projeto_atividade == emp_raw.dc_projeto_atividade
+        assert emp.dc_subelemento == emp_raw.dc_subelemento
+        assert emp.dc_subfuncao == emp_raw.dc_subfuncao
+        assert emp.dc_unidade == emp_raw.dc_unidade
+        assert emp.dc_grupo_despesa == emp_raw.dc_grupo_despesa
+        assert emp.dc_modalidade == emp_raw.dc_modalidade
+        assert emp.dc_razao_social == emp_raw.dc_razao_social
+        assert emp.vl_empenho_anulado == emp_raw.vl_empenho_anulado
+        assert emp.vl_empenho_liquido == emp_raw.vl_empenho_liquido
+        assert emp.vl_liquidado == emp_raw.vl_liquidado
+        assert emp.vl_pago == emp_raw.vl_pago
+        assert emp.vl_pago_restos == emp_raw.vl_pago_restos
+        assert emp.vl_empenhado == emp_raw.vl_empenhado
+
+    @pytest.fixture
+    def empenho_raw(self):
+        return mommy.make(
             EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
             cd_elemento='1',  # needed because this is a text field
             cd_fonte_de_recurso='5',
@@ -666,11 +713,68 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
             cd_unidade='5',
             _fill_optional=True)
 
+    def test_create_new_empenho(self, empenho_raw):
         assert 0 == Empenho.objects.count()
+
+        emp = Empenho.objects.create_from_empenho_raw(empenho_raw)
+
+        assert 1 == Empenho.objects.count()
+        self.assert_fields(emp, empenho_raw)
+
+    def test_update_existing_empenho(self, empenho_raw):
+        emp_raw = empenho_raw
+
+        mommy.make(
+            Empenho,
+            an_empenho=emp_raw.an_empenho,
+            cd_orgao=emp_raw.cd_orgao,
+            cd_projeto_atividade=emp_raw.cd_projeto_atividade,
+            cd_categoria=emp_raw.cd_categoria,
+            cd_grupo=emp_raw.cd_grupo,
+            cd_modalidade=emp_raw.cd_modalidade,
+            cd_elemento=emp_raw.cd_elemento,
+            cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
+            cd_unidade=emp_raw.cd_unidade,
+            cd_subfuncao=emp_raw.cd_subfuncao,
+            execucao=None,
+            vl_empenho_liquido=100,
+            _fill_optional=True)
+
+        assert 1 == Empenho.objects.count()
 
         emp = Empenho.objects.create_from_empenho_raw(emp_raw)
 
         assert 1 == Empenho.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(emp, emp_raw)
+
+    def test_update_existing_empenho_when_execucao_exists(self, empenho_raw):
+        emp_raw = empenho_raw
+
+        mommy.make(
+            Empenho,
+            an_empenho=emp_raw.an_empenho,
+            cd_orgao=emp_raw.cd_orgao,
+            cd_projeto_atividade=emp_raw.cd_projeto_atividade,
+            cd_categoria=emp_raw.cd_categoria,
+            cd_grupo=emp_raw.cd_grupo,
+            cd_modalidade=emp_raw.cd_modalidade,
+            cd_elemento=emp_raw.cd_elemento,
+            cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
+            cd_unidade=emp_raw.cd_unidade,
+            cd_subfuncao=emp_raw.cd_subfuncao,
+            execucao__id=1,
+            vl_empenho_liquido=100,
+            _fill_optional=True)
+
+        assert 1 == Empenho.objects.count()
+        assert 1 == Execucao.objects.count()
+
+        emp = Empenho.objects.create_from_empenho_raw(emp_raw)
+
+        assert 1 == Empenho.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(emp, emp_raw)
 
 
 @pytest.mark.django_db
