@@ -390,6 +390,10 @@ class SubelementoFriendly(models.Model):
 class OrcamentoManager(models.Manager):
 
     def create_from_orcamento_raw(self, orcamento_raw):
+        old_orcamento = self.get_by_indexer(orcamento_raw.indexer)
+        if old_orcamento:
+            old_orcamento.delete()
+
         orc_raw_dict = model_to_dict(orcamento_raw)
 
         orcamento = self.model()
@@ -400,6 +404,27 @@ class OrcamentoManager(models.Manager):
 
         orcamento.orcamento_raw = orcamento_raw
         orcamento.save()
+        return orcamento
+
+    def get_by_indexer(self, indexer):
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        try:
+            orcamento = self.get_queryset().get(
+                cd_ano_execucao=info[0],
+                cd_orgao=info[1],
+                cd_projeto_atividade=info[2],
+                ds_categoria_despesa=info[3],
+                cd_grupo_despesa=info[4],
+                cd_modalidade=info[5],
+                cd_elemento=info[6],
+                cd_fonte=info[7],
+                cd_unidade=info[8],
+                cd_subfuncao=info[9])
+        except Orcamento.DoesNotExist:
+            orcamento = None
+
         return orcamento
 
 
@@ -472,7 +497,7 @@ class Orcamento(models.Model):
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
-            f'{s.cd_elemento}.{s.cd_fonte}')
+            f'{s.cd_elemento}.{s.cd_fonte}.{s.cd_unidade}.{s.cd_subfuncao}')
 
 
 class Empenho(models.Model):
@@ -600,7 +625,7 @@ class OrcamentoRaw(models.Model):
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
-            f'{s.cd_elemento}.{s.cd_fonte}')
+            f'{s.cd_elemento}.{s.cd_fonte}.{s.cd_unidade}.{s.cd_subfuncao}')
 
 
 class EmpenhoRaw(models.Model):

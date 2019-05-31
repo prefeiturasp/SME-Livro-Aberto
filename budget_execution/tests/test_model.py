@@ -513,18 +513,7 @@ class TestSubgrupoModel:
 @pytest.mark.django_db
 class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
-    def test_create_new_orcamento(self):
-        orc_raw = mommy.make(
-            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
-            _fill_optional=True)
-
-        assert 0 == Orcamento.objects.count()
-
-        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
-
-        assert 1 == Orcamento.objects.count()
-
-        assert orc.execucao is None
+    def assert_fields(self, orc, orc_raw):
         assert orc.orcamento_raw == orc_raw
         assert orc.cd_key == orc_raw.cd_key
         assert orc.dt_inicial == orc_raw.dt_inicial
@@ -575,6 +564,49 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
         assert orc.vl_saldo_dotacao == orc_raw.vl_saldo_dotacao
         assert orc.dt_extracao == orc_raw.dt_extracao
 
+    def test_create_new_orcamento(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        assert 0 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+
+        assert orc.execucao is None
+        self.assert_fields(orc, orc_raw)
+
+    def test_update_existing_orcamento(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        mommy.make(
+            Orcamento,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            execucao=None,
+            vl_orcado_atualizado=100,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(orc, orc_raw)
+
 
 @pytest.mark.django_db
 class TestOrcamentoModel:
@@ -584,10 +616,11 @@ class TestOrcamentoModel:
             Orcamento, cd_ano_execucao=2018, cd_orgao=16,
             cd_projeto_atividade=4364, ds_categoria_despesa=3,
             cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
+            cd_unidade=2222, cd_subfuncao=311,
             execucao=None, _fill_optional=True,
         )
 
-        assert '2018.16.4364.3.1.90.11.0' == orcamento.indexer
+        assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.indexer
 
 
 @pytest.mark.django_db
