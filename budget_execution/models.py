@@ -401,6 +401,7 @@ class OrcamentoManager(models.Manager):
         orcamento.save()
         return orcamento
 
+
 class Orcamento(models.Model):
     """SME dw_orcamento table replica"""
     cd_key = models.TextField(blank=True, null=True)
@@ -450,7 +451,6 @@ class Orcamento(models.Model):
     vl_saldo_reserva = models.FloatField(blank=True, null=True)
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
-    dt_data_loaded = models.DateTimeField(auto_now_add=True)
     # instance in orcamento_raw_load table, source of the orcamento data
     orcamento_raw = models.ForeignKey('OrcamentoRaw', models.SET_NULL,
                                       null=True)
