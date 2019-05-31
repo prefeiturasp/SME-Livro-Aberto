@@ -12,6 +12,7 @@ from budget_execution.models import (
     Orcamento,
     OrcamentoRaw,
     Empenho,
+    EmpenhoRaw,
     Orgao,
     ProjetoAtividade,
     Categoria,
@@ -650,6 +651,26 @@ class TestOrcamentoModel:
         )
 
         assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.indexer
+
+
+@pytest.mark.django_db
+class TestEmpenhoManagerCreateFromEmpenhoRaw:
+
+    def test_create_new_empenho(self):
+        emp_raw = mommy.make(
+            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='1',  # needed because this is a text field
+            cd_fonte_de_recurso='5',
+            cd_projeto_atividade='5',
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+        assert 0 == Empenho.objects.count()
+
+        emp = Empenho.objects.create_from_empenho_raw(emp_raw)
+
+        assert 1 == Empenho.objects.count()
 
 
 @pytest.mark.django_db

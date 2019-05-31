@@ -501,6 +501,49 @@ class Orcamento(models.Model):
             f'{s.cd_elemento}.{s.cd_fonte}.{s.cd_unidade}.{s.cd_subfuncao}')
 
 
+class EmpenhoManager(models.Manager):
+
+    def create_from_empenho_raw(self, empenho_raw):
+        old_empenho = self.get_by_raw_indexer(empenho_raw.indexer)
+        if old_empenho:
+            if old_empenho.execucao:
+                old_empenho.execucao.delete()
+            old_empenho.delete()
+
+        orc_raw_dict = model_to_dict(empenho_raw)
+
+        empenho = self.model()
+
+        orc_raw_dict.pop('id')
+        for field, value in orc_raw_dict.items():
+            setattr(empenho, field, value)
+
+        empenho.empenho_raw = empenho_raw
+        empenho.save()
+        return empenho
+
+    def get_by_raw_indexer(self, indexer):
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        try:
+            empenho = self.get_queryset().get(
+                an_empenho=info[0],
+                cd_orgao=info[1],
+                cd_projeto_atividade=info[2],
+                cd_categoria=info[3],
+                cd_grupo=info[4],
+                cd_modalidade=info[5],
+                cd_elemento=info[6],
+                cd_fonte_de_recurso=info[7],
+                cd_unidade=info[8],
+                cd_subfuncao=info[9])
+        except Empenho.DoesNotExist:
+            empenho = None
+
+        return empenho
+
+
 class Empenho(models.Model):
     cd_key = models.TextField(blank=True, null=True)
     an_empenho = models.BigIntegerField(blank=True, null=True)
@@ -552,6 +595,8 @@ class Empenho(models.Model):
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
 
+    objects = EmpenhoManager()
+
     class Meta:
         db_table = 'empenhos'
 
@@ -562,6 +607,15 @@ class Empenho(models.Model):
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
             f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
+
+    @property
+    def raw_indexer(self):
+        s = self
+        return (
+            f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_unidade}.'
+            f'{s.cd_subfuncao}')
 
 
 class OrcamentoRaw(models.Model):
@@ -685,7 +739,8 @@ class EmpenhoRaw(models.Model):
         return (
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
-            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
+            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_unidade}.'
+            f'{s.cd_subfuncao}')
 
 
 class MinimoLegalManager(models.Manager):
