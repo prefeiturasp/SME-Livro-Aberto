@@ -16,7 +16,7 @@ def load_data_from_orcamento_raw():
     return len(orcamentos)
 
 
-def load_data_from_empenho_raw():
+def load_data_from_empenhos_raw():
     empenhos_raw = EmpenhoRaw.objects.all()
 
     empenhos = []

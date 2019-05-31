@@ -50,7 +50,7 @@ class TestLoadEmpenhoFromRawTable:
 
         assert 0 == Empenho.objects.count()
 
-        services.load_data_from_empenho_raw()
+        services.load_data_from_empenhos_raw()
 
         assert 1 == Empenho.objects.count()
 
