@@ -413,7 +413,7 @@ class OrcamentoManager(models.Manager):
         info = list(info)
 
         try:
-            orcamento = self.get_queryset().get(
+            orcamento = self.get_queryset().select_related('execucao').get(
                 cd_ano_execucao=info[0],
                 cd_orgao=info[1],
                 cd_projeto_atividade=info[2],
@@ -494,6 +494,7 @@ class Orcamento(models.Model):
 
     @property
     def indexer(self):
+        # TODO: rename to raw_indexer
         s = self
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
