@@ -8,8 +8,12 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
 def load_data_from_orcamento_raw():
     orcamentos_raw = OrcamentoRaw.objects.all()
 
+    orcamentos = []
     for orc_raw in orcamentos_raw:
-        Orcamento.objects.create_from_orcamento_raw(orc_raw)
+        orcamentos.append(
+            Orcamento.objects.create_from_orcamento_raw(orc_raw))
+
+    return len(orcamentos)
 
 
 def import_orcamentos():

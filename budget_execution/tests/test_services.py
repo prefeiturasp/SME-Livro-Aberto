@@ -148,4 +148,3 @@ class TestLoadOrcamentoFromRawTable:
 
         orcamento = Orcamento.objects.first()
         assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
-        # TODO: assert all relevant fields
