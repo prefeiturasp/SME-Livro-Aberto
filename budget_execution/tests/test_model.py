@@ -6,9 +6,11 @@ import pytest
 
 from model_mommy import mommy
 
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
     Execucao,
     Orcamento,
+    OrcamentoRaw,
     Empenho,
     Orgao,
     ProjetoAtividade,
@@ -474,7 +476,6 @@ class TestExecucaoManagerCreateByMinimoLegal:
         assert 0 == Execucao.objects.count()
 
 
-
 @pytest.mark.django_db
 class TestExecucaoModel:
 
@@ -507,6 +508,72 @@ class TestSubgrupoModel:
         subgrupo = mommy.make(Subgrupo, code=5, grupo=grupo)
 
         assert '10.5' == subgrupo.full_code
+
+
+@pytest.mark.django_db
+class TestOrcamentoManagerCreateFromOrcamentoRaw:
+
+    def test_create_new_orcamento(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        assert 0 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+
+        assert orc.execucao is None
+        assert orc.orcamento_raw == orc_raw
+        assert orc.cd_key == orc_raw.cd_key
+        assert orc.dt_inicial == orc_raw.dt_inicial
+        assert orc.dt_final == orc_raw.dt_final
+        assert orc.cd_ano_execucao == orc_raw.cd_ano_execucao
+        assert orc.cd_exercicio == orc_raw.cd_exercicio
+        assert orc.nm_administracao == orc_raw.nm_administracao
+        assert orc.cd_orgao == orc_raw.cd_orgao
+        assert orc.sg_orgao == orc_raw.sg_orgao
+        assert orc.ds_orgao == orc_raw.ds_orgao
+        assert orc.cd_unidade == orc_raw.cd_unidade
+        assert orc.ds_unidade == orc_raw.ds_unidade
+        assert orc.cd_funcao == orc_raw.cd_funcao
+        assert orc.ds_funcao == orc_raw.ds_funcao
+        assert orc.cd_subfuncao == orc_raw.cd_subfuncao
+        assert orc.ds_subfuncao == orc_raw.ds_subfuncao
+        assert orc.cd_programa == orc_raw.cd_programa
+        assert orc.ds_programa == orc_raw.ds_programa
+        assert orc.tp_projeto_atividade == orc_raw.tp_projeto_atividade
+        assert orc.tp_papa == orc_raw.tp_papa
+        assert orc.cd_projeto_atividade == orc_raw.cd_projeto_atividade
+        assert orc.ds_projeto_atividade == orc_raw.ds_projeto_atividade
+        assert orc.cd_despesa == orc_raw.cd_despesa
+        assert orc.ds_despesa == orc_raw.ds_despesa
+        assert orc.ds_categoria_despesa == orc_raw.ds_categoria_despesa
+        assert orc.ds_categoria == orc_raw.ds_categoria
+        assert orc.cd_grupo_despesa == orc_raw.cd_grupo_despesa
+        assert orc.ds_grupo_despesa == orc_raw.ds_grupo_despesa
+        assert orc.cd_modalidade == orc_raw.cd_modalidade
+        assert orc.ds_modalidade == orc_raw.ds_modalidade
+        assert orc.cd_elemento == orc_raw.cd_elemento
+        assert orc.cd_fonte == orc_raw.cd_fonte
+        assert orc.ds_fonte == orc_raw.ds_fonte
+        assert orc.vl_orcado_inicial == orc_raw.vl_orcado_inicial
+        assert orc.vl_orcado_atualizado == orc_raw.vl_orcado_atualizado
+        assert orc.vl_congelado == orc_raw.vl_congelado
+        assert orc.vl_orcado_disponivel == orc_raw.vl_orcado_disponivel
+        assert orc.vl_reservado_liquido == orc_raw.vl_reservado_liquido
+        assert orc.vl_empenhado_liquido == orc_raw.vl_empenhado_liquido
+        assert orc.vl_empenhado_liquido_atual \
+            == orc_raw.vl_empenhado_liquido_atual
+        assert orc.vl_liquidado == orc_raw.vl_liquidado
+        assert orc.vl_liquidado_atual == orc_raw.vl_liquidado_atual
+        assert orc.vl_pago == orc_raw.vl_pago
+        assert orc.vl_pago_atual == orc_raw.vl_pago_atual
+        assert orc.vl_saldo_empenho == orc_raw.vl_saldo_empenho
+        assert orc.vl_saldo_reserva == orc_raw.vl_saldo_reserva
+        assert orc.vl_saldo_dotacao == orc_raw.vl_saldo_dotacao
+        assert orc.dt_extracao == orc_raw.dt_extracao
 
 
 @pytest.mark.django_db

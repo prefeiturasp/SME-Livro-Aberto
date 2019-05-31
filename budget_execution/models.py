@@ -398,6 +398,7 @@ class OrcamentoManager(models.Manager):
         for field, value in orc_raw_dict.items():
             setattr(orcamento, field, value)
 
+        orcamento.orcamento_raw = orcamento_raw
         orcamento.save()
         return orcamento
 
