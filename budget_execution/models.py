@@ -506,8 +506,6 @@ class EmpenhoManager(models.Manager):
     def create_from_empenho_raw(self, empenho_raw):
         old_empenho = self.get_by_raw_indexer(empenho_raw.indexer)
         if old_empenho:
-            if old_empenho.execucao:
-                old_empenho.execucao.delete()
             old_empenho.delete()
 
         orc_raw_dict = model_to_dict(empenho_raw)

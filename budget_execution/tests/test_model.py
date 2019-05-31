@@ -748,34 +748,6 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
         assert 0 == Execucao.objects.count()
         self.assert_fields(emp, emp_raw)
 
-    def test_update_existing_empenho_when_execucao_exists(self, empenho_raw):
-        emp_raw = empenho_raw
-
-        mommy.make(
-            Empenho,
-            an_empenho=emp_raw.an_empenho,
-            cd_orgao=emp_raw.cd_orgao,
-            cd_projeto_atividade=emp_raw.cd_projeto_atividade,
-            cd_categoria=emp_raw.cd_categoria,
-            cd_grupo=emp_raw.cd_grupo,
-            cd_modalidade=emp_raw.cd_modalidade,
-            cd_elemento=emp_raw.cd_elemento,
-            cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
-            cd_unidade=emp_raw.cd_unidade,
-            cd_subfuncao=emp_raw.cd_subfuncao,
-            execucao__id=1,
-            vl_empenho_liquido=100,
-            _fill_optional=True)
-
-        assert 1 == Empenho.objects.count()
-        assert 1 == Execucao.objects.count()
-
-        emp = Empenho.objects.create_from_empenho_raw(emp_raw)
-
-        assert 1 == Empenho.objects.count()
-        assert 0 == Execucao.objects.count()
-        self.assert_fields(emp, emp_raw)
-
 
 @pytest.mark.django_db
 class TestEmpenhoModel:
