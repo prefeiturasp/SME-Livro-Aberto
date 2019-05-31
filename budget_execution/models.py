@@ -392,6 +392,8 @@ class OrcamentoManager(models.Manager):
     def create_from_orcamento_raw(self, orcamento_raw):
         old_orcamento = self.get_by_indexer(orcamento_raw.indexer)
         if old_orcamento:
+            if old_orcamento.execucao:
+                old_orcamento.execucao.delete()
             old_orcamento.delete()
 
         orc_raw_dict = model_to_dict(orcamento_raw)

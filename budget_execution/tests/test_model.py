@@ -514,6 +514,7 @@ class TestSubgrupoModel:
 class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
     def assert_fields(self, orc, orc_raw):
+        assert orc.execucao is None
         assert orc.orcamento_raw == orc_raw
         assert orc.cd_key == orc_raw.cd_key
         assert orc.dt_inicial == orc_raw.dt_inicial
@@ -574,8 +575,6 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
         orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
 
         assert 1 == Orcamento.objects.count()
-
-        assert orc.execucao is None
         self.assert_fields(orc, orc_raw)
 
     def test_update_existing_orcamento(self):
@@ -600,6 +599,36 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
             _fill_optional=True)
 
         assert 1 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(orc, orc_raw)
+
+    def test_update_existing_orcamento_when_execucao_exists(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        mommy.make(
+            Orcamento,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            execucao__id=1,
+            vl_orcado_atualizado=100,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+        assert 1 == Execucao.objects.count()
 
         orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
 
