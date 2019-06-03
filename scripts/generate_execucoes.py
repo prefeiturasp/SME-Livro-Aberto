@@ -2,6 +2,8 @@ from budget_execution import services
 
 
 def run():
+    services.load_data_from_orcamento_raw()
+    print("Data loaded from orcamento_raw_load")
     services.import_orcamentos()
     print("Orcamento imported")
     services.import_empenhos()
