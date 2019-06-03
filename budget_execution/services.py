@@ -13,10 +13,14 @@ def load_data_from_orcamento_raw():
         orcamentos.append(
             Orcamento.objects.create_from_orcamento_raw(orc_raw))
 
+    # needed, otherwise duplicated execucoes would be created and the sum of
+    # orcado_atualizado would be greater than expected
+    Execucao.objects.erase_execucoes_without_orcamento()
     return len(orcamentos)
 
 
 def load_data_from_empenhos_raw():
+    """ Currently not being used. Wasn't working as expected. """
     empenhos_raw = EmpenhoRaw.objects.all()
 
     empenhos = []
@@ -28,8 +32,9 @@ def load_data_from_empenhos_raw():
 
 
 def import_orcamentos():
-    orcamentos = Orcamento.objects.filter(execucao__isnull=True,
-                                          cd_orgao=SME_ORGAO_ID)
+    orcamentos = Orcamento.objects.filter(
+        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+    )
 
     for orcamento in orcamentos:
         execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
@@ -41,8 +46,9 @@ def import_orcamentos():
 
 
 def import_empenhos():
-    empenhos = Empenho.objects.filter(execucao__isnull=True,
-                                      cd_orgao=SME_ORGAO_ID)
+    empenhos = Empenho.objects.filter(
+        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+    )
 
     for empenho in empenhos:
         execucao = Execucao.objects.update_by_empenho(empenho)

@@ -34,6 +34,17 @@ class TestLoadOrcamentoFromRawTable:
         orcamento = Orcamento.objects.first()
         assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
 
+    def test_should_delete_execucoes_without_orcamento(self):
+        exec1 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+        mommy.make(Orcamento, execucao=exec1)
+
+        mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+
+        services.load_data_from_orcamento_raw()
+
+        assert 1 == Execucao.objects.count()
+        assert exec1 == Execucao.objects.first()
+
 
 @pytest.mark.django_db
 class TestLoadEmpenhoFromRawTable:

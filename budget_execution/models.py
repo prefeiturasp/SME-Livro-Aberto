@@ -7,6 +7,8 @@ from django.db import models
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
 
+from budget_execution.constants import SME_ORGAO_ID
+
 
 class ExecucaoManager(models.Manager):
 
@@ -219,6 +221,17 @@ class ExecucaoManager(models.Manager):
             return last_execucao.dt_updated.strftime('%d/%m/%Y')
         else:
             return None
+
+    def erase_execucoes_without_orcamento(self):
+        """
+        This is runned at the end of services.load_data_from_orcamento_raw.
+        The execucoes without orcamento are the ones created when importing
+        empenhos. They need to be erased, otherwise duplicated execucoes would
+        be created and the total of the values would be greater than expected.
+        """
+        qs = self.get_queryset().filter(
+            orgao_id=SME_ORGAO_ID, orcamento__isnull=True)
+        return qs.delete()
 
 
 class Execucao(models.Model):
