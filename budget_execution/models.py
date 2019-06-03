@@ -586,6 +586,7 @@ class Empenho(models.Model):
     vl_pago = models.FloatField(blank=True, null=True)
     vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
+    dt_data_loaded = models.DateTimeField(auto_now_add=True, null=True)
     # instance in orcamento_raw_load table, source of the orcamento data
     empenho_raw = models.ForeignKey('EmpenhoRaw', models.SET_NULL,
                                     null=True)
