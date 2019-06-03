@@ -34,7 +34,7 @@ Para carregar os dados do Mínimo Legal de 2014 a 2017:
 $ python manage.py loaddata data/minimo_legal_2014_2017.json
 ```
 
-É necessário que as tabelas `orcamento` e `empenhos` já tenham sido populadas antes de rodar o script abaixo, que irá gerar as execuções. Os dados das duas tabelas serão importados e os De-Para aplicados:
+É necessário que as tabelas `orcamento_raw_load` e `empenhos` já tenham sido populadas antes de rodar o script abaixo. Ele primeiro irá carregar a tabela `orcamento` com os dados da `orcamento_raw_load`, depois criará as execucões importando os dados tanto da tabela `orcamento` quanto da tabela `empenhos` (que deverá ser populada pela SME) e aplicará os De-Para.
 
 ```bash
 $ python manage.py runscript generate_execucoes
