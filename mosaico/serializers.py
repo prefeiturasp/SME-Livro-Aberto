@@ -77,7 +77,7 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
         orcado = self.get_orcado_total(obj)
         empenhado = self.get_empenhado_total(obj)
 
-        if empenhado:
+        if empenhado and orcado:
             return empenhado / orcado
         else:
             return 0

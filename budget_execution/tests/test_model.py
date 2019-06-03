@@ -6,10 +6,13 @@ import pytest
 
 from model_mommy import mommy
 
+from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
     Execucao,
     Orcamento,
+    OrcamentoRaw,
     Empenho,
+    EmpenhoRaw,
     Orgao,
     ProjetoAtividade,
     Categoria,
@@ -474,7 +477,6 @@ class TestExecucaoManagerCreateByMinimoLegal:
         assert 0 == Execucao.objects.count()
 
 
-
 @pytest.mark.django_db
 class TestExecucaoModel:
 
@@ -510,6 +512,133 @@ class TestSubgrupoModel:
 
 
 @pytest.mark.django_db
+class TestOrcamentoManagerCreateFromOrcamentoRaw:
+
+    def assert_fields(self, orc, orc_raw):
+        assert orc.execucao is None
+        assert orc.orcamento_raw == orc_raw
+        assert orc.cd_key == orc_raw.cd_key
+        assert orc.dt_inicial == orc_raw.dt_inicial
+        assert orc.dt_final == orc_raw.dt_final
+        assert orc.cd_ano_execucao == orc_raw.cd_ano_execucao
+        assert orc.cd_exercicio == orc_raw.cd_exercicio
+        assert orc.nm_administracao == orc_raw.nm_administracao
+        assert orc.cd_orgao == orc_raw.cd_orgao
+        assert orc.sg_orgao == orc_raw.sg_orgao
+        assert orc.ds_orgao == orc_raw.ds_orgao
+        assert orc.cd_unidade == orc_raw.cd_unidade
+        assert orc.ds_unidade == orc_raw.ds_unidade
+        assert orc.cd_funcao == orc_raw.cd_funcao
+        assert orc.ds_funcao == orc_raw.ds_funcao
+        assert orc.cd_subfuncao == orc_raw.cd_subfuncao
+        assert orc.ds_subfuncao == orc_raw.ds_subfuncao
+        assert orc.cd_programa == orc_raw.cd_programa
+        assert orc.ds_programa == orc_raw.ds_programa
+        assert orc.tp_projeto_atividade == orc_raw.tp_projeto_atividade
+        assert orc.tp_papa == orc_raw.tp_papa
+        assert orc.cd_projeto_atividade == orc_raw.cd_projeto_atividade
+        assert orc.ds_projeto_atividade == orc_raw.ds_projeto_atividade
+        assert orc.cd_despesa == orc_raw.cd_despesa
+        assert orc.ds_despesa == orc_raw.ds_despesa
+        assert orc.ds_categoria_despesa == orc_raw.ds_categoria_despesa
+        assert orc.ds_categoria == orc_raw.ds_categoria
+        assert orc.cd_grupo_despesa == orc_raw.cd_grupo_despesa
+        assert orc.ds_grupo_despesa == orc_raw.ds_grupo_despesa
+        assert orc.cd_modalidade == orc_raw.cd_modalidade
+        assert orc.ds_modalidade == orc_raw.ds_modalidade
+        assert orc.cd_elemento == orc_raw.cd_elemento
+        assert orc.cd_fonte == orc_raw.cd_fonte
+        assert orc.ds_fonte == orc_raw.ds_fonte
+        assert orc.vl_orcado_inicial == orc_raw.vl_orcado_inicial
+        assert orc.vl_orcado_atualizado == orc_raw.vl_orcado_atualizado
+        assert orc.vl_congelado == orc_raw.vl_congelado
+        assert orc.vl_orcado_disponivel == orc_raw.vl_orcado_disponivel
+        assert orc.vl_reservado_liquido == orc_raw.vl_reservado_liquido
+        assert orc.vl_empenhado_liquido == orc_raw.vl_empenhado_liquido
+        assert orc.vl_empenhado_liquido_atual \
+            == orc_raw.vl_empenhado_liquido_atual
+        assert orc.vl_liquidado == orc_raw.vl_liquidado
+        assert orc.vl_liquidado_atual == orc_raw.vl_liquidado_atual
+        assert orc.vl_pago == orc_raw.vl_pago
+        assert orc.vl_pago_atual == orc_raw.vl_pago_atual
+        assert orc.vl_saldo_empenho == orc_raw.vl_saldo_empenho
+        assert orc.vl_saldo_reserva == orc_raw.vl_saldo_reserva
+        assert orc.vl_saldo_dotacao == orc_raw.vl_saldo_dotacao
+        assert orc.dt_extracao == orc_raw.dt_extracao
+
+    def test_create_new_orcamento(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        assert 0 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+        self.assert_fields(orc, orc_raw)
+
+    def test_update_existing_orcamento(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        mommy.make(
+            Orcamento,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            execucao=None,
+            vl_orcado_atualizado=100,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(orc, orc_raw)
+
+    def test_update_existing_orcamento_when_execucao_exists(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        mommy.make(
+            Orcamento,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            execucao__id=1,
+            vl_orcado_atualizado=100,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+        assert 1 == Execucao.objects.count()
+
+        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(orc, orc_raw)
+
+
+@pytest.mark.django_db
 class TestOrcamentoModel:
 
     def test_indexer(self):
@@ -521,6 +650,113 @@ class TestOrcamentoModel:
         )
 
         assert '2018.16.4364.3.1.90.11.0' == orcamento.indexer
+
+    def test_raw_indexer(self):
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_orgao=16,
+            cd_projeto_atividade=4364, ds_categoria_despesa=3,
+            cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
+            cd_unidade=2222, cd_subfuncao=311,
+            execucao=None, _fill_optional=True,
+        )
+
+        assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.raw_indexer
+
+
+@pytest.mark.django_db
+class TestEmpenhoManagerCreateFromEmpenhoRaw:
+
+    def assert_fields(self, emp, emp_raw):
+        assert emp.execucao is None
+        assert emp.empenho_raw == emp_raw
+        assert emp.cd_key == emp_raw.cd_key
+        assert emp.an_empenho == emp_raw.an_empenho
+        assert emp.cd_categoria == emp_raw.cd_categoria
+        assert emp.cd_elemento == emp_raw.cd_elemento
+        assert emp.cd_empenho == emp_raw.cd_empenho
+        assert emp.cd_empresa == emp_raw.cd_empresa
+        assert emp.cd_fonte_de_recurso == emp_raw.cd_fonte_de_recurso
+        assert emp.cd_funcao == emp_raw.cd_funcao
+        assert emp.cd_grupo == emp_raw.cd_grupo
+        assert emp.cd_item_despesa == emp_raw.cd_item_despesa
+        assert emp.cd_modalidade == emp_raw.cd_modalidade
+        assert emp.cd_orgao == emp_raw.cd_orgao
+        assert emp.cd_programa == emp_raw.cd_programa
+        assert emp.cd_projeto_atividade == emp_raw.cd_projeto_atividade
+        assert emp.cd_subelemento == emp_raw.cd_subelemento
+        assert emp.cd_subfuncao == emp_raw.cd_subfuncao
+        assert emp.cd_unidade == emp_raw.cd_unidade
+        assert emp.dt_empenho == emp_raw.dt_empenho
+        assert emp.mes_empenho == emp_raw.mes_empenho
+        assert emp.nm_empresa == emp_raw.nm_empresa
+        assert emp.dc_cpf_cnpj == emp_raw.dc_cpf_cnpj
+        assert emp.cd_reserva == emp_raw.cd_reserva
+        assert emp.dc_categoria_economica == emp_raw.dc_categoria_economica
+        assert emp.dc_elemento == emp_raw.dc_elemento
+        assert emp.dc_fonte_de_recurso == emp_raw.dc_fonte_de_recurso
+        assert emp.dc_funcao == emp_raw.dc_funcao
+        assert emp.dc_item_despesa == emp_raw.dc_item_despesa
+        assert emp.dc_orgao == emp_raw.dc_orgao
+        assert emp.dc_programa == emp_raw.dc_programa
+        assert emp.dc_projeto_atividade == emp_raw.dc_projeto_atividade
+        assert emp.dc_subelemento == emp_raw.dc_subelemento
+        assert emp.dc_subfuncao == emp_raw.dc_subfuncao
+        assert emp.dc_unidade == emp_raw.dc_unidade
+        assert emp.dc_grupo_despesa == emp_raw.dc_grupo_despesa
+        assert emp.dc_modalidade == emp_raw.dc_modalidade
+        assert emp.dc_razao_social == emp_raw.dc_razao_social
+        assert emp.vl_empenho_anulado == emp_raw.vl_empenho_anulado
+        assert emp.vl_empenho_liquido == emp_raw.vl_empenho_liquido
+        assert emp.vl_liquidado == emp_raw.vl_liquidado
+        assert emp.vl_pago == emp_raw.vl_pago
+        assert emp.vl_pago_restos == emp_raw.vl_pago_restos
+        assert emp.vl_empenhado == emp_raw.vl_empenhado
+
+    @pytest.fixture
+    def empenho_raw(self):
+        return mommy.make(
+            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='1',            # needed because this is a these are
+            cd_fonte_de_recurso='5',    # text fields. this modeling came from
+            cd_projeto_atividade='5',   # SME
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+    def test_create_new_empenho(self, empenho_raw):
+        assert 0 == Empenho.objects.count()
+
+        emp = Empenho.objects.create_from_empenho_raw(empenho_raw)
+
+        assert 1 == Empenho.objects.count()
+        self.assert_fields(emp, empenho_raw)
+
+    def test_update_existing_empenho(self, empenho_raw):
+        emp_raw = empenho_raw
+
+        mommy.make(
+            Empenho,
+            an_empenho=emp_raw.an_empenho,
+            cd_orgao=emp_raw.cd_orgao,
+            cd_projeto_atividade=emp_raw.cd_projeto_atividade,
+            cd_categoria=emp_raw.cd_categoria,
+            cd_grupo=emp_raw.cd_grupo,
+            cd_modalidade=emp_raw.cd_modalidade,
+            cd_elemento=emp_raw.cd_elemento,
+            cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
+            cd_unidade=emp_raw.cd_unidade,
+            cd_subfuncao=emp_raw.cd_subfuncao,
+            execucao=None,
+            vl_empenho_liquido=100,
+            _fill_optional=True)
+
+        assert 1 == Empenho.objects.count()
+
+        emp = Empenho.objects.create_from_empenho_raw(emp_raw)
+
+        assert 1 == Empenho.objects.count()
+        assert 0 == Execucao.objects.count()
+        self.assert_fields(emp, emp_raw)
 
 
 @pytest.mark.django_db

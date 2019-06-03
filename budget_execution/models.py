@@ -4,7 +4,10 @@ from datetime import date
 from decimal import Decimal
 
 from django.db import models
+from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
+
+from budget_execution.constants import SME_ORGAO_ID
 
 
 class ExecucaoManager(models.Manager):
@@ -219,6 +222,17 @@ class ExecucaoManager(models.Manager):
         else:
             return None
 
+    def erase_execucoes_without_orcamento(self):
+        """
+        This is runned at the end of services.load_data_from_orcamento_raw.
+        The execucoes without orcamento are the ones created when importing
+        empenhos. They need to be erased, otherwise duplicated execucoes would
+        be created and the total of the values would be greater than expected.
+        """
+        qs = self.get_queryset().filter(
+            orgao_id=SME_ORGAO_ID, orcamento__isnull=True)
+        return qs.delete()
+
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -386,9 +400,50 @@ class SubelementoFriendly(models.Model):
     desc = models.CharField(max_length=100)
 
 
+class OrcamentoManager(models.Manager):
+
+    def create_from_orcamento_raw(self, orcamento_raw):
+        old_orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
+        if old_orcamento:
+            if old_orcamento.execucao:
+                old_orcamento.execucao.delete()
+            old_orcamento.delete()
+
+        orc_raw_dict = model_to_dict(orcamento_raw)
+
+        orcamento = self.model()
+
+        orc_raw_dict.pop('id')
+        for field, value in orc_raw_dict.items():
+            setattr(orcamento, field, value)
+
+        orcamento.orcamento_raw = orcamento_raw
+        orcamento.save()
+        return orcamento
+
+    def get_by_raw_indexer(self, indexer):
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        try:
+            orcamento = self.get_queryset().select_related('execucao').get(
+                cd_ano_execucao=info[0],
+                cd_orgao=info[1],
+                cd_projeto_atividade=info[2],
+                ds_categoria_despesa=info[3],
+                cd_grupo_despesa=info[4],
+                cd_modalidade=info[5],
+                cd_elemento=info[6],
+                cd_fonte=info[7],
+                cd_unidade=info[8],
+                cd_subfuncao=info[9])
+        except Orcamento.DoesNotExist:
+            orcamento = None
+
+        return orcamento
+
+
 class Orcamento(models.Model):
-    """SME dw_orcamento table replica"""
-    id = models.IntegerField(primary_key=True)
     cd_key = models.TextField(blank=True, null=True)
     dt_inicial = models.DateTimeField(blank=True, null=True)
     dt_final = models.DateTimeField(blank=True, null=True)
@@ -436,11 +491,15 @@ class Orcamento(models.Model):
     vl_saldo_reserva = models.FloatField(blank=True, null=True)
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
-    dt_data_loaded = models.DateTimeField(auto_now_add=True)
+    # instance in orcamento_raw_load table, source of the orcamento data
+    orcamento_raw = models.ForeignKey('OrcamentoRaw', models.SET_NULL,
+                                      null=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+
+    objects = OrcamentoManager()
 
     class Meta:
         db_table = 'orcamento'
@@ -454,10 +513,57 @@ class Orcamento(models.Model):
             f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
             f'{s.cd_elemento}.{s.cd_fonte}')
 
+    @property
+    def raw_indexer(self):
+        s = self
+        return (
+            f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte}.{s.cd_unidade}.{s.cd_subfuncao}')
+
+
+class EmpenhoManager(models.Manager):
+
+    def create_from_empenho_raw(self, empenho_raw):
+        old_empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
+        if old_empenho:
+            old_empenho.delete()
+
+        orc_raw_dict = model_to_dict(empenho_raw)
+
+        empenho = self.model()
+
+        orc_raw_dict.pop('id')
+        for field, value in orc_raw_dict.items():
+            setattr(empenho, field, value)
+
+        empenho.empenho_raw = empenho_raw
+        empenho.save()
+        return empenho
+
+    def get_by_raw_indexer(self, indexer):
+        info = map(int, indexer.split('.'))
+        info = list(info)
+
+        try:
+            empenho = self.get_queryset().get(
+                an_empenho=info[0],
+                cd_orgao=info[1],
+                cd_projeto_atividade=info[2],
+                cd_categoria=info[3],
+                cd_grupo=info[4],
+                cd_modalidade=info[5],
+                cd_elemento=info[6],
+                cd_fonte_de_recurso=info[7],
+                cd_unidade=info[8],
+                cd_subfuncao=info[9])
+        except Empenho.DoesNotExist:
+            empenho = None
+
+        return empenho
+
 
 class Empenho(models.Model):
-    """SME dw_empenhos table replica"""
-    id = models.IntegerField(primary_key=True)
     cd_key = models.TextField(blank=True, null=True)
     an_empenho = models.BigIntegerField(blank=True, null=True)
     cd_categoria = models.BigIntegerField(blank=True, null=True)
@@ -500,11 +606,16 @@ class Empenho(models.Model):
     vl_pago = models.FloatField(blank=True, null=True)
     vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
-    dt_data_loaded = models.DateTimeField(auto_now_add=True)
+    dt_data_loaded = models.DateTimeField(auto_now_add=True, null=True)
+    # instance in orcamento_raw_load table, source of the orcamento data
+    empenho_raw = models.ForeignKey('EmpenhoRaw', models.SET_NULL,
+                                    null=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+
+    objects = EmpenhoManager()
 
     class Meta:
         db_table = 'empenhos'
@@ -516,6 +627,15 @@ class Empenho(models.Model):
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
             f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
+
+    @property
+    def raw_indexer(self):
+        s = self
+        return (
+            f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_unidade}.'
+            f'{s.cd_subfuncao}')
 
 
 class OrcamentoRaw(models.Model):
@@ -569,19 +689,18 @@ class OrcamentoRaw(models.Model):
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
-    execucao_id = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'orcamento_raw_load'
         index_together = ['cd_ano_execucao', 'cd_projeto_atividade']
 
     @property
-    def indexer(self):
+    def raw_indexer(self):
         s = self
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
-            f'{s.cd_elemento}.{s.cd_fonte}')
+            f'{s.cd_elemento}.{s.cd_fonte}.{s.cd_unidade}.{s.cd_subfuncao}')
 
 
 class EmpenhoRaw(models.Model):
@@ -630,18 +749,18 @@ class EmpenhoRaw(models.Model):
     vl_pago_restos = models.FloatField(blank=True, null=True)
     vl_empenhado = models.FloatField(blank=True, null=True)
     dt_data_loaded = models.DateTimeField(auto_now_add=True)
-    execucao_id = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'empenhos_raw_load'
 
     @property
-    def indexer(self):
+    def raw_indexer(self):
         s = self
         return (
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
             f'{s.cd_categoria}.{s.cd_grupo}.{s.cd_modalidade}.'
-            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_subelemento}')
+            f'{s.cd_elemento}.{s.cd_fonte_de_recurso}.{s.cd_unidade}.'
+            f'{s.cd_subfuncao}')
 
 
 class MinimoLegalManager(models.Manager):
