@@ -646,11 +646,21 @@ class TestOrcamentoModel:
             Orcamento, cd_ano_execucao=2018, cd_orgao=16,
             cd_projeto_atividade=4364, ds_categoria_despesa=3,
             cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
+            execucao=None, _fill_optional=True,
+        )
+
+        assert '2018.16.4364.3.1.90.11.0' == orcamento.indexer
+
+    def test_raw_indexer(self):
+        orcamento = mommy.make(
+            Orcamento, cd_ano_execucao=2018, cd_orgao=16,
+            cd_projeto_atividade=4364, ds_categoria_despesa=3,
+            cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
             cd_unidade=2222, cd_subfuncao=311,
             execucao=None, _fill_optional=True,
         )
 
-        assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.indexer
+        assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.raw_indexer
 
 
 @pytest.mark.django_db

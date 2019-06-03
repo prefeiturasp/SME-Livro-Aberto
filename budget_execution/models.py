@@ -390,7 +390,7 @@ class SubelementoFriendly(models.Model):
 class OrcamentoManager(models.Manager):
 
     def create_from_orcamento_raw(self, orcamento_raw):
-        old_orcamento = self.get_by_indexer(orcamento_raw.indexer)
+        old_orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
         if old_orcamento:
             if old_orcamento.execucao:
                 old_orcamento.execucao.delete()
@@ -408,7 +408,7 @@ class OrcamentoManager(models.Manager):
         orcamento.save()
         return orcamento
 
-    def get_by_indexer(self, indexer):
+    def get_by_raw_indexer(self, indexer):
         info = map(int, indexer.split('.'))
         info = list(info)
 
@@ -494,7 +494,14 @@ class Orcamento(models.Model):
 
     @property
     def indexer(self):
-        # TODO: rename to raw_indexer
+        s = self
+        return (
+            f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
+            f'{s.ds_categoria_despesa}.{s.cd_grupo_despesa}.{s.cd_modalidade}.'
+            f'{s.cd_elemento}.{s.cd_fonte}')
+
+    @property
+    def raw_indexer(self):
         s = self
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
@@ -505,7 +512,7 @@ class Orcamento(models.Model):
 class EmpenhoManager(models.Manager):
 
     def create_from_empenho_raw(self, empenho_raw):
-        old_empenho = self.get_by_raw_indexer(empenho_raw.indexer)
+        old_empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
         if old_empenho:
             old_empenho.delete()
 
@@ -675,7 +682,7 @@ class OrcamentoRaw(models.Model):
         index_together = ['cd_ano_execucao', 'cd_projeto_atividade']
 
     @property
-    def indexer(self):
+    def raw_indexer(self):
         s = self
         return (
             f'{s.cd_ano_execucao}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
@@ -734,7 +741,7 @@ class EmpenhoRaw(models.Model):
         db_table = 'empenhos_raw_load'
 
     @property
-    def indexer(self):
+    def raw_indexer(self):
         s = self
         return (
             f'{s.an_empenho}.{s.cd_orgao}.{s.cd_projeto_atividade}.'
