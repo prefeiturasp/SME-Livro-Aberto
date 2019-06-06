@@ -21,14 +21,20 @@ from budget_execution.models import (
 @pytest.mark.django_db
 class TestLoadOrcamentoFromRawTable:
 
-    def test_load_from_orcamento_raw(self):
+    def test_load_from_orcamento_raw_loads_only_current_year(self):
         orcamento_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2019, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+
+        # shouldn't be loaded
+        mommy.make(
             OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
             _fill_optional=True)
 
         assert 0 == Orcamento.objects.count()
 
-        services.load_data_from_orcamento_raw()
+        with freeze_time('2019-1-1'):
+            services.load_data_from_orcamento_raw()
 
         assert 1 == Orcamento.objects.count()
 

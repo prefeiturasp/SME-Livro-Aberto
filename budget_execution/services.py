@@ -1,3 +1,6 @@
+from django.db.models import Q
+from django.utils import timezone
+
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw,
                                      Empenho, EmpenhoRaw, MinimoLegal)
@@ -5,8 +8,10 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
+# TODO: make it optional to load the whole raw table
 def load_data_from_orcamento_raw():
-    orcamentos_raw = OrcamentoRaw.objects.all()
+    orcamentos_raw = OrcamentoRaw.objects.filter(
+        cd_ano_execucao=timezone.now().year)
 
     orcamentos = []
     for orc_raw in orcamentos_raw:
