@@ -1,11 +1,12 @@
 import math
 
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from django.db import models
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
 
@@ -229,8 +230,10 @@ class ExecucaoManager(models.Manager):
         empenhos. They need to be erased, otherwise duplicated execucoes would
         be created and the total of the values would be greater than expected.
         """
+        cut_date = timezone.now() - timedelta(days=93)
         qs = self.get_queryset().filter(
-            orgao_id=SME_ORGAO_ID, orcamento__isnull=True)
+            orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
+            dt_updated__gte=cut_date)
         return qs.delete()
 
 

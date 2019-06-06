@@ -3,6 +3,7 @@ import pytest
 from datetime import date
 from unittest.mock import patch
 
+from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution import services
@@ -34,16 +35,29 @@ class TestLoadOrcamentoFromRawTable:
         orcamento = Orcamento.objects.first()
         assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
 
-    def test_should_delete_execucoes_without_orcamento(self):
+    def test_should_delete_previous_months_execucoes_without_orcamento(self):
+        """ Should delete only previous 3 months """
+        # shouldn't be deleted
         exec1 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
         mommy.make(Orcamento, execucao=exec1)
 
-        mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+        # shouldn't be deleted
+        with freeze_time('2019-02-01'):
+            exec2 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
 
-        services.load_data_from_orcamento_raw()
+        # should be deleted
+        with freeze_time('2019-03-01'):
+            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+        with freeze_time('2019-04-01'):
+            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
 
-        assert 1 == Execucao.objects.count()
-        assert exec1 == Execucao.objects.first()
+        with freeze_time('2019-06-01'):
+            services.load_data_from_orcamento_raw()
+
+        execs = Execucao.objects.all()
+        assert 2 == len(execs)
+        assert exec1 in execs
+        assert exec2 in execs
 
 
 @pytest.mark.django_db
