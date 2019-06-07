@@ -223,6 +223,9 @@ class ExecucaoManager(models.Manager):
         else:
             return None
 
+    # TODO: since the data in Orcamento just have the years, we cannot get
+    # the previous 3 months. So we're updating the current year. This should
+    # be the behavior when erasing execucoes aswell.
     def erase_execucoes_without_orcamento(self):
         """
         This is runned at the end of services.load_data_from_orcamento_raw.
@@ -410,19 +413,23 @@ class OrcamentoManager(models.Manager):
         if not orcamento:
             orcamento = self.model()
 
+        # should be updated only if the values of orcado are different
+        if orcamento.vl_orcado_atualizado == orcamento_raw.vl_orcado_atualizado:
+            return orcamento
+
+        # if there's an execucao already generated for this orcamento, it needs
+        # to be deleted to be generated again
+        if orcamento.execucao:
+            orcamento.execucao.delete()
+            orcamento.execucao = None
+
         orc_raw_dict = model_to_dict(orcamento_raw)
 
         orc_raw_dict.pop('id')
         for field, value in orc_raw_dict.items():
             setattr(orcamento, field, value)
 
-        orcamento.orcamento_raw = orcamento_raw
         orcamento.save()
-
-        # if there's an execucao already generated for this orcamento, it needs
-        # to be deleted to be generated again
-        if orcamento.execucao:
-            orcamento.execucao.delete()
 
         return orcamento
 

@@ -607,7 +607,6 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
         assert orc.execucao is None
         self.assert_fields(orc, orc_raw)
 
-
     def test_update_existing_orcamento_when_execucao_exists(self):
         orc_raw = mommy.make(
             OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
@@ -636,8 +635,76 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
-        assert 1 == orc.execucao_id
+        assert orc.execucao is None
         self.assert_fields(orc, orc_raw)
+
+    def test_doesnt_update_when_orcado_is_equal(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            vl_orcado_atualizado=1000,
+            _fill_optional=True)
+
+        orc = mommy.make(
+            Orcamento,
+            id=2222,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            vl_orcado_atualizado=orc_raw.vl_orcado_atualizado,
+            execucao=None,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+
+        Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
+        orc.refresh_from_db()
+
+        assert 1 == Orcamento.objects.count()
+        assert 0 == Execucao.objects.count()
+        assert 2222 == orc.id
+        assert orc.execucao is None
+
+    def test_doesnt_update_when_orcado_is_equal_and_execucao_exists(self):
+        orc_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            vl_orcado_atualizado=1000,
+            _fill_optional=True)
+
+        orc = mommy.make(
+            Orcamento,
+            id=3333,
+            cd_ano_execucao=orc_raw.cd_ano_execucao,
+            cd_orgao=orc_raw.cd_orgao,
+            cd_projeto_atividade=orc_raw.cd_projeto_atividade,
+            ds_categoria_despesa=orc_raw.ds_categoria_despesa,
+            cd_grupo_despesa=orc_raw.cd_grupo_despesa,
+            cd_modalidade=orc_raw.cd_modalidade,
+            cd_elemento=orc_raw.cd_elemento,
+            cd_fonte=orc_raw.cd_fonte,
+            cd_unidade=orc_raw.cd_unidade,
+            cd_subfuncao=orc_raw.cd_subfuncao,
+            vl_orcado_atualizado=orc_raw.vl_orcado_atualizado,
+            execucao__id=1,
+            _fill_optional=True)
+
+        assert 1 == Orcamento.objects.count()
+        assert 1 == Execucao.objects.count()
+
+        Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
+        orc.refresh_from_db()
+
+        assert 1 == Orcamento.objects.count()
+        assert 1 == Execucao.objects.count()
+        assert 3333 == orc.id
+        assert 1 == orc.execucao_id
 
 
 @pytest.mark.django_db
