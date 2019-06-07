@@ -515,7 +515,6 @@ class TestSubgrupoModel:
 class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
     def assert_fields(self, orc, orc_raw):
-        assert orc.orcamento_raw == orc_raw
         assert orc.cd_key == orc_raw.cd_key
         assert orc.dt_inicial == orc_raw.dt_inicial
         assert orc.dt_final == orc_raw.dt_final
