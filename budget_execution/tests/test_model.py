@@ -4,6 +4,7 @@ from itertools import cycle
 
 import pytest
 
+from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution.constants import SME_ORGAO_ID
@@ -705,6 +706,34 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
         assert 1 == Execucao.objects.count()
         assert 3333 == orc.id
         assert 1 == orc.execucao_id
+
+
+@pytest.mark.django_db
+class TestOrcamentoManagerEraseExecucoesWithoutOrcamento:
+    def test_should_delete_current_year_execucoes_without_orcamento(self):
+        """ Should delete only previous 3 months """
+        # shouldn't be deleted
+        with freeze_time('2019-01-01'):
+            exec1 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+        mommy.make(Orcamento, execucao=exec1)
+
+        # shouldn't be deleted
+        with freeze_time('2018-12-31'):
+            exec2 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+
+        # should be deleted
+        with freeze_time('2019-01-01'):
+            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+        with freeze_time('2019-02-01'):
+            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
+
+        with freeze_time('2019-02-10'):
+            Execucao.objects.erase_execucoes_without_orcamento()
+
+        execs = Execucao.objects.all()
+        assert 2 == len(execs)
+        assert exec1 in execs
+        assert exec2 in execs
 
 
 @pytest.mark.django_db

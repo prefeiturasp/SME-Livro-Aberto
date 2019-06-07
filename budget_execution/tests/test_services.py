@@ -41,30 +41,6 @@ class TestLoadOrcamentoFromRawTable:
         orcamento = Orcamento.objects.first()
         assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
 
-    def test_should_delete_previous_months_execucoes_without_orcamento(self):
-        """ Should delete only previous 3 months """
-        # shouldn't be deleted
-        exec1 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-        mommy.make(Orcamento, execucao=exec1)
-
-        # shouldn't be deleted
-        with freeze_time('2019-02-01'):
-            exec2 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-
-        # should be deleted
-        with freeze_time('2019-03-01'):
-            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-        with freeze_time('2019-04-01'):
-            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-
-        with freeze_time('2019-06-01'):
-            services.load_data_from_orcamento_raw()
-
-        execs = Execucao.objects.all()
-        assert 2 == len(execs)
-        assert exec1 in execs
-        assert exec2 in execs
-
 
 @pytest.mark.django_db
 class TestLoadEmpenhoFromRawTable:

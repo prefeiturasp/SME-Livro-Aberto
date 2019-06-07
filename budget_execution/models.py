@@ -1,6 +1,6 @@
 import math
 
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
 
 from django.db import models
@@ -223,20 +223,18 @@ class ExecucaoManager(models.Manager):
         else:
             return None
 
-    # TODO: since the data in Orcamento just have the years, we cannot get
-    # the previous 3 months. So we're updating the current year. This should
-    # be the behavior when erasing execucoes aswell.
     def erase_execucoes_without_orcamento(self):
         """
         This is runned at the end of services.load_data_from_orcamento_raw.
         The execucoes without orcamento are the ones created when importing
         empenhos. They need to be erased, otherwise duplicated execucoes would
         be created and the total of the values would be greater than expected.
+        Only execucoes from current year should be deleted.
         """
-        cut_date = timezone.now() - timedelta(days=93)
+        curr_year = timezone.now().year
         qs = self.get_queryset().filter(
             orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
-            dt_updated__gte=cut_date)
+            dt_updated__year=curr_year)
         return qs.delete()
 
 
