@@ -16,7 +16,7 @@ def load_data_from_orcamento_raw():
     orcamentos = []
     for orc_raw in orcamentos_raw:
         orcamentos.append(
-            Orcamento.objects.create_from_orcamento_raw(orc_raw))
+            Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw))
 
     # needed, otherwise duplicated execucoes would be created and the sum of
     # orcado_atualizado would be greater than expected

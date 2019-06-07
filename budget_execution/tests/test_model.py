@@ -515,7 +515,6 @@ class TestSubgrupoModel:
 class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
     def assert_fields(self, orc, orc_raw):
-        assert orc.execucao is None
         assert orc.orcamento_raw == orc_raw
         assert orc.cd_key == orc_raw.cd_key
         assert orc.dt_inicial == orc_raw.dt_inicial
@@ -573,9 +572,10 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
         assert 0 == Orcamento.objects.count()
 
-        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+        orc = Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
 
         assert 1 == Orcamento.objects.count()
+        assert orc.execucao is None
         self.assert_fields(orc, orc_raw)
 
     def test_update_existing_orcamento(self):
@@ -601,11 +601,13 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
         assert 1 == Orcamento.objects.count()
 
-        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+        orc = Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
+        assert orc.execucao is None
         self.assert_fields(orc, orc_raw)
+
 
     def test_update_existing_orcamento_when_execucao_exists(self):
         orc_raw = mommy.make(
@@ -631,10 +633,11 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
         assert 1 == Orcamento.objects.count()
         assert 1 == Execucao.objects.count()
 
-        orc = Orcamento.objects.create_from_orcamento_raw(orc_raw)
+        orc = Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
+        assert 1 == orc.execucao_id
         self.assert_fields(orc, orc_raw)
 
 

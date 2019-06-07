@@ -405,16 +405,12 @@ class SubelementoFriendly(models.Model):
 
 class OrcamentoManager(models.Manager):
 
-    def create_from_orcamento_raw(self, orcamento_raw):
-        old_orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
-        if old_orcamento:
-            if old_orcamento.execucao:
-                old_orcamento.execucao.delete()
-            old_orcamento.delete()
+    def create_or_update_orcamento_from_raw(self, orcamento_raw):
+        orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
+        if not orcamento:
+            orcamento = self.model()
 
         orc_raw_dict = model_to_dict(orcamento_raw)
-
-        orcamento = self.model()
 
         orc_raw_dict.pop('id')
         for field, value in orc_raw_dict.items():
@@ -422,6 +418,12 @@ class OrcamentoManager(models.Manager):
 
         orcamento.orcamento_raw = orcamento_raw
         orcamento.save()
+
+        # if there's an execucao already generated for this orcamento, it needs
+        # to be deleted to be generated again
+        if orcamento.execucao:
+            orcamento.execucao.delete()
+
         return orcamento
 
     def get_by_raw_indexer(self, indexer):
