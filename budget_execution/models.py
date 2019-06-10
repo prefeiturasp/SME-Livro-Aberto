@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.db import models
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
 
@@ -228,9 +229,12 @@ class ExecucaoManager(models.Manager):
         The execucoes without orcamento are the ones created when importing
         empenhos. They need to be erased, otherwise duplicated execucoes would
         be created and the total of the values would be greater than expected.
+        Only execucoes from current year should be deleted.
         """
+        curr_year = timezone.now().year
         qs = self.get_queryset().filter(
-            orgao_id=SME_ORGAO_ID, orcamento__isnull=True)
+            orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
+            year__year=curr_year)
         return qs.delete()
 
 
@@ -402,23 +406,29 @@ class SubelementoFriendly(models.Model):
 
 class OrcamentoManager(models.Manager):
 
-    def create_from_orcamento_raw(self, orcamento_raw):
-        old_orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
-        if old_orcamento:
-            if old_orcamento.execucao:
-                old_orcamento.execucao.delete()
-            old_orcamento.delete()
+    def create_or_update_orcamento_from_raw(self, orcamento_raw):
+        orcamento = self.get_by_raw_indexer(orcamento_raw.raw_indexer)
+        if not orcamento:
+            orcamento = self.model()
+
+        # should be updated only if the values of orcado are different
+        if orcamento.vl_orcado_atualizado == orcamento_raw.vl_orcado_atualizado:
+            return orcamento
+
+        # if there's an execucao already generated for this orcamento, it needs
+        # to be deleted to be generated again
+        if orcamento.execucao:
+            orcamento.execucao.delete()
+            orcamento.execucao = None
 
         orc_raw_dict = model_to_dict(orcamento_raw)
-
-        orcamento = self.model()
 
         orc_raw_dict.pop('id')
         for field, value in orc_raw_dict.items():
             setattr(orcamento, field, value)
 
-        orcamento.orcamento_raw = orcamento_raw
         orcamento.save()
+
         return orcamento
 
     def get_by_raw_indexer(self, indexer):
@@ -491,9 +501,6 @@ class Orcamento(models.Model):
     vl_saldo_reserva = models.FloatField(blank=True, null=True)
     vl_saldo_dotacao = models.FloatField(blank=True, null=True)
     dt_extracao = models.DateTimeField(blank=True, null=True)
-    # instance in orcamento_raw_load table, source of the orcamento data
-    orcamento_raw = models.ForeignKey('OrcamentoRaw', models.SET_NULL,
-                                      null=True)
     # fk is filled when the routine that generates the Execucao objects
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,

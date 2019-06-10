@@ -15,27 +15,29 @@ Rode as migrações. Além de criar as tabelas da aplicação, criará também a
 $ python manage.py migrate
 ```
 
-Carregue os dados das gnds:
+É necessário que as tabelas `orcamento_raw_load` e `empenhos` já tenham sido populadas antes de rodar o script abaixo. Será feito:
 
+1) Carga do json `data/2003_2017_everything.json` que contém:
+  a) Execuções de 2003 a 2017 (SME e Mínimo Legal)
+  b) De-Para de 2010 a 2018
+  c) Dados dos gnds
+  d) Dados de Mĩnimo Legal de 2014 a 2017
+
+2) Carga da tabela `orcamento` com os dados (2018+) da `orcamento_raw_load`
+
+3) Geração das novas execuções (2018+) a partir das tabelas `orcamento` e `empenhos` (que deverá ser populada pela SME)
+
+4) Aplicação dos De-Para
 ```bash
-$ python manage.py loaddata data/gnds.json
+$ python manage.py runscript load_2003_2017_execucoes_and_generate_new_ones
 ```
 
-Carregue os dados dos De-Para:
+## Gerando novas execuções
 
-```bash
-$ python manage.py loaddata data/fromto.json
-```
-
-
-Para carregar os dados do Mínimo Legal de 2014 a 2017:
-
-```bash
-$ python manage.py loaddata data/minimo_legal_2014_2017.json
-```
-
-É necessário que as tabelas `orcamento_raw_load` e `empenhos` já tenham sido populadas antes de rodar o script abaixo. Ele primeiro irá carregar a tabela `orcamento` com os dados da `orcamento_raw_load`, depois criará as execucões importando os dados tanto da tabela `orcamento` quanto da tabela `empenhos` (que deverá ser populada pela SME) e aplicará os De-Para.
-
+Após a configuração inicial da aplicação, o script abaixo deve ser rodado regularmente para atualizar a base de dados gerando as novas execuções a partir dos novos dados que a SME carrega nas tabelas `orcamento_raw_load` e `empenos`. O que será feito:
+1) Atualização da tabela `orcamento` a partir dos dados do ano corrente da tabela `orcamento_raw_load`
+2) Considerando apenas o ano corrente, geração de novas execuções e atualização de existentes a partir dos dados das tabelas `orcamento` e `empenhos`
+3) Aplicação dos De-Para
 ```bash
 $ python manage.py runscript generate_execucoes
 ```
