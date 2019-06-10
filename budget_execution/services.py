@@ -1,17 +1,42 @@
+from django.core.management import call_command
+from django.utils import timezone
+
 from budget_execution.constants import SME_ORGAO_ID
-from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw,
-                                     Empenho, EmpenhoRaw, MinimoLegal)
+from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
+                                     Empenho, MinimoLegal, ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
-def load_data_from_orcamento_raw():
-    orcamentos_raw = OrcamentoRaw.objects.all()
+def load_2003_2017_execucoes_from_json(path="data/2003_2017_everything.json"):
+    if (Execucao.objects.count() or Orcamento.objects.count()
+            or Orgao.objects.count() or ProjetoAtividade.objects.count()):
+        raise Exception(
+            """
+            This service should be runned with an empty DB. Only the tables
+            orcamento_raw_load and empenhos can be filled. All the other ones
+            must be empty
+            """)
+    call_command('loaddata', path)
+
+
+def load_data_from_orcamento_raw(load_everything=False):
+    """
+    The load_everything arg means everything after 2017, because data until
+    2017 is loaded via json.
+    """
+    if not load_everything:
+        print("Loading current year data from orcamento_raw_load")
+        orcamentos_raw = OrcamentoRaw.objects.filter(
+            cd_ano_execucao=timezone.now().year)
+    else:
+        print("Loading everything newer than 2017 from orcamento_raw_load")
+        orcamentos_raw = OrcamentoRaw.objects.filter(cd_ano_execucao__gt=2017)
 
     orcamentos = []
     for orc_raw in orcamentos_raw:
         orcamentos.append(
-            Orcamento.objects.create_from_orcamento_raw(orc_raw))
+            Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw))
 
     # needed, otherwise duplicated execucoes would be created and the sum of
     # orcado_atualizado would be greater than expected
@@ -21,18 +46,19 @@ def load_data_from_orcamento_raw():
 
 def load_data_from_empenhos_raw():
     """ Currently not being used. Wasn't working as expected. """
-    empenhos_raw = EmpenhoRaw.objects.all()
+    # empenhos_raw = EmpenhoRaw.objects.all()
 
-    empenhos = []
-    for emp_raw in empenhos_raw:
-        empenhos.append(
-            Empenho.objects.create_from_empenho_raw(emp_raw))
+    # empenhos = []
+    # for emp_raw in empenhos_raw:
+    #     empenhos.append(
+    #         Empenho.objects.create_from_empenho_raw(emp_raw))
 
-    return len(empenhos)
+    # return len(empenhos)
 
 
 def import_orcamentos():
     orcamentos = Orcamento.objects.filter(
+        cd_ano_execucao__gt=2017,
         execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
     )
 
@@ -47,6 +73,7 @@ def import_orcamentos():
 
 def import_empenhos():
     empenhos = Empenho.objects.filter(
+        an_empenho__gt=2017,
         execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
     )
 
