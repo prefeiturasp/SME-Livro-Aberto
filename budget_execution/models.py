@@ -234,7 +234,7 @@ class ExecucaoManager(models.Manager):
         curr_year = timezone.now().year
         qs = self.get_queryset().filter(
             orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
-            dt_updated__year=curr_year)
+            year__year=curr_year)
         return qs.delete()
 
 

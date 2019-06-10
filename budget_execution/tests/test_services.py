@@ -1,6 +1,7 @@
 import pytest
 
 from datetime import date
+from itertools import cycle
 from unittest.mock import patch
 
 from freezegun import freeze_time
@@ -13,7 +14,6 @@ from budget_execution.models import (
     Orcamento,
     OrcamentoRaw,
     Empenho,
-    EmpenhoRaw,
     MinimoLegal,
 )
 
@@ -41,28 +41,51 @@ class TestLoadOrcamentoFromRawTable:
         orcamento = Orcamento.objects.first()
         assert orcamento.cd_ano_execucao == orcamento_raw.cd_ano_execucao
 
-
-@pytest.mark.django_db
-class TestLoadEmpenhoFromRawTable:
-
-    def test_load_from_empenho_raw(self):
-        empenho_raw = mommy.make(
-            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
-            cd_elemento='1',            # needed because this is a these are
-            cd_fonte_de_recurso='5',    # text fields. this modeling came from
-            cd_projeto_atividade='5',   # SME
-            cd_subfuncao='5',
-            cd_unidade='5',
+    def test_load_everything_from_orcamento_raw_loads_after_2017(self):
+        orcamento_raw = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2018, cd_orgao=SME_ORGAO_ID,
+            _fill_optional=True)
+        orcamento_raw2 = mommy.make(
+            OrcamentoRaw, cd_ano_execucao=2019, cd_orgao=SME_ORGAO_ID,
             _fill_optional=True)
 
-        assert 0 == Empenho.objects.count()
+        # shouldn't be loaded
+        mommy.make(
+            OrcamentoRaw, cd_ano_execucao=cycle([2010, 2016, 2017]),
+            cd_orgao=SME_ORGAO_ID, _fill_optional=True, _quantity=3)
 
-        services.load_data_from_empenhos_raw()
+        assert 0 == Orcamento.objects.count()
 
-        assert 1 == Empenho.objects.count()
+        services.load_data_from_orcamento_raw(load_everything=True)
 
-        empenho = Empenho.objects.first()
-        assert empenho.an_empenho == empenho_raw.an_empenho
+        orcamentos = Orcamento.objects.all().order_by('cd_ano_execucao')
+        assert 2 == len(orcamentos)
+        assert orcamentos[0].cd_ano_execucao == orcamento_raw.cd_ano_execucao
+        assert orcamentos[1].cd_ano_execucao == orcamento_raw2.cd_ano_execucao
+
+
+# #Currently not being used. Wasn't working as expected
+# @pytest.mark.django_db
+# class TestLoadEmpenhoFromRawTable:
+#
+#     def test_load_from_empenho_raw(self):
+#         empenho_raw = mommy.make(
+#             EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+#             cd_elemento='1',            # needed because this is a these are
+#             cd_fonte_de_recurso='5',    # text fields. this modeling came from
+#             cd_projeto_atividade='5',   # SME
+#             cd_subfuncao='5',
+#             cd_unidade='5',
+#             _fill_optional=True)
+#
+#         assert 0 == Empenho.objects.count()
+#
+#         services.load_data_from_empenhos_raw()
+#
+#         assert 1 == Empenho.objects.count()
+#
+#         empenho = Empenho.objects.first()
+#         assert empenho.an_empenho == empenho_raw.an_empenho
 
 
 @pytest.mark.django_db
@@ -81,9 +104,12 @@ class TestImportOrcamento:
         assert orcamento.execucao == execucao
 
     def test_import_only_orcamentos_from_orgao_sme(self):
-        orcamento1 = mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+        # not expected. should consider only after 2017
+        mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+                   cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+        orcamento1 = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
                                 cd_orgao=SME_ORGAO_ID, _fill_optional=True)
-        orcamento2 = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+        orcamento2 = mommy.make(Orcamento, cd_ano_execucao=2019, execucao=None,
                                 cd_orgao=SME_ORGAO_ID, _fill_optional=True)
         # not expected
         mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
@@ -99,7 +125,10 @@ class TestImportOrcamento:
         assert orcamento2.execucao == execucoes[1]
 
     def test_ignores_orcamento_already_with_execucao_fk(self):
-        orcamento = mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+        # not expected. should consider only after 2017
+        mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+                   cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+        orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
                                cd_orgao=SME_ORGAO_ID, _fill_optional=True)
         # not expected
         mommy.make(Orcamento, cd_ano_execucao=2018, execucao__id=1,
@@ -123,8 +152,13 @@ class TestImportEmpenho:
         mock_execucao = mommy.make(Execucao)
         mock_update.return_value = mock_execucao
 
-        empenhos = mommy.make(Empenho, execucao=None, _fill_optional=True,
-                              cd_orgao=SME_ORGAO_ID, _quantity=3)
+        # not expected. should consider only after 2017
+        mommy.make(Empenho, execucao=None, _fill_optional=True,
+                   an_empenho=2017, cd_orgao=SME_ORGAO_ID)
+
+        empenhos = mommy.make(
+            Empenho, execucao=None, _fill_optional=True, cd_orgao=SME_ORGAO_ID,
+            an_empenho=cycle([2018, 2019]), _quantity=3)
 
         not_expected = mommy.make(Empenho, execucao=None, _fill_optional=True,
                                   cd_orgao=55)
