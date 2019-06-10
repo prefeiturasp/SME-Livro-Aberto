@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.core.management import call_command
 from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
@@ -6,6 +6,18 @@ from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
                                      Empenho, MinimoLegal, ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
+
+
+def load_2003_2017_execucoes_from_json(path="data/2003_2017_everything.json"):
+    if (Execucao.objects.count() or Orcamento.objects.count()
+            or Orgao.objects.count() or ProjetoAtividade.objects.count()):
+        raise Exception(
+            """
+            This service should be runned with an empty DB. Only the tables
+            orcamento_raw_load and empenhos can be filled. All the other ones
+            must be empty
+            """)
+    call_command('loaddata', path)
 
 
 def load_data_from_orcamento_raw(load_everything=False):

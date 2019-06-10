@@ -19,6 +19,15 @@ from budget_execution.models import (
 
 
 @pytest.mark.django_db
+class TestLoad2003_2017ExecucoesFromJson:
+
+    def test_load_2017_test_data(self):
+        path = "budget_execution/tests/data/2017_test_data_everything.json"
+        services.load_2003_2017_execucoes_from_json(path)
+        assert 2 == Execucao.objects.count()
+
+
+@pytest.mark.django_db
 class TestLoadOrcamentoFromRawTable:
 
     def test_load_from_orcamento_raw_loads_only_current_year(self):
