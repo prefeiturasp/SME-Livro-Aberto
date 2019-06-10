@@ -8,10 +8,14 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
-# TODO: make it optional to load the whole raw table
-def load_data_from_orcamento_raw():
-    orcamentos_raw = OrcamentoRaw.objects.filter(
-        cd_ano_execucao=timezone.now().year)
+def load_data_from_orcamento_raw(load_everything=False):
+    if not load_everything:
+        print("Loading current year data from orcamento_raw_load")
+        orcamentos_raw = OrcamentoRaw.objects.filter(
+            cd_ano_execucao=timezone.now().year)
+    else:
+        print("Loading everything from orcamento_raw_load")
+        orcamentos_raw = OrcamentoRaw.objects.all()
 
     orcamentos = []
     for orc_raw in orcamentos_raw:
