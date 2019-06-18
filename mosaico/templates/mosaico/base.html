@@ -76,7 +76,8 @@
                   <a href="{{ execucao.url}}#mosaico">
                   <div class="value">R$ {{ execucao.orcado_total|intword }} </div>
                   <div class="name">{{ execucao.nome }}</div>
-                  <div class="execution">{% widthratio execucao.orcado_total sum_orcado_total 100 %}%</div>
+                  <div class="execution">{% widthratio execucao.orcado_total sum_orcado_total 100 %}% do todo</div>
+                  <div class="empenhado">{% widthratio execucao.percentual_empenhado 1 100 %}% empenhado</div>
                   </a>
               </li>
           {% endfor %}
