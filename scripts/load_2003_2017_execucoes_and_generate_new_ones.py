@@ -9,11 +9,14 @@ def run(*args):
     print("Loading 2018+ data from orcamento_raw_load")
     services.load_data_from_orcamento_raw(load_everything=True)
 
+    print("Loading 2018+ data from empenhos_raw_load")
+    services.load_data_from_empenhos_raw(load_everything=True)
+
     print("Generating execucoes:")
     print("Importing orcamentos")
-    services.import_orcamentos()
+    services.import_orcamentos(load_everything=True)
     print("Importing empenhos")
-    services.import_empenhos()
+    services.import_empenhos(load_everything=True)
     print("Importing Minimo Legal")
     services.import_minimo_legal()
     print("Applying From To")
