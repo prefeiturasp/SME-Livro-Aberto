@@ -144,9 +144,10 @@ class TestLoadEmpenhoFromRawTable:
 class TestImportOrcamento:
 
     def test_import_one_orcamento(self):
-        orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+        orcamento = mommy.make(Orcamento, cd_ano_execucao=2019, execucao=None,
                                cd_orgao=SME_ORGAO_ID, _fill_optional=True)
-        services.import_orcamentos()
+        with freeze_time('2019-1-1'):
+            services.import_orcamentos()
 
         execucoes = Execucao.objects.all()
         assert 1 == len(execucoes)
@@ -155,7 +156,7 @@ class TestImportOrcamento:
         orcamento.refresh_from_db()
         assert orcamento.execucao == execucao
 
-    def test_import_only_orcamentos_from_orgao_sme(self):
+    def test_load_everything_import_only_orcamentos_from_orgao_sme(self):
         # not expected. should consider only after 2017
         mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
                    cd_orgao=SME_ORGAO_ID, _fill_optional=True)
@@ -166,7 +167,8 @@ class TestImportOrcamento:
         # not expected
         mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
                    cd_orgao=66, _fill_optional=True)
-        services.import_orcamentos()
+
+        services.import_orcamentos(load_everything=True)
 
         execucoes = Execucao.objects.all().order_by('year')
         assert 2 == len(execucoes)
@@ -176,7 +178,7 @@ class TestImportOrcamento:
         orcamento2.refresh_from_db()
         assert orcamento2.execucao == execucoes[1]
 
-    def test_ignores_orcamento_already_with_execucao_fk(self):
+    def test_load_everything_ignores_orcamento_already_with_execucao_fk(self):
         # not expected. should consider only after 2017
         mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
                    cd_orgao=SME_ORGAO_ID, _fill_optional=True)
@@ -186,7 +188,7 @@ class TestImportOrcamento:
         mommy.make(Orcamento, cd_ano_execucao=2018, execucao__id=1,
                    cd_orgao=SME_ORGAO_ID, _fill_optional=True)
 
-        services.import_orcamentos()
+        services.import_orcamentos(load_everything=True)
 
         execucoes = Execucao.objects.all().order_by('year')
         assert 2 == len(execucoes)
@@ -195,12 +197,31 @@ class TestImportOrcamento:
         orcamento.refresh_from_db()
         assert orcamento.execucao == execucao
 
+    def test_import_only_current_year_orcamentos(self):
+        # not expected. should consider only current year
+        mommy.make(Orcamento, cd_ano_execucao=2017, execucao=None,
+                   cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+        mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
+                   cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+        orcamento1 = mommy.make(Orcamento, cd_ano_execucao=2019, execucao=None,
+                                cd_orgao=SME_ORGAO_ID, _fill_optional=True)
+
+        with freeze_time('2019-1-1'):
+            services.import_orcamentos()
+
+        execucoes = Execucao.objects.all().order_by('year')
+        assert 1 == len(execucoes)
+
+        orcamento1.refresh_from_db()
+        assert orcamento1.execucao == execucoes[0]
+
 
 @pytest.mark.django_db
 class TestImportEmpenho:
 
     @patch.object(Execucao.objects, 'update_by_empenho')
-    def test_import_only_empenhos_from_orgao_sme(self, mock_update):
+    def test_load_everything_import_only_empenhos_from_orgao_sme(
+            self, mock_update):
         mock_execucao = mommy.make(Execucao)
         mock_update.return_value = mock_execucao
 
@@ -215,11 +236,32 @@ class TestImportEmpenho:
         not_expected = mommy.make(Empenho, execucao=None, _fill_optional=True,
                                   cd_orgao=55)
 
-        services.import_empenhos()
+        services.import_empenhos(load_everything=True)
 
         for empenho in empenhos:
             empenho.refresh_from_db()
             assert empenho.execucao == mock_execucao
+
+        assert not_expected.execucao is None
+
+    @patch.object(Execucao.objects, 'update_by_empenho')
+    def test_load_only_current_year_empenhos(self, mock_update):
+        mock_execucao = mommy.make(Execucao)
+        mock_update.return_value = mock_execucao
+
+        # not expected. should consider only current year
+        not_expected = mommy.make(Empenho, execucao=None, _fill_optional=True,
+                                  an_empenho=2018, cd_orgao=SME_ORGAO_ID)
+
+        empenho = mommy.make(
+            Empenho, execucao=None, _fill_optional=True, cd_orgao=SME_ORGAO_ID,
+            an_empenho=2019)
+
+        with freeze_time('2019-1-1'):
+            services.import_empenhos()
+
+        empenho.refresh_from_db()
+        assert empenho.execucao == mock_execucao
 
         assert not_expected.execucao is None
 

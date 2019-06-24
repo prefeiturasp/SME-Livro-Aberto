@@ -66,11 +66,19 @@ def load_data_from_empenhos_raw(load_everything=False):
     return len(empenhos)
 
 
-def import_orcamentos():
-    orcamentos = Orcamento.objects.filter(
-        cd_ano_execucao__gt=2017,
-        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
-    )
+def import_orcamentos(load_everything=False):
+    if not load_everything:
+        print("Importing current orcamentos from current year")
+        orcamentos = Orcamento.objects.filter(
+            cd_ano_execucao=timezone.now().year,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
+    else:
+        print("Importing current orcamentos from 2018+")
+        orcamentos = Orcamento.objects.filter(
+            cd_ano_execucao__gt=2017,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
 
     for orcamento in orcamentos:
         execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
@@ -81,11 +89,19 @@ def import_orcamentos():
             print(execucao['error'])
 
 
-def import_empenhos():
-    empenhos = Empenho.objects.filter(
-        an_empenho__gt=2017,
-        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
-    )
+def import_empenhos(load_everything=False):
+    if not load_everything:
+        print("Importing current empenhos from current year")
+        empenhos = Empenho.objects.filter(
+            an_empenho=timezone.now().year,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
+    else:
+        print("Importing current empenhos from 2018+")
+        empenhos = Empenho.objects.filter(
+            an_empenho__gt=2017,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
 
     for empenho in empenhos:
         execucao = Execucao.objects.update_by_empenho(empenho)
