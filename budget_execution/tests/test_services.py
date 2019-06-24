@@ -14,6 +14,7 @@ from budget_execution.models import (
     Orcamento,
     OrcamentoRaw,
     Empenho,
+    EmpenhoRaw,
     MinimoLegal,
 )
 
@@ -73,28 +74,70 @@ class TestLoadOrcamentoFromRawTable:
         assert orcamentos[1].cd_ano_execucao == orcamento_raw2.cd_ano_execucao
 
 
-# #Currently not being used. Wasn't working as expected
-# @pytest.mark.django_db
-# class TestLoadEmpenhoFromRawTable:
-#
-#     def test_load_from_empenho_raw(self):
-#         empenho_raw = mommy.make(
-#             EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
-#             cd_elemento='1',            # needed because this is a these are
-#             cd_fonte_de_recurso='5',    # text fields. this modeling came from
-#             cd_projeto_atividade='5',   # SME
-#             cd_subfuncao='5',
-#             cd_unidade='5',
-#             _fill_optional=True)
-#
-#         assert 0 == Empenho.objects.count()
-#
-#         services.load_data_from_empenhos_raw()
-#
-#         assert 1 == Empenho.objects.count()
-#
-#         empenho = Empenho.objects.first()
-#         assert empenho.an_empenho == empenho_raw.an_empenho
+@pytest.mark.django_db
+class TestLoadEmpenhoFromRawTable:
+
+    def test_load_from_empenho_raw_load_only_current_year(self):
+        empenho_raw = mommy.make(
+            EmpenhoRaw, an_empenho=2019, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='1',            # needed because this is a these are
+            cd_fonte_de_recurso='5',    # text fields. this modeling came from
+            cd_projeto_atividade='5',   # SME
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+        # shouldn't be loaded
+        mommy.make(
+            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='2',
+            cd_fonte_de_recurso='5',
+            cd_projeto_atividade='5',
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+        assert 0 == Empenho.objects.count()
+
+        with freeze_time('2019-1-1'):
+            services.load_data_from_empenhos_raw()
+
+        assert 1 == Empenho.objects.count()
+
+        empenho = Empenho.objects.first()
+        assert empenho.an_empenho == empenho_raw.an_empenho
+
+    def test_load_everything_from_empenhos_raw_loads_after_2017(self):
+        empenho_raw = mommy.make(
+            EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='1',            # needed because this is a these are
+            cd_fonte_de_recurso='5',    # text fields. this modeling came from
+            cd_projeto_atividade='5',   # SME
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+        empenho_raw2 = mommy.make(
+            EmpenhoRaw, an_empenho=2019, cd_orgao=SME_ORGAO_ID,
+            cd_elemento='2',
+            cd_fonte_de_recurso='5',
+            cd_projeto_atividade='5',
+            cd_subfuncao='5',
+            cd_unidade='5',
+            _fill_optional=True)
+
+        # shouldn't be loaded
+        mommy.make(
+            EmpenhoRaw, an_empenho=cycle([2010, 2016, 2017]),
+            cd_orgao=SME_ORGAO_ID, _quantity=3)
+
+        assert 0 == Empenho.objects.count()
+
+        services.load_data_from_empenhos_raw(load_everything=True)
+
+        empenhos = Empenho.objects.all().order_by('an_empenho')
+        assert 2 == Empenho.objects.count()
+        assert empenhos[0].an_empenho == empenho_raw.an_empenho
+        assert empenhos[1].an_empenho == empenho_raw2.an_empenho
 
 
 @pytest.mark.django_db

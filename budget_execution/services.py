@@ -3,7 +3,8 @@ from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
-                                     Empenho, MinimoLegal, ProjetoAtividade)
+                                     Empenho, EmpenhoRaw, MinimoLegal,
+                                     ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
@@ -44,16 +45,25 @@ def load_data_from_orcamento_raw(load_everything=False):
     return len(orcamentos)
 
 
-def load_data_from_empenhos_raw():
-    """ Currently not being used. Wasn't working as expected. """
-    # empenhos_raw = EmpenhoRaw.objects.all()
+def load_data_from_empenhos_raw(load_everything=False):
+    """
+    The load_everything arg means everything after 2017, because data until
+    2017 is loaded via json.
+    """
+    if not load_everything:
+        print("Loading current year data from empenhos_raw_load")
+        empenhos_raw = EmpenhoRaw.objects.filter(
+            an_empenho=timezone.now().year)
+    else:
+        print("Loading everything newer than 2017 from empenhos_raw_load")
+        empenhos_raw = EmpenhoRaw.objects.filter(an_empenho__gt=2017)
 
-    # empenhos = []
-    # for emp_raw in empenhos_raw:
-    #     empenhos.append(
-    #         Empenho.objects.create_from_empenho_raw(emp_raw))
+    empenhos = []
+    for emp_raw in empenhos_raw:
+        empenhos.append(
+            Empenho.objects.create_from_empenho_raw(emp_raw))
 
-    # return len(empenhos)
+    return len(empenhos)
 
 
 def import_orcamentos():
