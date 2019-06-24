@@ -532,16 +532,24 @@ class Orcamento(models.Model):
 class EmpenhoManager(models.Manager):
 
     def create_from_empenho_raw(self, empenho_raw):
-        old_empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
-        if old_empenho:
-            old_empenho.delete()
+        empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
+        if not empenho:
+            empenho = self.model()
 
-        orc_raw_dict = model_to_dict(empenho_raw)
+        # should be updated only if the values of empenho are different
+        if empenho.vl_empenho_liquido == empenho_raw.vl_empenho_liquido:
+            return empenho
 
-        empenho = self.model()
+        # if there's an execucao already generated for this empenho, it needs
+        # to be deleted to be generated again
+        if empenho.execucao:
+            empenho.execucao.delete()
+            empenho.execucao = None
 
-        orc_raw_dict.pop('id')
-        for field, value in orc_raw_dict.items():
+        emp_raw_dict = model_to_dict(empenho_raw)
+
+        emp_raw_dict.pop('id')
+        for field, value in emp_raw_dict.items():
             setattr(empenho, field, value)
 
         empenho.empenho_raw = empenho_raw
