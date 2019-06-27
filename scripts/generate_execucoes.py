@@ -4,6 +4,8 @@ from budget_execution import services
 def run(*args):
     load_everything = bool("load_everything" in args)
 
+    services.erase_current_year_data()
+
     services.load_data_from_orcamento_raw(load_everything)
     print("Data loaded from orcamento_raw_load")
     services.load_data_from_empenhos_raw(load_everything)
