@@ -814,9 +814,9 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
     def empenho_raw(self):
         return mommy.make(
             EmpenhoRaw, an_empenho=2018, cd_orgao=SME_ORGAO_ID,
-            cd_elemento='1',            # needed because this is a these are
-            cd_fonte_de_recurso='5',    # text fields. this modeling came from
-            cd_projeto_atividade='5',   # SME
+            cd_elemento='1',            # had to set it manually because these
+            cd_fonte_de_recurso='5',    # are text fields. this modeling came
+            cd_projeto_atividade='5',   # from SME
             cd_subfuncao='5',
             cd_unidade='5',
             _fill_optional=True)
@@ -829,32 +829,32 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
         assert 1 == Empenho.objects.count()
         self.assert_fields(emp, empenho_raw)
 
-    def test_update_existing_empenho(self, empenho_raw):
-        emp_raw = empenho_raw
+    # def test_update_existing_empenho(self, empenho_raw):
+    #     emp_raw = empenho_raw
 
-        mommy.make(
-            Empenho,
-            an_empenho=emp_raw.an_empenho,
-            cd_orgao=emp_raw.cd_orgao,
-            cd_projeto_atividade=emp_raw.cd_projeto_atividade,
-            cd_categoria=emp_raw.cd_categoria,
-            cd_grupo=emp_raw.cd_grupo,
-            cd_modalidade=emp_raw.cd_modalidade,
-            cd_elemento=emp_raw.cd_elemento,
-            cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
-            cd_unidade=emp_raw.cd_unidade,
-            cd_subfuncao=emp_raw.cd_subfuncao,
-            execucao=None,
-            vl_empenho_liquido=100,
-            _fill_optional=True)
+    #     mommy.make(
+    #         Empenho,
+    #         an_empenho=emp_raw.an_empenho,
+    #         cd_orgao=emp_raw.cd_orgao,
+    #         cd_projeto_atividade=emp_raw.cd_projeto_atividade,
+    #         cd_categoria=emp_raw.cd_categoria,
+    #         cd_grupo=emp_raw.cd_grupo,
+    #         cd_modalidade=emp_raw.cd_modalidade,
+    #         cd_elemento=emp_raw.cd_elemento,
+    #         cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
+    #         cd_unidade=emp_raw.cd_unidade,
+    #         cd_subfuncao=emp_raw.cd_subfuncao,
+    #         execucao=None,
+    #         vl_empenho_liquido=100,
+    #         _fill_optional=True)
 
-        assert 1 == Empenho.objects.count()
+    #     assert 1 == Empenho.objects.count()
 
-        emp = Empenho.objects.create_from_empenho_raw(emp_raw)
+    #     emp = Empenho.objects.create_from_empenho_raw(emp_raw)
 
-        assert 1 == Empenho.objects.count()
-        assert 0 == Execucao.objects.count()
-        self.assert_fields(emp, emp_raw)
+    #     assert 1 == Empenho.objects.count()
+    #     assert 0 == Execucao.objects.count()
+    #     self.assert_fields(emp, emp_raw)
 
 
 @pytest.mark.django_db

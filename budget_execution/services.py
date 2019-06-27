@@ -3,9 +3,18 @@ from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
-                                     Empenho, MinimoLegal, ProjetoAtividade)
+                                     Empenho, EmpenhoRaw, MinimoLegal,
+                                     ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
+
+
+def erase_current_year_data():
+    current_year = timezone.now().year
+
+    Execucao.objects.filter(year__year=current_year).delete()
+    Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
+    Empenho.objects.filter(an_empenho=current_year).delete()
 
 
 def load_2003_2017_execucoes_from_json(path="data/2003_2017_everything.json"):
@@ -44,23 +53,40 @@ def load_data_from_orcamento_raw(load_everything=False):
     return len(orcamentos)
 
 
-def load_data_from_empenhos_raw():
-    """ Currently not being used. Wasn't working as expected. """
-    # empenhos_raw = EmpenhoRaw.objects.all()
+def load_data_from_empenhos_raw(load_everything=False):
+    """
+    The load_everything arg means everything after 2017, because data until
+    2017 is loaded via json.
+    """
+    if not load_everything:
+        print("Loading current year data from empenhos_raw_load")
+        empenhos_raw = EmpenhoRaw.objects.filter(
+            an_empenho=timezone.now().year)
+    else:
+        print("Loading everything newer than 2017 from empenhos_raw_load")
+        empenhos_raw = EmpenhoRaw.objects.filter(an_empenho__gt=2017)
 
-    # empenhos = []
-    # for emp_raw in empenhos_raw:
-    #     empenhos.append(
-    #         Empenho.objects.create_from_empenho_raw(emp_raw))
+    empenhos = []
+    for emp_raw in empenhos_raw:
+        empenhos.append(
+            Empenho.objects.create_from_empenho_raw(emp_raw))
 
-    # return len(empenhos)
+    return len(empenhos)
 
 
-def import_orcamentos():
-    orcamentos = Orcamento.objects.filter(
-        cd_ano_execucao__gt=2017,
-        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
-    )
+def import_orcamentos(load_everything=False):
+    if not load_everything:
+        print("Importing current orcamentos from current year")
+        orcamentos = Orcamento.objects.filter(
+            cd_ano_execucao=timezone.now().year,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
+    else:
+        print("Importing current orcamentos from 2018+")
+        orcamentos = Orcamento.objects.filter(
+            cd_ano_execucao__gt=2017,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
 
     for orcamento in orcamentos:
         execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
@@ -71,11 +97,19 @@ def import_orcamentos():
             print(execucao['error'])
 
 
-def import_empenhos():
-    empenhos = Empenho.objects.filter(
-        an_empenho__gt=2017,
-        execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
-    )
+def import_empenhos(load_everything=False):
+    if not load_everything:
+        print("Importing current empenhos from current year")
+        empenhos = Empenho.objects.filter(
+            an_empenho=timezone.now().year,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
+    else:
+        print("Importing current empenhos from 2018+")
+        empenhos = Empenho.objects.filter(
+            an_empenho__gt=2017,
+            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+        )
 
     for empenho in empenhos:
         execucao = Execucao.objects.update_by_empenho(empenho)
