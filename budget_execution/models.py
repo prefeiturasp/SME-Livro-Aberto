@@ -532,16 +532,26 @@ class Orcamento(models.Model):
 class EmpenhoManager(models.Manager):
 
     def create_from_empenho_raw(self, empenho_raw):
-        old_empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
-        if old_empenho:
-            old_empenho.delete()
+        # empenho = self.get_by_raw_indexer(empenho_raw.raw_indexer)
+        # if not empenho:
+        #     empenho = self.model()
 
-        orc_raw_dict = model_to_dict(empenho_raw)
+        # # should be updated only if the values of empenho are different
+        # if empenho.vl_empenho_liquido == empenho_raw.vl_empenho_liquido:
+        #     return empenho
+
+        # # if there's an execucao already generated for this empenho, it needs
+        # # to be deleted to be generated again
+        # if empenho.execucao:
+        #     empenho.execucao.delete()
+        #     empenho.execucao = None
 
         empenho = self.model()
 
-        orc_raw_dict.pop('id')
-        for field, value in orc_raw_dict.items():
+        emp_raw_dict = model_to_dict(empenho_raw)
+
+        emp_raw_dict.pop('id')
+        for field, value in emp_raw_dict.items():
             setattr(empenho, field, value)
 
         empenho.empenho_raw = empenho_raw
@@ -549,17 +559,17 @@ class EmpenhoManager(models.Manager):
         return empenho
 
     def get_by_raw_indexer(self, indexer):
-        info = map(int, indexer.split('.'))
-        info = list(info)
+        # TODO: add test for the TextField
+        info = indexer.split('.')
 
         try:
             empenho = self.get_queryset().get(
-                an_empenho=info[0],
+                an_empenho=int(info[0]),
                 cd_orgao=info[1],
                 cd_projeto_atividade=info[2],
-                cd_categoria=info[3],
-                cd_grupo=info[4],
-                cd_modalidade=info[5],
+                cd_categoria=int(info[3]),
+                cd_grupo=int(info[4]),
+                cd_modalidade=int(info[5]),
                 cd_elemento=info[6],
                 cd_fonte_de_recurso=info[7],
                 cd_unidade=info[8],
