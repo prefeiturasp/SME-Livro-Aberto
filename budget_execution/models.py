@@ -557,17 +557,17 @@ class EmpenhoManager(models.Manager):
         return empenho
 
     def get_by_raw_indexer(self, indexer):
-        info = map(int, indexer.split('.'))
-        info = list(info)
+        # TODO: add test for the TextField
+        info = indexer.split('.')
 
         try:
             empenho = self.get_queryset().get(
-                an_empenho=info[0],
+                an_empenho=int(info[0]),
                 cd_orgao=info[1],
                 cd_projeto_atividade=info[2],
-                cd_categoria=info[3],
-                cd_grupo=info[4],
-                cd_modalidade=info[5],
+                cd_categoria=int(info[3]),
+                cd_grupo=int(info[4]),
+                cd_modalidade=int(info[5]),
                 cd_elemento=info[6],
                 cd_fonte_de_recurso=info[7],
                 cd_unidade=info[8],
