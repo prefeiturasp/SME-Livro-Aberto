@@ -94,7 +94,7 @@ class ExecucaoManager(models.Manager):
             execucao.empenhado_liquido += Decimal(
                 filter_nan(empenho.vl_empenho_liquido))
             execucao.save()
-        except Execucao.DoesNotExist:
+        except self.model.DoesNotExist:
             execucao_without_subelemento = execucoes.filter(
                 subelemento__isnull=True).first()
 
@@ -485,7 +485,7 @@ class OrcamentoManager(models.Manager):
                 cd_fonte=info[7],
                 cd_unidade=info[8],
                 cd_subfuncao=info[9])
-        except Orcamento.DoesNotExist:
+        except self.model.DoesNotExist:
             orcamento = None
 
         return orcamento
@@ -614,7 +614,7 @@ class EmpenhoManager(models.Manager):
                 cd_fonte_de_recurso=info[7],
                 cd_unidade=info[8],
                 cd_subfuncao=info[9])
-        except Empenho.DoesNotExist:
+        except self.model.DoesNotExist:
             empenho = None
 
         return empenho

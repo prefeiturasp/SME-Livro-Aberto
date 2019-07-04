@@ -2,9 +2,9 @@ from django.core.management import call_command
 from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
-from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
-                                     Empenho, EmpenhoRaw, MinimoLegal,
-                                     ProjetoAtividade)
+from budget_execution.models import (
+    Execucao, ExecucaoTemp, Orcamento, OrcamentoRaw, Orgao,
+    Empenho, EmpenhoRaw, MinimoLegal, ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
@@ -12,7 +12,7 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
 def erase_current_year_data():
     current_year = timezone.now().year
 
-    Execucao.objects.filter(year__year=current_year).delete()
+    # Execucao.objects.filter(year__year=current_year).delete()
     Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
     Empenho.objects.filter(an_empenho=current_year).delete()
 
@@ -49,7 +49,8 @@ def load_data_from_orcamento_raw(load_everything=False):
 
     # needed, otherwise duplicated execucoes would be created and the sum of
     # orcado_atualizado would be greater than expected
-    Execucao.objects.erase_execucoes_without_orcamento()
+    # TODO: remove it
+    # Execucao.objects.erase_execucoes_without_orcamento()
     return len(orcamentos)
 
 
@@ -89,9 +90,9 @@ def import_orcamentos(load_everything=False):
         )
 
     for orcamento in orcamentos:
-        execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
-        if isinstance(execucao, Execucao):
-            orcamento.execucao = execucao
+        execucao = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
+        if isinstance(execucao, ExecucaoTemp):
+            orcamento.execucao_temp = execucao
             orcamento.save()
         else:
             print(execucao['error'])
@@ -112,10 +113,10 @@ def import_empenhos(load_everything=False):
         )
 
     for empenho in empenhos:
-        execucao = Execucao.objects.update_by_empenho(empenho)
+        execucao = ExecucaoTemp.objects.update_by_empenho(empenho)
 
         if execucao:
-            empenho.execucao = execucao
+            empenho.execucao_temp = execucao
             empenho.save()
 
 
