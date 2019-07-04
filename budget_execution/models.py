@@ -306,6 +306,44 @@ class Execucao(models.Model):
         return reverse_lazy(f'mosaico:{area}', args=args)
 
 
+class ExecucaoTemp(models.Model):
+    year = models.DateField()
+    orgao = models.ForeignKey('Orgao', models.PROTECT)
+    projeto = models.ForeignKey('ProjetoAtividade', models.PROTECT)
+    categoria = models.ForeignKey('Categoria', models.PROTECT)
+    gnd = models.ForeignKey('Gnd', models.PROTECT)
+    modalidade = models.ForeignKey('Modalidade', models.PROTECT)
+    elemento = models.ForeignKey('Elemento', models.PROTECT)
+    fonte = models.ForeignKey('FonteDeRecurso', models.PROTECT)
+    subelemento = models.ForeignKey('Subelemento', models.PROTECT, null=True)
+    subfuncao = models.ForeignKey('Subfuncao', models.PROTECT)
+    programa = models.ForeignKey('Programa', models.PROTECT)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
+                                            null=True)
+
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(db_index=True, auto_now=True)
+
+    objects = ExecucaoManager()
+
+    class Meta:
+        unique_together = (
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte', 'subelemento')
+        index_together = [
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte']
+
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.year.strftime("%Y")}.{s.orgao_id}.{s.projeto_id}.'
+            f'{s.categoria_id}.{s.gnd_id}.{s.modalidade_id}.{s.elemento_id}.'
+            f'{s.fonte_id}.{s.subelemento_id}')
+
+
 class Categoria(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.TextField()
@@ -505,6 +543,8 @@ class Orcamento(models.Model):
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+    execucao_temp = models.ForeignKey('ExecucaoTemp', models.SET_NULL,
+                                      blank=True, null=True)
 
     objects = OrcamentoManager()
 
@@ -631,6 +671,8 @@ class Empenho(models.Model):
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+    execucao_temp = models.ForeignKey('ExecucaoTemp', models.SET_NULL,
+                                      blank=True, null=True)
 
     objects = EmpenhoManager()
 
