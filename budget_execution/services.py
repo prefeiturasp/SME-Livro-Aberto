@@ -12,7 +12,8 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
 def erase_current_year_data():
     current_year = timezone.now().year
 
-    # Execucao.objects.filter(year__year=current_year).delete()
+    # TODO: erase Execucao only after comparing with ExecucaoTemp
+    Execucao.objects.filter(year__year=current_year).delete()
     Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
     Empenho.objects.filter(an_empenho=current_year).delete()
 
@@ -118,6 +119,22 @@ def import_empenhos(load_everything=False):
         if execucao:
             empenho.execucao_temp = execucao
             empenho.save()
+
+
+def update_execucao_table_from_execucao_temp():
+    # TODO: before updating the table, check if the difference between the
+    # Sum of Execucao and ExecucaoTemp aren't anormally big
+    execucoes_temp = ExecucaoTemp.objects.all()
+    for exec_temp in execucoes_temp:
+        execucao = Execucao()
+
+        for field in exec_temp._meta.fields:
+            if field.primary_key is True:
+                continue
+            setattr(execucao, field.name, getattr(exec_temp, field.name))
+
+        execucao.save()
+        exec_temp.delete()
 
 
 def import_minimo_legal():
