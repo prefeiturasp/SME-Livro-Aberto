@@ -165,6 +165,24 @@ class TestBaseListView(APITestCase):
         assert year == response.data['year']
         assert 2 == len(response.data['execucoes'])
 
+    def test_most_recent_year_filtered_as_default(self):
+        subgrupo_1 = make('Subgrupo', grupo=make('Grupo', id=1))
+        subgrupo_2 = make('Subgrupo', grupo=make('Grupo', id=2))
+        subgrupo_3 = make('Subgrupo', grupo=make('Grupo', id=3))
+
+        execution_1 = make('Execucao', subgrupo=subgrupo_1, year=date(1500, 1, 1),
+             orgao__id=SME_ORGAO_ID)
+        response = self.get()
+        assert execution_1.year.year == response.data['year']
+        assert 1 == len(response.data['execucoes'])
+
+        make('Execucao', subgrupo=subgrupo_1, year=date(2018, 1, 1),
+             orgao__id=SME_ORGAO_ID, is_minimo_legal=True)
+        response = self.get()
+        assert execution_1.year.year == response.data['year']
+        assert 1 == len(response.data['execucoes'])
+
+
     @patch('mosaico.views.TimeseriesSerializer')
     def test_calls_serializer_with_deflate_true(self, mock_serializer):
         make(Execucao, orgao__id=SME_ORGAO_ID, subgrupo__id=1, _quantity=2)
