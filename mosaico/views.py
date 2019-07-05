@@ -104,7 +104,7 @@ class BaseListView(generics.ListAPIView):
             self.year = int(year)
             return queryset
         else:
-            last = Execucao.objects.order_by('year').last()
+            last = queryset.order_by('year').last()
             self.year = last.year.year if last else None
             self.filters['year'] = self.year
             return queryset.filter(year__year=self.year)
