@@ -6,9 +6,6 @@ from decimal import Decimal
 from django.db import models
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
-from django.utils import timezone
-
-from budget_execution.constants import SME_ORGAO_ID
 
 
 class ExecucaoManager(models.Manager):
@@ -222,20 +219,6 @@ class ExecucaoManager(models.Manager):
             return last_execucao.dt_updated.strftime('%d/%m/%Y')
         else:
             return None
-
-    def erase_execucoes_without_orcamento(self):
-        """
-        This is runned at the end of services.load_data_from_orcamento_raw.
-        The execucoes without orcamento are the ones created when importing
-        empenhos. They need to be erased, otherwise duplicated execucoes would
-        be created and the total of the values would be greater than expected.
-        Only execucoes from current year should be deleted.
-        """
-        curr_year = timezone.now().year
-        qs = self.get_queryset().filter(
-            orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
-            year__year=curr_year)
-        return qs.delete()
 
 
 class Execucao(models.Model):
@@ -455,9 +438,9 @@ class OrcamentoManager(models.Manager):
 
         # if there's an execucao already generated for this orcamento, it needs
         # to be deleted to be generated again
-        if orcamento.execucao:
-            orcamento.execucao.delete()
-            orcamento.execucao = None
+        if orcamento.execucao_temp:
+            orcamento.execucao_temp.delete()
+            orcamento.execucao_temp = None
 
         orc_raw_dict = model_to_dict(orcamento_raw)
 
