@@ -1,12 +1,15 @@
 import pytest
 
 from datetime import date
+from decimal import Decimal
 from itertools import cycle
 from unittest.mock import patch
 
 from freezegun import freeze_time
 from model_mommy import mommy
 
+from budget_execution import constants
+from budget_execution import exceptions
 from budget_execution import services
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
@@ -301,6 +304,94 @@ class TestImportEmpenho:
 
         empenho.refresh_from_db()
         assert empenho.execucao is None
+
+
+@pytest.mark.django_db
+class TestVerifyTotalSum:
+
+    def test_passes_when_orcado_limit_is_not_exceeded(self):
+        percent_limit = Decimal(constants.ORCADO_DIFFERENCE_PERCENT_LIMIT)
+
+        orcado_sum = Decimal(100)
+        mommy.make(
+            Execucao, orgao__id=SME_ORGAO_ID, orcado_atualizado=orcado_sum / 2,
+            _quantity=2)
+        execucoes = Execucao.objects.all()
+
+        orcado_limit = (orcado_sum * percent_limit) - 1
+        mommy.make(
+            ExecucaoTemp, orgao_id=SME_ORGAO_ID,
+            orcado_atualizado=orcado_limit / 2,
+            _quantity=2)
+        execucoes_temp = ExecucaoTemp.objects.all()
+
+        services.verify_total_sum(execucoes, execucoes_temp)
+
+    def test_raise_exception_when_orcado_limit_is_exceeded(self):
+        percent_limit = Decimal(constants.ORCADO_DIFFERENCE_PERCENT_LIMIT)
+
+        orcado_sum = Decimal(100)
+        mommy.make(
+            Execucao, orgao__id=SME_ORGAO_ID, orcado_atualizado=orcado_sum / 2,
+            _quantity=2)
+        execucoes = Execucao.objects.all()
+
+        orcado_over_limit = (orcado_sum * percent_limit) + 10
+        mommy.make(
+            ExecucaoTemp, orgao_id=SME_ORGAO_ID,
+            orcado_atualizado=orcado_over_limit / 2,
+            _quantity=2)
+        execucoes_temp = ExecucaoTemp.objects.all()
+
+        with pytest.raises(exceptions.OrcadoDifferenceOverLimitException):
+            services.verify_total_sum(execucoes, execucoes_temp)
+
+    def test_passes_when_empenhado_limit_is_not_exceeded(self):
+        percent_limit = Decimal(constants.EMPENHADO_DIFFERENCE_PERCENT_LIMIT)
+
+        empenhado_sum = Decimal(100)
+        mommy.make(
+            Execucao,
+            orgao__id=SME_ORGAO_ID,
+            orcado_atualizado=10,
+            empenhado_liquido=empenhado_sum / 2,
+            _quantity=2)
+        execucoes = Execucao.objects.all()
+
+        empenhado_limit = (empenhado_sum * percent_limit) - 1
+        mommy.make(
+            ExecucaoTemp,
+            orgao_id=SME_ORGAO_ID,
+            orcado_atualizado=10,
+            empenhado_liquido=empenhado_limit / 2,
+            _quantity=2)
+        execucoes_temp = ExecucaoTemp.objects.all()
+
+        services.verify_total_sum(execucoes, execucoes_temp)
+
+    def test_raise_exception_when_empenhado_limit_is_exceeded(self):
+        percent_limit = Decimal(constants.EMPENHADO_DIFFERENCE_PERCENT_LIMIT)
+
+        empenhado_sum = Decimal(100)
+        mommy.make(
+            Execucao,
+            orgao__id=SME_ORGAO_ID,
+            orcado_atualizado=10,
+            empenhado_liquido=empenhado_sum / 2,
+            _quantity=2)
+        execucoes = Execucao.objects.all()
+
+        empenhado_over_limit = (empenhado_sum * percent_limit) + 10
+        mommy.make(
+            ExecucaoTemp,
+            orgao_id=SME_ORGAO_ID,
+            orcado_atualizado=10,
+            empenhado_liquido=empenhado_over_limit / 2,
+            _quantity=2)
+        execucoes_temp = ExecucaoTemp.objects.all()
+
+        with pytest.raises(exceptions.EmpenhadoDifferenceOverLimitException):
+            services.verify_total_sum(execucoes, execucoes_temp)
 
 
 @pytest.mark.django_db

@@ -4,6 +4,7 @@ from django.core.management import call_command
 from django.db.models import Sum
 from django.utils import timezone
 
+from budget_execution import exceptions
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
     Execucao, ExecucaoTemp, Orcamento, OrcamentoRaw, Orgao,
@@ -125,6 +126,7 @@ def import_empenhos(load_everything=False):
 
 
 def update_execucao_table_from_execucao_temp(load_everything=False):
+    # TODO: ignores minimo legal execucoes
     if not load_everything:
         execucoes = Execucao.objects.filter(
             year__year=timezone.now().year)
@@ -136,21 +138,7 @@ def update_execucao_table_from_execucao_temp(load_everything=False):
         execucoes_temp = ExecucaoTemp.objects.filter(
             year__year__gt=2017)
 
-    orcado_execs = execucoes.aggregate(total=Sum('orcado_atualizado'))["total"]
-    orcado_temp = execucoes_temp.aggregate(
-        total=Sum('orcado_atualizado'))["total"]
-
-    # TODO: add tests
-    if orcado_execs and orcado_temp > orcado_execs * Decimal(1.2):
-        raise Exception
-
-    empenhado_execs = execucoes.aggregate(
-        total=Sum('empenhado_liquido'))['total']
-    empenhado_temp = execucoes_temp.aggregate(
-        total=Sum('empenhado_liquido'))['total']
-
-    if empenhado_execs and empenhado_temp > empenhado_execs * Decimal(1.2):
-        raise Exception
+    verify_total_sum(execucoes, execucoes_temp)
 
     execucoes.delete()
 
@@ -164,6 +152,35 @@ def update_execucao_table_from_execucao_temp(load_everything=False):
 
         execucao.save()
         exec_temp.delete()
+
+
+def verify_total_sum(execucoes, execucoes_temp):
+    orcado_execs = execucoes.aggregate(total=Sum('orcado_atualizado'))["total"]
+    orcado_temp = execucoes_temp.aggregate(
+        total=Sum('orcado_atualizado'))["total"]
+
+    if orcado_execs and orcado_temp > orcado_execs * Decimal(1.2):
+        msg = (
+            'A diferença entre o novo somatório do valor orçado e o somatório '
+            'atual é maior que o limite. As execuções não serão atualizadas.\n'
+        )
+        msg += f'Orcado atual: {orcado_execs} \nNovo orcado: {orcado_temp}'
+        raise exceptions.OrcadoDifferenceOverLimitException(msg)
+
+    empenhado_execs = execucoes.aggregate(
+        total=Sum('empenhado_liquido'))['total']
+    empenhado_temp = execucoes_temp.aggregate(
+        total=Sum('empenhado_liquido'))['total']
+
+    if empenhado_execs and empenhado_temp > empenhado_execs * Decimal(1.2):
+        msg = (
+            'A diferença entre o novo somatório do valor empenhado e o '
+            'somatório atual é maior que o limite. As execuções não serão'
+            ' atualizadas.\n'
+            f'Empenhado atual: {empenhado_execs} \n'
+            f'Novo Empenhado: {empenhado_temp}'
+        )
+        raise exceptions.EmpenhadoDifferenceOverLimitException
 
 
 def import_minimo_legal():
