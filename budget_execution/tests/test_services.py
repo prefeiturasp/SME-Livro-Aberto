@@ -5,6 +5,7 @@ from decimal import Decimal
 from itertools import cycle
 from unittest.mock import patch
 
+from django.db.models import Sum
 from freezegun import freeze_time
 from model_mommy import mommy
 
@@ -304,6 +305,43 @@ class TestImportEmpenho:
 
         empenho.refresh_from_db()
         assert empenho.execucao is None
+
+
+@pytest.mark.django_db
+class TestUpdateExecucaoTableFromExecucaoTemp:
+
+    def test_copies_data_from_execucao_temp_to_execucao(self):
+        mommy.make(ExecucaoTemp, orgao__id=SME_ORGAO_ID, _quantity=2)
+        expected_orcado_total = ExecucaoTemp.objects.all().aggregate(
+            total=Sum('orcado_atualizado'))['total']
+
+        assert 2 == ExecucaoTemp.objects.count()
+        assert 0 == Execucao.objects.count()
+
+        services.update_execucao_table_from_execucao_temp()
+
+        assert 0 == ExecucaoTemp.objects.count()
+        assert 2 == Execucao.objects.count()
+        assert expected_orcado_total == Execucao.objects.all().aggregate(
+            total=Sum('orcado_atualizado'))['total']
+
+    def test_ignores_non_sme_execucoes(self):
+        mommy.make(Execucao, orgao__id=1, orcado_atualizado=1)
+
+        mommy.make(ExecucaoTemp, orgao__id=SME_ORGAO_ID, _quantity=2)
+        expected_orcado_total = ExecucaoTemp.objects.all().aggregate(
+            total=Sum('orcado_atualizado'))['total']
+
+        assert 2 == ExecucaoTemp.objects.count()
+        assert 1 == Execucao.objects.count()
+
+        services.update_execucao_table_from_execucao_temp()
+
+        assert 0 == ExecucaoTemp.objects.count()
+        assert 3 == Execucao.objects.count()
+        assert expected_orcado_total == Execucao.objects \
+            .filter(orgao_id=SME_ORGAO_ID) \
+            .aggregate(total=Sum('orcado_atualizado'))['total']
 
 
 @pytest.mark.django_db
