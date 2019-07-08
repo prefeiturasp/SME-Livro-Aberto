@@ -1,20 +1,30 @@
+from decimal import Decimal
+
 from django.core.management import call_command
+from django.db.models import Sum
 from django.utils import timezone
 
+from budget_execution import constants
+from budget_execution import exceptions
 from budget_execution.constants import SME_ORGAO_ID
-from budget_execution.models import (Execucao, Orcamento, OrcamentoRaw, Orgao,
-                                     Empenho, EmpenhoRaw, MinimoLegal,
-                                     ProjetoAtividade)
+from budget_execution.models import (
+    Execucao, ExecucaoTemp, Orcamento, OrcamentoRaw, Orgao,
+    Empenho, EmpenhoRaw, MinimoLegal, ProjetoAtividade)
 from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
-def erase_current_year_data():
-    current_year = timezone.now().year
+def erase_data_to_be_updated(load_everything=False):
+    if not load_everything:
+        current_year = timezone.now().year
+        Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
+        Empenho.objects.filter(an_empenho=current_year).delete()
+    else:
+        Orcamento.objects.filter(cd_ano_execucao__gt=2017).delete()
+        Empenho.objects.filter(an_empenho__gt=2017).delete()
 
-    Execucao.objects.filter(year__year=current_year).delete()
-    Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
-    Empenho.objects.filter(an_empenho=current_year).delete()
+    # erasing ExecucaoTemp table
+    ExecucaoTemp.objects.all().delete()
 
 
 def load_2003_2017_execucoes_from_json(path="data/2003_2017_everything.json"):
@@ -47,9 +57,6 @@ def load_data_from_orcamento_raw(load_everything=False):
         orcamentos.append(
             Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw))
 
-    # needed, otherwise duplicated execucoes would be created and the sum of
-    # orcado_atualizado would be greater than expected
-    Execucao.objects.erase_execucoes_without_orcamento()
     return len(orcamentos)
 
 
@@ -76,22 +83,22 @@ def load_data_from_empenhos_raw(load_everything=False):
 
 def import_orcamentos(load_everything=False):
     if not load_everything:
-        print("Importing current orcamentos from current year")
+        print("Importing orcamentos from current year")
         orcamentos = Orcamento.objects.filter(
             cd_ano_execucao=timezone.now().year,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
     else:
-        print("Importing current orcamentos from 2018+")
+        print("Importing orcamentos from 2018+")
         orcamentos = Orcamento.objects.filter(
             cd_ano_execucao__gt=2017,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
 
     for orcamento in orcamentos:
-        execucao = Execucao.objects.get_or_create_by_orcamento(orcamento)
-        if isinstance(execucao, Execucao):
-            orcamento.execucao = execucao
+        execucao = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
+        if isinstance(execucao, ExecucaoTemp):
+            orcamento.execucao_temp = execucao
             orcamento.save()
         else:
             print(execucao['error'])
@@ -99,24 +106,84 @@ def import_orcamentos(load_everything=False):
 
 def import_empenhos(load_everything=False):
     if not load_everything:
-        print("Importing current empenhos from current year")
+        print("Importing empenhos from current year")
         empenhos = Empenho.objects.filter(
             an_empenho=timezone.now().year,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
     else:
-        print("Importing current empenhos from 2018+")
+        print("Importing empenhos from 2018+")
         empenhos = Empenho.objects.filter(
             an_empenho__gt=2017,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
 
     for empenho in empenhos:
-        execucao = Execucao.objects.update_by_empenho(empenho)
+        execucao = ExecucaoTemp.objects.update_by_empenho(empenho)
 
         if execucao:
-            empenho.execucao = execucao
+            empenho.execucao_temp = execucao
             empenho.save()
+
+
+def update_execucao_table_from_execucao_temp(load_everything=False):
+    if not load_everything:
+        execucoes = Execucao.objects.filter(
+            year__year=timezone.now().year, orgao_id=SME_ORGAO_ID)
+        execucoes_temp = ExecucaoTemp.objects.filter(
+            year__year=timezone.now().year, orgao_id=SME_ORGAO_ID)
+    else:
+        execucoes = Execucao.objects.filter(
+            year__year__gt=2017, orgao_id=SME_ORGAO_ID)
+        execucoes_temp = ExecucaoTemp.objects.filter(
+            year__year__gt=2017, orgao_id=SME_ORGAO_ID)
+
+    verify_total_sum(execucoes, execucoes_temp)
+
+    execucoes.delete()
+
+    for exec_temp in execucoes_temp:
+        execucao = Execucao()
+
+        for field in exec_temp._meta.fields:
+            if field.primary_key is True:
+                continue
+            setattr(execucao, field.name, getattr(exec_temp, field.name))
+
+        execucao.save()
+        exec_temp.delete()
+
+
+def verify_total_sum(execucoes, execucoes_temp):
+    orc_percent_limit = Decimal(constants.ORCADO_DIFFERENCE_PERCENT_LIMIT)
+    emp_percent_limit = Decimal(constants.EMPENHADO_DIFFERENCE_PERCENT_LIMIT)
+
+    orcado_execs = execucoes.aggregate(total=Sum('orcado_atualizado'))["total"]
+    orcado_temp = execucoes_temp.aggregate(
+        total=Sum('orcado_atualizado'))["total"]
+
+    if orcado_execs and orcado_temp > orcado_execs * orc_percent_limit:
+        msg = (
+            'A diferença entre o novo somatório do valor orçado e o somatório '
+            'atual é maior que o limite. As execuções não serão atualizadas.\n'
+        )
+        msg += f'Orcado atual: {orcado_execs} \nNovo orcado: {orcado_temp}'
+        raise exceptions.OrcadoDifferenceOverLimitException(msg)
+
+    empenhado_execs = execucoes.aggregate(
+        total=Sum('empenhado_liquido'))['total']
+    empenhado_temp = execucoes_temp.aggregate(
+        total=Sum('empenhado_liquido'))['total']
+
+    if empenhado_execs and empenhado_temp > empenhado_execs * emp_percent_limit:
+        msg = (
+            'A diferença entre o novo somatório do valor empenhado e o '
+            'somatório atual é maior que o limite. As execuções não serão'
+            ' atualizadas.\n'
+            f'Empenhado atual: {empenhado_execs} \n'
+            f'Novo Empenhado: {empenhado_temp}'
+        )
+        raise exceptions.EmpenhadoDifferenceOverLimitException
 
 
 def import_minimo_legal():

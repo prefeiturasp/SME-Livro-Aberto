@@ -137,3 +137,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Project config
+ORCADO_DIFFERENCE_PERCENT_LIMIT = config('ORCADO_DIFFERENCE_PERCENT_LIMIT', 1.2)
+EMPENHADO_DIFFERENCE_PERCENT_LIMIT = config(
+    'EMPENHADO_DIFFERENCE_PERCENT_LIMIT', 1.2)

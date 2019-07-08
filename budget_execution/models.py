@@ -6,9 +6,6 @@ from decimal import Decimal
 from django.db import models
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
-from django.utils import timezone
-
-from budget_execution.constants import SME_ORGAO_ID
 
 
 class ExecucaoManager(models.Manager):
@@ -94,7 +91,7 @@ class ExecucaoManager(models.Manager):
             execucao.empenhado_liquido += Decimal(
                 filter_nan(empenho.vl_empenho_liquido))
             execucao.save()
-        except Execucao.DoesNotExist:
+        except self.model.DoesNotExist:
             execucao_without_subelemento = execucoes.filter(
                 subelemento__isnull=True).first()
 
@@ -223,20 +220,6 @@ class ExecucaoManager(models.Manager):
         else:
             return None
 
-    def erase_execucoes_without_orcamento(self):
-        """
-        This is runned at the end of services.load_data_from_orcamento_raw.
-        The execucoes without orcamento are the ones created when importing
-        empenhos. They need to be erased, otherwise duplicated execucoes would
-        be created and the total of the values would be greater than expected.
-        Only execucoes from current year should be deleted.
-        """
-        curr_year = timezone.now().year
-        qs = self.get_queryset().filter(
-            orgao_id=SME_ORGAO_ID, orcamento__isnull=True,
-            year__year=curr_year)
-        return qs.delete()
-
 
 class Execucao(models.Model):
     year = models.DateField()
@@ -304,6 +287,44 @@ class Execucao(models.Model):
             args = [self.subfuncao_id, self.programa_id]
 
         return reverse_lazy(f'mosaico:{area}', args=args)
+
+
+class ExecucaoTemp(models.Model):
+    year = models.DateField()
+    orgao = models.ForeignKey('Orgao', models.PROTECT)
+    projeto = models.ForeignKey('ProjetoAtividade', models.PROTECT)
+    categoria = models.ForeignKey('Categoria', models.PROTECT)
+    gnd = models.ForeignKey('Gnd', models.PROTECT)
+    modalidade = models.ForeignKey('Modalidade', models.PROTECT)
+    elemento = models.ForeignKey('Elemento', models.PROTECT)
+    fonte = models.ForeignKey('FonteDeRecurso', models.PROTECT)
+    subelemento = models.ForeignKey('Subelemento', models.PROTECT, null=True)
+    subfuncao = models.ForeignKey('Subfuncao', models.PROTECT)
+    programa = models.ForeignKey('Programa', models.PROTECT)
+    orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
+    empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
+                                            null=True)
+
+    dt_created = models.DateTimeField(auto_now_add=True)
+    dt_updated = models.DateTimeField(db_index=True, auto_now=True)
+
+    objects = ExecucaoManager()
+
+    class Meta:
+        unique_together = (
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte', 'subelemento')
+        index_together = [
+            'year', 'orgao', 'projeto', 'categoria', 'gnd', 'modalidade',
+            'elemento', 'fonte']
+
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.year.strftime("%Y")}.{s.orgao_id}.{s.projeto_id}.'
+            f'{s.categoria_id}.{s.gnd_id}.{s.modalidade_id}.{s.elemento_id}.'
+            f'{s.fonte_id}.{s.subelemento_id}')
 
 
 class Categoria(models.Model):
@@ -417,9 +438,9 @@ class OrcamentoManager(models.Manager):
 
         # if there's an execucao already generated for this orcamento, it needs
         # to be deleted to be generated again
-        if orcamento.execucao:
-            orcamento.execucao.delete()
-            orcamento.execucao = None
+        if orcamento.execucao_temp:
+            orcamento.execucao_temp.delete()
+            orcamento.execucao_temp = None
 
         orc_raw_dict = model_to_dict(orcamento_raw)
 
@@ -447,7 +468,7 @@ class OrcamentoManager(models.Manager):
                 cd_fonte=info[7],
                 cd_unidade=info[8],
                 cd_subfuncao=info[9])
-        except Orcamento.DoesNotExist:
+        except self.model.DoesNotExist:
             orcamento = None
 
         return orcamento
@@ -505,6 +526,8 @@ class Orcamento(models.Model):
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+    execucao_temp = models.ForeignKey('ExecucaoTemp', models.SET_NULL,
+                                      blank=True, null=True)
 
     objects = OrcamentoManager()
 
@@ -574,7 +597,7 @@ class EmpenhoManager(models.Manager):
                 cd_fonte_de_recurso=info[7],
                 cd_unidade=info[8],
                 cd_subfuncao=info[9])
-        except Empenho.DoesNotExist:
+        except self.model.DoesNotExist:
             empenho = None
 
         return empenho
@@ -631,6 +654,8 @@ class Empenho(models.Model):
     # is runned.
     execucao = models.ForeignKey('Execucao', models.SET_NULL, blank=True,
                                  null=True)
+    execucao_temp = models.ForeignKey('ExecucaoTemp', models.SET_NULL,
+                                      blank=True, null=True)
 
     objects = EmpenhoManager()
 
