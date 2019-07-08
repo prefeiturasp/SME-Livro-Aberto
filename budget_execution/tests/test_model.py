@@ -4,12 +4,12 @@ from itertools import cycle
 
 import pytest
 
-from freezegun import freeze_time
 from model_mommy import mommy
 
 from budget_execution.constants import SME_ORGAO_ID
 from budget_execution.models import (
     Execucao,
+    ExecucaoTemp,
     Orcamento,
     OrcamentoRaw,
     Empenho,
@@ -130,10 +130,10 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
 
     def test_creates_new_execucao(self):
         orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
-                               _fill_optional=True)
-        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+                               execucao_temp=None, _fill_optional=True)
+        ret = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
 
-        execucoes = Execucao.objects.all()
+        execucoes = ExecucaoTemp.objects.all()
         assert 1 == len(execucoes)
         assert 1 == Orgao.objects.count()
         assert 1 == ProjetoAtividade.objects.count()
@@ -174,16 +174,16 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
 
     def test_print_error_when_ds_projeto_atividade_is_none(self):
         orcamento = mommy.make(Orcamento, cd_ano_execucao=2018, execucao=None,
-                               ds_projeto_atividade=None,
+                               execucao_temp=None, ds_projeto_atividade=None,
                                _fill_optional=True)
-        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+        ret = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
         assert (f"orcamento id {orcamento.id}: column "
                 "ds_projeto_atividade can't be null") == ret['error']
 
     def test_updates_existing_execucao(self):
         previous_orcado = 100
         mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado)
 
@@ -191,12 +191,12 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
             Orcamento, cd_ano_execucao=2018, cd_orgao=1,
             cd_projeto_atividade=1, ds_categoria_despesa=1, cd_grupo_despesa=1,
             cd_modalidade=1, cd_elemento=1, cd_fonte=1, execucao=None,
-            _fill_optional=True,
+            execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+        ret = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
 
-        execucoes = Execucao.objects.all()
+        execucoes = ExecucaoTemp.objects.all()
         assert 1 == len(execucoes)
         assert 1 == Orgao.objects.count()
         assert 1 == ProjetoAtividade.objects.count()
@@ -228,7 +228,7 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
         """
         previous_orcado = 100
         mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, subelemento__id=cycle([1, 2]),
             orcado_atualizado=previous_orcado, _quantity=2)
@@ -237,12 +237,12 @@ class TestExecucaoManagerGetOrCreateByOrcamento:
             Orcamento, cd_ano_execucao=2018, cd_orgao=1,
             cd_projeto_atividade=1, ds_categoria_despesa=1, cd_grupo_despesa=1,
             cd_modalidade=1, cd_elemento=1, cd_fonte=1, execucao=None,
-            _fill_optional=True,
+            execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.get_or_create_by_orcamento(orcamento)
+        ret = ExecucaoTemp.objects.get_or_create_by_orcamento(orcamento)
 
-        execucoes = Execucao.objects.all()
+        execucoes = ExecucaoTemp.objects.all()
         assert 2 == len(execucoes)
         assert 1 == Orgao.objects.count()
         assert 1 == ProjetoAtividade.objects.count()
@@ -265,7 +265,7 @@ class TestExecucaoManagerUpdateByEmpenho:
     def test_updates_execucao_without_subelemento(self):
         previous_orcado = 100
         execucao = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento_id=None,
             empenhado_liquido=None)
@@ -276,12 +276,13 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=222,
-            execucao=None, dc_elemento="elemento_desc", _fill_optional=True,
+            execucao=None, dc_elemento="elemento_desc",
+            execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.update_by_empenho(empenho)
+        ret = ExecucaoTemp.objects.update_by_empenho(empenho)
 
-        assert 1 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
         assert 1 == Subelemento.objects.count()
 
         execucao.refresh_from_db()
@@ -301,13 +302,13 @@ class TestExecucaoManagerUpdateByEmpenho:
         previous_orcado = 100
         previous_empenhado = 200
         execucao_with_empenho = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
             empenhado_liquido=previous_empenhado)
 
         execucao = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento=None,
             empenhado_liquido=None)
@@ -318,12 +319,12 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.update_by_empenho(empenho)
+        ret = ExecucaoTemp.objects.update_by_empenho(empenho)
 
-        assert 2 == Execucao.objects.count()
+        assert 2 == ExecucaoTemp.objects.count()
         assert 2 == Subelemento.objects.count()
 
         execucao.refresh_from_db()
@@ -351,24 +352,24 @@ class TestExecucaoManagerUpdateByEmpenho:
         previous_orcado = 100
         previous_empenhado = 200
         execucao_with_empenho = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
             empenhado_liquido=previous_empenhado)
 
-        assert 1 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
         assert 1 == Subelemento.objects.count()
 
         empenho = mommy.make(
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.update_by_empenho(empenho)
+        ret = ExecucaoTemp.objects.update_by_empenho(empenho)
 
-        assert 2 == Execucao.objects.count()
+        assert 2 == ExecucaoTemp.objects.count()
         assert 2 == Subelemento.objects.count()
 
         assert ret.subelemento_id == empenho.cd_subelemento
@@ -384,7 +385,7 @@ class TestExecucaoManagerUpdateByEmpenho:
         previous_orcado = 100
         previous_empenhado = 222
         execucao = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
             empenhado_liquido=previous_empenhado)
@@ -395,12 +396,12 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333.33,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.update_by_empenho(empenho)
+        ret = ExecucaoTemp.objects.update_by_empenho(empenho)
 
-        assert 1 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
         assert 1 == Subelemento.objects.count()
 
         execucao.refresh_from_db()
@@ -412,7 +413,7 @@ class TestExecucaoManagerUpdateByEmpenho:
     def test_execucao_not_found_for_empenho_indexer(self):
         previous_orcado = 100
         execucao = mommy.make(
-            Execucao, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
+            ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento=None,
             empenhado_liquido=None)
@@ -423,13 +424,13 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=2, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
-        ret = Execucao.objects.update_by_empenho(empenho)
+        ret = ExecucaoTemp.objects.update_by_empenho(empenho)
         assert ret is None
 
-        assert 1 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
         assert 0 == Subelemento.objects.count()
 
         execucao.refresh_from_db()
@@ -444,7 +445,7 @@ class TestExecucaoManagerCreateByMinimoLegal:
     def test_updates_execucao(self):
         orcamento = mommy.make(
             Orcamento, cd_ano_execucao=2018, cd_projeto_atividade=1111,
-            execucao=None, _fill_optional=True)
+            execucao=None, execucao_temp=None, _fill_optional=True)
 
         ml = mommy.make(MinimoLegal, year=date(2018, 1, 1), projeto_id=1111,
                         projeto_desc="projeto desc", orcado_atualizado=55,
@@ -576,6 +577,7 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
         assert 1 == Orcamento.objects.count()
         assert orc.execucao is None
+        assert orc.execucao_temp is None
         self.assert_fields(orc, orc_raw)
 
     def test_update_existing_orcamento(self):
@@ -596,6 +598,7 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
             cd_unidade=orc_raw.cd_unidade,
             cd_subfuncao=orc_raw.cd_subfuncao,
             execucao=None,
+            execucao_temp=None,
             vl_orcado_atualizado=100,
             _fill_optional=True)
 
@@ -605,7 +608,9 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
+        assert 0 == ExecucaoTemp.objects.count()
         assert orc.execucao is None
+        assert orc.execucao_temp is None
         self.assert_fields(orc, orc_raw)
 
     def test_update_existing_orcamento_when_execucao_exists(self):
@@ -625,18 +630,20 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
             cd_fonte=orc_raw.cd_fonte,
             cd_unidade=orc_raw.cd_unidade,
             cd_subfuncao=orc_raw.cd_subfuncao,
-            execucao__id=1,
+            execucao=None,
+            execucao_temp__id=1,
             vl_orcado_atualizado=100,
             _fill_optional=True)
 
         assert 1 == Orcamento.objects.count()
-        assert 1 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
 
         orc = Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
 
         assert 1 == Orcamento.objects.count()
-        assert 0 == Execucao.objects.count()
+        assert 0 == ExecucaoTemp.objects.count()
         assert orc.execucao is None
+        assert orc.execucao_temp is None
         self.assert_fields(orc, orc_raw)
 
     def test_doesnt_update_when_orcado_is_equal(self):
@@ -660,18 +667,22 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
             cd_subfuncao=orc_raw.cd_subfuncao,
             vl_orcado_atualizado=orc_raw.vl_orcado_atualizado,
             execucao=None,
+            execucao_temp=None,
             _fill_optional=True)
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
+        assert 0 == ExecucaoTemp.objects.count()
 
         Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
         orc.refresh_from_db()
 
         assert 1 == Orcamento.objects.count()
         assert 0 == Execucao.objects.count()
+        assert 0 == ExecucaoTemp.objects.count()
         assert 2222 == orc.id
         assert orc.execucao is None
+        assert orc.execucao_temp is None
 
     def test_doesnt_update_when_orcado_is_equal_and_execucao_exists(self):
         orc_raw = mommy.make(
@@ -693,47 +704,23 @@ class TestOrcamentoManagerCreateFromOrcamentoRaw:
             cd_unidade=orc_raw.cd_unidade,
             cd_subfuncao=orc_raw.cd_subfuncao,
             vl_orcado_atualizado=orc_raw.vl_orcado_atualizado,
-            execucao__id=1,
+            execucao=None,
+            execucao_temp__id=1,
             _fill_optional=True)
 
         assert 1 == Orcamento.objects.count()
-        assert 1 == Execucao.objects.count()
+        assert 0 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
 
         Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw)
         orc.refresh_from_db()
 
         assert 1 == Orcamento.objects.count()
-        assert 1 == Execucao.objects.count()
+        assert 0 == Execucao.objects.count()
+        assert 1 == ExecucaoTemp.objects.count()
         assert 3333 == orc.id
-        assert 1 == orc.execucao_id
-
-
-@pytest.mark.django_db
-class TestOrcamentoManagerEraseExecucoesWithoutOrcamento:
-    def test_should_delete_current_year_execucoes_without_orcamento(self):
-        """ Should delete only previous 3 months """
-        # shouldn't be deleted
-        with freeze_time('2019-01-01'):
-            exec1 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-        mommy.make(Orcamento, execucao=exec1)
-
-        # shouldn't be deleted
-        with freeze_time('2018-12-31'):
-            exec2 = mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-
-        # should be deleted
-        with freeze_time('2019-01-01'):
-            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-        with freeze_time('2019-02-01'):
-            mommy.make(Execucao, orgao__id=SME_ORGAO_ID)
-
-        with freeze_time('2019-02-10'):
-            Execucao.objects.erase_execucoes_without_orcamento()
-
-        execs = Execucao.objects.all()
-        assert 2 == len(execs)
-        assert exec1 in execs
-        assert exec2 in execs
+        assert orc.execucao_id is None
+        assert 1 == orc.execucao_temp_id
 
 
 @pytest.mark.django_db
@@ -744,7 +731,7 @@ class TestOrcamentoModel:
             Orcamento, cd_ano_execucao=2018, cd_orgao=16,
             cd_projeto_atividade=4364, ds_categoria_despesa=3,
             cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
         assert '2018.16.4364.3.1.90.11.0' == orcamento.indexer
@@ -755,7 +742,7 @@ class TestOrcamentoModel:
             cd_projeto_atividade=4364, ds_categoria_despesa=3,
             cd_grupo_despesa=1, cd_modalidade=90, cd_elemento=11, cd_fonte=0,
             cd_unidade=2222, cd_subfuncao=311,
-            execucao=None, _fill_optional=True,
+            execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
         assert '2018.16.4364.3.1.90.11.0.2222.311' == orcamento.raw_indexer
@@ -766,6 +753,7 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
 
     def assert_fields(self, emp, emp_raw):
         assert emp.execucao is None
+        assert emp.execucao_temp is None
         assert emp.empenho_raw == emp_raw
         assert emp.cd_key == emp_raw.cd_key
         assert emp.an_empenho == emp_raw.an_empenho
@@ -829,33 +817,6 @@ class TestEmpenhoManagerCreateFromEmpenhoRaw:
         assert 1 == Empenho.objects.count()
         self.assert_fields(emp, empenho_raw)
 
-    # def test_update_existing_empenho(self, empenho_raw):
-    #     emp_raw = empenho_raw
-
-    #     mommy.make(
-    #         Empenho,
-    #         an_empenho=emp_raw.an_empenho,
-    #         cd_orgao=emp_raw.cd_orgao,
-    #         cd_projeto_atividade=emp_raw.cd_projeto_atividade,
-    #         cd_categoria=emp_raw.cd_categoria,
-    #         cd_grupo=emp_raw.cd_grupo,
-    #         cd_modalidade=emp_raw.cd_modalidade,
-    #         cd_elemento=emp_raw.cd_elemento,
-    #         cd_fonte_de_recurso=emp_raw.cd_fonte_de_recurso,
-    #         cd_unidade=emp_raw.cd_unidade,
-    #         cd_subfuncao=emp_raw.cd_subfuncao,
-    #         execucao=None,
-    #         vl_empenho_liquido=100,
-    #         _fill_optional=True)
-
-    #     assert 1 == Empenho.objects.count()
-
-    #     emp = Empenho.objects.create_from_empenho_raw(emp_raw)
-
-    #     assert 1 == Empenho.objects.count()
-    #     assert 0 == Execucao.objects.count()
-    #     self.assert_fields(emp, emp_raw)
-
 
 @pytest.mark.django_db
 class TestEmpenhoModel:
@@ -865,7 +826,7 @@ class TestEmpenhoModel:
             Empenho, an_empenho=2018, cd_orgao=16, cd_projeto_atividade=4364,
             cd_categoria=3, cd_grupo=1, cd_modalidade=90, cd_elemento=11,
             cd_fonte_de_recurso=0, cd_subelemento=1, execucao=None,
-            _fill_optional=True,
+            execucao_temp=None, _fill_optional=True,
         )
 
         assert '2018.16.4364.3.1.90.11.0.1' == empenho.indexer
