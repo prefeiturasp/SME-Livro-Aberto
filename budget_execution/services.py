@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.core.management import call_command
+from django.db.models import Sum
 from django.utils import timezone
 
 from budget_execution.constants import SME_ORGAO_ID
@@ -10,10 +13,11 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
 
 
 def erase_current_year_data():
+    # TODO: add load_everything arg
     current_year = timezone.now().year
 
     # TODO: erase Execucao only after comparing with ExecucaoTemp
-    Execucao.objects.filter(year__year=current_year).delete()
+    # Execucao.objects.filter(year__year=current_year).delete()
     Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
     Empenho.objects.filter(an_empenho=current_year).delete()
 
@@ -48,10 +52,6 @@ def load_data_from_orcamento_raw(load_everything=False):
         orcamentos.append(
             Orcamento.objects.create_or_update_orcamento_from_raw(orc_raw))
 
-    # needed, otherwise duplicated execucoes would be created and the sum of
-    # orcado_atualizado would be greater than expected
-    # TODO: remove it
-    # Execucao.objects.erase_execucoes_without_orcamento()
     return len(orcamentos)
 
 
@@ -81,13 +81,13 @@ def import_orcamentos(load_everything=False):
         print("Importing current orcamentos from current year")
         orcamentos = Orcamento.objects.filter(
             cd_ano_execucao=timezone.now().year,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
     else:
         print("Importing current orcamentos from 2018+")
         orcamentos = Orcamento.objects.filter(
             cd_ano_execucao__gt=2017,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
 
     for orcamento in orcamentos:
@@ -104,13 +104,13 @@ def import_empenhos(load_everything=False):
         print("Importing current empenhos from current year")
         empenhos = Empenho.objects.filter(
             an_empenho=timezone.now().year,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
     else:
         print("Importing current empenhos from 2018+")
         empenhos = Empenho.objects.filter(
             an_empenho__gt=2017,
-            execucao__isnull=True, cd_orgao=SME_ORGAO_ID,
+            execucao_temp__isnull=True, cd_orgao=SME_ORGAO_ID,
         )
 
     for empenho in empenhos:
