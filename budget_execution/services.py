@@ -12,14 +12,17 @@ from from_to_handler.models import (DotacaoFromTo, FonteDeRecursoFromTo,
                                     SubelementoFromTo, GNDFromTo)
 
 
-def erase_current_year_data():
-    # TODO: add load_everything arg
-    current_year = timezone.now().year
+def erase_data_to_be_updated(load_everything=False):
+    if not load_everything:
+        current_year = timezone.now().year
+        Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
+        Empenho.objects.filter(an_empenho=current_year).delete()
+    else:
+        Orcamento.objects.filter(cd_ano_execucao__gt=2017).delete()
+        Empenho.objects.filter(an_empenho__gt=2017).delete()
 
-    # TODO: erase Execucao only after comparing with ExecucaoTemp
-    # Execucao.objects.filter(year__year=current_year).delete()
-    Orcamento.objects.filter(cd_ano_execucao=current_year).delete()
-    Empenho.objects.filter(an_empenho=current_year).delete()
+    # erasing ExecucaoTemp table
+    ExecucaoTemp.objects.all().delete()
 
 
 def load_2003_2017_execucoes_from_json(path="data/2003_2017_everything.json"):
