@@ -59,6 +59,7 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
     orcado_total = serializers.SerializerMethodField()
     empenhado_total = serializers.SerializerMethodField()
     percentual_empenhado = serializers.SerializerMethodField()
+    pago_total = serializers.SerializerMethodField()
     percentual_pago = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
 
