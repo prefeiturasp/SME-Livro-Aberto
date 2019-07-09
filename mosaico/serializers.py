@@ -77,10 +77,6 @@ class BaseExecucaoSerializer(serializers.ModelSerializer):
     @lru_cache(maxsize=10)
     def get_pago_total(self, obj):
         execs = self._execucoes(obj)
-        #import ipdb; ipdb.set_trace()
-        ret = obj.orcamento_set.aggregate(total=Sum('vl_pago'))
-        return ret['total']
-        return obj.orcamento_set.first().vl_pago
         ret = execs.aggregate(total=Sum('vl_pago'))
         return ret['total']
 
@@ -125,7 +121,8 @@ class GrupoSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('grupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado','percentual_pago', 'url')
+                  'empenhado_total', 'percentual_empenhado',
+                  'pago_total', 'percentual_pago', 'url')
         next_level = 'subgrupos'
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'subgrupo__grupo'
@@ -144,7 +141,8 @@ class SubgrupoSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('subgrupo_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago', 'url')
+                  'empenhado_total', 'percentual_empenhado',
+                  'pago_total', 'percentual_pago', 'url')
         next_level = 'elementos'
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'subgrupo'
@@ -163,7 +161,8 @@ class ElementoSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('elemento_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago', 'url')
+                  'empenhado_total', 'percentual_empenhado', 'pago_total',
+                  'percentual_pago', 'url')
         next_level = 'subelementos'
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'elemento'
@@ -184,7 +183,8 @@ class SubelementoSerializer(ElementoSerializer):
     class Meta:
         model = Execucao
         fields = ('subelemento_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago')
+                  'empenhado_total', 'percentual_empenhado', 'pago_total',
+                  'percentual_pago')
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'subelemento'
 
@@ -198,7 +198,8 @@ class SubfuncaoSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('subfuncao_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago', 'url')
+                  'empenhado_total', 'percentual_empenhado', 'pago_total',
+                  'percentual_pago', 'url')
         next_level = 'programas'
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'subfuncao'
@@ -216,7 +217,8 @@ class ProgramaSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('programa_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago', 'url')
+                  'empenhado_total', 'percentual_empenhado', 'pago_total',
+                  'percentual_pago', 'url')
         next_level = 'projetos'
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'programa'
@@ -236,7 +238,8 @@ class ProjetoAtividadeSerializer(BaseExecucaoSerializer):
     class Meta:
         model = Execucao
         fields = ('projeto_id', 'nome', 'orcado_total',
-                  'empenhado_total', 'percentual_empenhado', 'percentual_pago')
+                  'empenhado_total', 'percentual_empenhado', 'pago_total',
+                  'percentual_pago')
         list_serializer_class = ExecucaoListSerializer
         distinct_field = 'projeto'
 
