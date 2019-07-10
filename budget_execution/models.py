@@ -90,6 +90,7 @@ class ExecucaoManager(models.Manager):
             execucao = execucoes.get(subelemento_id=empenho.cd_subelemento)
             execucao.empenhado_liquido += Decimal(
                 filter_nan(empenho.vl_empenho_liquido))
+            execucao.vl_pago += Decimal(filter_nan(empenho.vl_pago))
             execucao.save()
         except self.model.DoesNotExist:
             execucao_without_subelemento = execucoes.filter(
@@ -114,6 +115,7 @@ class ExecucaoManager(models.Manager):
         )[0]
         execucao.empenhado_liquido = filter_nan(
             empenho.vl_empenho_liquido)
+        execucao.vl_pago = filter_nan(empenho.vl_pago)
         execucao.save()
 
         execucao.elemento.desc = empenho.dc_elemento
@@ -133,6 +135,7 @@ class ExecucaoManager(models.Manager):
         )[0]
         execucao.empenhado_liquido = filter_nan(
             empenho.vl_empenho_liquido)
+        execucao.vl_pago = filter_nan(empenho.vl_pago)
         execucao.save()
 
         return execucao
@@ -236,6 +239,7 @@ class Execucao(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+    vl_pago = models.DecimalField(max_digits=17, decimal_places=2, null=True)
     # used to differ execucoes from SME and execucoes from Minimo Legal
     is_minimo_legal = models.BooleanField(default=False)
 
@@ -304,6 +308,7 @@ class ExecucaoTemp(models.Model):
     orcado_atualizado = models.DecimalField(max_digits=17, decimal_places=2)
     empenhado_liquido = models.DecimalField(max_digits=17, decimal_places=2,
                                             null=True)
+    vl_pago = models.DecimalField(max_digits=17, decimal_places=2, null=True)
 
     dt_created = models.DateTimeField(auto_now_add=True)
     dt_updated = models.DateTimeField(db_index=True, auto_now=True)

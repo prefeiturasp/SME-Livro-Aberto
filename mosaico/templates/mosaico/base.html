@@ -154,6 +154,7 @@
                   <th>Orçamento</th>
                   <th>Empenhado</th>
                   <th>% Empenho</th>
+                  <th>% Execução</th>
               </tr>
           </thead>
           <tbody>
@@ -163,6 +164,7 @@
                   <td>{% if execucao.orcado_total %}R$ {{ execucao.orcado_total|intcomma }}{% else %}-{% endif %}</td>
                   <td>{% if execucao.empenhado_total %}R$ {{ execucao.empenhado_total|intcomma}}{% else %}-{% endif %}</td>
                   <td>{% widthratio execucao.percentual_empenhado 1 100 %}%</td>
+                  <td>{% widthratio execucao.percentual_pago 1 100 %}%</td>
               </tr>
           {% endfor %}
           </tbody>

@@ -129,14 +129,20 @@ def import_empenhos(load_everything=False):
 def update_execucao_table_from_execucao_temp(load_everything=False):
     if not load_everything:
         execucoes = Execucao.objects.filter(
-            year__year=timezone.now().year, orgao_id=SME_ORGAO_ID)
+            year__year=timezone.now().year,
+            is_minimo_legal=False,
+            orgao_id=SME_ORGAO_ID)
         execucoes_temp = ExecucaoTemp.objects.filter(
-            year__year=timezone.now().year, orgao_id=SME_ORGAO_ID)
+            year__year=timezone.now().year,
+            orgao_id=SME_ORGAO_ID)
     else:
         execucoes = Execucao.objects.filter(
-            year__year__gt=2017, orgao_id=SME_ORGAO_ID)
+            year__year__gt=2017,
+            is_minimo_legal=False,
+            orgao_id=SME_ORGAO_ID)
         execucoes_temp = ExecucaoTemp.objects.filter(
-            year__year__gt=2017, orgao_id=SME_ORGAO_ID)
+            year__year__gt=2017,
+            orgao_id=SME_ORGAO_ID)
 
     verify_total_sum(execucoes, execucoes_temp)
 
