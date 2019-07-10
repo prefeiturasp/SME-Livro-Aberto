@@ -17,7 +17,7 @@ def run(*args):
 
     print("Importing orcamentos to ExecucaoTemp")
     services.import_orcamentos(load_everything)
-    print("Moving execucoes from ExecucaoTemp to Execucao")
+    print("Importing empenhos to ExecucaoTemp")
     services.import_empenhos(load_everything)
     print("Moving execucoes from ExecucaoTemp to Execucao")
     services.update_execucao_table_from_execucao_temp(load_everything)
