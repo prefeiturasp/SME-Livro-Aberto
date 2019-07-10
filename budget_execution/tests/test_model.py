@@ -276,7 +276,7 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=222,
-            execucao=None, dc_elemento="elemento_desc",
+            vl_pago=333, execucao=None, dc_elemento="elemento_desc",
             execucao_temp=None, _fill_optional=True,
         )
 
@@ -289,6 +289,7 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao == ret
         assert execucao.subelemento_id == empenho.cd_subelemento
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
+        assert execucao.vl_pago == empenho.vl_pago
         assert execucao.orcado_atualizado == previous_orcado
 
         assert execucao.subelemento.desc == empenho.dc_subelemento
@@ -301,11 +302,12 @@ class TestExecucaoManagerUpdateByEmpenho:
         """
         previous_orcado = 100
         previous_empenhado = 200
+        previous_pago = 300
         execucao_with_empenho = mommy.make(
             ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
-            empenhado_liquido=previous_empenhado)
+            empenhado_liquido=previous_empenhado, vl_pago=previous_pago)
 
         execucao = mommy.make(
             ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
@@ -319,7 +321,7 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
-            execucao=None, execucao_temp=None, _fill_optional=True,
+            vl_pago=333, execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
         ret = ExecucaoTemp.objects.update_by_empenho(empenho)
@@ -331,11 +333,13 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao == ret
         assert execucao.subelemento_id == empenho.cd_subelemento
         assert execucao.empenhado_liquido == empenho.vl_empenho_liquido
+        assert execucao.vl_pago == empenho.vl_pago
         assert execucao.orcado_atualizado == previous_orcado
 
         execucao_with_empenho.refresh_from_db()
         assert execucao_with_empenho.subelemento_id == 1
         assert execucao_with_empenho.empenhado_liquido == previous_empenhado
+        assert execucao_with_empenho.vl_pago == previous_pago
         assert execucao_with_empenho.orcado_atualizado == previous_orcado
 
     def test_creates_new_execucao_when_theres_no_one_without_subelemento(self):
@@ -351,11 +355,12 @@ class TestExecucaoManagerUpdateByEmpenho:
         """
         previous_orcado = 100
         previous_empenhado = 200
+        previous_pago = 300
         execucao_with_empenho = mommy.make(
             ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
-            empenhado_liquido=previous_empenhado)
+            empenhado_liquido=previous_empenhado, vl_pago=previous_pago)
 
         assert 1 == ExecucaoTemp.objects.count()
         assert 1 == Subelemento.objects.count()
@@ -364,7 +369,7 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=2, vl_empenho_liquido=222,
-            execucao=None, execucao_temp=None, _fill_optional=True,
+            vl_pago=333, execucao=None, execucao_temp=None, _fill_optional=True,
         )
 
         ret = ExecucaoTemp.objects.update_by_empenho(empenho)
@@ -374,21 +379,24 @@ class TestExecucaoManagerUpdateByEmpenho:
 
         assert ret.subelemento_id == empenho.cd_subelemento
         assert ret.empenhado_liquido == empenho.vl_empenho_liquido
+        assert ret.vl_pago == empenho.vl_pago
         assert ret.orcado_atualizado == 0
 
         execucao_with_empenho.refresh_from_db()
         assert execucao_with_empenho.subelemento_id == 1
         assert execucao_with_empenho.empenhado_liquido == previous_empenhado
+        assert execucao_with_empenho.vl_pago == previous_pago
         assert execucao_with_empenho.orcado_atualizado == previous_orcado
 
     def test_updates_execucao_with_empenho(self):
         previous_orcado = 100
         previous_empenhado = 222
+        previous_pago = 333
         execucao = mommy.make(
             ExecucaoTemp, year=date(2018, 1, 1), orgao__id=1, projeto__id=1,
             categoria__id=1, gnd__id=1, modalidade__id=1, elemento__id=1,
             fonte__id=1, orcado_atualizado=previous_orcado, subelemento__id=1,
-            empenhado_liquido=previous_empenhado)
+            vl_pago=previous_pago, empenhado_liquido=previous_empenhado)
 
         assert 1 == Subelemento.objects.count()
 
@@ -396,7 +404,8 @@ class TestExecucaoManagerUpdateByEmpenho:
             Empenho, an_empenho=2018, cd_orgao=1, cd_projeto_atividade=1,
             cd_categoria=1, cd_grupo=1, cd_modalidade=1, cd_elemento=1,
             cd_fonte_de_recurso=1, cd_subelemento=1, vl_empenho_liquido=333.33,
-            execucao=None, execucao_temp=None, _fill_optional=True,
+            vl_pago=22.22, execucao=None, execucao_temp=None,
+            _fill_optional=True,
         )
 
         ret = ExecucaoTemp.objects.update_by_empenho(empenho)
@@ -408,6 +417,8 @@ class TestExecucaoManagerUpdateByEmpenho:
         assert execucao == ret
         assert execucao.empenhado_liquido == Decimal(
             str(round(previous_empenhado + empenho.vl_empenho_liquido, 2)))
+        assert execucao.vl_pago == Decimal(
+            str(round(previous_pago + empenho.vl_pago, 2)))
         assert execucao.orcado_atualizado == previous_orcado
 
     def test_execucao_not_found_for_empenho_indexer(self):
