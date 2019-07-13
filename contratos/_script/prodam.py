@@ -4,57 +4,6 @@
 
 import pandas as pd, requests, logging, argparse, os, time, re
 
-#####################
-# coleta de contrato
-#####################
-
-def get_deputy_speech(url, key, ano):
-
-    response = requests.get(url, headers={'Authorization': key})
-
-    try:
-        response.raise_for_status()
-    except Exception as e:
-        log.error('Problema na coleta: {error}'.format(error = e))
-    else:
-        json_data = response.json()
-        # contratos
-        output = pd.DataFrame(json_data["lstContratos"])
-        # empenho
-        # output = pd.DataFrame(json_data["lstEmpenhos"])
-
-    if json_data["metadados"]["qtdPaginas"] > 1:
-
-        tam = json_data["metadados"]["qtdPaginas"] + 1
-
-        for i in range(2,tam):
-            print('pagina: ' + str(i))
-            # contrato
-            response = requests.get('https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaContrato?anoContrato='+str(ano)+'&numPagina=' + str(i) + '&codOrgao=16'  , headers={'Authorization': key})
-            # empenho
-            # response = requests.get('https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaEmpenhos?anoEmpenho='+str(ano)+'&mesEmpenho=12&codOrgao=16&numPagina='+str(i)  , headers={'Authorization': key})
-            json_data = response.json()
-            aux = pd.DataFrame(json_data["lstContratos"])
-            # aux = pd.DataFrame(json_data["lstEmpenhos"])
-            output = output.append(aux)
-
-    return output
-
-def api_prodam(start, end, key):
-    dados = []
-    for i in range(start,end):
-        print('ano: ' + str(i))
-        # contrato
-        url = 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaContrato?anoContrato='+str(i)+'&numPagina=1&codOrgao=16'
-        # empenho
-        # url = 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaEmpenhos?anoEmpenho='+str(i)+'&mesEmpenho=12&codOrgao=16&numPagina=1'
-        aux = get_deputy_speech(url, key, i)
-        if i == start:
-            dados = aux
-        else:
-            dados = dados.append(aux)
-
-    return(dados)
 
 #####################
 # coleta de empenho
@@ -195,10 +144,63 @@ def coleta_missed_urls(urls):
             output.to_csv('empenhos_recuperados.csv', mode='a', index=False, header=False)
 
 
+#####################
+# coleta de contrato
+#####################
+
+def get_deputy_speech(url, key, ano):
+
+    response = requests.get(url, headers={'Authorization': key})
+
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        log.error('Problema na coleta: {error}'.format(error = e))
+    else:
+        json_data = response.json()
+        # contratos
+        output = pd.DataFrame(json_data["lstContratos"])
+        # empenho
+        # output = pd.DataFrame(json_data["lstEmpenhos"])
+
+    if json_data["metadados"]["qtdPaginas"] > 1:
+
+        tam = json_data["metadados"]["qtdPaginas"] + 1
+
+        for i in range(2,tam):
+            print('pagina: ' + str(i))
+            # contrato
+            response = requests.get('https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaContrato?anoContrato='+str(ano)+'&numPagina=' + str(i) + '&codOrgao=16'  , headers={'Authorization': key})
+            # empenho
+            # response = requests.get('https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaEmpenhos?anoEmpenho='+str(ano)+'&mesEmpenho=12&codOrgao=16&numPagina='+str(i)  , headers={'Authorization': key})
+            json_data = response.json()
+            aux = pd.DataFrame(json_data["lstContratos"])
+            # aux = pd.DataFrame(json_data["lstEmpenhos"])
+            output = output.append(aux)
+
+    return output
+
+def api_prodam(start, end, key):
+    dados = []
+    for i in range(start,end):
+        print('ano: ' + str(i))
+        # contrato
+        url = 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaContrato?anoContrato='+str(i)+'&numPagina=1&codOrgao=16'
+        # empenho
+        # url = 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaEmpenhos?anoEmpenho='+str(i)+'&mesEmpenho=12&codOrgao=16&numPagina=1'
+        aux = get_deputy_speech(url, key, i)
+        if i == start:
+            dados = aux
+        else:
+            dados = dados.append(aux)
+
+    return(dados)
+
+
 
 if __name__ == '__main__':
 
-    os.chdir('/home/master/jupyter/rachel/sme_sp/')
+    os.chdir('.')
     logging.basicConfig(filename = 'coleta_empenhos.log',level=logging.INFO)
     log = logging.getLogger()
 
@@ -208,7 +210,7 @@ if __name__ == '__main__':
 
     key = f'Bearer {PRODAM_KEY}'
     dirContrato = 'contrato.xlsx'
-    start = 2018
+    start = 2019
     end = 2020
     dados = api_prodam(start, end, key)
     consolida_ano_empenho(dirContrato, key, start, end)
