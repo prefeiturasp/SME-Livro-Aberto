@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'mosaico',
     'geologia',
+    'contratos',
     'from_to_handler.apps.FromToHandlerConfig',
     'budget_execution.apps.BudgetExecutionConfig',
 ]
