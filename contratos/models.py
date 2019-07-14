@@ -46,7 +46,10 @@ class ContratoRaw(models.Model):
 
 
 class EmpenhoSOFCache(models.Model):
+    # contrato fields
     cod_contrato = models.IntegerField(blank=True, null=True)
+    ano_exercicio = models.IntegerField(blank=True, null=True)
+    # empenho fields
     ano_empenho = models.IntegerField(blank=True, null=True)
     cod_categoria = models.IntegerField(blank=True, null=True)
     txt_categoria_economica = models.CharField(max_length=250, blank=True,
