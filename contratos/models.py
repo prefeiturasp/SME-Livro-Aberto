@@ -47,60 +47,60 @@ class ContratoRaw(models.Model):
 
 class EmpenhoSOFCache(models.Model):
     # contrato fields
-    cod_contrato = models.IntegerField(blank=True, null=True)
-    ano_exercicio = models.IntegerField(blank=True, null=True)
+    codContrato = models.IntegerField(blank=True, null=True)
+    anoExercicio = models.IntegerField(blank=True, null=True)
     # empenho fields
-    ano_empenho = models.IntegerField(blank=True, null=True)
-    cod_categoria = models.IntegerField(blank=True, null=True)
-    txt_categoria_economica = models.CharField(max_length=250, blank=True,
-                                               null=True)
-    cod_elemento = models.IntegerField(blank=True, null=True)
-    cod_empenho = models.IntegerField(blank=True, null=True)
-    cod_empresa = models.IntegerField(blank=True, null=True)
-    cod_fonte_recurso = models.IntegerField(blank=True, null=True)
-    cod_funcao = models.IntegerField(blank=True, null=True)
-    cod_grupo = models.IntegerField(blank=True, null=True)
-    txt_grupo_despesa = models.CharField(max_length=250, blank=True, null=True)
-    cod_item_despesa = models.IntegerField(blank=True, null=True)
-    cod_modalidade = models.IntegerField(blank=True, null=True)
-    txt_modalidade_aplicacao = models.CharField(max_length=250, blank=True,
-                                                null=True)
-    cod_orgao = models.IntegerField(blank=True, null=True)
-    cod_processo = models.IntegerField(blank=True, null=True)
-    cod_programa = models.IntegerField(blank=True, null=True)
-    cod_projeto_atividade = models.IntegerField(blank=True, null=True)
-    cod_sub_elemento = models.IntegerField(blank=True, null=True)
-    cod_sub_funcao = models.IntegerField(blank=True, null=True)
-    cod_unidade = models.IntegerField(blank=True, null=True)
-    dat_empenho = models.CharField(max_length=15, blank=True, null=True)
-    mes_empenho = models.IntegerField(blank=True, null=True)
-    nom_empresa = models.CharField(max_length=250, blank=True, null=True)
-    num_cpf_cnpj = models.CharField(max_length=14, blank=True, null=True)
-    num_teserva = models.IntegerField(blank=True, null=True)
-    txt_descricao_orgao = models.CharField(max_length=150, blank=True,
-                                           null=True)
-    txt_descricao_unidade = models.CharField(max_length=200, blank=True,
+    anoEmpenho = models.IntegerField(blank=True, null=True)
+    codCategoria = models.IntegerField(blank=True, null=True)
+    txtCategoriaEconomica = models.CharField(blank=True, max_length=250,
                                              null=True)
-    txt_descricao_elemento = models.CharField(max_length=200, blank=True,
+    codElemento = models.IntegerField(blank=True, null=True)
+    codEmpenho = models.IntegerField(blank=True, null=True)
+    codEmpresa = models.IntegerField(blank=True, null=True)
+    codFonteRecurso = models.IntegerField(blank=True, null=True)
+    codFuncao = models.IntegerField(blank=True, null=True)
+    codGrupo = models.IntegerField(blank=True, null=True)
+    txtGrupoDespesa = models.CharField(blank=True, max_length=250, null=True)
+    codItemDespesa = models.IntegerField(blank=True, null=True)
+    codModalidade = models.IntegerField(blank=True, null=True)
+    txtModalidadeAplicacao = models.CharField(blank=True, max_length=250,
                                               null=True)
-    txt_descricao_fonte_recurso = models.CharField(max_length=150, blank=True,
-                                                   null=True)
-    txt_descricao_funcao = models.CharField(max_length=150, blank=True,
+    codOrgao = models.IntegerField(blank=True, null=True)
+    codProcesso = models.IntegerField(blank=True, null=True)
+    codPrograma = models.IntegerField(blank=True, null=True)
+    codProjetoAtividade = models.IntegerField(blank=True, null=True)
+    codSubElemento = models.IntegerField(blank=True, null=True)
+    codSubFuncao = models.IntegerField(blank=True, null=True)
+    codUnidade = models.IntegerField(blank=True, null=True)
+    datEmpenho = models.CharField(blank=True, max_length=15, null=True)
+    mesEmpenho = models.IntegerField(blank=True, null=True)
+    nomEmpresa = models.CharField(blank=True, max_length=250, null=True)
+    numCpfCnpj = models.CharField(blank=True, max_length=14, null=True)
+    numReserva = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgao = models.CharField(blank=True, max_length=150,
+                                         null=True)
+    txtDescricaoUnidade = models.CharField(blank=True, max_length=200,
+                                           null=True)
+    txtDescricaoElemento = models.CharField(blank=True, max_length=200,
                                             null=True)
-    txt_descricao_item_despesa = models.CharField(max_length=150, blank=True,
-                                                  null=True)
-    txt_descricao_programa = models.CharField(max_length=150, blank=True,
-                                              null=True)
-    txt_descricao_projeto_atividade = models.CharField(max_length=150,
-                                                       blank=True, null=True)
-    txt_razao_social = models.CharField(max_length=200, blank=True, null=True)
-    txt_descricao_subelemento = models.CharField(max_length=150, blank=True,
-                                                 null=True)
-    txt_descricao_subfuncao = models.CharField(max_length=150, blank=True,
+    txtDescricaoFonteRecurso = models.CharField(blank=True, max_length=150,
+                                                null=True)
+    txtDescricaoFuncao = models.CharField(blank=True, max_length=150,
+                                          null=True)
+    txtDescricaoItemDespesa = models.CharField(blank=True, max_length=150,
                                                null=True)
-    val_anulado_empenho = models.FloatField(blank=True, null=True)
-    val_empenhado_liquido = models.FloatField(blank=True, null=True)
-    val_liquidado = models.FloatField(blank=True, null=True)
-    val_pago_exercicio = models.FloatField(blank=True, null=True)
-    val_pago_restos = models.FloatField(blank=True, null=True)
-    val_total_empenhado = models.FloatField(blank=True, null=True)
+    txtDescricaoPrograma = models.CharField(blank=True, max_length=150,
+                                            null=True)
+    txtDescricaoProjetoAtividade = models.CharField(blank=True, max_length=150,
+                                                    null=True)
+    txtRazaoSocial = models.CharField(blank=True, max_length=200, null=True)
+    txtDescricaoSubElemento = models.CharField(blank=True, max_length=150,
+                                               null=True)
+    txtDescricaoSubFuncao = models.CharField(blank=True, max_length=150,
+                                             null=True)
+    valAnuladoEmpenho = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquido = models.FloatField(blank=True, null=True)
+    valLiquidado = models.FloatField(blank=True, null=True)
+    valPagoExercicio = models.FloatField(blank=True, null=True)
+    valPagoRestos = models.FloatField(blank=True, null=True)
+    valTotalEmpenhado = models.FloatField(blank=True, null=True)
