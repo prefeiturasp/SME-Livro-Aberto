@@ -2,7 +2,8 @@
 # packages
 #####################
 
-import pandas as pd, requests, logging, argparse, os, time, re
+import requests, logging, os, time, re
+import pandas as pd
 
 
 #####################
@@ -45,20 +46,24 @@ def select_empenho(url, key, year, cod, ex_year):
 
     return output
 
+
 def consolida_empenho(dirContrato, key, year):
 
     contrato = pd.read_excel(dirContrato)
-    contrato = contrato[contrato.anoExercicio.isin([2018,2019])]
+    contrato = contrato[contrato.anoExercicio.isin([2019,2019])]
+    # contrato = contrato[contrato.anoExercicio.isin([2018,2019])]
     dados = pd.DataFrame()
 
     for i in range(0,contrato.shape[0]):
 
+        print("consolida empenho: {}".format(i))
         cod = contrato['codContrato'].iloc[i]
         ex_year = contrato['anoExercicio'].iloc[i]
         log.info('contrato: ' + str(cod) + ' ano: '+ str(ex_year) + ' ano do empenho: ' + str(year))
 
         url = 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/consultaEmpenhos?anoEmpenho='+ str(year) +'&mesEmpenho=12&anoExercicio='+str(ex_year)+'&codContrato='+ str(cod) +'&codOrgao=16&numPagina=1'
 
+        print("select empenho: {}-{}-{}".format(ex_year, cod, i))
         aux = select_empenho(url = url, key = key, year = year, cod = cod, ex_year = ex_year)
 
         if aux.empty:
@@ -68,7 +73,11 @@ def consolida_empenho(dirContrato, key, year):
         aux['codContrato'] = cod
         dados = dados.append(aux)
 
+        aux.to_csv('empenho{}-{}-{}.csv'.format(ex_year, cod, i), index=False, encoding='latin1')
+        # aux.to_csv('empenho.csv', mode='a', index=False,  header=False, encoding='latin1')
+
     return(dados)
+
 
 def consolida_ano_empenho(dirContrato, key, start, end):
 
@@ -76,6 +85,7 @@ def consolida_ano_empenho(dirContrato, key, start, end):
     for i in range(start, end):
         log.info('ano: ' + str(i))
 
+        print('consolida ano empenho: {}'.format(i))
         aux = consolida_empenho(dirContrato, key, i)
         print('rodou aux')
         print(aux)
@@ -94,7 +104,9 @@ def concatena_bases_empenho(dirBases, start, end):
 
     planilha.to_excel(dir + 'empenho_consolidado.xlsx')
 
-    return(print('success'))
+    print('success')
+    return
+
 
 def coleta_missed_urls(urls):
 
@@ -205,14 +217,14 @@ if __name__ == '__main__':
     log = logging.getLogger()
 
     from decouple import config
-    log.info(f'Inciando coleta de empenhos.')
+    log.info('Inciando coleta de empenhos.')
     PRODAM_KEY = config('PRODAM_KEY')
 
     key = f'Bearer {PRODAM_KEY}'
-    dirContrato = 'contrato.xlsx'
+    dirContrato = './contratos/_script/contrato.xlsx'
     start = 2019
     end = 2020
-    dados = api_prodam(start, end, key)
+    # dados = api_prodam(start, end, key)
     consolida_ano_empenho(dirContrato, key, start, end)
 
     # missed_urls = pd.read_csv('missed_urls.csv', header=None)
