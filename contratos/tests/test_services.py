@@ -1,48 +1,72 @@
 from unittest.mock import call, patch
 
+from django.conf import settings
+
 from contratos import services
 
 
-def test_build_empenhos_data():
-    sof_return_dict = {
-        "metadados": {
-            "txtStatus": "OK",
-            "txtMensagemErro": None,
-            "qtdPaginas": 1
+SOF_RETURN_DICT = {
+    "metadados": {
+        "txtStatus": "OK",
+        "txtMensagemErro": None,
+        "qtdPaginas": 1
+    },
+    "lstEmpenhos": [
+        {
+            "anoEmpenho": 2019,
+            "codCategoria": 3,
+            "valAnuladoEmpenho": 0,
+            "valEmpenhadoLiquido": 17400,
+            "valLiquidado": 0,
+            "valPagoExercicio": 0,
+            "valPagoRestos": 0,
+            "valTotalEmpenhado": 17400
         },
-        "lstEmpenhos": [
-            {
-                "anoEmpenho": 2019,
-                "codCategoria": 3,
-                "valAnuladoEmpenho": 0,
-                "valEmpenhadoLiquido": 17400,
-                "valLiquidado": 0,
-                "valPagoExercicio": 0,
-                "valPagoRestos": 0,
-                "valTotalEmpenhado": 17400
-            },
-            {
-                "anoEmpenho": 2019,
-                "codCategoria": 3,
-                "valAnuladoEmpenho": 0,
-                "valEmpenhadoLiquido": 1160,
-                "valLiquidado": 1160,
-                "valPagoExercicio": 0,
-                "valPagoRestos": 0,
-                "valTotalEmpenhado": 1160
-            }
-        ]
-    }
+        {
+            "anoEmpenho": 2019,
+            "codCategoria": 3,
+            "valAnuladoEmpenho": 0,
+            "valEmpenhadoLiquido": 1160,
+            "valLiquidado": 1160,
+            "valPagoExercicio": 0,
+            "valPagoRestos": 0,
+            "valTotalEmpenhado": 1160
+        }
+    ]
+}
 
+
+@patch('contratos.services.requests.get')
+def test_get_empenhos_for_contrato(mock_get):
+    cod_contrato = 5555
+    ano_exercicio = 2019
+
+    mock_get.return_value.json.return_value = SOF_RETURN_DICT
+    url = (
+        'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
+        'v2.1.0/consultaEmpenhos?anoEmpenho=2019&mesEmpenho=12'
+        f'&anoExercicio={ano_exercicio}'
+        '&codContrato={}&codOrgao=16'
+    )
+    headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
+
+    ret = services.get_empenhos_for_contrato(
+        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+
+    assert SOF_RETURN_DICT == ret
+    mock_get.assert_called_once_with(url.format(cod_contrato), headers=headers)
+
+
+def test_build_empenhos_data():
     cod_contrato = 5555
     ano_exercicio = 2019
 
     empenhos_data = services.build_empenhos_data(
-        sof_data=sof_return_dict, ano_exercicio=ano_exercicio,
+        sof_data=SOF_RETURN_DICT, ano_exercicio=ano_exercicio,
         cod_contrato=cod_contrato)
 
     expected = []
-    for emp_dict in sof_return_dict['lstEmpenhos']:
+    for emp_dict in SOF_RETURN_DICT['lstEmpenhos']:
         emp_dict.update({'anoExercicio': ano_exercicio,
                          'codContrato': cod_contrato})
         expected.append(emp_dict)
