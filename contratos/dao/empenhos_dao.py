@@ -2,6 +2,8 @@ import requests
 
 from django.conf import settings
 
+from contratos.models import EmpenhoSOFCache
+
 
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
     url = (
@@ -13,3 +15,7 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
     headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
     response = requests.get(url.format(cod_contrato), headers=headers)
     return response.json()
+
+
+def create(*, data):
+    return EmpenhoSOFCache.objects.create(**data)

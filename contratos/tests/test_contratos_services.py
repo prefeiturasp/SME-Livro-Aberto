@@ -98,8 +98,8 @@ def test_build_empenhos_data():
     assert expected == empenhos_data
 
 
-@patch('contratos.services.EmpenhoSOFCache')
-def test_save_empenhos_sof_cache(mock_Empenho):
+@patch('contratos.dao.empenhos_dao.create')
+def test_save_empenhos_sof_cache(mock_create):
     empenhos_data = [
         {
             "anoEmpenho": 2019,
@@ -128,7 +128,7 @@ def test_save_empenhos_sof_cache(mock_Empenho):
     ]
     services.save_empenhos_sof_cache(empenhos_data=empenhos_data)
 
-    assert 2 == mock_Empenho.objects.create.call_count
-    calls_list = mock_Empenho.objects.create.call_args_list
-    assert call(**empenhos_data[0]) in calls_list
-    assert call(**empenhos_data[1]) in calls_list
+    assert 2 == mock_create.call_count
+    calls_list = mock_create.call_args_list
+    assert call(data=empenhos_data[0]) in calls_list
+    assert call(data=empenhos_data[1]) in calls_list
