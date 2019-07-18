@@ -66,7 +66,7 @@ class EmpenhoSOFCache(models.Model):
     txtModalidadeAplicacao = models.CharField(blank=True, max_length=250,
                                               null=True)
     codOrgao = models.IntegerField(blank=True, null=True)
-    codProcesso = models.IntegerField(blank=True, null=True)
+    codProcesso = models.BigIntegerField(blank=True, null=True)
     codPrograma = models.IntegerField(blank=True, null=True)
     codProjetoAtividade = models.IntegerField(blank=True, null=True)
     codSubElemento = models.IntegerField(blank=True, null=True)
