@@ -1,9 +1,5 @@
-import requests
-
-from django.conf import settings
-
 from contratos.models import EmpenhoSOFCache
-from contratos.dao import contratos_raw_dao
+from contratos.dao import contratos_raw_dao, empenhos_dao
 
 # {
 #     "anoEmpenho": 2019,
@@ -62,7 +58,7 @@ def update_empenho_sof_cache_table():
 
 
 def get_empenhos_for_contrato_and_save(*, cod_contrato, ano_exercicio):
-    sof_data = get_empenhos_for_contrato(
+    sof_data = empenhos_dao.get_by_codcontrato_and_anoexercicio(
         cod_contrato=cod_contrato,
         ano_exercicio=ano_exercicio)
     empenhos_data = build_empenhos_data(
@@ -70,18 +66,6 @@ def get_empenhos_for_contrato_and_save(*, cod_contrato, ano_exercicio):
         ano_exercicio=ano_exercicio,
         cod_contrato=cod_contrato)
     save_empenhos_sof_cache(empenhos_data=empenhos_data)
-
-
-def get_empenhos_for_contrato(*, cod_contrato, ano_exercicio):
-    url = (
-        'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
-        'v2.1.0/consultaEmpenhos?anoEmpenho=2019&mesEmpenho=12'
-        f'&anoExercicio={ano_exercicio}'
-        '&codContrato={}&codOrgao=16'
-    )
-    headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
-    response = requests.get(url.format(cod_contrato), headers=headers)
-    return response.json()
 
 
 def build_empenhos_data(*, sof_data, ano_exercicio, cod_contrato):

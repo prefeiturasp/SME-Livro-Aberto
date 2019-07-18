@@ -1,8 +1,6 @@
 from collections import namedtuple
 from unittest.mock import call, patch
 
-from django.conf import settings
-
 from contratos import services
 
 
@@ -60,7 +58,7 @@ def test_update_empenho_sof_cache_table(
 
 @patch('contratos.services.save_empenhos_sof_cache')
 @patch('contratos.services.build_empenhos_data')
-@patch('contratos.services.get_empenhos_for_contrato')
+@patch('contratos.dao.empenhos_dao.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
     cod_contrato = 5555
@@ -81,27 +79,6 @@ def test_get_empenhos_for_contrato_and_save(
         ano_exercicio=ano_exercicio)
     mock_save_empenhos.assert_called_once_with(
         empenhos_data=mocked_empenhos_data_return)
-
-
-@patch('contratos.services.requests.get')
-def test_get_empenhos_for_contrato(mock_get):
-    cod_contrato = 5555
-    ano_exercicio = 2019
-
-    mock_get.return_value.json.return_value = SOF_RETURN_DICT
-    url = (
-        'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
-        'v2.1.0/consultaEmpenhos?anoEmpenho=2019&mesEmpenho=12'
-        f'&anoExercicio={ano_exercicio}'
-        '&codContrato={}&codOrgao=16'
-    )
-    headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
-
-    ret = services.get_empenhos_for_contrato(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
-
-    assert SOF_RETURN_DICT == ret
-    mock_get.assert_called_once_with(url.format(cod_contrato), headers=headers)
 
 
 def test_build_empenhos_data():
