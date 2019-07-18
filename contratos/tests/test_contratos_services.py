@@ -1,3 +1,4 @@
+from collections import namedtuple
 from unittest.mock import call, patch
 
 from django.conf import settings
@@ -34,6 +35,52 @@ SOF_RETURN_DICT = {
         }
     ]
 }
+
+
+MockedContratoRaw = namedtuple('MockedContratoRaw',
+                               ['codcontrato', 'anoexercicio'])
+
+
+@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.dao.contratos_raw_dao.get_all')
+def test_update_empenho_sof_cache_table(
+        mock_get_all, mock_get_and_save_empenhos):
+    mocked_contratos = [MockedContratoRaw(111, 2018),
+                        MockedContratoRaw(222, 2019)]
+    mock_get_all.return_value = mocked_contratos
+
+    services.update_empenho_sof_cache_table()
+
+    assert 2 == mock_get_and_save_empenhos.call_count
+    for contrato in mocked_contratos:
+        mock_get_and_save_empenhos.assert_any_call(
+            cod_contrato=contrato.codcontrato,
+            ano_exercicio=contrato.anoexercicio)
+
+
+@patch('contratos.services.save_empenhos_sof_cache')
+@patch('contratos.services.build_empenhos_data')
+@patch('contratos.services.get_empenhos_for_contrato')
+def test_get_empenhos_for_contrato_and_save(
+        mock_get_empenhos, mock_build_data, mock_save_empenhos):
+    cod_contrato = 5555
+    ano_exercicio = 2019
+    mocked_empenhos_data_return = ['empenhos_data']
+
+    mock_get_empenhos.return_value = SOF_RETURN_DICT
+    mock_build_data.return_value = mocked_empenhos_data_return
+
+    services.get_empenhos_for_contrato_and_save(
+        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+
+    mock_get_empenhos.assert_called_once_with(
+        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+    mock_build_data.assert_called_once_with(
+        sof_data=SOF_RETURN_DICT,
+        cod_contrato=cod_contrato,
+        ano_exercicio=ano_exercicio)
+    mock_save_empenhos.assert_called_once_with(
+        empenhos_data=mocked_empenhos_data_return)
 
 
 @patch('contratos.services.requests.get')

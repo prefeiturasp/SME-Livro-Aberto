@@ -2,7 +2,8 @@ import requests
 
 from django.conf import settings
 
-from contratos.models import ContratoRaw, EmpenhoSOFCache
+from contratos.models import EmpenhoSOFCache
+from contratos.dao import contratos_raw_dao
 
 # {
 #     "anoEmpenho": 2019,
@@ -53,16 +54,22 @@ from contratos.models import ContratoRaw, EmpenhoSOFCache
 
 
 def update_empenho_sof_cache_table():
-    ano_exercicio = 2019
-    for contrato in ContratoRaw.objects.all():
-        sof_data = get_empenhos_for_contrato(
+    for contrato in contratos_raw_dao.get_all():
+        get_empenhos_for_contrato_and_save(
             cod_contrato=contrato.codcontrato,
-            ano_exercicio=ano_exercicio)
-        empenhos_data = build_empenhos_data(
-            sof_data=sof_data,
-            ano_exercicio=ano_exercicio,
-            cod_contrato=contrato.codcontrato)
-        save_empenhos_sof_cache(empenhos_data=empenhos_data)
+            ano_exercicio=contrato.anoexercicio)
+        print(f'empenhos for contrato {contrato.codcontrato} saved')
+
+
+def get_empenhos_for_contrato_and_save(*, cod_contrato, ano_exercicio):
+    sof_data = get_empenhos_for_contrato(
+        cod_contrato=cod_contrato,
+        ano_exercicio=ano_exercicio)
+    empenhos_data = build_empenhos_data(
+        sof_data=sof_data,
+        ano_exercicio=ano_exercicio,
+        cod_contrato=cod_contrato)
+    save_empenhos_sof_cache(empenhos_data=empenhos_data)
 
 
 def get_empenhos_for_contrato(*, cod_contrato, ano_exercicio):
