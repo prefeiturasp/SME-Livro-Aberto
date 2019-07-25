@@ -7,7 +7,8 @@ from django.conf import settings
 from model_mommy import mommy
 
 from contratos.dao import contratos_raw_dao, empenhos_dao
-from contratos.models import ContratoRaw, EmpenhoSOFCache
+from contratos.models import (ContratoRaw, EmpenhoSOFCache,
+                              EmpenhoSOFFailedAPIRequest)
 
 
 SOF_RETURN_DICT = {
@@ -58,25 +59,43 @@ class ContratoRawDAOTestCase(TestCase):
 class EmpenhoDAOTestCase(TestCase):
 
     @patch('contratos.dao.empenhos_dao.requests.get')
-    def test_get_by_codcontrato_and_anoexercicio(self, mock_get):
+    def test_get_by_ano_empenho(self, mock_get):
         cod_contrato = 5555
         ano_exercicio = 2019
+        ano_empenho = 2019
 
+        mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = SOF_RETURN_DICT
         url = (
             'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
-            'v2.1.0/consultaEmpenhos?anoEmpenho=2019&mesEmpenho=12'
+            f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'
             f'&anoExercicio={ano_exercicio}'
-            '&codContrato={}&codOrgao=16'
+            f'&codContrato={cod_contrato}&codOrgao=16'
         )
         headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
 
-        ret = empenhos_dao.get_by_codcontrato_and_anoexercicio(
-            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+        ret = empenhos_dao._get_by_ano_empenho(
+            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
+            ano_empenho=ano_empenho)
 
-        assert SOF_RETURN_DICT == ret
-        mock_get.assert_called_once_with(url.format(cod_contrato),
-                                         headers=headers)
+        assert SOF_RETURN_DICT["lstEmpenhos"] == ret
+        mock_get.assert_called_once_with(url, headers=headers)
+
+    @patch('contratos.dao.empenhos_dao.EmpenhoSOFFailedAPIRequest')
+    def test_save_failed_api_request(self, mock_EmpenhoFailed):
+        failed_request_data = {
+            "cod_contrato": 555,
+            "ano_exercicio": 2018,
+            "ano_empenho": 2019,
+            "error_code": 500,
+        }
+        mocked_return = Mock(EmpenhoSOFFailedAPIRequest, autospec=True)
+        mock_EmpenhoFailed.objects.create.return_value = mocked_return
+
+        ret = empenhos_dao._save_failed_api_request(**failed_request_data)
+        assert ret == mocked_return
+        mock_EmpenhoFailed.objects.create.assert_called_once_with(
+            **failed_request_data)
 
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
     def test_create(self, mock_Empenho):
