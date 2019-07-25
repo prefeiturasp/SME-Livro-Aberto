@@ -86,7 +86,7 @@ def test_build_empenhos_data():
     ano_exercicio = 2019
 
     empenhos_data = services.build_empenhos_data(
-        sof_data=SOF_RETURN_DICT, ano_exercicio=ano_exercicio,
+        sof_data=SOF_RETURN_DICT["lstEmpenhos"], ano_exercicio=ano_exercicio,
         cod_contrato=cod_contrato)
 
     expected = []
