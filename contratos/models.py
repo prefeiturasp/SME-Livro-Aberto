@@ -104,3 +104,11 @@ class EmpenhoSOFCache(models.Model):
     valPagoExercicio = models.FloatField(blank=True, null=True)
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
+
+
+class EmpenhoSOFFailedAPIRequest(models.Model):
+    cod_contrato = models.IntegerField()
+    ano_exercicio = models.IntegerField()
+    ano_empenho = models.IntegerField()
+    error_code = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
