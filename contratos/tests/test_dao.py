@@ -4,6 +4,7 @@ from unittest import TestCase
 from unittest.mock import Mock, patch
 
 from django.conf import settings
+from freezegun import freeze_time
 from model_mommy import mommy
 
 from contratos.dao import contratos_raw_dao, empenhos_dao
@@ -57,6 +58,60 @@ class ContratoRawDAOTestCase(TestCase):
 
 @pytest.mark.django_db
 class EmpenhoDAOTestCase(TestCase):
+
+    @patch('contratos.dao.empenhos_dao._get_by_ano_empenho')
+    def test_get_by_codcontrato_and_anoexercicio(self, mock_get_by_ano):
+        empenhos_2018 = [
+            {
+                "anoEmpenho": 2018,
+                "codCategoria": 3,
+                "valAnuladoEmpenho": 0,
+                "valEmpenhadoLiquido": 1160,
+                "valLiquidado": 1160,
+                "valPagoExercicio": 0,
+                "valPagoRestos": 0,
+                "valTotalEmpenhado": 1160
+            },
+            {
+                "anoEmpenho": 2018,
+                "codCategoria": 3,
+                "valAnuladoEmpenho": 0,
+                "valEmpenhadoLiquido": 200,
+                "valLiquidado": 100,
+                "valPagoExercicio": 0,
+                "valPagoRestos": 0,
+                "valTotalEmpenhado": 100
+            },
+        ]
+        empenhos_2019 = [
+            {
+                "anoEmpenho": 2019,
+                "codCategoria": 3,
+                "valAnuladoEmpenho": 0,
+                "valEmpenhadoLiquido": 1160,
+                "valLiquidado": 1160,
+                "valPagoExercicio": 0,
+                "valPagoRestos": 0,
+                "valTotalEmpenhado": 1160
+            },
+        ]
+
+        cod_contrato = 555
+        ano_exercicio = 2018
+        mock_get_by_ano.side_effect = [empenhos_2018, empenhos_2019]
+
+        with freeze_time('2019-1-1'):
+            ret = empenhos_dao.get_by_codcontrato_and_anoexercicio(
+                cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+
+        assert ret == empenhos_2018 + empenhos_2019
+        assert 2 == mock_get_by_ano.call_count
+        mock_get_by_ano.assert_any_call(
+            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
+            ano_empenho=2018)
+        mock_get_by_ano.assert_any_call(
+            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
+            ano_empenho=2019)
 
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho(self, mock_get):
