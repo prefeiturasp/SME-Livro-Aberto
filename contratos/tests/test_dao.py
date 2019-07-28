@@ -140,7 +140,6 @@ class EmpenhoDAOTestCase(TestCase):
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho_saves_failed_request(
             self, mock_get, mock_save_failed):
-        # TODO: test for when exception requests raise exception
         cod_contrato = 5555
         ano_exercicio = 2019
         ano_empenho = 2019
@@ -156,6 +155,25 @@ class EmpenhoDAOTestCase(TestCase):
         mock_save_failed.assert_called_once_with(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=500)
+
+    @patch('contratos.dao.empenhos_dao._save_failed_api_request')
+    @patch('contratos.dao.empenhos_dao.requests.get')
+    def test_get_by_ano_empenho_saves_requests_exception(
+            self, mock_get, mock_save_failed):
+        cod_contrato = 5555
+        ano_exercicio = 2019
+        ano_empenho = 2019
+
+        mock_get.side_effect = Exception()
+
+        ret = empenhos_dao._get_by_ano_empenho(
+            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
+            ano_empenho=ano_empenho)
+
+        assert ret is None
+        mock_save_failed.assert_called_once_with(
+            cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
+            ano_empenho=ano_empenho, error_code=-1)
 
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFFailedAPIRequest')
     def test_save_failed_api_request(self, mock_EmpenhoFailed):
