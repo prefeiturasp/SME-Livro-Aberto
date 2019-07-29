@@ -9,14 +9,17 @@ body > header {
 #total header{
   text-align: center;
   font-size: 2em;
-  width: 41rem;
-  margin: auto;
+  max-width: 41rem;
+  text-overflow: ellipsis;
 }
 
 .big-number{
   font-size: 2em;
   font-weight: bolder;
   display: block;
+  text-overflow: ellipsis;
+  overflow-x: auto;
+  margin: auto;
 }
 
 #total .body{
