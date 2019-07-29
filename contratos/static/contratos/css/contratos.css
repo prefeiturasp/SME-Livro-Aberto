@@ -19,6 +19,10 @@ body > header {
   display: block;
 }
 
+#total .body{
+  margin: 3em 0 2em;
+}
+
 #total footer{
   display: flex;
   font-size: .85em;
