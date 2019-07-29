@@ -1,0 +1,15 @@
+.bar{
+  display: flex;
+}
+
+.bar span.label{
+  display: none;
+}
+
+.bar span.value{
+  display: block;
+  text-indent: 100%;
+  overflow: hidden;
+  background-color: currentColor;
+  font-size: 0.5em;
+}
