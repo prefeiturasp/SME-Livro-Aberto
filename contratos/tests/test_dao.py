@@ -7,7 +7,8 @@ from django.conf import settings
 from freezegun import freeze_time
 from model_mommy import mommy
 
-from contratos.dao import contratos_raw_dao, empenhos_dao
+from contratos.dao import contratos_raw_dao, empenhos_dao, \
+    empenhos_failed_requests_dao
 from contratos.models import (ContratoRaw, EmpenhoSOFCache,
                               EmpenhoSOFFailedAPIRequest)
 
@@ -59,7 +60,7 @@ class ContratoRawDAOTestCase(TestCase):
 @pytest.mark.django_db
 class EmpenhoDAOTestCase(TestCase):
 
-    @patch('contratos.dao.empenhos_dao._get_by_ano_empenho')
+    @patch('contratos.dao.empenhos_dao.get_by_ano_empenho')
     def test_get_by_codcontrato_and_anoexercicio(self, mock_get_by_ano):
         empenhos_2018 = [
             {
@@ -129,14 +130,14 @@ class EmpenhoDAOTestCase(TestCase):
         )
         headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
 
-        ret = empenhos_dao._get_by_ano_empenho(
+        ret = empenhos_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
         assert SOF_RETURN_DICT["lstEmpenhos"] == ret
         mock_get.assert_called_once_with(url, headers=headers)
 
-    @patch('contratos.dao.empenhos_dao._save_failed_api_request')
+    @patch('contratos.dao.empenhos_failed_requests_dao.create')
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho_saves_failed_request(
             self, mock_get, mock_save_failed):
@@ -147,7 +148,7 @@ class EmpenhoDAOTestCase(TestCase):
         mock_get.return_value.status_code = 500
         mock_get.return_value.json.return_value = SOF_RETURN_DICT
 
-        ret = empenhos_dao._get_by_ano_empenho(
+        ret = empenhos_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
@@ -156,7 +157,7 @@ class EmpenhoDAOTestCase(TestCase):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=500)
 
-    @patch('contratos.dao.empenhos_dao._save_failed_api_request')
+    @patch('contratos.dao.empenhos_failed_requests_dao.create')
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho_saves_requests_exception(
             self, mock_get, mock_save_failed):
@@ -166,7 +167,7 @@ class EmpenhoDAOTestCase(TestCase):
 
         mock_get.side_effect = Exception()
 
-        ret = empenhos_dao._get_by_ano_empenho(
+        ret = empenhos_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
@@ -175,7 +176,8 @@ class EmpenhoDAOTestCase(TestCase):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=-1)
 
-    @patch('contratos.dao.empenhos_dao.EmpenhoSOFFailedAPIRequest')
+    @patch('contratos.dao.empenhos_failed_requests_dao'
+           '.EmpenhoSOFFailedAPIRequest')
     def test_save_failed_api_request(self, mock_EmpenhoFailed):
         failed_request_data = {
             "cod_contrato": 555,
@@ -186,7 +188,7 @@ class EmpenhoDAOTestCase(TestCase):
         mocked_return = Mock(EmpenhoSOFFailedAPIRequest, autospec=True)
         mock_EmpenhoFailed.objects.create.return_value = mocked_return
 
-        ret = empenhos_dao._save_failed_api_request(**failed_request_data)
+        ret = empenhos_failed_requests_dao.create(**failed_request_data)
         assert ret == mocked_return
         mock_EmpenhoFailed.objects.create.assert_called_once_with(
             **failed_request_data)

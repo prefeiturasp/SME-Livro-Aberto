@@ -132,3 +132,28 @@ def test_save_empenhos_sof_cache(mock_create):
     calls_list = mock_create.call_args_list
     assert call(data=empenhos_data[0]) in calls_list
     assert call(data=empenhos_data[1]) in calls_list
+
+
+MockedFailedRequest = namedtuple(
+    'MockedFailedRequest',
+    ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
+
+
+@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.dao.empenhos_failed_requests_dao.delete')
+@patch('contratos.dao.empenhos_failed_requests_dao.get_all')
+def test_retry_empenhos_sof_failed_api_requests(
+        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos):
+    mocked_failed = [MockedFailedRequest(111, 2018, 2018),
+                     MockedFailedRequest(222, 2018, 2019)]
+    mock_get_all_failed.return_value = mocked_failed
+
+    services.retry_empenhos_sof_failed_api_requests()
+
+    assert 2 == mock_get_and_save_empenhos.call_count
+    for failed_request in mocked_failed:
+        mock_get_and_save_empenhos.assert_any_call(
+            cod_contrato=failed_request.cod_contrato,
+            ano_exercicio=failed_request.ano_exercicio,
+            ano_empenho=failed_request.ano_empenho)
+        mock_delete_failed.assert_any_call(failed_request)

@@ -3,7 +3,8 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-from contratos.models import EmpenhoSOFCache, EmpenhoSOFFailedAPIRequest
+from contratos.dao import empenhos_failed_requests_dao
+from contratos.models import EmpenhoSOFCache
 
 
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
@@ -12,7 +13,7 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
 
     empenhos_list = []
     for year in years:
-        data = _get_by_ano_empenho(
+        data = get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=year)
         if data:
@@ -20,7 +21,7 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
     return empenhos_list
 
 
-def _get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
+def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
     url = (
         'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
         f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'
@@ -33,7 +34,7 @@ def _get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
         response = requests.get(url, headers=headers)
     except Exception as e:
         error_code = -1
-        _save_failed_api_request(
+        empenhos_failed_requests_dao.create(
             cod_contrato=cod_contrato,
             ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho,
@@ -45,7 +46,7 @@ def _get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
     if response.status_code != 200:
         error_code = response.status_code
-        _save_failed_api_request(
+        empenhos_failed_requests_dao.create(
             cod_contrato=cod_contrato,
             ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho,
@@ -57,13 +58,6 @@ def _get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
     data = response.json()
     return data['lstEmpenhos']
-
-
-def _save_failed_api_request(*, cod_contrato, ano_exercicio, ano_empenho,
-                             error_code):
-    return EmpenhoSOFFailedAPIRequest.objects.create(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
-        ano_empenho=ano_empenho, error_code=error_code)
 
 
 def create(*, data):
