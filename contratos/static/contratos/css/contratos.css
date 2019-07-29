@@ -36,5 +36,10 @@ body > header {
 #total footer p{
   align-self: end;
   max-width: 35rem;
-  opacity: 0.5;
+  color: #7b858d;
+  font-family: 'Ubuntu';
+}
+
+#total .bar span.value{
+  color: #222b34;
 }
