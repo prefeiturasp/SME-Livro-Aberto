@@ -5,3 +5,29 @@ body > header {
   background-position: 75% 0;
   background-size: auto 100%;
 }
+
+#total header{
+  text-align: center;
+  font-size: 2em;
+  width: 41rem;
+  margin: auto;
+}
+
+.big-number{
+  font-size: 2em;
+  font-weight: bolder;
+  display: block;
+}
+
+#total footer{
+  display: flex;
+  font-size: .85em;
+  line-height: 1rem;
+  padding: 1rem;
+}
+
+#total footer p{
+  align-self: end;
+  max-width: 35rem;
+  opacity: 0.5;
+}
