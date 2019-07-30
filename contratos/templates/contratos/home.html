@@ -1,0 +1,59 @@
+{% extends 'base.html'  %}{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Contratos{% endblock %}
+
+{%block head %}
+  <meta property="og:locale" content="pt_BR">
+
+  <meta property="og:title" content="Transparência em Contratos - SMESP">
+  <meta property="og:site_name" content="Transparência em Contratos - SMESP">
+  <meta property="og:description" content="Conheça a ferramenta Transparência em Contratos da Secretaria da Educação de São Paulo.">
+
+  <meta property="og:type" content="website">
+
+
+  <meta property="og:image" content="{% static 'contratos/img/og-contratos.png' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="854">
+  <meta property="og:image:height" content="216">
+
+  <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+{% endblock %}
+
+{%block header %}
+  <h1>Transparência em Contratos</h1>
+  <p>Execução de Contratos da Educação em São Paulo</p>
+  {% include '_header_nav.html' with about='contratos:sobre' %}
+{% endblock %}
+{%block sections %}
+  <section id="total">
+    <div class="wrapper">
+    </div>
+  </section>
+  <section id="destino">
+    <div class="wrapper">
+      <h2>Este valor teve como <em>destino</em></h2>
+      <ul class="legend">
+          {% for gnd in gnds %}
+          <li class="fg-{{ gnd.slug }}" data-gnd="{{ gnd.slug }}">
+              {% include 'contratos/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
+          </li>
+          {% endfor %}
+      </ul>
+    </div>
+  </section>
+  <section id="top-5">
+    <div class="wrapper">
+      <h2>Top 5 <em>contratos</em></h2>
+      <div class="actions">
+          <a class="btn" href="#">Download de Dados</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{%block fb_link %}https://www.facebook.com/sharer/sharer.php?u=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/contratos/{% endblock %}
+
+{%block tw_link %}https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Geologia%20Orçamentária%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/contratos/{% endblock %}

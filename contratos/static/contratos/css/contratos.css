@@ -1,0 +1,7 @@
+body > header {
+  background-color: #259B95;
+  background-image: url('../img/bkg-contratos-header.svg');
+  background-repeat: repeat-x;
+  background-position: 75% 0;
+  background-size: auto 100%;
+}
