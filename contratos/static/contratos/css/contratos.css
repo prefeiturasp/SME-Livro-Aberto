@@ -80,3 +80,12 @@ section#top-5{
   background-color: #222b34;
   color: #fff;
 }
+
+section#top-5 select{
+  border-radius: 1em;
+  background-color: #80a684;
+  color: #222b34;
+  padding-left: 1em;
+  background-image: url('../img/dropdown.svg');
+  background-position: 99% center;
+}
