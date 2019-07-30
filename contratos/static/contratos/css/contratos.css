@@ -39,7 +39,7 @@ body > header {
   font-family: 'Ubuntu';
 }
 
-thead th, section#data-table,
+thead th,
 section#social,
 #total .bar span.value{
   color: #222b34;
@@ -50,7 +50,7 @@ section#social,
   color: inherit;
 }
 
-thead th, section#data-table{
+thead th{
   background-color: #809684;
 }
 
