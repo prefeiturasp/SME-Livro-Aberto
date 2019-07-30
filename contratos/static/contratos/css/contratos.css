@@ -39,6 +39,8 @@ body > header {
   font-family: 'Ubuntu';
 }
 
+thead th, section#data-table,
+section#social,
 #total .bar span.value{
   color: #222b34;
 }
@@ -47,4 +49,21 @@ body > header {
   padding: 0 0.5em 0 0;
   color: inherit;
   background-size: 0.5em;
+}
+
+thead th, section#data-table{
+  background-color: #809684;
+}
+
+section#social{
+  background-color: #f9faf9;
+}
+
+section#social a{
+  color: #80a684;
+}
+
+section#top-5{
+  background-color: #222b34;
+  color: #fff;
 }
