@@ -57,7 +57,7 @@ thead th{
 tbody tr td:last-child:before{
   content: '';
   display: inline-block;
-  background-image: url('/static/img/icon-info.svg');
+  background-image: url('../../img/icon-info.svg');
   background-repeat: no-repeat;
   background-size: 1em;
   background-position: center;
