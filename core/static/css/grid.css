@@ -153,14 +153,6 @@ thead > tr > *{
   box-sizing: border-box;
 }
 
-thead > tr > *::before{
-  content: '';
-  position: absolute;
-  height: 1.2em;
-  left: 0;
-  border-right: solid 1px currentColor;
-}
-
 tr > *{
   text-align: right;
   padding: 1em;
