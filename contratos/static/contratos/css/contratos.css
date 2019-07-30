@@ -5,3 +5,46 @@ body > header {
   background-position: 75% 0;
   background-size: auto 100%;
 }
+
+#total header{
+  text-align: center;
+  font-size: 2em;
+  max-width: 41rem;
+  text-overflow: ellipsis;
+  margin: auto;
+}
+
+.big-number{
+  font-size: 2em;
+  font-weight: bolder;
+  display: block;
+  text-overflow: ellipsis;
+  overflow-x: auto;
+}
+
+#total .body{
+  margin: 3em 0 2em;
+}
+
+#total footer{
+  display: flex;
+  font-size: .85em;
+  line-height: 1rem;
+}
+
+#total footer p{
+  align-self: end;
+  max-width: 35rem;
+  color: #7b858d;
+  font-family: 'Ubuntu';
+}
+
+#total .bar span.value{
+  color: #222b34;
+}
+
+#total select{
+  padding: 0 0.5em 0 0;
+  color: inherit;
+  background-size: 0.5em;
+}
