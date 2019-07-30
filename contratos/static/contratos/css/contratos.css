@@ -55,6 +55,20 @@ thead th, section#data-table{
   background-color: #809684;
 }
 
+tbody tr td:last-child:before{
+  content: '';
+  display: inline-block;
+  background-image: url('/static/img/icon-info.svg');
+  background-repeat: no-repeat;
+  background-size: 1em;
+  background-position: center;
+  filter: invert();
+  width: 1em;
+  height: 1em;
+  box-sizing: border-box;
+  cursor: help;
+}
+
 section#social{
   background-color: #f9faf9;
 }
