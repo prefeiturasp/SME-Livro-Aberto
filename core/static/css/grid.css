@@ -138,7 +138,7 @@ table{
   width: 100%;
   border-collapse: collapse;
   border-radius: 3px;
-  margin-bottom: 2em;
+  margin: 2em 0;
 }
 
 table thead tr th:first-child{
