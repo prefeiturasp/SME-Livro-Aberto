@@ -106,6 +106,7 @@ select{
   background-image: url('../img/dropdown.svg');
   background-repeat: no-repeat;
   background-position: center right;
+  background-size: 1rem;
   -moz-appearance: none;
   -webkit-appearance: none;
 }

@@ -48,7 +48,6 @@ section#social,
 #total select{
   padding: 0 0.5em 0 0;
   color: inherit;
-  background-size: 0.5em;
 }
 
 thead th, section#data-table{
