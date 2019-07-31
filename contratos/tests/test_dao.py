@@ -1,5 +1,3 @@
-import pytest
-
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
@@ -11,40 +9,12 @@ from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
 from contratos.models import (
     ContratoRaw, EmpenhoSOFCache, EmpenhoSOFCacheTemp,
     EmpenhoSOFFailedAPIRequest)
+from contratos.tests.fixtures import (
+    EMPENHOS_DAO_CREATE_DATA,
+    EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA,
+    SOF_API_REQUEST_RETURN_DICT)
 
 
-SOF_RETURN_DICT = {
-    "metadados": {
-        "txtStatus": "OK",
-        "txtMensagemErro": None,
-        "qtdPaginas": 1
-    },
-    "lstEmpenhos": [
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 17400,
-            "valLiquidado": 0,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 17400
-        },
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 1160,
-            "valLiquidado": 1160,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 1160
-        }
-    ]
-}
-
-
-@pytest.mark.django_db
 class ContratoRawDAOTestCase(TestCase):
 
     @patch.object(ContratoRaw.objects, 'all')
@@ -75,40 +45,8 @@ class EmpenhoDAOTestCase(TestCase):
 
     @patch('contratos.dao.empenhos_dao.get_by_ano_empenho')
     def test_get_by_codcontrato_and_anoexercicio(self, mock_get_by_ano):
-        empenhos_2018 = [
-            {
-                "anoEmpenho": 2018,
-                "codCategoria": 3,
-                "valAnuladoEmpenho": 0,
-                "valEmpenhadoLiquido": 1160,
-                "valLiquidado": 1160,
-                "valPagoExercicio": 0,
-                "valPagoRestos": 0,
-                "valTotalEmpenhado": 1160
-            },
-            {
-                "anoEmpenho": 2018,
-                "codCategoria": 3,
-                "valAnuladoEmpenho": 0,
-                "valEmpenhadoLiquido": 200,
-                "valLiquidado": 100,
-                "valPagoExercicio": 0,
-                "valPagoRestos": 0,
-                "valTotalEmpenhado": 100
-            },
-        ]
-        empenhos_2019 = [
-            {
-                "anoEmpenho": 2019,
-                "codCategoria": 3,
-                "valAnuladoEmpenho": 0,
-                "valEmpenhadoLiquido": 1160,
-                "valLiquidado": 1160,
-                "valPagoExercicio": 0,
-                "valPagoRestos": 0,
-                "valTotalEmpenhado": 1160
-            },
-        ]
+        empenhos_2018 = EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA[2018]
+        empenhos_2019 = EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA[2019]
 
         cod_contrato = 555
         ano_exercicio = 2018
@@ -134,7 +72,7 @@ class EmpenhoDAOTestCase(TestCase):
         ano_empenho = 2019
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = SOF_RETURN_DICT
+        mock_get.return_value.json.return_value = SOF_API_REQUEST_RETURN_DICT
         url = (
             'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
             f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'
@@ -147,7 +85,7 @@ class EmpenhoDAOTestCase(TestCase):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
-        assert SOF_RETURN_DICT["lstEmpenhos"] == ret
+        assert SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"] == ret
         mock_get.assert_called_once_with(url, headers=headers)
 
     @patch('contratos.dao.empenhos_failed_requests_dao.create')
@@ -159,7 +97,7 @@ class EmpenhoDAOTestCase(TestCase):
         ano_empenho = 2019
 
         mock_get.return_value.status_code = 500
-        mock_get.return_value.json.return_value = SOF_RETURN_DICT
+        mock_get.return_value.json.return_value = SOF_API_REQUEST_RETURN_DICT
 
         ret = empenhos_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
@@ -208,52 +146,7 @@ class EmpenhoDAOTestCase(TestCase):
 
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
     def test_create(self, mock_Empenho):
-        empenho_data = {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "txtCategoriaEconomica": "Despesas Correntes",
-            "codElemento": "39",
-            "codEmpenho": 61374,
-            "codEmpresa": "01",
-            "codFonteRecurso": "00",
-            "codFuncao": "12",
-            "codGrupo": 3,
-            "txtGrupoDespesa": "Outras Despesas Correntes",
-            "codItemDespesa": "01",
-            "codModalidade": 90,
-            "txtModalidadeAplicacao": "Aplicações Diretas",
-            "codOrgao": "16",
-            "codProcesso": 6016201900321630,
-            "codPrograma": "3026",
-            "codProjetoAtividade": "2831",
-            "codSubElemento": "41",
-            "codSubFuncao": "368",
-            "codUnidade": "22",
-            "datEmpenho": "10/07/2019",
-            "mesEmpenho": 12,
-            "nomEmpresa": "PREFEITURA DO MUNICÍPIO DE SÃO PAULO",
-            "numCpfCnpj": "26092777000117",
-            "numReserva": 41070,
-            "txtDescricaoOrgao": "Secretaria Municipal de Educação",
-            "txtDescricaoUnidade": "Diretoria Regional de Educação Butantã",
-            "txtDescricaoElemento": "Outros Serviços de Terceiros - Pessoa Jur",
-            "txtDescricaoFonteRecurso": "Tesouro Municipal",
-            "txtDescricaoFuncao": "Educação",
-            "txtDescricaoItemDespesa": "Coffee Break",
-            "txtDescricaoPrograma": "Acesso a educação e qualidade do ensino",
-            "txtDescricaoProjetoAtividade": "Ações e Materiais de Apoio Did",
-            "txtRazaoSocial": "YONE DIAS YAMASSAKI -EPP",
-            "txtDescricaoSubElemento": "Fornecimento de Alimentação",
-            "txtDescricaoSubFuncao": "Educação Básica",
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 1160,
-            "valLiquidado": 1160,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 1160,
-            "anoExercicio": 2019,
-            "codContrato": 5555,
-        }
+        empenho_data = EMPENHOS_DAO_CREATE_DATA
         mocked_return = Mock(EmpenhoSOFCache, autospec=True)
         mock_Empenho.objects.create.return_value = mocked_return
 
