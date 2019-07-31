@@ -62,3 +62,13 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
 def create(*, data):
     return EmpenhoSOFCache.objects.create(**data)
+
+
+def create_from_temp_table_obj(*, empenho_temp):
+    empenho = EmpenhoSOFCache()
+    for field in empenho_temp._meta.fields:
+        if field.primary_key is True:
+            continue
+        setattr(empenho, field.name, getattr(empenho_temp, field.name))
+    empenho.save()
+    return empenho

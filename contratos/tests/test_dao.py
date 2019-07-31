@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 from django.conf import settings
 from freezegun import freeze_time
+from model_mommy import mommy
 
 from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
@@ -25,19 +26,6 @@ class ContratoRawDAOTestCase(TestCase):
 
         ret = contratos_raw_dao.get_all()
         assert ret == mocked_contratos
-        mock_all.assert_called_once_with()
-
-
-class EmpenhosTempDaoTestCase(TestCase):
-
-    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
-    def test_get_all(self, mock_all):
-        mocked_empenhos = [Mock(spec=EmpenhoSOFCacheTemp),
-                           Mock(spec=EmpenhoSOFCacheTemp)]
-        mock_all.return_value = mocked_empenhos
-
-        ret = empenhos_temp_dao.get_all()
-        assert ret == mocked_empenhos
         mock_all.assert_called_once_with()
 
 
@@ -153,3 +141,33 @@ class EmpenhoDAOTestCase(TestCase):
         ret = empenhos_dao.create(data=empenho_data)
         mock_Empenho.objects.create.assert_called_once_with(**empenho_data)
         assert ret == mocked_return
+
+    @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
+    def test_create_from_temp_table_data(self, mock_EmpenhoSOF):
+        mocked_empenho = Mock(spec=EmpenhoSOFCache)
+        mock_EmpenhoSOF.return_value = mocked_empenho
+
+        empenho_temp = mommy.prepare(EmpenhoSOFCacheTemp, _fill_optional=True)
+
+        empenho = empenhos_dao.create_from_temp_table_obj(
+            empenho_temp=empenho_temp)
+
+        for field in empenho_temp._meta.fields:
+            if field.primary_key is True:
+                continue
+            assert (getattr(empenho, field.name)
+                    == getattr(empenho_temp, field.name))
+        mocked_empenho.save.assert_called_once_with()
+
+
+class EmpenhosTempDaoTestCase(TestCase):
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_empenhos = [Mock(spec=EmpenhoSOFCacheTemp),
+                           Mock(spec=EmpenhoSOFCacheTemp)]
+        mock_all.return_value = mocked_empenhos
+
+        ret = empenhos_temp_dao.get_all()
+        assert ret == mocked_empenhos
+        mock_all.assert_called_once_with()
