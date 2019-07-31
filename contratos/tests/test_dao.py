@@ -5,12 +5,12 @@ from unittest.mock import Mock, patch
 
 from django.conf import settings
 from freezegun import freeze_time
-from model_mommy import mommy
 
-from contratos.dao import contratos_raw_dao, empenhos_dao, \
+from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
-from contratos.models import (ContratoRaw, EmpenhoSOFCache,
-                              EmpenhoSOFFailedAPIRequest)
+from contratos.models import (
+    ContratoRaw, EmpenhoSOFCache, EmpenhoSOFCacheTemp,
+    EmpenhoSOFFailedAPIRequest)
 
 
 SOF_RETURN_DICT = {
@@ -47,17 +47,30 @@ SOF_RETURN_DICT = {
 @pytest.mark.django_db
 class ContratoRawDAOTestCase(TestCase):
 
-    def test_get_all(self):
-        expected_contratos = mommy.make(ContratoRaw, _quantity=2)
+    @patch.object(ContratoRaw.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_contratos = [Mock(spec=ContratoRaw),
+                            Mock(spec=ContratoRaw)]
+        mock_all.return_value = mocked_contratos
 
         ret = contratos_raw_dao.get_all()
-
-        assert 2 == len(ret)
-        for contrato in expected_contratos:
-            assert contrato in ret
+        assert ret == mocked_contratos
+        mock_all.assert_called_once_with()
 
 
-@pytest.mark.django_db
+class EmpenhosTempDaoTestCase(TestCase):
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_empenhos = [Mock(spec=EmpenhoSOFCacheTemp),
+                           Mock(spec=EmpenhoSOFCacheTemp)]
+        mock_all.return_value = mocked_empenhos
+
+        ret = empenhos_temp_dao.get_all()
+        assert ret == mocked_empenhos
+        mock_all.assert_called_once_with()
+
+
 class EmpenhoDAOTestCase(TestCase):
 
     @patch('contratos.dao.empenhos_dao.get_by_ano_empenho')
