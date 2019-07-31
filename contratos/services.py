@@ -1,4 +1,4 @@
-from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
+from contratos.dao import contratos_raw_dao, empenhos_dao,  empenhos_temp_dao, \
     empenhos_failed_requests_dao
 
 
@@ -60,3 +60,11 @@ def retry_empenhos_sof_failed_api_requests():
         print(
             f'{count} empenhos saved for contrato {failed_request.cod_contrato}'
         )
+
+
+def update_empenho_sof_cache_from_temp_table(*, empenhos_dao,
+                                             empenhos_temp_dao):
+    for empenho_temp in empenhos_temp_dao.get_all():
+        empenhos_dao.create_from_temp_table_obj(empenho_temp)
+        empenhos_temp_dao.delete(empenho_temp)
+    print("Empenhos copied from temp table to EmpenhoSOFCache table")

@@ -1,7 +1,11 @@
 from collections import namedtuple
-from unittest.mock import call, patch
+from unittest.mock import call, patch, Mock
+
+from model_mommy import mommy
 
 from contratos import services
+from contratos.dao import empenhos_dao, empenhos_temp_dao
+from contratos.models import EmpenhoSOFCacheTemp
 from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
 
 
@@ -104,3 +108,22 @@ def test_retry_empenhos_sof_failed_api_requests(
             ano_exercicio=failed_request.ano_exercicio,
             ano_empenho=failed_request.ano_empenho)
         mock_delete_failed.assert_any_call(failed_request)
+
+
+def test_update_empenho_sof_cache_from_temp_table():
+    m_empenhos_dao = Mock(spec=empenhos_dao)
+
+    empenhos_temp = mommy.prepare(EmpenhoSOFCacheTemp, _quantity=2)
+    m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
+    m_empenhos_temp_dao.get_all.return_value = empenhos_temp
+
+    services.update_empenho_sof_cache_from_temp_table(
+        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+
+    m_empenhos_temp_dao.get_all.assert_called_once_with()
+    assert 2 == m_empenhos_dao.create_from_temp_table_obj.call_count
+    assert 2 == m_empenhos_temp_dao.delete.call_count
+
+    for empenho_temp in empenhos_temp:
+        m_empenhos_dao.create_from_temp_table_obj.assert_any_call(empenho_temp)
+        m_empenhos_temp_dao.delete.assert_any_call(empenho_temp)
