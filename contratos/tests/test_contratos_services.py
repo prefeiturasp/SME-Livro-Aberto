@@ -1,10 +1,14 @@
+import pytest
+
 from collections import namedtuple
 from unittest.mock import call, patch, Mock
 
 from model_mommy import mommy
 
 from contratos import services
+from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
+from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 from contratos.models import EmpenhoSOFCacheTemp
 from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
 
@@ -127,3 +131,33 @@ def test_update_empenho_sof_cache_from_temp_table():
     for empenho_temp in empenhos_temp:
         m_empenhos_dao.create_from_temp_table_obj.assert_any_call(empenho_temp)
         m_empenhos_temp_dao.delete.assert_any_call(empenho_temp)
+
+
+def test_verify_table_lines_count():
+    m_empenhos_dao = Mock(spec=empenhos_dao)
+    m_empenhos_dao.count_all.return_value = 100
+
+    m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
+    m_empenhos_temp_dao.count_all.return_value = 100
+
+    services.verify_table_lines_count(
+        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+
+    m_empenhos_dao.count_all.assert_called_once_with()
+    m_empenhos_temp_dao.count_all.assert_called_once_with()
+
+
+def test_verify_table_lines_count_raises_exception_when_is_under_limit():
+    m_empenhos_dao = Mock(spec=empenhos_dao)
+    m_empenhos_dao.count_all.return_value = 100
+
+    m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
+    m_empenhos_temp_dao.count_all.return_value = (
+        100 * CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT - 1)
+
+    with pytest.raises(ContratosEmpenhosDifferenceOverLimit):
+        services.verify_table_lines_count(
+            empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+
+    m_empenhos_dao.count_all.assert_called_once_with()
+    m_empenhos_temp_dao.count_all.assert_called_once_with()

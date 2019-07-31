@@ -1,5 +1,7 @@
-from contratos.dao import contratos_raw_dao, empenhos_dao,  empenhos_temp_dao, \
+from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
+from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
+from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 
 
 def fetch_empenhos_from_sof_and_save_to_temp_table():
@@ -68,3 +70,18 @@ def update_empenho_sof_cache_from_temp_table(*, empenhos_dao,
         empenhos_dao.create_from_temp_table_obj(empenho_temp)
         empenhos_temp_dao.delete(empenho_temp)
     print("Empenhos copied from temp table to EmpenhoSOFCache table")
+
+
+def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
+    limit = CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
+    empenhos_count = empenhos_dao.count_all()
+    empenhos_temp_count = empenhos_temp_dao.count_all()
+
+    if empenhos_count and empenhos_temp_count < empenhos_count * limit:
+        percent_limit = round((1 - limit) * 100)
+        msg = (
+            f'O número de linhas na tabela temporária é {percent_limit}% '
+            'menor que o da tabela de produção. Os valores não serão '
+            'atualizados'
+        )
+        raise ContratosEmpenhosDifferenceOverLimit(msg)

@@ -7,6 +7,14 @@ from contratos.dao import empenhos_failed_requests_dao
 from contratos.models import EmpenhoSOFCache
 
 
+def create(*, data):
+    return EmpenhoSOFCache.objects.create(**data)
+
+
+def count_all():
+    pass
+
+
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
     current_year = timezone.now().year
     years = range(ano_exercicio, current_year + 1)
@@ -58,10 +66,6 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
     data = response.json()
     return data['lstEmpenhos']
-
-
-def create(*, data):
-    return EmpenhoSOFCache.objects.create(**data)
 
 
 def create_from_temp_table_obj(*, empenho_temp):
