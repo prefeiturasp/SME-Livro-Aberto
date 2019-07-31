@@ -12,7 +12,7 @@ def create(*, data):
 
 
 def count_all():
-    pass
+    return EmpenhoSOFCache.objects.count()
 
 
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):

@@ -155,6 +155,14 @@ class EmpenhoDAOTestCase(TestCase):
                     == getattr(empenho_temp, field.name))
         mocked_empenho.save.assert_called_once_with()
 
+    @patch.object(EmpenhoSOFCache.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = empenhos_dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
+
 
 class EmpenhosTempDaoTestCase(TestCase):
 
@@ -186,6 +194,14 @@ class EmpenhosTempDaoTestCase(TestCase):
         empenhos_temp_dao.delete(empenho)
 
         empenho.delete.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = empenhos_temp_dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
 
 
 class EmpenhosFailedRequestsDaoTestCase(TestCase):

@@ -10,7 +10,7 @@ def get_all():
 
 
 def count_all():
-    pass
+    return EmpenhoSOFCacheTemp.objects.count()
 
 
 def delete(obj):
