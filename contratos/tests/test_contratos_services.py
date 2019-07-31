@@ -1,6 +1,7 @@
 import pytest
 
 from collections import namedtuple
+from unittest import TestCase
 from unittest.mock import call, patch, Mock
 
 from model_mommy import mommy
@@ -133,31 +134,31 @@ def test_update_empenho_sof_cache_from_temp_table():
         m_empenhos_temp_dao.delete.assert_any_call(empenho_temp)
 
 
-def test_verify_table_lines_count():
-    m_empenhos_dao = Mock(spec=empenhos_dao)
-    m_empenhos_dao.count_all.return_value = 100
+class TestVerifyTableLinesCount(TestCase):
 
-    m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
-    m_empenhos_temp_dao.count_all.return_value = 100
+    def setUp(self):
+        self.m_empenhos_dao = Mock(spec=empenhos_dao)
+        self.m_empenhos_dao.count_all.return_value = 100
 
-    services.verify_table_lines_count(
-        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+        self.m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
+        self.m_empenhos_temp_dao.count_all.return_value = 100
 
-    m_empenhos_dao.count_all.assert_called_once_with()
-    m_empenhos_temp_dao.count_all.assert_called_once_with()
-
-
-def test_verify_table_lines_count_raises_exception_when_is_under_limit():
-    m_empenhos_dao = Mock(spec=empenhos_dao)
-    m_empenhos_dao.count_all.return_value = 100
-
-    m_empenhos_temp_dao = Mock(spec=empenhos_temp_dao)
-    m_empenhos_temp_dao.count_all.return_value = (
-        100 * CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT - 1)
-
-    with pytest.raises(ContratosEmpenhosDifferenceOverLimit):
+    def test_verify_table_lines_count(self):
         services.verify_table_lines_count(
-            empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+            empenhos_dao=self.m_empenhos_dao,
+            empenhos_temp_dao=self.m_empenhos_temp_dao)
 
-    m_empenhos_dao.count_all.assert_called_once_with()
-    m_empenhos_temp_dao.count_all.assert_called_once_with()
+        self.m_empenhos_dao.count_all.assert_called_once_with()
+        self.m_empenhos_temp_dao.count_all.assert_called_once_with()
+
+    def test_raises_exception_when_is_under_limit(self):
+        self.m_empenhos_temp_dao.count_all.return_value = (
+            100 * CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT - 1)
+
+        with pytest.raises(ContratosEmpenhosDifferenceOverLimit):
+            services.verify_table_lines_count(
+                empenhos_dao=self.m_empenhos_dao,
+                empenhos_temp_dao=self.m_empenhos_temp_dao)
+
+        self.m_empenhos_dao.count_all.assert_called_once_with()
+        self.m_empenhos_temp_dao.count_all.assert_called_once_with()
