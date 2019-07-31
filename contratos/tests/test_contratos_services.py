@@ -2,37 +2,7 @@ from collections import namedtuple
 from unittest.mock import call, patch
 
 from contratos import services
-
-
-SOF_RETURN_DICT = {
-    "metadados": {
-        "txtStatus": "OK",
-        "txtMensagemErro": None,
-        "qtdPaginas": 1
-    },
-    "lstEmpenhos": [
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 17400,
-            "valLiquidado": 0,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 17400
-        },
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 1160,
-            "valLiquidado": 1160,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 1160
-        }
-    ]
-}
+from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
 
 
 MockedContratoRaw = namedtuple('MockedContratoRaw',
@@ -65,7 +35,7 @@ def test_get_empenhos_for_contrato_and_save(
     ano_exercicio = 2019
     mocked_empenhos_data_return = ['empenhos_data']
 
-    mock_get_empenhos.return_value = SOF_RETURN_DICT
+    mock_get_empenhos.return_value = SOF_API_REQUEST_RETURN_DICT
     mock_build_data.return_value = mocked_empenhos_data_return
 
     services.get_empenhos_for_contrato_and_save(
@@ -74,7 +44,7 @@ def test_get_empenhos_for_contrato_and_save(
     mock_get_empenhos.assert_called_once_with(
         cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
     mock_build_data.assert_called_once_with(
-        sof_data=SOF_RETURN_DICT,
+        sof_data=SOF_API_REQUEST_RETURN_DICT,
         cod_contrato=cod_contrato,
         ano_exercicio=ano_exercicio)
     mock_save_empenhos.assert_called_once_with(
@@ -86,11 +56,12 @@ def test_build_empenhos_data():
     ano_exercicio = 2019
 
     empenhos_data = services.build_empenhos_data(
-        sof_data=SOF_RETURN_DICT["lstEmpenhos"], ano_exercicio=ano_exercicio,
+        sof_data=SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"],
+        ano_exercicio=ano_exercicio,
         cod_contrato=cod_contrato)
 
     expected = []
-    for emp_dict in SOF_RETURN_DICT['lstEmpenhos']:
+    for emp_dict in SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']:
         emp_dict.update({'anoExercicio': ano_exercicio,
                          'codContrato': cod_contrato})
         expected.append(emp_dict)
@@ -100,32 +71,8 @@ def test_build_empenhos_data():
 
 @patch('contratos.dao.empenhos_temp_dao.create')
 def test_save_empenhos_sof_cache(mock_create):
-    empenhos_data = [
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 17400,
-            "valLiquidado": 0,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 17400,
-            "anoExercicio": 2019,
-            "codContrato": 5555,
-        },
-        {
-            "anoEmpenho": 2019,
-            "codCategoria": 3,
-            "valAnuladoEmpenho": 0,
-            "valEmpenhadoLiquido": 1160,
-            "valLiquidado": 1160,
-            "valPagoExercicio": 0,
-            "valPagoRestos": 0,
-            "valTotalEmpenhado": 1160,
-            "anoExercicio": 2019,
-            "codContrato": 5555,
-        }
-    ]
+    empenhos_data = SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']
+
     services.save_empenhos_sof_cache(empenhos_data=empenhos_data)
 
     assert 2 == mock_create.call_count
