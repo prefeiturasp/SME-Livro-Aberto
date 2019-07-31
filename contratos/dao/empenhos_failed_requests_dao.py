@@ -11,5 +11,9 @@ def get_all():
     return EmpenhoSOFFailedAPIRequest.objects.all()
 
 
+def count_all():
+    return EmpenhoSOFFailedAPIRequest.objects.count()
+
+
 def delete(obj):
     obj.delete()

@@ -247,3 +247,11 @@ class EmpenhosFailedRequestsDaoTestCase(TestCase):
         empenhos_failed_requests_dao.delete(empenho)
 
         empenho.delete.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = empenhos_failed_requests_dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
