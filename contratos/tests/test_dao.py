@@ -13,6 +13,7 @@ from contratos.models import (
 from contratos.tests.fixtures import (
     EMPENHOS_DAO_CREATE_DATA,
     EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA,
+    EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA,
     SOF_API_REQUEST_RETURN_DICT)
 
 
@@ -118,12 +119,7 @@ class EmpenhoDAOTestCase(TestCase):
     @patch('contratos.dao.empenhos_failed_requests_dao'
            '.EmpenhoSOFFailedAPIRequest')
     def test_save_failed_api_request(self, mock_EmpenhoFailed):
-        failed_request_data = {
-            "cod_contrato": 555,
-            "ano_exercicio": 2018,
-            "ano_empenho": 2019,
-            "error_code": 500,
-        }
+        failed_request_data = EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA
         mocked_return = Mock(EmpenhoSOFFailedAPIRequest, autospec=True)
         mock_EmpenhoFailed.objects.create.return_value = mocked_return
 
@@ -135,12 +131,12 @@ class EmpenhoDAOTestCase(TestCase):
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
     def test_create(self, mock_Empenho):
         empenho_data = EMPENHOS_DAO_CREATE_DATA
-        mocked_return = Mock(EmpenhoSOFCache, autospec=True)
-        mock_Empenho.objects.create.return_value = mocked_return
+        empenho = mommy.prepare(EmpenhoSOFCache, **empenho_data)
+        mock_Empenho.objects.create.return_value = empenho
 
         ret = empenhos_dao.create(data=empenho_data)
         mock_Empenho.objects.create.assert_called_once_with(**empenho_data)
-        assert ret == mocked_return
+        assert ret == empenho
 
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
     def test_create_from_temp_table_data(self, mock_EmpenhoSOF):
@@ -171,3 +167,57 @@ class EmpenhosTempDaoTestCase(TestCase):
         ret = empenhos_temp_dao.get_all()
         assert ret == mocked_empenhos
         mock_all.assert_called_once_with()
+
+    @patch('contratos.dao.empenhos_temp_dao.EmpenhoSOFCacheTemp')
+    def test_create(self, mock_EmpenhoTemp):
+        empenho_data = EMPENHOS_DAO_CREATE_DATA
+        empenho = mommy.prepare(EmpenhoSOFCacheTemp, **empenho_data)
+        mock_EmpenhoTemp.objects.create.return_value = empenho
+
+        ret = empenhos_temp_dao.create(data=empenho_data)
+        mock_EmpenhoTemp.objects.create.assert_called_once_with(**empenho_data)
+        assert ret == empenho
+
+    @patch('contratos.dao.empenhos_temp_dao.EmpenhoSOFCacheTemp')
+    def test_delete(self, mock_EmpenhoTemp):
+        empenho = mommy.prepare(EmpenhoSOFCacheTemp, _fill_optional=True)
+        empenho.delete = Mock()
+
+        empenhos_temp_dao.delete(empenho)
+
+        empenho.delete.assert_called_once_with()
+
+
+class EmpenhosFailedRequestsDaoTestCase(TestCase):
+
+    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_empenhos = [Mock(spec=EmpenhoSOFFailedAPIRequest),
+                           Mock(spec=EmpenhoSOFFailedAPIRequest)]
+        mock_all.return_value = mocked_empenhos
+
+        ret = empenhos_failed_requests_dao.get_all()
+        assert ret == mocked_empenhos
+        mock_all.assert_called_once_with()
+
+    @patch('contratos.dao.empenhos_failed_requests_dao'
+           '.EmpenhoSOFFailedAPIRequest')
+    def test_create(self, mock_EmpenhoFailed):
+        empenho_data = EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA
+        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, **empenho_data)
+        mock_EmpenhoFailed.objects.create.return_value = empenho
+
+        ret = empenhos_failed_requests_dao.create(**empenho_data)
+        mock_EmpenhoFailed.objects.create.assert_called_once_with(
+            **empenho_data)
+        assert ret == empenho
+
+    @patch('contratos.dao.empenhos_failed_requests_dao'
+           '.EmpenhoSOFFailedAPIRequest')
+    def test_delete(self, mock_EmpenhoFailed):
+        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, _fill_optional=True)
+        empenho.delete = Mock()
+
+        empenhos_failed_requests_dao.delete(empenho)
+
+        empenho.delete.assert_called_once_with()

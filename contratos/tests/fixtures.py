@@ -113,3 +113,11 @@ EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA = {
         },
     ]
 }
+
+
+EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA = {
+    "cod_contrato": 555,
+    "ano_exercicio": 2018,
+    "ano_empenho": 2019,
+    "error_code": 500,
+}

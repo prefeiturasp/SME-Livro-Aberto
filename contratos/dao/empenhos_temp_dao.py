@@ -7,3 +7,7 @@ def create(*, data):
 
 def get_all():
     return EmpenhoSOFCacheTemp.objects.all()
+
+
+def delete(obj):
+    obj.delete()
