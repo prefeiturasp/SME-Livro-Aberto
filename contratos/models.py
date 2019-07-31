@@ -106,6 +106,67 @@ class EmpenhoSOFCache(models.Model):
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
 
 
+class EmpenhoSOFCacheTemp(models.Model):
+    # contrato fields
+    codContrato = models.IntegerField(blank=True, null=True)
+    anoExercicio = models.IntegerField(blank=True, null=True)
+    # empenho fields
+    anoEmpenho = models.IntegerField(blank=True, null=True)
+    codCategoria = models.IntegerField(blank=True, null=True)
+    txtCategoriaEconomica = models.CharField(blank=True, max_length=250,
+                                             null=True)
+    codElemento = models.IntegerField(blank=True, null=True)
+    codEmpenho = models.IntegerField(blank=True, null=True)
+    codEmpresa = models.IntegerField(blank=True, null=True)
+    codFonteRecurso = models.IntegerField(blank=True, null=True)
+    codFuncao = models.IntegerField(blank=True, null=True)
+    codGrupo = models.IntegerField(blank=True, null=True)
+    txtGrupoDespesa = models.CharField(blank=True, max_length=250, null=True)
+    codItemDespesa = models.IntegerField(blank=True, null=True)
+    codModalidade = models.IntegerField(blank=True, null=True)
+    txtModalidadeAplicacao = models.CharField(blank=True, max_length=250,
+                                              null=True)
+    codOrgao = models.IntegerField(blank=True, null=True)
+    codProcesso = models.BigIntegerField(blank=True, null=True)
+    codPrograma = models.IntegerField(blank=True, null=True)
+    codProjetoAtividade = models.IntegerField(blank=True, null=True)
+    codSubElemento = models.IntegerField(blank=True, null=True)
+    codSubFuncao = models.IntegerField(blank=True, null=True)
+    codUnidade = models.IntegerField(blank=True, null=True)
+    datEmpenho = models.CharField(blank=True, max_length=15, null=True)
+    mesEmpenho = models.IntegerField(blank=True, null=True)
+    nomEmpresa = models.CharField(blank=True, max_length=250, null=True)
+    numCpfCnpj = models.CharField(blank=True, max_length=14, null=True)
+    numReserva = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgao = models.CharField(blank=True, max_length=150,
+                                         null=True)
+    txtDescricaoUnidade = models.CharField(blank=True, max_length=200,
+                                           null=True)
+    txtDescricaoElemento = models.CharField(blank=True, max_length=200,
+                                            null=True)
+    txtDescricaoFonteRecurso = models.CharField(blank=True, max_length=150,
+                                                null=True)
+    txtDescricaoFuncao = models.CharField(blank=True, max_length=150,
+                                          null=True)
+    txtDescricaoItemDespesa = models.CharField(blank=True, max_length=150,
+                                               null=True)
+    txtDescricaoPrograma = models.CharField(blank=True, max_length=150,
+                                            null=True)
+    txtDescricaoProjetoAtividade = models.CharField(blank=True, max_length=150,
+                                                    null=True)
+    txtRazaoSocial = models.CharField(blank=True, max_length=200, null=True)
+    txtDescricaoSubElemento = models.CharField(blank=True, max_length=150,
+                                               null=True)
+    txtDescricaoSubFuncao = models.CharField(blank=True, max_length=150,
+                                             null=True)
+    valAnuladoEmpenho = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquido = models.FloatField(blank=True, null=True)
+    valLiquidado = models.FloatField(blank=True, null=True)
+    valPagoExercicio = models.FloatField(blank=True, null=True)
+    valPagoRestos = models.FloatField(blank=True, null=True)
+    valTotalEmpenhado = models.FloatField(blank=True, null=True)
+
+
 class EmpenhoSOFFailedAPIRequest(models.Model):
     cod_contrato = models.IntegerField()
     ano_exercicio = models.IntegerField()
