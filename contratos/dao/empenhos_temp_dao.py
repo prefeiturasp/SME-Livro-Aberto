@@ -15,3 +15,7 @@ def count_all():
 
 def delete(obj):
     obj.delete()
+
+
+def erase_all():
+    EmpenhoSOFCacheTemp.objects.all().delete()
