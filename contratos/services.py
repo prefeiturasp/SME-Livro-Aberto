@@ -1,8 +1,8 @@
-from contratos.dao import contratos_raw_dao, empenhos_dao, \
+from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
 
 
-def update_empenho_sof_cache_table():
+def fetch_empenhos_from_sof_and_save_to_temp_table():
     for contrato in contratos_raw_dao.get_all():
         count = get_empenhos_for_contrato_and_save(
             cod_contrato=contrato.codcontrato,
@@ -44,7 +44,7 @@ def build_empenhos_data(*, sof_data, ano_exercicio, cod_contrato):
 
 def save_empenhos_sof_cache(*, empenhos_data):
     for data in empenhos_data:
-        empenhos_dao.create(data=data)
+        empenhos_temp_dao.create(data=data)
 
     return len(empenhos_data)
 

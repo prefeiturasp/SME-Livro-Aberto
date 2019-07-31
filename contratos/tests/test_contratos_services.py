@@ -41,13 +41,13 @@ MockedContratoRaw = namedtuple('MockedContratoRaw',
 
 @patch('contratos.services.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.contratos_raw_dao.get_all')
-def test_update_empenho_sof_cache_table(
+def test_fetch_empenhos_from_sof_and_save_to_temp_table(
         mock_get_all, mock_get_and_save_empenhos):
     mocked_contratos = [MockedContratoRaw(111, 2018),
                         MockedContratoRaw(222, 2019)]
     mock_get_all.return_value = mocked_contratos
 
-    services.update_empenho_sof_cache_table()
+    services.fetch_empenhos_from_sof_and_save_to_temp_table()
 
     assert 2 == mock_get_and_save_empenhos.call_count
     for contrato in mocked_contratos:
@@ -98,7 +98,7 @@ def test_build_empenhos_data():
     assert expected == empenhos_data
 
 
-@patch('contratos.dao.empenhos_dao.create')
+@patch('contratos.dao.empenhos_temp_dao.create')
 def test_save_empenhos_sof_cache(mock_create):
     empenhos_data = [
         {
