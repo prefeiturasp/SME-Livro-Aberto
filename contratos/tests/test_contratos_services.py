@@ -162,3 +162,26 @@ class TestVerifyTableLinesCount(TestCase):
 
         self.m_empenhos_dao.count_all.assert_called_once_with()
         self.m_empenhos_temp_dao.count_all.assert_called_once_with()
+
+
+@patch.object(services, 'update_empenho_sof_cache_from_temp_table')
+@patch.object(services, 'verify_table_lines_count')
+@patch.object(services, 'retry_empenhos_sof_failed_api_requests')
+@patch.object(services, 'fetch_empenhos_from_sof_and_save_to_temp_table')
+@patch.object(services, 'empenhos_failed_requests_dao')
+@patch.object(services, 'empenhos_temp_dao')
+@patch.object(services, 'empenhos_dao')
+def test_get_empenhos_for_contratos(
+        m_empenhos_dao, m_empenhos_temp_dao, m_empenhos_failed_dao,
+        m_fetch, m_retry, m_verify, m_update):
+    m_empenhos_failed_dao.count_all.side_effect = [2, 1, 0]
+
+    services.get_empenhos_for_contratos_from_sof_api()
+
+    m_empenhos_temp_dao.erase_all.assert_called_once_with()
+    m_fetch.assert_called_once_with()
+    assert 2 == m_retry.call_count
+    m_verify.assert_called_once_with(
+        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)
+    m_update.assert_called_once_with(
+        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)

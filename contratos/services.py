@@ -4,6 +4,25 @@ from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 
 
+def get_empenhos_for_contratos_from_sof_api():
+    empenhos_temp_dao.erase_all()
+
+    print("Fetching empenhos from SOF API and saving to temp table")
+    fetch_empenhos_from_sof_and_save_to_temp_table()
+
+    while empenhos_failed_requests_dao.count_all() > 0:
+        print("Retrying failed API requests")
+        retry_empenhos_sof_failed_api_requests()
+
+    print("Verifying count of lines in temp table")
+    verify_table_lines_count(
+        empenhos_dao=empenhos_dao, empenhos_temp_dao=empenhos_temp_dao)
+
+    print("Moving data from temp table to the real table")
+    update_empenho_sof_cache_from_temp_table(
+        empenhos_dao=empenhos_dao, empenhos_temp_dao=empenhos_temp_dao)
+
+
 def fetch_empenhos_from_sof_and_save_to_temp_table():
     for contrato in contratos_raw_dao.get_all():
         count = get_empenhos_for_contrato_and_save(
