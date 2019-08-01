@@ -18,6 +18,7 @@ djangorestframework-csv = "*"
 pandas = "*"
 xlrd = "*"
 drf-renderer-xlsx = "*"
+requests = "*"
 
 [dev-packages]
 ipdb = "*"

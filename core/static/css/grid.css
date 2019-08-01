@@ -138,6 +138,7 @@ table{
   width: 100%;
   border-collapse: collapse;
   border-radius: 3px;
+  margin: 2em 0;
 }
 
 table thead tr th:first-child{
@@ -151,14 +152,6 @@ table thead tr th:last-child{
 thead > tr > *{
   position: relative;
   box-sizing: border-box;
-}
-
-thead > tr > *::before{
-  content: '';
-  position: absolute;
-  height: 1.2em;
-  left: 0;
-  border-right: solid 1px currentColor;
 }
 
 tr > *{

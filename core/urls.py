@@ -22,4 +22,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='mosaico/')),
     path('mosaico/', include('mosaico.urls', namespace='mosaico_urls')),
     path('geologia/', include('geologia.urls', namespace='geologia_urls')),
+    path('contratos/', include('contratos.urls', namespace='contratos_urls')),
 ]

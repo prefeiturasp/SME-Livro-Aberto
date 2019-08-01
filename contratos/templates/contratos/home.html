@@ -1,0 +1,128 @@
+{% extends 'base.html'  %}{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Contratos{% endblock %}
+
+{%block head %}
+  <meta property="og:locale" content="pt_BR">
+
+  <meta property="og:title" content="Transparência em Contratos - SMESP">
+  <meta property="og:site_name" content="Transparência em Contratos - SMESP">
+  <meta property="og:description" content="Conheça a ferramenta Transparência em Contratos da Secretaria da Educação de São Paulo.">
+
+  <meta property="og:type" content="website">
+
+
+  <meta property="og:image" content="{% static 'contratos/img/og-contratos.png' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="854">
+  <meta property="og:image:height" content="216">
+
+  <link rel="stylesheet" href="{% static 'css/bar.css' %}">
+  <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+{% endblock %}
+
+{%block header %}
+  <h1>Transparência em Contratos</h1>
+  <p>Execução de Contratos da Educação em São Paulo</p>
+  {% include '_header_nav.html' with about='contratos:sobre' %}
+{% endblock %}
+{%block sections %}
+  <section id="total">
+    <div class="wrapper">
+        {% include 'contratos/_big_number.html' with big_number=2847857939.93 liquidado=2135893454.95 liquidado_percent=0.75 %}
+    </div>
+  </section>
+  <section id="destino">
+    <div class="wrapper">
+      <h2>Este valor teve como <em>destino</em></h2>
+      <ul class="legend">
+          {% for gnd in gnds %}
+          <li class="fg-{{ gnd.slug }}" data-gnd="{{ gnd.slug }}">
+              {% include 'contratos/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
+          </li>
+          {% endfor %}
+      </ul>
+    </div>
+  </section>
+  <section id="top-5">
+    <div class="wrapper">
+      <h2>Top 5 <em>contratos</em></h2>
+      <form action="" method="post">
+          <legend class="form-item">
+              Visualizar:
+          </legend>
+          <div class="form-item">
+              <select name="year">
+                  <option value="2018" selected>2018</option>
+                  <option value="2017">2017</option>
+              </select>
+          </div>
+          <div class="form-item">
+              <select name="category">
+                  <option value="all" selected>Todas as categorias</option>
+                  <option value="">Ações Culturais</option>
+                  <option value="">Alimentação</option>
+                  <option value="">Uniforme e material escolar</option>
+              </select>
+          </div>
+      </form>
+      <table>
+          <thead>
+              <tr>
+                  <th>Fornecedor</th>
+                  <th>Categoria</th>
+                  <th>Modalidade</th>
+                  <th>Valor</th>
+                  <th></th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <th>Fornecedor 1</th>
+                  <td>Categoria 1</td>
+                  <td>Modalidade 1</td>
+                  <td>R$ 938.872,99</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <th>Fornecedor 2</th>
+                  <td>Categoria 2</td>
+                  <td>Modalidade 2</td>
+                  <td>R$ 938.872,99</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <th>Fornecedor 3</th>
+                  <td>Categoria 3</td>
+                  <td>Modalidade 3</td>
+                  <td>R$ 938.872,99</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <th>Fornecedor 4</th>
+                  <td>Categoria 4</td>
+                  <td>Modalidade 4</td>
+                  <td>R$ 938.872,99</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <th>Fornecedor 5</th>
+                  <td>Categoria 5</td>
+                  <td>Modalidade 5</td>
+                  <td>R$ 938.872,99</td>
+                  <td></td>
+              </tr>
+          </tbody>
+      </table>
+      <div class="actions">
+          <a class="btn" href="#">Download de Dados</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{%block fb_link %}https://www.facebook.com/sharer/sharer.php?u=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/contratos/{% endblock %}
+
+{%block tw_link %}https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Geologia%20Orçamentária%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url=http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/contratos/{% endblock %}

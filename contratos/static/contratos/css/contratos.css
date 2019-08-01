@@ -1,0 +1,91 @@
+body > header {
+  background-color: #259B95;
+  background-image: url('../img/bkg-contratos-header.svg');
+  background-repeat: repeat-x;
+  background-position: 75% 0;
+  background-size: auto 100%;
+}
+
+#total header{
+  text-align: center;
+  font-size: 2em;
+  max-width: 41rem;
+  text-overflow: ellipsis;
+  margin: auto;
+}
+
+.big-number{
+  font-size: 2em;
+  font-weight: bolder;
+  display: block;
+  text-overflow: ellipsis;
+  overflow-x: auto;
+}
+
+#total .body{
+  margin: 3em 0 2em;
+}
+
+#total footer{
+  display: flex;
+  font-size: .85em;
+  line-height: 1rem;
+}
+
+#total footer p{
+  align-self: end;
+  max-width: 35rem;
+  color: #7b858d;
+  font-family: 'Ubuntu';
+}
+
+thead th,
+section#social,
+#total .bar span.value{
+  color: #222b34;
+}
+
+#total select{
+  padding: 0 0.5em 0 0;
+  color: inherit;
+}
+
+thead th{
+  background-color: #ccd5ce;
+}
+
+tbody tr td:last-child:before{
+  content: '';
+  display: inline-block;
+  background-image: url('../../img/icon-info.svg');
+  background-repeat: no-repeat;
+  background-size: 1em;
+  background-position: center;
+  filter: invert();
+  width: 1em;
+  height: 1em;
+  box-sizing: border-box;
+  cursor: help;
+}
+
+section#social{
+  background-color: #f9faf9;
+}
+
+section#social a{
+  color: #80a684;
+}
+
+section#top-5{
+  background-color: #222b34;
+  color: #fff;
+}
+
+section#top-5 select{
+  border-radius: 1em;
+  background-color: #80a684;
+  color: #222b34;
+  padding-left: 1em;
+  background-image: url('../img/dropdown.svg');
+  background-position: 99% center;
+}

@@ -59,7 +59,6 @@ form.query input[type=radio]:checked + label:first-of-type:after{
 a.btn,
 a.btn:last-child {
   margin: .5em 0;
-  width: 100%;
 }
 
 input[type=text],
@@ -107,12 +106,17 @@ select{
   background-image: url('../img/dropdown.svg');
   background-repeat: no-repeat;
   background-position: center right;
+  background-size: 1rem;
   -moz-appearance: none;
   -webkit-appearance: none;
 }
 
 select::-ms-expand {
   display: none;
+}
+
+.actions{
+  justify-content: center;
 }
 
 /* Extra small devices (portrait phones, less than 576px) */

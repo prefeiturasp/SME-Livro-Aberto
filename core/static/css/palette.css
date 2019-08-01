@@ -33,10 +33,12 @@ a{
   color: inherit;
 }
 
+header em,
 h2 > em{
   position: relative;
 }
 
+header em:after,
 h2 > em:after{
   content: '';
   background-image: url('../img/underline.svg');
@@ -55,6 +57,7 @@ svg.icon{
 }
 
 
+.big-number,
 .card header ul li.active a,
 .card header ul li a:hover,
 .axis--x,
