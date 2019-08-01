@@ -1,0 +1,2 @@
+class ContratosEmpenhosDifferenceOverLimit(Exception):
+    pass
