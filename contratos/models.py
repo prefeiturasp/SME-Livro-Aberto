@@ -218,4 +218,6 @@ class ContratoCategoriaFromToSpreadsheet(models.Model):
             self.extract_data()
 
     def extract_data(self):
-        pass
+        from contratos.dao import contratos_categorias_fromto_dao
+
+        contratos_categorias_fromto_dao.extract_spreadsheet(self)
