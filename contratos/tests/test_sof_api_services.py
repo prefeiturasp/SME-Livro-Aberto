@@ -6,7 +6,7 @@ from unittest.mock import call, patch, Mock
 
 from model_mommy import mommy
 
-from contratos import services
+from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
@@ -18,7 +18,7 @@ MockedContratoRaw = namedtuple('MockedContratoRaw',
                                ['codcontrato', 'anoexercicio'])
 
 
-@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.contratos_raw_dao.get_all')
 def test_fetch_empenhos_from_sof_and_save_to_temp_table(
         mock_get_all, mock_get_and_save_empenhos):
@@ -35,8 +35,8 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
             ano_exercicio=contrato.anoexercicio)
 
 
-@patch('contratos.services.save_empenhos_sof_cache')
-@patch('contratos.services.build_empenhos_data')
+@patch('contratos.services.sof_api.save_empenhos_sof_cache')
+@patch('contratos.services.sof_api.build_empenhos_data')
 @patch('contratos.dao.empenhos_dao.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
@@ -95,7 +95,7 @@ MockedFailedRequest = namedtuple(
     ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
 
 
-@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.empenhos_failed_requests_dao.delete')
 @patch('contratos.dao.empenhos_failed_requests_dao.get_all')
 def test_retry_empenhos_sof_failed_api_requests(
