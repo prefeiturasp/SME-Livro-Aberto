@@ -173,3 +173,21 @@ class EmpenhoSOFFailedAPIRequest(models.Model):
     ano_empenho = models.IntegerField()
     error_code = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ContratoCategoriaFromTo(models.Model):
+    """
+    Aggregates contratos empenhos in categories. Theese categories are the
+    ones shown on frontend.
+    """
+    indexer = models.CharField('Indexador', max_length=28, unique=True)
+    categoria_name = models.CharField('Nome da categoria', max_length=30)
+    categoria_desc = models.CharField(
+        'Descrição da categoria', max_length=400)
+
+    class Meta:
+        verbose_name = 'De-Para: Contratos Categorias'
+        verbose_name_plural = 'De-Para: Contratos Categorias'
+
+    def __str__(self):
+        return f'{self.indexer} - {self.categoria_name}'

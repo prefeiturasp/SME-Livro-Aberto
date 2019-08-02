@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import ContratoCategoriaFromTo
+
+
+@admin.register(ContratoCategoriaFromTo)
+class ContratoCategoriaFromToAdmin(admin.ModelAdmin):
+    list_display = ('indexer', 'categoria_name', 'categoria_desc')
