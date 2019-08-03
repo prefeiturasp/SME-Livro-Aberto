@@ -2,6 +2,26 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
+class ExecucaoContrato(models.Model):
+    cod_contrato = models.IntegerField()
+    empenho_indexer = models.CharField(max_length=28)
+    year = models.DateField()
+    valor_empenhado = models.FloatField()
+    valor_liquidado = models.FloatField()
+    modalidade = models.ForeignKey("ContratoModalidade",
+                                   on_delete=models.PROTECT)
+    objeto_contrato = models.ForeignKey("ObjetoContrato",
+                                        on_delete=models.PROTECT)
+    fornecedor = models.ForeignKey("Fornecedor", on_delete=models.PROTECT)
+    # from-to field
+    categoria = models.ForeignKey("ContratoCategoria", null=True,
+                                  on_delete=models.PROTECT)
+
+    def __str__(self):
+        return (f'{self.year}: {self.cod_contrato} - '
+                f'{self.objeto_contrato.desc}')
+
+
 class ContratoRaw(models.Model):
     id = models.IntegerField(primary_key=True)
     anoexercicio = models.IntegerField(blank=True, null=True)
@@ -174,6 +194,36 @@ class EmpenhoSOFFailedAPIRequest(models.Model):
     ano_empenho = models.IntegerField()
     error_code = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Fornecedor(models.Model):
+    razao_social = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.razao_social
+
+
+class ObjetoContrato(models.Model):
+    desc = models.TextField()
+
+    def __str__(self):
+        return self.desc
+
+
+class ContratoModalidade(models.Model):
+    id = models.IntegerField(primary_key=True)
+    desc = models.TextField()
+
+    def __str__(self):
+        return self.desc
+
+
+class ContratoCategoria(models.Model):
+    name = models.CharField(max_length=30)
+    desc = models.CharField(max_length=400)
+
+    def __str__(self):
+        return self.name
 
 
 class ContratoCategoriaFromTo(models.Model):
