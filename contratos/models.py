@@ -70,6 +70,9 @@ class EmpenhoSOFCache(models.Model):
     # contrato fields
     codContrato = models.IntegerField(blank=True, null=True)
     anoExercicio = models.IntegerField(blank=True, null=True)
+    codModalidadeContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoModalidade = models.TextField(blank=True, null=True)
+    txtObjetoContrato = models.TextField(blank=True, null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
@@ -131,6 +134,9 @@ class EmpenhoSOFCacheTemp(models.Model):
     # contrato fields
     codContrato = models.IntegerField(blank=True, null=True)
     anoExercicio = models.IntegerField(blank=True, null=True)
+    codModalidadeContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoModalidade = models.TextField(blank=True, null=True)
+    txtObjetoContrato = models.TextField(blank=True, null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
