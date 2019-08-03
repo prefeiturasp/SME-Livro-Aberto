@@ -30,9 +30,7 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
 
     assert 2 == mock_get_and_save_empenhos.call_count
     for contrato in mocked_contratos:
-        mock_get_and_save_empenhos.assert_any_call(
-            cod_contrato=contrato.codcontrato,
-            ano_exercicio=contrato.anoexercicio)
+        mock_get_and_save_empenhos.assert_any_call(contrato=contrato)
 
 
 @patch('contratos.services.sof_api.save_empenhos_sof_cache')
@@ -42,13 +40,14 @@ def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
     cod_contrato = 5555
     ano_exercicio = 2019
+    mocked_contrato = MockedContratoRaw(cod_contrato, ano_exercicio)
+
     mocked_empenhos_data_return = ['empenhos_data']
 
     mock_get_empenhos.return_value = SOF_API_REQUEST_RETURN_DICT
     mock_build_data.return_value = mocked_empenhos_data_return
 
-    services.get_empenhos_for_contrato_and_save(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+    services.get_empenhos_for_contrato_and_save(contrato=mocked_contrato)
 
     mock_get_empenhos.assert_called_once_with(
         cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
