@@ -72,7 +72,8 @@ def test_build_empenhos_data():
                 'anoExercicio': contrato.anoexercicio,
                 'codContrato': contrato.codcontrato,
                 'codModalidadeContrato': contrato.codmodalidade,
-                'txtDescricaoModalidade': contrato.txtdescricaomodalidade,
+                'txtDescricaoModalidadeContrato': (
+                    contrato.txtdescricaomodalidade),
                 'txtObjetoContrato': contrato.txtobjetocontrato,
             }
         )

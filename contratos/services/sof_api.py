@@ -57,7 +57,7 @@ def build_empenhos_data(*, sof_data, contrato):
         data['anoExercicio'] = contrato.anoexercicio
         data['codContrato'] = contrato.codcontrato
         data['codModalidadeContrato'] = contrato.codmodalidade
-        data['txtDescricaoModalidade'] = contrato.txtdescricaomodalidade
+        data['txtDescricaoModalidadeContrato'] = contrato.txtdescricaomodalidade
         data['txtObjetoContrato'] = contrato.txtobjetocontrato
     return empenhos_data
 
