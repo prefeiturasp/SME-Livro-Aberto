@@ -37,7 +37,7 @@ class GenerateExecucoesContratosUseCase:
         return self.execucoes_dao.create(**execucao_data)
 
 
-class ApplyCategoriaContratoFromToUseCase:
+class ApplyCategoriasContratosFromToUseCase:
 
     def __init__(self, execucoes_dao, categorias_fromto_dao, categorias_dao):
         self.execucoes_dao = execucoes_dao
@@ -53,5 +53,5 @@ class ApplyCategoriaContratoFromToUseCase:
             name=fromto.categoria_name,
             desc=fromto.categoria_desc)
         execucao = self.execucoes_dao.get_by_indexer(fromto.indexer)
-        self.execucoes_dao.update_with(execucao=execucao,
-                                       data={"categoria_id": categoria.id})
+        data = {"categoria_id": categoria.id}
+        self.execucoes_dao.update_with(execucao=execucao, **data)

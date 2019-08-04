@@ -22,7 +22,7 @@ class ExecucoesContratosDao:
         return self.model.objects.create(**data)
 
     def get_by_indexer(self, indexer):
-        return self.model.objects.get(indexer=indexer)
+        return self.model.objects.get(empenho_indexer=indexer)
 
     def update_with(self, execucao, **data):
         for field, value in data.items():
