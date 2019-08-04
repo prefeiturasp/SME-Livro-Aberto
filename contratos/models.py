@@ -14,7 +14,7 @@ class ExecucaoContrato(models.Model):
                                         on_delete=models.PROTECT)
     fornecedor = models.ForeignKey("Fornecedor", on_delete=models.PROTECT)
     # from-to field
-    categoria = models.ForeignKey("ContratoCategoria", null=True,
+    categoria = models.ForeignKey("CategoriaContrato", null=True,
                                   on_delete=models.PROTECT)
 
     def __str__(self):
@@ -199,7 +199,7 @@ class ModalidadeContrato(models.Model):
         return self.desc
 
 
-class ContratoCategoria(models.Model):
+class CategoriaContrato(models.Model):
     name = models.CharField(max_length=30)
     desc = models.CharField(max_length=400)
 
