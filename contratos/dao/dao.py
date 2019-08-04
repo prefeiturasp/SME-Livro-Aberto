@@ -17,7 +17,7 @@ class ExecucoesContratosDao:
     def __init__(self):
         self.model = ExecucaoContrato
 
-    def create(self, data):
+    def create(self, **data):
         ExecucaoContrato.objects.create(**data)
 
 
