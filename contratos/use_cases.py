@@ -30,8 +30,8 @@ class GenerateExecucoesContratosUseCase:
             "year": datetime.strptime(str(empenho.anoEmpenho), "%Y"),
             "valor_empenhado": empenho.valEmpenhadoLiquido,
             "valor_liquidado": empenho.valLiquidado,
-            "modalidade": modalidade,
-            "objeto_contrato": objeto_contrato,
-            "fornecedor": fornecedor,
+            "modalidade_id": modalidade.id,
+            "objeto_contrato_id": objeto_contrato.id,
+            "fornecedor_id": fornecedor.id,
         }
         return self.execucoes_dao.create(**execucao_data)

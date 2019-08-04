@@ -50,8 +50,8 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
 
     def test_create_execucao_by_empenho(self):
         m_modalidade = mommy.prepare(ModalidadeContrato, _fill_optional=True)
-        m_objeto = mommy.prepare(ObjetoContrato, _fill_optional=True)
-        m_fornecedor = mommy.prepare(Fornecedor, _fill_optional=True)
+        m_objeto = mommy.prepare(ObjetoContrato, id=22, _fill_optional=True)
+        m_fornecedor = mommy.prepare(Fornecedor, id=33, _fill_optional=True)
 
         self.m_modalidades_dao.get_or_create.return_value = (m_modalidade, True)
         self.m_objetos_dao.get_or_create.return_value = (m_objeto, True)
@@ -77,9 +77,9 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
             "year": datetime.strptime(str(empenho.anoEmpenho), "%Y"),
             "valor_empenhado": empenho.valEmpenhadoLiquido,
             "valor_liquidado": empenho.valLiquidado,
-            "modalidade": m_modalidade,
-            "objeto_contrato": m_objeto,
-            "fornecedor": m_fornecedor,
+            "modalidade_id": m_modalidade.id,
+            "objeto_contrato_id": m_objeto.id,
+            "fornecedor_id": m_fornecedor.id,
         }
 
         self.m_execucoes_dao.create.assert_called_once_with(
