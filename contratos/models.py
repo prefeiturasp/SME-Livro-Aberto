@@ -8,7 +8,7 @@ class ExecucaoContrato(models.Model):
     year = models.DateField()
     valor_empenhado = models.FloatField()
     valor_liquidado = models.FloatField()
-    modalidade = models.ForeignKey("ContratoModalidade",
+    modalidade = models.ForeignKey("ModalidadeContrato",
                                    on_delete=models.PROTECT)
     objeto_contrato = models.ForeignKey("ObjetoContrato",
                                         on_delete=models.PROTECT)
@@ -216,7 +216,7 @@ class ObjetoContrato(models.Model):
         return self.desc
 
 
-class ContratoModalidade(models.Model):
+class ModalidadeContrato(models.Model):
     id = models.IntegerField(primary_key=True)
     desc = models.TextField()
 
