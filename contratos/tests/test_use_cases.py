@@ -5,11 +5,15 @@ from unittest.mock import Mock
 from model_mommy import mommy
 
 from contratos.dao.dao import (
-    FornecedoresDao, EmpenhosSOFCacheDao, ExecucoesContratosDao,
+    CategoriasContratosDao, CategoriasContratosFromToDao, FornecedoresDao,
+    EmpenhosSOFCacheDao, ExecucoesContratosDao,
     ModalidadesContratosDao, ObjetosContratosDao)
 from contratos.models import (
-    Fornecedor, EmpenhoSOFCache, ModalidadeContrato, ObjetoContrato)
-from contratos.use_cases import GenerateExecucoesContratosUseCase
+    CategoriaContratoFromTo, Fornecedor, EmpenhoSOFCache, ModalidadeContrato,
+    ObjetoContrato)
+from contratos.use_cases import (
+    ApplyCategoriasContratosFromToUseCase,
+    GenerateExecucoesContratosUseCase)
 
 
 class TestGenerateExecucoesContratosUseCase(TestCase):
@@ -84,3 +88,33 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
 
         self.m_execucoes_dao.create.assert_called_once_with(
             **expected_execucao_data)
+
+
+class TestApplyCategoriasContratosFromToUseCase(TestCase):
+
+    def setUp(self):
+        self.m_execucoes_dao = Mock(spec=ExecucoesContratosDao)
+        self.m_categorias_fromto_dao = Mock(spec=CategoriasContratosFromToDao)
+        self.m_categorias_dao = Mock(spec=CategoriasContratosDao)
+        self.uc = ApplyCategoriasContratosFromToUseCase(
+            execucoes_dao=self.m_execucoes_dao,
+            categorias_fromto_dao=self.m_categorias_fromto_dao,
+            categorias_dao=self.m_categorias_dao)
+
+    def test_use_case_constructor(self):
+        assert self.uc.execucoes_dao == self.m_execucoes_dao
+        assert self.uc.categorias_fromto_dao == self.m_categorias_fromto_dao
+        assert self.uc.categorias_dao == self.m_categorias_dao
+
+    def test_execute_calls_apply_fromto_for_each_fromto(self):
+        fromtos = mommy.prepare(CategoriaContratoFromTo, _fill_optional=True,
+                                _quantity=2)
+        self.m_categorias_fromto_dao.get_all.return_value = fromtos
+        self.uc._apply_fromto = Mock()
+
+        self.uc.execute()
+
+        self.m_categorias_fromto_dao.get_all.assert_called_once_with()
+        assert 2 == self.uc._apply_fromto.call_count
+        for fromto in fromtos:
+            self.uc._apply_fromto.assert_any_call(fromto)

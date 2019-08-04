@@ -128,7 +128,7 @@ class CategoriasContratosFromToDaoTestCase(TestCase):
         mock_all.assert_called_once_with()
 
 
-class CategoriasContratosDAOTestCase(TestCase):
+class CategoriasContratosDaoTestCase(TestCase):
 
     @patch.object(CategoriaContrato.objects, 'get_or_create')
     def test_get_or_create(self, mock_get_or_create):
