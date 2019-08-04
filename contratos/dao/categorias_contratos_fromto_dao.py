@@ -1,7 +1,7 @@
 from django.db import IntegrityError, transaction
 from openpyxl import load_workbook
 
-from contratos.models import ContratoCategoriaFromTo
+from contratos.models import CategoriaContratoFromTo
 
 
 def extract_spreadsheet(ssheet_obj):
@@ -24,7 +24,7 @@ def extract_spreadsheet(ssheet_obj):
         categoria_name = ws['b' + str(row)].value
         categoria_desc = ws['c' + str(row)].value
 
-        dot = ContratoCategoriaFromTo()
+        dot = CategoriaContratoFromTo()
         dot.indexer = indexer
         dot.categoria_name = categoria_name
         dot.categoria_desc = categoria_desc

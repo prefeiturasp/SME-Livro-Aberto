@@ -207,7 +207,7 @@ class CategoriaContrato(models.Model):
         return self.name
 
 
-class ContratoCategoriaFromTo(models.Model):
+class CategoriaContratoFromTo(models.Model):
     """
     Aggregates contratos empenhos in categories. Theese categories are the
     ones shown on frontend.
@@ -225,7 +225,7 @@ class ContratoCategoriaFromTo(models.Model):
         return f'{self.indexer} - {self.categoria_name}'
 
 
-class ContratoCategoriaFromToSpreadsheet(models.Model):
+class CategoriaContratoFromToSpreadsheet(models.Model):
     spreadsheet = models.FileField(
         'Planilha', upload_to='contratos/contratos_categoria_spreadsheets')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -249,6 +249,5 @@ class ContratoCategoriaFromToSpreadsheet(models.Model):
             self.extract_data()
 
     def extract_data(self):
-        from contratos.dao import contratos_categorias_fromto_dao
-
-        contratos_categorias_fromto_dao.extract_spreadsheet(self)
+        from contratos.dao import categorias_contratos_fromto_dao
+        categorias_contratos_fromto_dao.extract_spreadsheet(self)
