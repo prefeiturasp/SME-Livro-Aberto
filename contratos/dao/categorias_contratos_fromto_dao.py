@@ -10,7 +10,7 @@ def extract_spreadsheet(ssheet_obj):
 
     filepath = ssheet_obj.spreadsheet.path
     wb = load_workbook(filepath)
-    ws = wb['Sheet1']
+    ws = wb.worksheets[0]
 
     row = 2
     row_is_valid = True

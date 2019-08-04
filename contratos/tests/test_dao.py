@@ -14,7 +14,7 @@ from model_mommy import mommy
 from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
 from contratos.models import (
-    ContratoRaw, ContratoCategoriaFromTo, ContratoCategoriaFromToSpreadsheet,
+    ContratoRaw, CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
     EmpenhoSOFCache,
     EmpenhoSOFCacheTemp,
     EmpenhoSOFFailedAPIRequest)
@@ -265,26 +265,26 @@ class EmpenhosFailedRequestsDaoTestCase(TestCase):
         mock_count.assert_called_once_with()
 
 
-class ContratosCategoriasFromToDaoTestCase:
+class TestContratosCategoriasFromToDao:
 
     @pytest.fixture()
     def file_fixture(self, db):
         filepath = os.path.join(
             os.path.dirname(__file__),
-            'data/test_ContratoCategoriaFromToSpreadsheet.xlsx')
+            'data/test_CategoriaContratoFromToSpreadsheet.xlsx')
         with open(filepath, 'rb') as f:
             yield f
 
-        for ssheet_obj in ContratoCategoriaFromToSpreadsheet.objects.all():
+        for ssheet_obj in CategoriaContratoFromToSpreadsheet.objects.all():
             ssheet_obj.spreadsheet.delete()
 
     def test_extract_data(self, file_fixture):
         ssheet = mommy.make(
-            ContratoCategoriaFromToSpreadsheet,
+            CategoriaContratoFromToSpreadsheet,
             spreadsheet=File(file_fixture))
         # data is extracted on save
 
-        fts = ContratoCategoriaFromTo.objects.all().order_by('id')
+        fts = CategoriaContratoFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
         indexers = ['2018.16.2100.3.3.90.30.00.1',
@@ -305,17 +305,17 @@ class ContratosCategoriasFromToDaoTestCase:
 
     def test_extract_data_when_indexer_already_exists(self, file_fixture):
         mommy.make(
-            ContratoCategoriaFromTo,
+            CategoriaContratoFromTo,
             indexer='2018.16.2100.3.3.90.30.00.1',
             categoria_name='old categoria',
             categoria_desc='old categoria desc')
 
         ssheet = mommy.make(
-            ContratoCategoriaFromToSpreadsheet,
+            CategoriaContratoFromToSpreadsheet,
             spreadsheet=File(file_fixture))
         # data is extracted on save
 
-        fts = ContratoCategoriaFromTo.objects.all()
+        fts = CategoriaContratoFromTo.objects.all()
         assert 2 == len(fts)
 
         indexers = ['2018.16.2100.3.3.90.30.00.1',
