@@ -9,7 +9,7 @@ class EmpenhosSOFCacheDao:
         self.model = EmpenhoSOFCache
 
     def get_all(self):
-        pass
+        return self.model.objects.all()
 
 
 class ExecucoesContratosDao:
@@ -18,7 +18,7 @@ class ExecucoesContratosDao:
         self.model = ExecucaoContrato
 
     def create(self, **data):
-        ExecucaoContrato.objects.create(**data)
+        return self.model.objects.create(**data)
 
 
 class ModalidadesContratosDao:
@@ -27,7 +27,7 @@ class ModalidadesContratosDao:
         self.model = ModalidadeContrato
 
     def get_or_create(self, **data):
-        return ModalidadeContrato.objects.get_or_create(**data)
+        return self.model.objects.get_or_create(**data)
 
 
 class ObjetosContratosDao:
@@ -35,8 +35,8 @@ class ObjetosContratosDao:
     def __init__(self):
         self.model = ObjetoContrato
 
-    def get_or_create(self, data):
-        return ObjetoContrato.objects.get_or_create(**data)
+    def get_or_create(self, **data):
+        return self.model.objects.get_or_create(**data)
 
 
 class FornecedoresDao:
@@ -44,5 +44,5 @@ class FornecedoresDao:
     def __init__(self):
         self.model = Fornecedor
 
-    def get_or_create(self, data):
-        return Fornecedor.objects.get_or_create(**data)
+    def get_or_create(self, **data):
+        return self.model.objects.get_or_create(**data)

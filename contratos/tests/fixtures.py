@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 SOF_API_REQUEST_RETURN_DICT = {
     "metadados": {
         "txtStatus": "OK",
@@ -120,4 +123,16 @@ EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA = {
     "ano_exercicio": 2018,
     "ano_empenho": 2019,
     "error_code": 500,
+}
+
+
+EXECUCAO_CONTRATO_CREATE_DATA = {
+    "cod_contrato": 555,
+    "empenho_indexer": '2018.16.2100.3.3.90.30.00.1',
+    "year": datetime.strptime(str(2019), "%Y"),
+    "valor_empenhado": 200.2,
+    "valor_liquidado": 150.1,
+    "modalidade_id": 11,
+    "objeto_contrato_id": 22,
+    "fornecedor_id": 33,
 }
