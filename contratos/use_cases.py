@@ -35,3 +35,23 @@ class GenerateExecucoesContratosUseCase:
             "fornecedor_id": fornecedor.id,
         }
         return self.execucoes_dao.create(**execucao_data)
+
+
+class ApplyCategoriaContratoFromToUseCase:
+
+    def __init__(self, execucoes_dao, categorias_fromto_dao, categorias_dao):
+        self.execucoes_dao = execucoes_dao
+        self.categorias_fromto_dao = categorias_fromto_dao
+        self.categorias_dao = categorias_dao
+
+    def execute(self):
+        for fromto in self.categorias_fromto_dao.get_all():
+            self._apply_fromto(fromto)
+
+    def _apply_fromto(self, fromto):
+        categoria, _ = self.categorias_dao.get_or_create(
+            name=fromto.categoria_name,
+            desc=fromto.categoria_desc)
+        execucao = self.execucoes_dao.get_by_indexer(fromto.indexer)
+        self.execucoes_dao.update_with(execucao=execucao,
+                                       data={"categoria_id": categoria.id})
