@@ -41,24 +41,15 @@ class ContratoRaw(models.Model):
     txtobjetocontrato = models.CharField(max_length=1000, blank=True, null=True)
     txtrazaosocial = models.CharField(max_length=36, blank=True, null=True)
     txttipocontratacao = models.CharField(max_length=67, blank=True, null=True)
-    valaditamentos = models.DecimalField(max_digits=9, decimal_places=2,
-                                         blank=True, null=True)
-    valanulacao = models.DecimalField(max_digits=10, decimal_places=2,
-                                      blank=True, null=True)
-    valanuladoempenho = models.DecimalField(max_digits=11, decimal_places=2,
-                                            blank=True, null=True)
-    valempenhadoliquido = models.DecimalField(max_digits=11, decimal_places=2,
-                                              blank=True, null=True)
-    valliquidado = models.DecimalField(max_digits=10, decimal_places=2,
-                                       blank=True, null=True)
-    valpago = models.DecimalField(max_digits=11, decimal_places=2,
-                                  blank=True, null=True)
-    valprincipal = models.DecimalField(max_digits=12, decimal_places=2,
-                                       blank=True, null=True)
-    valreajustes = models.DecimalField(max_digits=8, decimal_places=2,
-                                       blank=True, null=True)
-    valtotalempenhado = models.DecimalField(max_digits=11, decimal_places=2,
-                                            blank=True, null=True)
+    valaditamentos = models.FloatField(blank=True, null=True)
+    valanulacao = models.FloatField(blank=True, null=True)
+    valanuladoempenho = models.FloatField(blank=True, null=True)
+    valempenhadoliquido = models.FloatField(blank=True, null=True)
+    valliquidado = models.FloatField(blank=True, null=True)
+    valpago = models.FloatField(blank=True, null=True)
+    valprincipal = models.FloatField(blank=True, null=True)
+    valreajustes = models.FloatField(blank=True, null=True)
+    valtotalempenhado = models.FloatField(blank=True, null=True)
     data_extracao = models.DateField(blank=True, null=True)
     dt_data_loaded = models.CharField(max_length=26, blank=True, null=True)
 
