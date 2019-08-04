@@ -120,6 +120,15 @@ class EmpenhoSOFCache(models.Model):
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
 
+    @property
+    def indexer(self):
+        s = self
+        return (
+            f'{s.anoEmpenho}.{s.codOrgao}.{s.codProjetoAtividade}.'
+            f'{s.codCategoria}.{s.codGrupo}.{s.codModalidade}.'
+            f'{s.codElemento}.{s.codFonteRecurso}.{s.codSubElemento}'
+        )
+
 
 class EmpenhoSOFCacheTemp(models.Model):
     # contrato fields
