@@ -46,19 +46,19 @@ def get_empenhos_for_contrato_and_save(*, contrato, ano_empenho=None):
     if not sof_data:
         return 0
 
-    empenhos_data = build_empenhos_data(
-        sof_data=sof_data,
-        ano_exercicio=ano_exercicio,
-        cod_contrato=cod_contrato)
+    empenhos_data = build_empenhos_data(sof_data=sof_data, contrato=contrato)
     count = save_empenhos_sof_cache(empenhos_data=empenhos_data)
     return count
 
 
-def build_empenhos_data(*, sof_data, ano_exercicio, cod_contrato):
+def build_empenhos_data(*, sof_data, contrato):
     empenhos_data = sof_data.copy()
     for data in empenhos_data:
-        data['anoExercicio'] = ano_exercicio
-        data['codContrato'] = cod_contrato
+        data['anoExercicio'] = contrato.anoexercicio
+        data['codContrato'] = contrato.codcontrato
+        data['codModalidadeContrato'] = contrato.codmodalidade
+        data['txtDescricaoModalidade'] = contrato.txtdescricaomodalidade
+        data['txtObjetoContrato'] = contrato.txtobjetocontrato
     return empenhos_data
 
 

@@ -1,6 +1,7 @@
 import pytest
 
 from collections import namedtuple
+from copy import deepcopy
 from unittest import TestCase
 from unittest.mock import call, patch, Mock
 
@@ -10,7 +11,7 @@ from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
-from contratos.models import EmpenhoSOFCacheTemp
+from contratos.models import ContratoRaw, EmpenhoSOFCacheTemp
 from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
 
 
@@ -38,40 +39,43 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
 @patch('contratos.dao.empenhos_dao.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
-    cod_contrato = 5555
-    ano_exercicio = 2019
-    mocked_contrato = MockedContratoRaw(cod_contrato, ano_exercicio)
+    contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
 
     mocked_empenhos_data_return = ['empenhos_data']
 
     mock_get_empenhos.return_value = SOF_API_REQUEST_RETURN_DICT
     mock_build_data.return_value = mocked_empenhos_data_return
 
-    services.get_empenhos_for_contrato_and_save(contrato=mocked_contrato)
+    services.get_empenhos_for_contrato_and_save(contrato=contrato)
 
     mock_get_empenhos.assert_called_once_with(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+        cod_contrato=contrato.codcontrato,
+        ano_exercicio=contrato.anoexercicio)
     mock_build_data.assert_called_once_with(
         sof_data=SOF_API_REQUEST_RETURN_DICT,
-        cod_contrato=cod_contrato,
-        ano_exercicio=ano_exercicio)
+        contrato=contrato)
     mock_save_empenhos.assert_called_once_with(
         empenhos_data=mocked_empenhos_data_return)
 
 
 def test_build_empenhos_data():
-    cod_contrato = 5555
-    ano_exercicio = 2019
+    contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
 
     empenhos_data = services.build_empenhos_data(
-        sof_data=SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"],
-        ano_exercicio=ano_exercicio,
-        cod_contrato=cod_contrato)
+        sof_data=deepcopy(SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"]),
+        contrato=contrato)
 
     expected = []
     for emp_dict in SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']:
-        emp_dict.update({'anoExercicio': ano_exercicio,
-                         'codContrato': cod_contrato})
+        emp_dict.update(
+            {
+                'anoExercicio': contrato.anoexercicio,
+                'codContrato': contrato.codcontrato,
+                'codModalidadeContrato': contrato.codmodalidade,
+                'txtDescricaoModalidade': contrato.txtdescricaomodalidade,
+                'txtObjetoContrato': contrato.txtobjetocontrato,
+            }
+        )
         expected.append(emp_dict)
 
     assert expected == empenhos_data
