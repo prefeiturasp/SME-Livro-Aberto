@@ -1,6 +1,15 @@
 from datetime import datetime
 
 
+CONTRATO_RAW_DATA = {
+    "anoexercicio": 2019,
+    "codcontrato": 2222,
+    "codmodalidade": 2,
+    "txtdescricaomodalidade": "desc modalidade",
+    "txtobjetocontrato": "desc objeto",
+}
+
+
 SOF_API_REQUEST_RETURN_DICT = {
     "metadados": {
         "txtStatus": "OK",

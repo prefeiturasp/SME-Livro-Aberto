@@ -12,7 +12,8 @@ from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 from contratos.models import ContratoRaw, EmpenhoSOFCacheTemp
-from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
+from contratos.tests.fixtures import (
+    CONTRATO_RAW_DATA, SOF_API_REQUEST_RETURN_DICT)
 
 
 MockedContratoRaw = namedtuple('MockedContratoRaw',
@@ -59,7 +60,8 @@ def test_get_empenhos_for_contrato_and_save(
 
 
 def test_build_empenhos_data():
-    contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
+    contrato_data = CONTRATO_RAW_DATA
+    contrato = mommy.prepare(ContratoRaw, **contrato_data, _fill_optional=True)
 
     empenhos_data = services.build_empenhos_data(
         sof_data=deepcopy(SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"]),
