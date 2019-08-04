@@ -4,7 +4,7 @@ from django.db import models
 
 class ExecucaoContrato(models.Model):
     cod_contrato = models.IntegerField()
-    empenho_indexer = models.CharField(max_length=28)
+    empenho_indexer = models.CharField(max_length=28, unique=True)
     year = models.DateField()
     valor_empenhado = models.FloatField()
     valor_liquidado = models.FloatField()
