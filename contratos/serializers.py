@@ -1,3 +1,6 @@
+from contratos.services import application as services
+
+
 class ExecucaoContratoSerializer:
 
     def __init__(self, queryset, *args, **kwargs):
@@ -5,4 +8,6 @@ class ExecucaoContratoSerializer:
 
     @property
     def data(self):
-        return {}
+        return {
+            'big_number': services.serialize_big_number_data(self.queryset),
+        }
