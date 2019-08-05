@@ -2,6 +2,7 @@ import pytest
 
 from collections import namedtuple
 from copy import deepcopy
+from itertools import cycle
 from unittest import TestCase
 from unittest.mock import call, patch, Mock
 
@@ -101,23 +102,31 @@ MockedFailedRequest = namedtuple(
     ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
 
 
+@patch('contratos.dao.contratos_raw_dao.get')
 @patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.empenhos_failed_requests_dao.delete')
 @patch('contratos.dao.empenhos_failed_requests_dao.get_all')
 def test_retry_empenhos_sof_failed_api_requests(
-        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos):
+        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos,
+        mock_contratos_get):
     mocked_failed = [MockedFailedRequest(111, 2018, 2018),
                      MockedFailedRequest(222, 2018, 2019)]
     mock_get_all_failed.return_value = mocked_failed
 
+    contratos = mommy.prepare(ContratoRaw, codcontrato=cycle([111, 222]),
+                              anoexercicio=2018, _quantity=2)
+    mock_contratos_get.side_effect = contratos
+
     services.retry_empenhos_sof_failed_api_requests()
 
+    assert 2 == mock_contratos_get.call_count
     assert 2 == mock_get_and_save_empenhos.call_count
-    for failed_request in mocked_failed:
+    for failed_request, contrato in zip(mocked_failed, contratos):
+        mock_contratos_get.assert_any_call(
+            codcontrato=failed_request.cod_contrato,
+            anoexercicio=failed_request.ano_exercicio)
         mock_get_and_save_empenhos.assert_any_call(
-            cod_contrato=failed_request.cod_contrato,
-            ano_exercicio=failed_request.ano_exercicio,
-            ano_empenho=failed_request.ano_empenho)
+            contrato=contrato, ano_empenho=failed_request.ano_empenho)
         mock_delete_failed.assert_any_call(failed_request)
 
 

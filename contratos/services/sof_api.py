@@ -71,9 +71,12 @@ def save_empenhos_sof_cache(*, empenhos_data):
 
 def retry_empenhos_sof_failed_api_requests():
     for failed_request in empenhos_failed_requests_dao.get_all():
+        contrato = contratos_raw_dao.get(
+            codcontrato=failed_request.cod_contrato,
+            anoexercicio=failed_request.ano_exercicio)
+
         count = get_empenhos_for_contrato_and_save(
-            cod_contrato=failed_request.cod_contrato,
-            ano_exercicio=failed_request.ano_exercicio,
+            contrato=contrato,
             ano_empenho=failed_request.ano_empenho,
         )
         empenhos_failed_requests_dao.delete(failed_request)
