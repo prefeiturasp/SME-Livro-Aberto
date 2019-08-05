@@ -8,6 +8,7 @@ class ExecucaoContratoSerializer:
 
     @property
     def data(self):
+        # TODO: add tests
         return {
             'big_number': services.serialize_big_number_data(self.queryset),
         }
