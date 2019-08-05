@@ -168,28 +168,37 @@ def verify_total_sum(execucoes, execucoes_temp):
     orcado_temp = execucoes_temp.aggregate(
         total=Sum('orcado_atualizado'))["total"]
 
-    if orcado_execs and orcado_temp > orcado_execs * orc_percent_limit:
-        msg = (
-            'A diferença entre o novo somatório do valor orçado e o somatório '
-            'atual é maior que o limite. As execuções não serão atualizadas.\n'
-        )
-        msg += f'Orcado atual: {orcado_execs} \nNovo orcado: {orcado_temp}'
-        raise exceptions.OrcadoDifferenceOverLimitException(msg)
+    if orcado_execs:
+        orc_upper_limit = orcado_execs + (orcado_execs * orc_percent_limit)
+        orc_lower_limit = orcado_execs - (orcado_execs * orc_percent_limit)
+        if orcado_temp > orc_upper_limit or orcado_temp < orc_lower_limit:
+            msg = (
+                'A diferença entre o novo somatório do valor orçado e o '
+                'somatório atual é maior que o limite. As execuções não '
+                'serão atualizadas.\n'
+            )
+            msg += f'Orcado atual: {orcado_execs} \nNovo orcado: {orcado_temp}'
+            raise exceptions.OrcadoDifferenceOverLimitException(msg)
 
     empenhado_execs = execucoes.aggregate(
         total=Sum('empenhado_liquido'))['total']
     empenhado_temp = execucoes_temp.aggregate(
         total=Sum('empenhado_liquido'))['total']
 
-    if empenhado_execs and empenhado_temp > empenhado_execs * emp_percent_limit:
-        msg = (
-            'A diferença entre o novo somatório do valor empenhado e o '
-            'somatório atual é maior que o limite. As execuções não serão'
-            ' atualizadas.\n'
-            f'Empenhado atual: {empenhado_execs} \n'
-            f'Novo Empenhado: {empenhado_temp}'
-        )
-        raise exceptions.EmpenhadoDifferenceOverLimitException
+    if empenhado_execs:
+        emp_upper_limit = empenhado_execs + (
+            empenhado_execs * emp_percent_limit)
+        emp_lower_limit = empenhado_execs - (
+            empenhado_execs * emp_percent_limit)
+        if empenhado_temp > emp_upper_limit or empenhado_temp < emp_lower_limit:
+            msg = (
+                'A diferença entre o novo somatório do valor empenhado e o '
+                'somatório atual é maior que o limite. As execuções não serão'
+                ' atualizadas.\n'
+                f'Empenhado atual: {empenhado_execs} \n'
+                f'Novo Empenhado: {empenhado_temp}'
+            )
+            raise exceptions.EmpenhadoDifferenceOverLimitException
 
 
 def import_minimo_legal():
