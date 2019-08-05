@@ -9,8 +9,8 @@ from contratos.dao.dao import (
     EmpenhosSOFCacheDao, ExecucoesContratosDao,
     ModalidadesContratosDao, ObjetosContratosDao)
 from contratos.models import (
-    CategoriaContratoFromTo, Fornecedor, EmpenhoSOFCache, ModalidadeContrato,
-    ObjetoContrato)
+    CategoriaContrato, CategoriaContratoFromTo, ExecucaoContrato, Fornecedor,
+    EmpenhoSOFCache, ModalidadeContrato, ObjetoContrato)
 from contratos.use_cases import (
     ApplyCategoriasContratosFromToUseCase,
     GenerateExecucoesContratosUseCase)
@@ -118,3 +118,21 @@ class TestApplyCategoriasContratosFromToUseCase(TestCase):
         assert 2 == self.uc._apply_fromto.call_count
         for fromto in fromtos:
             self.uc._apply_fromto.assert_any_call(fromto)
+
+    def test_apply_fromto(self):
+        m_categoria = mommy.prepare(CategoriaContrato, _fill_optional=True)
+        self.m_categorias_dao.get_or_create.return_value = (m_categoria, True)
+
+        m_execucao = mommy.prepare(ExecucaoContrato, categoria=None,
+                                   _fill_optional=True)
+        self.m_execucoes_dao.get_by_indexer.return_value = m_execucao
+
+        fromto = mommy.prepare(CategoriaContratoFromTo, _fill_optional=True)
+        self.uc._apply_fromto(fromto)
+
+        self.m_categorias_dao.get_or_create.assert_called_once_with(
+            name=fromto.categoria_name, desc=fromto.categoria_desc)
+        self.m_execucoes_dao.get_by_indexer.assert_called_once_with(
+            fromto.indexer)
+        self.m_execucoes_dao.update_with.assert_called_once_with(
+            execucao=m_execucao, categoria_id=m_categoria.id)
