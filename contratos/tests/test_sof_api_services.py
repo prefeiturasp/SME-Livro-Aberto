@@ -1,24 +1,27 @@
 import pytest
 
 from collections import namedtuple
+from copy import deepcopy
+from itertools import cycle
 from unittest import TestCase
 from unittest.mock import call, patch, Mock
 
 from model_mommy import mommy
 
-from contratos import services
+from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
-from contratos.models import EmpenhoSOFCacheTemp
-from contratos.tests.fixtures import SOF_API_REQUEST_RETURN_DICT
+from contratos.models import ContratoRaw, EmpenhoSOFCacheTemp
+from contratos.tests.fixtures import (
+    CONTRATO_RAW_DATA, SOF_API_REQUEST_RETURN_DICT)
 
 
 MockedContratoRaw = namedtuple('MockedContratoRaw',
                                ['codcontrato', 'anoexercicio'])
 
 
-@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.contratos_raw_dao.get_all')
 def test_fetch_empenhos_from_sof_and_save_to_temp_table(
         mock_get_all, mock_get_and_save_empenhos):
@@ -30,49 +33,53 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
 
     assert 2 == mock_get_and_save_empenhos.call_count
     for contrato in mocked_contratos:
-        mock_get_and_save_empenhos.assert_any_call(
-            cod_contrato=contrato.codcontrato,
-            ano_exercicio=contrato.anoexercicio)
+        mock_get_and_save_empenhos.assert_any_call(contrato=contrato)
 
 
-@patch('contratos.services.save_empenhos_sof_cache')
-@patch('contratos.services.build_empenhos_data')
+@patch('contratos.services.sof_api.save_empenhos_sof_cache')
+@patch('contratos.services.sof_api.build_empenhos_data')
 @patch('contratos.dao.empenhos_dao.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
-    cod_contrato = 5555
-    ano_exercicio = 2019
+    contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
+
     mocked_empenhos_data_return = ['empenhos_data']
 
     mock_get_empenhos.return_value = SOF_API_REQUEST_RETURN_DICT
     mock_build_data.return_value = mocked_empenhos_data_return
 
-    services.get_empenhos_for_contrato_and_save(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+    services.get_empenhos_for_contrato_and_save(contrato=contrato)
 
     mock_get_empenhos.assert_called_once_with(
-        cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
+        cod_contrato=contrato.codcontrato,
+        ano_exercicio=contrato.anoexercicio)
     mock_build_data.assert_called_once_with(
         sof_data=SOF_API_REQUEST_RETURN_DICT,
-        cod_contrato=cod_contrato,
-        ano_exercicio=ano_exercicio)
+        contrato=contrato)
     mock_save_empenhos.assert_called_once_with(
         empenhos_data=mocked_empenhos_data_return)
 
 
 def test_build_empenhos_data():
-    cod_contrato = 5555
-    ano_exercicio = 2019
+    contrato_data = CONTRATO_RAW_DATA
+    contrato = mommy.prepare(ContratoRaw, **contrato_data, _fill_optional=True)
 
     empenhos_data = services.build_empenhos_data(
-        sof_data=SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"],
-        ano_exercicio=ano_exercicio,
-        cod_contrato=cod_contrato)
+        sof_data=deepcopy(SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"]),
+        contrato=contrato)
 
     expected = []
     for emp_dict in SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']:
-        emp_dict.update({'anoExercicio': ano_exercicio,
-                         'codContrato': cod_contrato})
+        emp_dict.update(
+            {
+                'anoExercicio': contrato.anoexercicio,
+                'codContrato': contrato.codcontrato,
+                'codModalidadeContrato': contrato.codmodalidade,
+                'txtDescricaoModalidadeContrato': (
+                    contrato.txtdescricaomodalidade),
+                'txtObjetoContrato': contrato.txtobjetocontrato,
+            }
+        )
         expected.append(emp_dict)
 
     assert expected == empenhos_data
@@ -95,23 +102,31 @@ MockedFailedRequest = namedtuple(
     ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
 
 
-@patch('contratos.services.get_empenhos_for_contrato_and_save')
+@patch('contratos.dao.contratos_raw_dao.get')
+@patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.empenhos_failed_requests_dao.delete')
 @patch('contratos.dao.empenhos_failed_requests_dao.get_all')
 def test_retry_empenhos_sof_failed_api_requests(
-        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos):
+        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos,
+        mock_contratos_get):
     mocked_failed = [MockedFailedRequest(111, 2018, 2018),
                      MockedFailedRequest(222, 2018, 2019)]
     mock_get_all_failed.return_value = mocked_failed
 
+    contratos = mommy.prepare(ContratoRaw, codcontrato=cycle([111, 222]),
+                              anoexercicio=2018, _quantity=2)
+    mock_contratos_get.side_effect = contratos
+
     services.retry_empenhos_sof_failed_api_requests()
 
+    assert 2 == mock_contratos_get.call_count
     assert 2 == mock_get_and_save_empenhos.call_count
-    for failed_request in mocked_failed:
+    for failed_request, contrato in zip(mocked_failed, contratos):
+        mock_contratos_get.assert_any_call(
+            codcontrato=failed_request.cod_contrato,
+            anoexercicio=failed_request.ano_exercicio)
         mock_get_and_save_empenhos.assert_any_call(
-            cod_contrato=failed_request.cod_contrato,
-            ano_exercicio=failed_request.ano_exercicio,
-            ano_empenho=failed_request.ano_empenho)
+            contrato=contrato, ano_empenho=failed_request.ano_empenho)
         mock_delete_failed.assert_any_call(failed_request)
 
 
