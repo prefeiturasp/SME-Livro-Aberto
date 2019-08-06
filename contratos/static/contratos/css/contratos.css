@@ -54,7 +54,7 @@ thead th{
   background-color: #ccd5ce;
 }
 
-tbody tr td .description-parent{
+tbody tr td.description-parent > div{
   content: '';
   display: inline-block;
   background-image: url('../img/info-white.svg');
@@ -172,7 +172,7 @@ section#destino .bar{
   background-color: #80a684;
   color: #fff;
   border-radius: 0.5em;
-  bottom: 3.5rem;
+  bottom: 150%;
   left: 50%;
   margin-left: -10em;
   width: 20em;
@@ -189,7 +189,7 @@ section#destino .bar{
 
 :hover > .description-box{
   opacity: 1;
-  bottom: 1.5rem;
+  bottom: 100%;
 }
 
 .description-box h3{
