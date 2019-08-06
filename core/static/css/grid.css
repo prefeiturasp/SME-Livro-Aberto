@@ -451,3 +451,26 @@ tr > *:first-child::before{
 .table__about td {
   text-align: center;
 }
+
+.legend{
+  padding: 0;
+  margin: 1em 0 2em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  list-style: none;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.legend > *{
+  margin-bottom: 1em;
+}
+
+.legend .icon{
+  height: 3em;
+  width: 3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  float: left;
+}

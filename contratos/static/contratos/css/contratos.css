@@ -90,6 +90,10 @@ section#top-5 select{
   background-position: 99% center;
 }
 
+.legend > *{
+  width: 20%;
+}
+
 .fg-acoes-culturais{
   color: #5f6b6d;
 }
