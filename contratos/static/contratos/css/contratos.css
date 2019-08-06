@@ -27,7 +27,8 @@ body > header {
 }
 
 #total .body{
-  margin: 3em 0 2em;
+  margin: 2em 0 1em;
+  padding: 1em 0;
 }
 
 #total footer{
@@ -41,6 +42,10 @@ body > header {
   max-width: 35rem;
   color: #7b858d;
   font-family: 'Ubuntu';
+}
+
+#total .bar span.value{
+  overflow: visible;
 }
 
 thead th,
@@ -176,9 +181,10 @@ section#destino .bar{
   background-color: #80a684;
   color: #fff;
   border-radius: 0.5em;
-  bottom: 150%;
+  bottom: 100%;
   left: 50%;
   margin-left: -10em;
+  margin-bottom: 4em;
   width: 20em;
   text-indent: 0;
   pointer-events: none;
@@ -193,7 +199,7 @@ section#destino .bar{
 
 :hover > .description-box{
   opacity: 1;
-  bottom: 100%;
+  margin-bottom: 1em;
 }
 
 .description-box h3{
