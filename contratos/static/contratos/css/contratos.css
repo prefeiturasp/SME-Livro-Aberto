@@ -63,7 +63,7 @@ thead th{
   background-color: #ccd5ce;
 }
 
-tbody tr td.description-parent > div{
+tbody tr td > div.description-parent{
   content: '';
   display: inline-block;
   background-image: url('../img/info-white.svg');
@@ -107,7 +107,7 @@ section#destino .bar{
   height: 5em;
 }
 
-.legend > *{
+.legend > li{
   width: 20%;
   padding: 1em 2em;
   text-align: center;
@@ -172,6 +172,7 @@ section#destino .bar{
 
 .description-parent{
   position: relative;
+  cursor: help;
 }
 
 .description-box{
