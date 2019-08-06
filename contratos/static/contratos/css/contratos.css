@@ -157,3 +157,38 @@ section#destino .bar{
 .fg-outros{
   color: #ecb93b;
 }
+
+.description-parent{
+  position: relative;
+}
+
+.description-box{
+  opacity: 0;
+  position: absolute;
+  transition: all 500ms;
+  text-align: center;
+  font-size: .8rem;
+  line-height: 1rem;
+  background-color: #80a684;
+  color: #fff;
+  border-radius: 0.5em;
+  bottom: 3.5rem;
+  left: 50%;
+  margin-left: -10em;
+  width: 20em;
+  text-indent: 0;
+  pointer-events: none;
+}
+
+:hover > .description-box{
+  opacity: 1;
+  bottom: 1.5rem;
+}
+
+.description-box h3{
+  text-transform: uppercase;
+}
+
+.description-box > *{
+  margin: 1em;
+}
