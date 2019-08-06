@@ -101,6 +101,16 @@ section#destino .bar{
   padding: 1em 2em;
   text-align: center;
   box-sizing: border-box;
+  cursor: pointer;
+  transition: opacity 500ms;
+}
+
+.legend:hover > *{
+  opacity: .5;
+}
+
+.legend:hover > *:hover{
+  opacity: 1;
 }
 
 .legend .icon{
