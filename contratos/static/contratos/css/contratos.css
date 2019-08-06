@@ -89,3 +89,43 @@ section#top-5 select{
   background-image: url('../img/dropdown.svg');
   background-position: 99% center;
 }
+
+.fg-acoes-culturais{
+  color: #5f6b6d;
+}
+
+.fg-alimentacao{
+  color: #65ba57;
+}
+
+.fg-contrucoes{
+  color: #abd656;
+}
+
+.fg-parcerias{
+  color: #58b9aa;
+}
+
+.fg-pedagogico{
+  color: #277fcd;
+}
+
+.fg-manutencao{
+  color: #693d89;
+}
+
+.fg-servicos{
+  color: #e94363;
+}
+
+.fg-transportes{
+  color: #ed7f7c;
+}
+
+.fg-uniformes{
+  color: #ee9564;
+}
+
+.fg-outros{
+  color: #ecb93b;
+}
