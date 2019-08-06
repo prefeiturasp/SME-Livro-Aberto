@@ -98,7 +98,7 @@ section#destino .bar{
 
 .legend > *{
   width: 20%;
-  padding: 2em;
+  padding: 1em 2em;
   text-align: center;
   box-sizing: border-box;
 }
