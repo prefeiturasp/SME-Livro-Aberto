@@ -180,6 +180,13 @@ section#destino .bar{
   pointer-events: none;
 }
 
+.description-box p{
+  font-family: "Ubuntu";
+  font-weight: normal;
+  font-size: 0.8em;
+  line-height: 1rem;
+}
+
 :hover > .description-box{
   opacity: 1;
   bottom: 1.5rem;
