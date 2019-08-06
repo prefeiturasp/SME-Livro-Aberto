@@ -22,6 +22,10 @@ body > header {
   overflow-x: auto;
 }
 
+#total .bar{
+  height: 1em;
+}
+
 #total .body{
   margin: 3em 0 2em;
 }
