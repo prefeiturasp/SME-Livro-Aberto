@@ -79,6 +79,8 @@ section#social a{
 section#top-5{
   background-color: #222b34;
   color: #fff;
+  margin-top: -4.5em;
+  padding: 3.5em;
 }
 
 section#top-5 select{
@@ -88,6 +90,10 @@ section#top-5 select{
   padding-left: 1em;
   background-image: url('../img/dropdown.svg');
   background-position: 99% center;
+}
+
+section#destino .bar{
+  height: 5em;
 }
 
 .legend > *{
