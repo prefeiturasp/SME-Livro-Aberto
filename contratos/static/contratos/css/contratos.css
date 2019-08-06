@@ -97,7 +97,10 @@ section#top-5 select{
   color: #222b34;
   padding-left: 1em;
   background-image: url('../img/dropdown.svg');
-  background-position: 99% center;
+  background-position: 100% center;
+  background-size: auto 100%;
+  border: 2px solid #80a684;
+  padding: 0 2em 0 1em;
 }
 
 section#destino .bar{
