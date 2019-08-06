@@ -92,6 +92,15 @@ section#top-5 select{
 
 .legend > *{
   width: 20%;
+  padding: 2em;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.legend .icon{
+  margin: 0 auto 1em;
+  float: none;
+  display: block;
 }
 
 .fg-acoes-culturais{
