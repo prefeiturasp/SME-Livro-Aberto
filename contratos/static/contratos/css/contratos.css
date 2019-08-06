@@ -54,14 +54,13 @@ thead th{
   background-color: #ccd5ce;
 }
 
-tbody tr td:last-child:before{
+tbody tr td .description-parent{
   content: '';
   display: inline-block;
-  background-image: url('../../img/icon-info.svg');
+  background-image: url('../img/info-white.svg');
   background-repeat: no-repeat;
   background-size: 1em;
   background-position: center;
-  filter: invert();
   width: 1em;
   height: 1em;
   box-sizing: border-box;
