@@ -48,7 +48,10 @@ def serialize_destinations(queryset):
     return year_list
 
 
-def serialize_top5(queryset, categoria_id):
+def serialize_top5(queryset, categoria_id=None):
+    if categoria_id:
+        queryset = queryset.filter(categoria_id=categoria_id)
+
     top5_execucoes = queryset.order_by('-valor_empenhado')[:5]
 
     top5_list = []
