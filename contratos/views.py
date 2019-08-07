@@ -17,6 +17,7 @@ class ExecucaoContratoFilter(filters.FilterSet):
 
 
 class HomeView(generics.ListAPIView):
+    # TODO: add tests
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoContratoFilter
@@ -25,8 +26,17 @@ class HomeView(generics.ListAPIView):
     template_name = 'contratos/home.html'
 
     def filter_queryset(self, queryset):
-        # TODO: add test
         if 'year' not in self.request.query_params:
             curr_year = date.today().year
             queryset = queryset.filter(year__year=curr_year)
         return super().filter_queryset(queryset)
+
+    def get_serializer(self, *args, **kwargs):
+        """
+        Return the serializer instance that should be used for validating and
+        deserializing input, and for serializing output.
+        """
+        serializer_class = self.get_serializer_class()
+        kwargs['categoria_id'] = self.request.query_params.get(
+            'categoria_id', None)
+        return serializer_class(*args, **kwargs)

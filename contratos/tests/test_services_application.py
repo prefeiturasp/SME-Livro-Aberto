@@ -67,3 +67,37 @@ class TestApplicationServices(TestCase):
         ret = services.serialize_destinations(queryset)
 
         assert expected == ret
+
+    def test_serialize_top5(self):
+        exec_pos3 = mommy.make(ExecucaoContrato, valor_empenhado=300.0,
+                               _fill_optional=True)
+        exec_pos1 = mommy.make(ExecucaoContrato, valor_empenhado=500.0,
+                               _fill_optional=True)
+        exec_pos2 = mommy.make(ExecucaoContrato, valor_empenhado=400.0,
+                               _fill_optional=True)
+        exec_pos5 = mommy.make(ExecucaoContrato, valor_empenhado=100.0,
+                               _fill_optional=True)
+        exec_pos4 = mommy.make(ExecucaoContrato, valor_empenhado=200.0,
+                               _fill_optional=True)
+        mommy.make(ExecucaoContrato, valor_empenhado=50, _fill_optional=True)
+        execucoes_top5 = [exec_pos1, exec_pos2, exec_pos3, exec_pos4, exec_pos5]
+        # not expected
+
+        expected = []
+        for execucao in execucoes_top5:
+            expected.append(
+                {
+                    'year': execucao.year.year,
+                    'fornecedor': execucao.fornecedor.razao_social,
+                    'categoria_name': execucao.categoria.name,
+                    'categoria_id': execucao.categoria.id,
+                    'objeto_contrato': execucao.objeto_contrato.desc,
+                    'modalidade': execucao.modalidade.desc,
+                    'empenhado': execucao.valor_empenhado,
+                }
+            )
+
+        queryset = ExecucaoContrato.objects.all()
+        ret = services.serialize_top5(queryset)
+
+        assert expected == ret

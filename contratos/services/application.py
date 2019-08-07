@@ -48,5 +48,19 @@ def serialize_destinations(queryset):
     return year_list
 
 
-def serialize_top5(queryset):
-    pass
+def serialize_top5(queryset, categoria_id):
+    top5_execucoes = queryset.order_by('-valor_empenhado')[:5]
+
+    top5_list = []
+    for execucao in top5_execucoes:
+        exec_dict = {
+            'year': execucao.year.year,
+            'fornecedor': execucao.fornecedor.razao_social,
+            'categoria_name': execucao.categoria.name,
+            'categoria_id': execucao.categoria.id,
+            'objeto_contrato': execucao.objeto_contrato.desc,
+            'modalidade': execucao.modalidade.desc,
+            'empenhado': execucao.valor_empenhado,
+        }
+        top5_list.append(exec_dict)
+    return top5_list
