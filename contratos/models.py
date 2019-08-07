@@ -200,7 +200,7 @@ class ModalidadeContrato(models.Model):
 
 
 class CategoriaContrato(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     desc = models.CharField(max_length=400)
 
     def __str__(self):
