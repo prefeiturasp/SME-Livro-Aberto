@@ -39,4 +39,5 @@ class HomeView(generics.ListAPIView):
         serializer_class = self.get_serializer_class()
         kwargs['categoria_id'] = self.request.query_params.get(
             'categoria_id', None)
+        kwargs['year'] = self.request.query_params.get('year', None)
         return serializer_class(*args, **kwargs)

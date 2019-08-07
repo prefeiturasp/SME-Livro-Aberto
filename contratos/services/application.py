@@ -1,5 +1,7 @@
 from django.db.models import Sum
 
+from contratos.models import ExecucaoContrato
+
 
 def serialize_big_number_data(queryset):
     year_sum_qs = queryset.values('year__year').annotate(
@@ -67,3 +69,25 @@ def serialize_top5(queryset, categoria_id=None):
         }
         top5_list.append(exec_dict)
     return top5_list
+
+
+def serialize_filters(queryset, categoria_id, year):
+    years = ExecucaoContrato.objects.all().values('year__year').distinct() \
+        .order_by('year')
+    categorias = queryset.values('categoria__id', 'categoria__name'). distinct()
+
+    ret = {
+        'selected_year': year,
+        'selected_categoria': categoria_id,
+        'years': [year_qs['year__year'] for year_qs in years]
+    }
+
+    categorias_list = []
+    for categoria_qs in categorias:
+        categoria_dict = {
+            'id': categoria_qs['categoria__id'],
+            'name': categoria_qs['categoria__name'],
+        }
+        categorias_list.append(categoria_dict)
+    ret['categorias'] = categorias_list
+    return ret
