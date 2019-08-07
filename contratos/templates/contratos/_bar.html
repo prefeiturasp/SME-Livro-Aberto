@@ -1,0 +1,8 @@
+{% load humanize %}
+{% load l10n %}
+<span class="value fg-{{ slug }}"
+      data-value="{{ empenhado | unlocalize }}"
+      data-percent="{% widthratio empenhado total_empenhado 100 %}"
+      style="width: {% widthratio empenhado total_empenhado 100 %}%">
+  {% widthratio empenhado total_empenhado 100 %}%
+</span>

@@ -38,12 +38,34 @@
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
       <ul class="legend">
-          {% for gnd in gnds %}
-          <li class="fg-{{ gnd.slug }}" data-gnd="{{ gnd.slug }}">
-              {% include 'contratos/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
-          </li>
-          {% endfor %}
+          {% include '_legend_item.html' with app='contratos' slug='acoes-culturais' desc='Ações Culturais' %}
+          {% include '_legend_item.html' with app='contratos' slug='alimentacao' desc='Alimentação' %}
+          {% include '_legend_item.html' with app='contratos' slug='contrucoes' desc='Contruções' %}
+          {% include '_legend_item.html' with app='contratos' slug='parcerias' desc='Parcerias' %}
+          {% include '_legend_item.html' with app='contratos' slug='pedagogico' desc='Pedagógico' %}
+
+          {% include '_legend_item.html' with app='contratos' slug='manutencao' desc='Reformas e Manutenção' %}
+          {% include '_legend_item.html' with app='contratos' slug='servicos' desc='Serviços Contínuos' %}
+          {% include '_legend_item.html' with app='contratos' slug='transportes' desc='Transportes' %}
+          {% include '_legend_item.html' with app='contratos' slug='uniformes' desc='Uniformes e Material Escolar' %}
+          {% include '_legend_item.html' with app='contratos' slug='outros' desc='Outras Aquisições' %}
       </ul>
+      <div class="bar-parent">
+        <div class="bar">
+            {% with total_empenhado=1000000 %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='acoes-culturais' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=180000 slug='alimentacao' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='contrucoes' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=20000 slug='parcerias' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='pedagogico' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='manutencao' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='servicos' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='transportes' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='uniformes' %}
+                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='outros' %}
+            {% endwith %}
+        </div>
+      </div>
     </div>
   </section>
   <section id="top-5">

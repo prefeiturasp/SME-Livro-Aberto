@@ -79,6 +79,8 @@ section#social a{
 section#top-5{
   background-color: #222b34;
   color: #fff;
+  margin-top: -4.5em;
+  padding: 3.5em;
 }
 
 section#top-5 select{
@@ -88,4 +90,71 @@ section#top-5 select{
   padding-left: 1em;
   background-image: url('../img/dropdown.svg');
   background-position: 99% center;
+}
+
+section#destino .bar{
+  height: 5em;
+}
+
+.legend > *{
+  width: 20%;
+  padding: 1em 2em;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: opacity 500ms;
+}
+
+.legend:hover > *{
+  opacity: .5;
+}
+
+.legend:hover > *:hover{
+  opacity: 1;
+}
+
+.legend .icon{
+  margin: 0 auto 1em;
+  float: none;
+  display: block;
+}
+
+.fg-acoes-culturais{
+  color: #5f6b6d;
+}
+
+.fg-alimentacao{
+  color: #65ba57;
+}
+
+.fg-contrucoes{
+  color: #abd656;
+}
+
+.fg-parcerias{
+  color: #58b9aa;
+}
+
+.fg-pedagogico{
+  color: #277fcd;
+}
+
+.fg-manutencao{
+  color: #693d89;
+}
+
+.fg-servicos{
+  color: #e94363;
+}
+
+.fg-transportes{
+  color: #ed7f7c;
+}
+
+.fg-uniformes{
+  color: #ee9564;
+}
+
+.fg-outros{
+  color: #ecb93b;
 }
