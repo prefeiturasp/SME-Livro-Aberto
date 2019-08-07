@@ -167,6 +167,10 @@ thead th{
   color: #4c4c4c;
 }
 
+.legend .desc{
+  text-transform: uppercase;
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 /* No media query since this is the default in Bootstrap */
 

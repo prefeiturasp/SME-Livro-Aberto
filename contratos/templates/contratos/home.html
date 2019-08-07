@@ -38,17 +38,17 @@
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
       <ul class="legend">
-          {% include '_legend_item.html' with app='contratos' slug='acoes-culturais' desc='Ações Culturais' %}
-          {% include '_legend_item.html' with app='contratos' slug='alimentacao' desc='Alimentação' %}
-          {% include '_legend_item.html' with app='contratos' slug='contrucoes' desc='Contruções' %}
-          {% include '_legend_item.html' with app='contratos' slug='parcerias' desc='Parcerias' %}
-          {% include '_legend_item.html' with app='contratos' slug='pedagogico' desc='Pedagógico' %}
+          {% include 'contratos/_legend_item.html' with slug='acoes-culturais' desc='Ações Culturais' label='Ações Culturais'%}
+          {% include 'contratos/_legend_item.html' with slug='alimentacao' desc='Alimentação' label='Alimentação'%}
+          {% include 'contratos/_legend_item.html' with slug='contrucoes' desc='Contruções' label='Contruções' %}
+          {% include 'contratos/_legend_item.html' with slug='parcerias' desc='Parcerias' label='Parcerias' %}
+          {% include 'contratos/_legend_item.html' with slug='pedagogico' desc='Pedagógico' label='Pedagógico' %}
 
-          {% include '_legend_item.html' with app='contratos' slug='manutencao' desc='Reformas e Manutenção' %}
-          {% include '_legend_item.html' with app='contratos' slug='servicos' desc='Serviços Contínuos' %}
-          {% include '_legend_item.html' with app='contratos' slug='transportes' desc='Transportes' %}
-          {% include '_legend_item.html' with app='contratos' slug='uniformes' desc='Uniformes e Material Escolar' %}
-          {% include '_legend_item.html' with app='contratos' slug='outros' desc='Outras Aquisições' %}
+          {% include 'contratos/_legend_item.html' with slug='manutencao' desc='Reformas e Manutenção' label='Reformas e Manutenção' %}
+          {% include 'contratos/_legend_item.html' with slug='servicos' desc='Serviços Contínuos' label='Serviços Contínuos' %}
+          {% include 'contratos/_legend_item.html' with slug='transportes' desc='Transportes' label='Transportes' %}
+          {% include 'contratos/_legend_item.html' with slug='uniformes' desc='Uniformes e Material Escolar' label='Uniformes e Material Escolar' %}
+          {% include 'contratos/_legend_item.html' with slug='outros' desc='Outras Aquisições' label='Outras Aquisições' %}
       </ul>
       <div class="bar-parent">
         <div class="bar">
@@ -106,35 +106,80 @@
                   <td>Categoria 1</td>
                   <td>Modalidade 1</td>
                   <td>R$ 938.872,99</td>
-                  <td></td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                              Objeto do contrato. Descirção com aproximadamente 30 caracteres. Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
               <tr>
                   <th>Fornecedor 2</th>
                   <td>Categoria 2</td>
                   <td>Modalidade 2</td>
                   <td>R$ 938.872,99</td>
-                  <td></td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                              Objeto do contrato. Descirção com aproximadamente 30 caracteres. Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
               <tr>
                   <th>Fornecedor 3</th>
                   <td>Categoria 3</td>
                   <td>Modalidade 3</td>
                   <td>R$ 938.872,99</td>
-                  <td></td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                              Objeto do contrato. Descirção com aproximadamente 30 caracteres. Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
               <tr>
                   <th>Fornecedor 4</th>
                   <td>Categoria 4</td>
                   <td>Modalidade 4</td>
                   <td>R$ 938.872,99</td>
-                  <td></td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                              Objeto do contrato. Descirção com aproximadamente 30 caracteres. Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
               <tr>
                   <th>Fornecedor 5</th>
                   <td>Categoria 5</td>
                   <td>Modalidade 5</td>
                   <td>R$ 938.872,99</td>
-                  <td></td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                              Objeto do contrato. Descirção com aproximadamente 30 caracteres. Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
           </tbody>
       </table>

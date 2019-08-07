@@ -459,7 +459,6 @@ tr > *:first-child::before{
   flex-wrap: wrap;
   justify-content: space-between;
   list-style: none;
-  text-transform: uppercase;
   font-weight: 800;
 }
 

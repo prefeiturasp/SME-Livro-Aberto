@@ -18,13 +18,20 @@
 </header>
 <div class="body">
   <div class="bar-parent">
-    <div class="bar" style="width: 100%">
-      <span class="value"
-            data-value="{{ liquidado | unlocalize }}"
-            data-currency-value="{% if liquidado %}{{ liquidado |intcomma }}{% else %}-{% endif %}"
-            data-percent="{% widthratio liquidado_percent 1 100 %}"
+    <div class="bar">
+      <span class="value description-parent"
             style="width: {% widthratio liquidado_percent 1 100 %}%">
-        {% widthratio liquidado_percent 1 100 %}%
+            <div class="description-box">
+                <h3>Foram liquidados</h3>
+                <p>R${{ liquidado |intcomma }} ({% widthratio liquidado_percent 1 100 %}%)</p>
+            </div>
+      </span>
+      <span class="value description-parent"
+            style="width: calc(100% - {% widthratio liquidado_percent 1 100 %}%); background-color: transparent">
+            <div class="description-box">
+                <h3>Foram empenhados</h3>
+                <p>R${{ big_number | intcomma }} (100%)</p>
+            </div>
       </span>
     </div>
   </div>

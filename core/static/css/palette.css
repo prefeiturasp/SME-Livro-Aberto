@@ -50,6 +50,7 @@ h2 > em:after{
   height: 50%;
   bottom: 0;
   left: 0;
+  pointer-events: none;
 }
 
 svg.icon{
@@ -69,6 +70,7 @@ form.query label{
   color: #80a684;
 }
 
+.description-box,
 .card{
   box-shadow: #777 0 0 0.5em;
 }
