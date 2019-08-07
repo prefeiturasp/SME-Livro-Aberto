@@ -11,5 +11,5 @@ class ExecucaoContratoSerializer:
         # TODO: add tests
         return {
             'big_number': services.serialize_big_number_data(self.queryset),
-            'destinies': services.serialize_destinies(self.queryset),
+            'destinations': services.serialize_destinations(self.queryset),
         }

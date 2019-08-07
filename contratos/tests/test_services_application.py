@@ -45,7 +45,7 @@ class TestApplicationServices(TestCase):
 
         assert expected == ret
 
-    def test_serialize_destinies(self):
+    def test_serialize_destinations(self):
         category1 = mommy.make(CategoriaContrato, name='cat1', desc='desc 1')
         category2 = mommy.make(CategoriaContrato, name='cat2', desc='desc 1')
 
@@ -89,6 +89,6 @@ class TestApplicationServices(TestCase):
             ],
         }
 
-        ret = services.serialize_destinies(queryset)
+        ret = services.serialize_destinations(queryset)
 
         assert expected == ret

@@ -26,7 +26,7 @@ def serialize_big_number_data(queryset):
     return ret
 
 
-def serialize_destinies(queryset):
+def serialize_destinations(queryset):
     current_year = date.today().year
     years = list(range(CONTRATOS_INITIAL_YEAR, current_year + 1))
 
