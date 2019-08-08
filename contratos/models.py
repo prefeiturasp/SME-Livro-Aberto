@@ -84,12 +84,36 @@ class ContratoRaw(models.Model):
 
 
 class EmpenhoSOFCache(models.Model):
-    # contrato fields
+    # contrato fields shown on interface
     codContrato = models.IntegerField(blank=True, null=True)
     anoExercicioContrato = models.IntegerField(blank=True, null=True)
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
+    # contrato fields not shown on interface. used only on download
+    codEmpresaContrato = models.IntegerField(blank=True, null=True)
+    codOrgaoContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgaoContrato = models.TextField(blank=True, null=True)
+    codProcessoContrato = models.BigIntegerField(blank=True, null=True)
+    codTipoContratacaoContrato = models.IntegerField(blank=True, null=True)
+    txtTipoContratacaoContrato = models.TextField(blank=True, null=True)
+    datAssinaturaContrato = models.DateField(blank=True, null=True)
+    datPublicacaoContrato = models.DateField(blank=True, null=True)
+    datVigenciaContrato = models.DateField(blank=True, null=True)
+    numOriginalContrato = models.TextField(blank=True, null=True)
+    txtRazaoSocialContrato = models.TextField(blank=True, null=True)
+    valAditamentosContrato = models.FloatField(blank=True, null=True)
+    valAnulacaoContrato = models.FloatField(blank=True, null=True)
+    valAnuladoEmpenhoContrato = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquidoContrato = models.FloatField(blank=True, null=True)
+    valliquidadoContrato = models.FloatField(blank=True, null=True)
+    valPagoContrato = models.FloatField(blank=True, null=True)
+    valPrincipalContrato = models.FloatField(blank=True, null=True)
+    valReajustesContrato = models.FloatField(blank=True, null=True)
+    valTotalEmpenhadoContrato = models.FloatField(blank=True, null=True)
+    dataExtracaoContrato = models.DateField(blank=True, null=True)
+    dtDataLoadedContrato = models.CharField(max_length=26, blank=True,
+                                            null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
@@ -151,6 +175,30 @@ class EmpenhoSOFCacheTemp(models.Model):
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
+    # contrato fields not shown on interface. used only on download
+    codEmpresaContrato = models.IntegerField(blank=True, null=True)
+    codOrgaoContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgaoContrato = models.TextField(blank=True, null=True)
+    codProcessoContrato = models.BigIntegerField(blank=True, null=True)
+    codTipoContratacaoContrato = models.IntegerField(blank=True, null=True)
+    txtTipoContratacaoContrato = models.TextField(blank=True, null=True)
+    datAssinaturaContrato = models.DateField(blank=True, null=True)
+    datPublicacaoContrato = models.DateField(blank=True, null=True)
+    datVigenciaContrato = models.DateField(blank=True, null=True)
+    numOriginalContrato = models.TextField(blank=True, null=True)
+    txtRazaoSocialContrato = models.TextField(blank=True, null=True)
+    valAditamentosContrato = models.FloatField(blank=True, null=True)
+    valAnulacaoContrato = models.FloatField(blank=True, null=True)
+    valAnuladoEmpenhoContrato = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquidoContrato = models.FloatField(blank=True, null=True)
+    valliquidadoContrato = models.FloatField(blank=True, null=True)
+    valPagoContrato = models.FloatField(blank=True, null=True)
+    valPrincipalContrato = models.FloatField(blank=True, null=True)
+    valReajustesContrato = models.FloatField(blank=True, null=True)
+    valTotalEmpenhadoContrato = models.FloatField(blank=True, null=True)
+    dataExtracaoContrato = models.DateField(blank=True, null=True)
+    dtDataLoadedContrato = models.CharField(max_length=26, blank=True,
+                                            null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
