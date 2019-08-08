@@ -10,8 +10,11 @@
   foram previstos em contratos para a educação da cidade de São Paulo em
   <em>
     <select name="year">
-      <option value="2018" selected>2018</option>
-      <option value="2017">2017</option>
+        {% for year in filters.years %}
+            <option value="{{ year }}"
+                    {% if year == filters.selected_year %}selected{% endif %}
+                    >{{ year }}</option>
+        {% endfor %}
     </select>
   </em>
   </p>
