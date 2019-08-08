@@ -77,8 +77,11 @@
           </legend>
           <div class="form-item">
               <select name="year">
-                  <option value="2018" selected>2018</option>
-                  <option value="2017">2017</option>
+                {% for year in filters.years %}
+                    <option value="{{ year }}"
+                            {% if year == filters.selected_year %}selected{% endif %}
+                            >{{ year }}</option>
+                {% endfor %}
               </select>
           </div>
           <div class="form-item">
