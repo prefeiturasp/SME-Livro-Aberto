@@ -3,11 +3,11 @@ from datetime import datetime
 
 
 CONTRATO_RAW_DATA = {
-    "anoexercicio": 2019,
-    "codcontrato": 2222,
-    "codmodalidade": 2,
-    "txtdescricaomodalidade": "desc modalidade",
-    "txtobjetocontrato": "desc objeto",
+    "anoExercicio": 2019,
+    "codContrato": 2222,
+    "codModalidadeContrato": 2,
+    "txtDescricaoModalidadeContrato": "desc modalidade",
+    "txtObjetoContrato": "desc objeto",
 }
 
 
