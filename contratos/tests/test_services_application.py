@@ -37,9 +37,12 @@ class TestApplicationServices(TestCase):
         category1 = mommy.make(CategoriaContrato, name='cat1', desc='desc 1')
         category2 = mommy.make(CategoriaContrato, name='cat2', desc='desc 1')
 
+        empenhado1 = 200
+        empenhado2 = 400
+        empenhado_total = empenhado1 + empenhado2
         mommy.make(
             ExecucaoContrato, year=date(2019, 1, 1),
-            valor_empenhado=cycle([200, 400]),
+            valor_empenhado=cycle([empenhado1, empenhado2]),
             valor_liquidado=cycle([120, 180]),
             categoria=cycle([category1, category2]), _quantity=2)
 
@@ -53,6 +56,7 @@ class TestApplicationServices(TestCase):
                 'empenhado': 200.0,
                 'liquidado': 120.0,
                 'percent_liquidado': 60.0,
+                'percent_empenhado': empenhado1 * 100 / empenhado_total,
             },
             {
                 'year': 2019,
@@ -61,6 +65,7 @@ class TestApplicationServices(TestCase):
                 'empenhado': 400.0,
                 'liquidado': 180.0,
                 'percent_liquidado': 45.0,
+                'percent_empenhado': empenhado2 * 100 / empenhado_total,
             },
         ]
 

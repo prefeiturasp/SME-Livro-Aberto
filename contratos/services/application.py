@@ -27,6 +27,14 @@ def serialize_big_number_data(queryset):
 
 
 def serialize_destinations(queryset):
+    empenhado_qs = queryset.values('year__year')\
+        .annotate(total_empenhado=Sum('valor_empenhado')) \
+        .distinct()
+    if empenhado_qs:
+        total_empenhado = empenhado_qs[0]['total_empenhado']
+    else:
+        return []
+
     categorias_sums = queryset \
         .values("year__year", "categoria__name", "categoria__desc") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
@@ -37,6 +45,7 @@ def serialize_destinations(queryset):
         empenhado = cat_data['total_empenhado']
         liquidado = cat_data['total_liquidado']
         percent_liquidado = liquidado * 100 / empenhado
+        percent_empenhado = empenhado * 100 / total_empenhado
         cat_dict = {
             'year': cat_data['year__year'],
             'categoria_name': cat_data['categoria__name'],
@@ -44,6 +53,7 @@ def serialize_destinations(queryset):
             'empenhado': empenhado,
             'liquidado': liquidado,
             'percent_liquidado': percent_liquidado,
+            'percent_empenhado': percent_empenhado,
         }
         year_list.append(cat_dict)
 
