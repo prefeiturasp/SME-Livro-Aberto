@@ -31,7 +31,7 @@
 {%block sections %}
   <section id="total">
     <div class="wrapper">
-        {% include 'contratos/_big_number.html' with big_number=2847857939.93 liquidado=2135893454.95 liquidado_percent=0.75 %}
+        {% include 'contratos/_big_number.html' with big_number=big_number.empenhado liquidado=big_number.liquidado liquidado_percent=big_number.percent_liquidado %}
     </div>
   </section>
   <section id="destino">
