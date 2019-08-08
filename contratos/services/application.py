@@ -87,7 +87,7 @@ def serialize_filters(queryset, categoria_id, year):
     categorias = queryset.values('categoria__id', 'categoria__name'). distinct()
 
     ret = {
-        'selected_year': year,
+        'selected_year': int(year), # TODO: add tests
         'selected_categoria': categoria_id,
         'years': [year_qs['year__year'] for year_qs in years]
     }
