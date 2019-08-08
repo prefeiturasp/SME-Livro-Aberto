@@ -31,7 +31,7 @@ def fetch_empenhos_from_sof_and_save_to_temp_table():
 
 def get_empenhos_for_contrato_and_save(*, contrato, ano_empenho=None):
     cod_contrato = contrato.codContrato
-    ano_exercicio = contrato.anoExercicio
+    ano_exercicio = contrato.anoExercicioContrato
 
     if not ano_empenho:
         sof_data = empenhos_dao.get_by_codcontrato_and_anoexercicio(
@@ -54,7 +54,7 @@ def get_empenhos_for_contrato_and_save(*, contrato, ano_empenho=None):
 def build_empenhos_data(*, sof_data, contrato):
     empenhos_data = sof_data.copy()
     for data in empenhos_data:
-        data['anoExercicio'] = contrato.anoExercicio
+        data['anoExercicioContrato'] = contrato.anoExercicioContrato
         data['codContrato'] = contrato.codContrato
         data['codModalidadeContrato'] = contrato.codModalidadeContrato
         data['txtDescricaoModalidadeContrato'] = \

@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 CONTRATO_RAW_DATA = {
-    "anoExercicio": 2019,
+    "anoExercicioContrato": 2019,
     "codContrato": 2222,
     "codModalidadeContrato": 2,
     "txtDescricaoModalidadeContrato": "desc modalidade",
@@ -113,7 +113,7 @@ SOF_API_REQUEST_RETURN_DICT = {
 
 
 empenho_contrato_data = {
-    "anoExercicio": 2019,
+    "anoExercicioContrato": 2019,
     "codContrato": 5555,
     "codModalidadeContrato": 2,
     "txtDescricaoModalidadeContrato": "desc modalidade",
@@ -169,7 +169,7 @@ BUILD_EMPENHOS_DATA_SOF_API_SERVICE_OUTPUT = {
     "valPagoExercicio": 0,
     "valPagoRestos": 0,
     "valTotalEmpenhado": 1160,
-    "anoExercicio": 2019,
+    "anoExercicioContrato": 2019,
     "codContrato": 5555,
     "codModalidadeContrato": 2,
     "txtDescricaoModalidadeContrato": "desc modalidade",

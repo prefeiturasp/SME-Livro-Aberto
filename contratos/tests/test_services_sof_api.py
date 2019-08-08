@@ -52,7 +52,7 @@ def test_get_empenhos_for_contrato_and_save(
 
     mock_get_empenhos.assert_called_once_with(
         cod_contrato=contrato.codContrato,
-        ano_exercicio=contrato.anoExercicio)
+        ano_exercicio=contrato.anoExercicioContrato)
     mock_build_data.assert_called_once_with(
         sof_data=SOF_API_REQUEST_RETURN_DICT,
         contrato=contrato)
@@ -72,7 +72,7 @@ def test_build_empenhos_data():
     for emp_dict in SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']:
         emp_dict.update(
             {
-                'anoExercicio': contrato.anoExercicio,
+                'anoExercicioContrato': contrato.anoExercicioContrato,
                 'codContrato': contrato.codContrato,
                 'codModalidadeContrato': contrato.codModalidadeContrato,
                 'txtDescricaoModalidadeContrato': (
@@ -114,7 +114,7 @@ def test_retry_empenhos_sof_failed_api_requests(
     mock_get_all_failed.return_value = mocked_failed
 
     contratos = mommy.prepare(ContratoRaw, codContrato=cycle([111, 222]),
-                              anoExercicio=2018, _quantity=2)
+                              anoExercicioContrato=2018, _quantity=2)
     mock_contratos_get.side_effect = contratos
 
     services.retry_empenhos_sof_failed_api_requests()

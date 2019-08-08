@@ -26,7 +26,7 @@ class ContratoRaw(models.Model):
     id = models.IntegerField(primary_key=True)
     codContrato = models.IntegerField(
         db_column='codcontrato', blank=True, null=True)
-    anoExercicio = models.IntegerField(
+    anoExercicioContrato = models.IntegerField(
         db_column='anoexercicio', blank=True, null=True)
     codModalidadeContrato = models.IntegerField(
         db_column='codmodalidade', blank=True, null=True)
@@ -86,7 +86,7 @@ class ContratoRaw(models.Model):
 class EmpenhoSOFCache(models.Model):
     # contrato fields
     codContrato = models.IntegerField(blank=True, null=True)
-    anoExercicio = models.IntegerField(blank=True, null=True)
+    anoExercicioContrato = models.IntegerField(blank=True, null=True)
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
@@ -147,7 +147,7 @@ class EmpenhoSOFCache(models.Model):
 class EmpenhoSOFCacheTemp(models.Model):
     # contrato fields
     codContrato = models.IntegerField(blank=True, null=True)
-    anoExercicio = models.IntegerField(blank=True, null=True)
+    anoExercicioContrato = models.IntegerField(blank=True, null=True)
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
