@@ -26,7 +26,7 @@ class TestApplicationServices(TestCase):
             "year": 2019,
             "empenhado": 600,
             "liquidado": 300,
-            "percent_liquidado": 50,
+            "percent_liquidado": .5,
         }
 
         ret = services.serialize_big_number_data(queryset)
@@ -55,8 +55,8 @@ class TestApplicationServices(TestCase):
                 'categoria_desc': 'desc 1',
                 'empenhado': 200.0,
                 'liquidado': 120.0,
-                'percent_liquidado': 60.0,
-                'percent_empenhado': empenhado1 * 100 / empenhado_total,
+                'percent_liquidado': .6,
+                'percent_empenhado': empenhado1 / empenhado_total,
             },
             {
                 'year': 2019,
@@ -64,8 +64,8 @@ class TestApplicationServices(TestCase):
                 'categoria_desc': 'desc 1',
                 'empenhado': 400.0,
                 'liquidado': 180.0,
-                'percent_liquidado': 45.0,
-                'percent_empenhado': empenhado2 * 100 / empenhado_total,
+                'percent_liquidado': 0.45,
+                'percent_empenhado': empenhado2 / empenhado_total,
             },
         ]
 

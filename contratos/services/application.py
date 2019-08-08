@@ -15,7 +15,7 @@ def serialize_big_number_data(queryset):
 
     empenhado = year_sum['total_empenhado']
     liquidado = year_sum['total_liquidado']
-    percent_liquidado = liquidado * 100 / empenhado
+    percent_liquidado = liquidado / empenhado
     year_dict = {
         'year': year_sum['year__year'],
         'empenhado': empenhado,
@@ -44,8 +44,8 @@ def serialize_destinations(queryset):
     for cat_data in categorias_sums:
         empenhado = cat_data['total_empenhado']
         liquidado = cat_data['total_liquidado']
-        percent_liquidado = liquidado * 100 / empenhado
-        percent_empenhado = empenhado * 100 / total_empenhado
+        percent_liquidado = liquidado / empenhado
+        percent_empenhado = empenhado / total_empenhado
         cat_dict = {
             'year': cat_data['year__year'],
             'categoria_name': cat_data['categoria__name'],
