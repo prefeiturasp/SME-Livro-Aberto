@@ -86,10 +86,12 @@
           </div>
           <div class="form-item">
               <select name="category">
-                  <option value="all" selected>Todas as categorias</option>
-                  <option value="">Ações Culturais</option>
-                  <option value="">Alimentação</option>
-                  <option value="">Uniforme e material escolar</option>
+                <option value="all">Todas as categorias</option>
+                {% for categoria in filters.categorias %}
+                    <option value="{{ categoria.id }}"
+                            {% if categoria.id == filters.selected_categoria %}selected{% endif %}
+                            >{{ categoria.name }}</option>
+                {% endfor %}
               </select>
           </div>
       </form>
