@@ -54,12 +54,10 @@ def get_empenhos_for_contrato_and_save(*, contrato, ano_empenho=None):
 def build_empenhos_data(*, sof_data, contrato):
     empenhos_data = sof_data.copy()
     for data in empenhos_data:
-        data['anoExercicioContrato'] = contrato.anoExercicioContrato
-        data['codContrato'] = contrato.codContrato
-        data['codModalidadeContrato'] = contrato.codModalidadeContrato
-        data['txtDescricaoModalidadeContrato'] = \
-            contrato.txtDescricaoModalidadeContrato
-        data['txtObjetoContrato'] = contrato.txtObjetoContrato
+        for field in contrato._meta.fields:
+            if field.primary_key is True:
+                continue
+            data[field.name] = getattr(contrato, field.name)
     return empenhos_data
 
 

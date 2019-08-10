@@ -70,16 +70,10 @@ def test_build_empenhos_data():
 
     expected = []
     for emp_dict in SOF_API_REQUEST_RETURN_DICT['lstEmpenhos']:
-        emp_dict.update(
-            {
-                'anoExercicioContrato': contrato.anoExercicioContrato,
-                'codContrato': contrato.codContrato,
-                'codModalidadeContrato': contrato.codModalidadeContrato,
-                'txtDescricaoModalidadeContrato': (
-                    contrato.txtDescricaoModalidadeContrato),
-                'txtObjetoContrato': contrato.txtObjetoContrato,
-            }
-        )
+        for field in contrato._meta.fields:
+            if field.primary_key is True:
+                continue
+            emp_dict[field.name] = getattr(contrato, field.name)
         expected.append(emp_dict)
 
     assert expected == empenhos_data
