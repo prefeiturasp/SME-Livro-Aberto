@@ -1,3 +1,6 @@
+from rest_framework import serializers
+
+from contratos.models import EmpenhoSOFCache
 from contratos.services import application as services
 
 
@@ -18,3 +21,10 @@ class ExecucaoContratoSerializer:
             'filters': services.serialize_filters(
                 self.queryset, self.categoria_id, self.year),
         }
+
+
+class EmpenhoSOFCacheSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmpenhoSOFCache
+        exclude = ['id']

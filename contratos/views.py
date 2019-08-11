@@ -1,11 +1,14 @@
 from datetime import date
 
 from django_filters import rest_framework as filters
+from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.response import Response
 
-from contratos.models import ExecucaoContrato
-from contratos.serializers import ExecucaoContratoSerializer
+from contratos.models import EmpenhoSOFCache, ExecucaoContrato
+from contratos.serializers import (
+    EmpenhoSOFCacheSerializer, ExecucaoContratoSerializer)
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
@@ -41,3 +44,39 @@ class HomeView(generics.ListAPIView):
             'categoria_id', None)
         kwargs['year'] = self.request.query_params.get('year', None)
         return serializer_class(*args, **kwargs)
+
+
+class EmpenhoSOFCacheFilter(filters.FilterSet):
+    year = filters.NumberFilter(field_name='anoEmpenho')
+
+    class Meta:
+        model = EmpenhoSOFCache
+        fields = ['year']
+
+
+class DownloadView(generics.ListAPIView):
+    renderer_classes = [XLSXRenderer]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EmpenhoSOFCacheFilter
+    queryset = EmpenhoSOFCache.objects.all()
+    serializer_class = EmpenhoSOFCacheSerializer
+
+    def filter_queryset(self, queryset):
+        if 'year' in self.request.query_params:
+            self.year = self.request.query_params['year']
+        else:
+            self.year = date.today().year
+            queryset = queryset.filter(anoEmpenho=self.year)
+        return super().filter_queryset(queryset)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+
+        filename = f'contratos_{self.year}.xlsx'
+
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}'
+        }
+        response = Response(serializer.data, headers=headers)
+        return response
