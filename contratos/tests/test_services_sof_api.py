@@ -11,7 +11,7 @@ from model_mommy import mommy
 from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
-from contratos.dao.dao import ContratosRawDao
+from contratos.dao.dao import ContratosRawDao, EmpenhosFailedRequestsDao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 from contratos.models import ContratoRaw, EmpenhoSOFCacheTemp
 from contratos.tests.fixtures import (
@@ -98,20 +98,19 @@ MockedFailedRequest = namedtuple(
 
 
 @patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
-@patch('contratos.dao.empenhos_failed_requests_dao.delete')
-@patch('contratos.dao.empenhos_failed_requests_dao.get_all')
-def test_retry_empenhos_sof_failed_api_requests(
-        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos):
+def test_retry_empenhos_sof_failed_api_requests(mock_get_and_save_empenhos):
     mocked_failed = [MockedFailedRequest(111, 2018, 2018),
                      MockedFailedRequest(222, 2018, 2019)]
-    mock_get_all_failed.return_value = mocked_failed
+    m_failed_requests_dao = Mock(spec=EmpenhosFailedRequestsDao)
+    m_failed_requests_dao.get_all.return_value = mocked_failed
 
     m_contratos_dao = Mock(spec=ContratosRawDao)
     contratos = mommy.prepare(ContratoRaw, codContrato=cycle([111, 222]),
                               anoExercicioContrato=2018, _quantity=2)
     m_contratos_dao.get.side_effect = contratos
 
-    services.retry_empenhos_sof_failed_api_requests(m_contratos_dao)
+    services.retry_empenhos_sof_failed_api_requests(
+        m_contratos_dao, m_failed_requests_dao)
 
     assert 2 == m_contratos_dao.get.call_count
     assert 2 == mock_get_and_save_empenhos.call_count
@@ -121,7 +120,7 @@ def test_retry_empenhos_sof_failed_api_requests(
             anoexercicio=failed_request.ano_exercicio)
         mock_get_and_save_empenhos.assert_any_call(
             contrato=contrato, ano_empenho=failed_request.ano_empenho)
-        mock_delete_failed.assert_any_call(failed_request)
+        m_failed_requests_dao.delete.assert_any_call(failed_request)
 
 
 def test_update_empenho_sof_cache_from_temp_table():
@@ -178,7 +177,7 @@ class TestVerifyTableLinesCount(TestCase):
 @patch.object(services, 'verify_table_lines_count')
 @patch.object(services, 'retry_empenhos_sof_failed_api_requests')
 @patch.object(services, 'fetch_empenhos_from_sof_and_save_to_temp_table')
-@patch.object(services, 'empenhos_failed_requests_dao')
+@patch.object(services, 'EmpenhosFailedRequestsDao')
 @patch.object(services, 'empenhos_temp_dao')
 @patch.object(services, 'empenhos_dao')
 def test_get_empenhos_for_contratos(
@@ -187,7 +186,7 @@ def test_get_empenhos_for_contratos(
     mocked_contratos_dao = Mock(spec=ContratosRawDao)
     m_contratos_raw_dao.return_value = mocked_contratos_dao
 
-    m_empenhos_failed_dao.count_all.side_effect = [2, 1, 0]
+    m_empenhos_failed_dao.return_value.count_all.side_effect = [2, 1, 0]
 
     services.get_empenhos_for_contratos_from_sof_api()
 

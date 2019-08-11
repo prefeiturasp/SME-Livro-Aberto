@@ -11,17 +11,16 @@ from django.core.files import File
 from freezegun import freeze_time
 from model_mommy import mommy
 
-from contratos.dao import empenhos_dao, empenhos_temp_dao, \
-    empenhos_failed_requests_dao
+from contratos.dao import empenhos_dao, empenhos_temp_dao
+from contratos.dao.dao import EmpenhosFailedRequestsDao
 from contratos.models import (
     CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
     EmpenhoSOFCache,
     EmpenhoSOFCacheTemp,
-    EmpenhoSOFFailedAPIRequest)
+)
 from contratos.tests.fixtures import (
     EMPENHOS_DAO_CREATE_DATA,
     EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA,
-    EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA,
     SOF_API_REQUEST_RETURN_DICT)
 
 
@@ -72,7 +71,7 @@ class EmpenhoDAOTestCase(TestCase):
         assert SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"] == ret
         mock_get.assert_called_once_with(url, headers=headers)
 
-    @patch('contratos.dao.empenhos_failed_requests_dao.create')
+    @patch.object(EmpenhosFailedRequestsDao, 'create')
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho_saves_failed_request(
             self, mock_get, mock_save_failed):
@@ -92,7 +91,7 @@ class EmpenhoDAOTestCase(TestCase):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=500)
 
-    @patch('contratos.dao.empenhos_failed_requests_dao.create')
+    @patch.object(EmpenhosFailedRequestsDao, 'create')
     @patch('contratos.dao.empenhos_dao.requests.get')
     def test_get_by_ano_empenho_saves_requests_exception(
             self, mock_get, mock_save_failed):
@@ -110,18 +109,6 @@ class EmpenhoDAOTestCase(TestCase):
         mock_save_failed.assert_called_once_with(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=-1)
-
-    @patch('contratos.dao.empenhos_failed_requests_dao'
-           '.EmpenhoSOFFailedAPIRequest')
-    def test_save_failed_api_request(self, mock_EmpenhoFailed):
-        failed_request_data = EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA
-        mocked_return = Mock(EmpenhoSOFFailedAPIRequest, autospec=True)
-        mock_EmpenhoFailed.objects.create.return_value = mocked_return
-
-        ret = empenhos_failed_requests_dao.create(**failed_request_data)
-        assert ret == mocked_return
-        mock_EmpenhoFailed.objects.create.assert_called_once_with(
-            **failed_request_data)
 
     @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
     def test_create(self, mock_Empenho):
@@ -207,49 +194,6 @@ class EmpenhosTempDaoTestCase(TestCase):
 
         mock_all.assert_called_once_with()
         mocked_all_return.delete.assert_called_once_with()
-
-
-class EmpenhosFailedRequestsDaoTestCase(TestCase):
-
-    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'all')
-    def test_get_all(self, mock_all):
-        mocked_empenhos = [Mock(spec=EmpenhoSOFFailedAPIRequest),
-                           Mock(spec=EmpenhoSOFFailedAPIRequest)]
-        mock_all.return_value = mocked_empenhos
-
-        ret = empenhos_failed_requests_dao.get_all()
-        assert ret == mocked_empenhos
-        mock_all.assert_called_once_with()
-
-    @patch('contratos.dao.empenhos_failed_requests_dao'
-           '.EmpenhoSOFFailedAPIRequest')
-    def test_create(self, mock_EmpenhoFailed):
-        empenho_data = EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA
-        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, **empenho_data)
-        mock_EmpenhoFailed.objects.create.return_value = empenho
-
-        ret = empenhos_failed_requests_dao.create(**empenho_data)
-        mock_EmpenhoFailed.objects.create.assert_called_once_with(
-            **empenho_data)
-        assert ret == empenho
-
-    @patch('contratos.dao.empenhos_failed_requests_dao'
-           '.EmpenhoSOFFailedAPIRequest')
-    def test_delete(self, mock_EmpenhoFailed):
-        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, _fill_optional=True)
-        empenho.delete = Mock()
-
-        empenhos_failed_requests_dao.delete(empenho)
-
-        empenho.delete.assert_called_once_with()
-
-    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'count')
-    def test_count_all(self, mock_count):
-        mock_count.return_value = 2
-
-        ret = empenhos_failed_requests_dao.count_all()
-        assert ret == 2
-        mock_count.assert_called_once_with()
 
 
 class TestContratosCategoriasFromToDao:

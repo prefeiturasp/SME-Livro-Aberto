@@ -1,12 +1,12 @@
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
-from contratos.dao import empenhos_dao, empenhos_temp_dao, \
-    empenhos_failed_requests_dao
-from contratos.dao.dao import ContratosRawDao
+from contratos.dao import empenhos_dao, empenhos_temp_dao
+from contratos.dao.dao import ContratosRawDao, EmpenhosFailedRequestsDao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 
 
 def get_empenhos_for_contratos_from_sof_api():
     contratos_raw_dao = ContratosRawDao()
+    empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
 
     empenhos_temp_dao.erase_all()
 
@@ -15,7 +15,8 @@ def get_empenhos_for_contratos_from_sof_api():
 
     while empenhos_failed_requests_dao.count_all() > 0:
         print("Retrying failed API requests")
-        retry_empenhos_sof_failed_api_requests(contratos_raw_dao)
+        retry_empenhos_sof_failed_api_requests(
+            contratos_raw_dao, empenhos_failed_requests_dao)
 
     print("Verifying count of lines in temp table")
     verify_table_lines_count(
@@ -71,7 +72,8 @@ def save_empenhos_sof_cache(*, empenhos_data):
     return len(empenhos_data)
 
 
-def retry_empenhos_sof_failed_api_requests(contratos_raw_dao):
+def retry_empenhos_sof_failed_api_requests(
+        contratos_raw_dao, empenhos_failed_requests_dao):
     for failed_request in empenhos_failed_requests_dao.get_all():
         contrato = contratos_raw_dao.get(
             codcontrato=failed_request.cod_contrato,

@@ -3,7 +3,8 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-from contratos.dao import empenhos_failed_requests_dao
+# from contratos.dao import empenhos_failed_requests_dao
+from contratos.dao.dao import EmpenhosFailedRequestsDao
 from contratos.models import EmpenhoSOFCache
 
 
@@ -30,6 +31,7 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
 
 
 def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
+    empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
     url = (
         'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
         f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'

@@ -7,15 +7,20 @@ from model_mommy import mommy
 from contratos.dao.dao import (
     CategoriasContratosDao, CategoriasContratosFromToDao, ContratosRawDao,
     EmpenhosSOFCacheDao,
+    EmpenhosFailedRequestsDao,
     ExecucoesContratosDao,
     FornecedoresDao,
     ModalidadesContratosDao,
     ObjetosContratosDao)
 from contratos.models import (
     CategoriaContrato, CategoriaContratoFromTo, ContratoRaw,
-    EmpenhoSOFCache, ExecucaoContrato, Fornecedor, ModalidadeContrato,
+    EmpenhoSOFCache, EmpenhoSOFFailedAPIRequest, ExecucaoContrato,
+    Fornecedor, ModalidadeContrato,
     ObjetoContrato)
-from contratos.tests.fixtures import EXECUCAO_CONTRATO_CREATE_DATA
+from contratos.tests.fixtures import (
+    EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA,
+    EXECUCAO_CONTRATO_CREATE_DATA,
+)
 
 
 class EmpenhosSOFCacheDAOTestCase(TestCase):
@@ -31,6 +36,49 @@ class EmpenhosSOFCacheDAOTestCase(TestCase):
         ret = dao.get_all()
         assert ret == mocked_contratos
         mock_all.assert_called_once_with()
+
+
+class EmpenhosFailedRequestsDaoTestCase(TestCase):
+
+    def setUp(self):
+        self.dao = EmpenhosFailedRequestsDao()
+
+    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_empenhos = [Mock(spec=EmpenhoSOFFailedAPIRequest),
+                           Mock(spec=EmpenhoSOFFailedAPIRequest)]
+        mock_all.return_value = mocked_empenhos
+
+        ret = self.dao.get_all()
+        assert ret == mocked_empenhos
+        mock_all.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'create')
+    def test_create(self, mock_create):
+        empenho_data = EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA
+        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, **empenho_data)
+        mock_create.return_value = empenho
+
+        ret = self.dao.create(**empenho_data)
+
+        mock_create.assert_called_once_with(**empenho_data)
+        assert ret == empenho
+
+    def test_delete(self):
+        empenho = mommy.prepare(EmpenhoSOFFailedAPIRequest, _fill_optional=True)
+        empenho.delete = Mock()
+
+        self.dao.delete(empenho)
+
+        empenho.delete.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFFailedAPIRequest.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = self.dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
 
 
 class ContratoRawDAOTestCase(TestCase):
