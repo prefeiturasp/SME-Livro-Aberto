@@ -46,8 +46,24 @@ class HomeView(generics.ListAPIView):
         return serializer_class(*args, **kwargs)
 
 
+class EmpenhoSOFCacheFilter(filters.FilterSet):
+    year = filters.NumberFilter(field_name='anoEmpenho')
+
+    class Meta:
+        model = EmpenhoSOFCache
+        fields = ['year']
+
+
 class DownloadView(XLSXFileMixin, generics.ListAPIView):
     renderer_classes = [XLSXRenderer]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EmpenhoSOFCacheFilter
     queryset = EmpenhoSOFCache.objects.all()
     serializer_class = EmpenhoSOFCacheSerializer
     filename = 'contratos.xlsx'
+
+    def filter_queryset(self, queryset):
+        if 'year' not in self.request.query_params:
+            curr_year = date.today().year
+            queryset = queryset.filter(anoEmpenho=curr_year)
+        return super().filter_queryset(queryset)
