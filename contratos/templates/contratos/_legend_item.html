@@ -1,6 +1,6 @@
 {% load static %}
-<li class="fg-{{ slug }} description-parent" data-gnd="{{slug }}">
-    {% include '_legend_icon.html' with app='contratos' slug=slug desc=desc  label=label %}
+<li class="fg-{{ slug }} description-parent" data-slug="{{ slug }}">
+    {% include '_legend_icon.html' with app='contratos' slug=slug desc=label %}
     <div class="description-box">
         <h3>{{ label }}</h3>
         <p>{{ desc }}</p>

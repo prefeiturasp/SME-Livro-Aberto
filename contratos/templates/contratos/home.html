@@ -38,31 +38,16 @@
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
       <ul class="legend">
-          {% include 'contratos/_legend_item.html' with slug='acoes-culturais' desc='Ações Culturais' label='Ações Culturais'%}
-          {% include 'contratos/_legend_item.html' with slug='alimentacao' desc='Alimentação' label='Alimentação'%}
-          {% include 'contratos/_legend_item.html' with slug='contrucoes' desc='Contruções' label='Contruções' %}
-          {% include 'contratos/_legend_item.html' with slug='parcerias' desc='Parcerias' label='Parcerias' %}
-          {% include 'contratos/_legend_item.html' with slug='pedagogico' desc='Pedagógico' label='Pedagógico' %}
-
-          {% include 'contratos/_legend_item.html' with slug='manutencao' desc='Reformas e Manutenção' label='Reformas e Manutenção' %}
-          {% include 'contratos/_legend_item.html' with slug='servicos' desc='Serviços Contínuos' label='Serviços Contínuos' %}
-          {% include 'contratos/_legend_item.html' with slug='transportes' desc='Transportes' label='Transportes' %}
-          {% include 'contratos/_legend_item.html' with slug='uniformes' desc='Uniformes e Material Escolar' label='Uniformes e Material Escolar' %}
-          {% include 'contratos/_legend_item.html' with slug='outros' desc='Outras Aquisições' label='Outras Aquisições' %}
+        {% for destination in destinations %}
+          {% include 'contratos/_legend_item.html' with slug=destination.categoria_slug desc=destination.categoria_desc label=destination.categoria_name %}
+        {% endfor %}
       </ul>
       <div class="bar-parent">
         <div class="bar">
-            {% with total_empenhado=1000000 %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='acoes-culturais' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=180000 slug='alimentacao' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='contrucoes' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=20000 slug='parcerias' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='pedagogico' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='manutencao' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='servicos' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='transportes' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='uniformes' %}
-                {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=100000 slug='outros' %}
+            {% with total_empenhado=big_number.empenhado %}
+                {% for destination in destinations %}
+                  {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=destination.empenhado slug=destination.categoria_slug %}
+                {% endfor %}
             {% endwith %}
         </div>
       </div>
