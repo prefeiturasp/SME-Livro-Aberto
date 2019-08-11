@@ -1,10 +1,10 @@
 from datetime import date
 
 from django_filters import rest_framework as filters
-from drf_renderer_xlsx.mixins import XLSXFileMixin
 from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.response import Response
 
 from contratos.models import EmpenhoSOFCache, ExecucaoContrato
 from contratos.serializers import (
@@ -54,16 +54,29 @@ class EmpenhoSOFCacheFilter(filters.FilterSet):
         fields = ['year']
 
 
-class DownloadView(XLSXFileMixin, generics.ListAPIView):
+class DownloadView(generics.ListAPIView):
     renderer_classes = [XLSXRenderer]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EmpenhoSOFCacheFilter
     queryset = EmpenhoSOFCache.objects.all()
     serializer_class = EmpenhoSOFCacheSerializer
-    filename = 'contratos.xlsx'
 
     def filter_queryset(self, queryset):
-        if 'year' not in self.request.query_params:
-            curr_year = date.today().year
-            queryset = queryset.filter(anoEmpenho=curr_year)
+        if 'year' in self.request.query_params:
+            self.year = self.request.query_params['year']
+        else:
+            self.year = date.today().year
+            queryset = queryset.filter(anoEmpenho=self.year)
         return super().filter_queryset(queryset)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+
+        filename = f'contratos_{self.year}.xlsx'
+
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}'
+        }
+        response = Response(serializer.data, headers=headers)
+        return response
