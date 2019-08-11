@@ -1,11 +1,14 @@
 from datetime import date
 
 from django_filters import rest_framework as filters
+from drf_renderer_xlsx.mixins import XLSXFileMixin
+from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-from contratos.models import ExecucaoContrato
-from contratos.serializers import ExecucaoContratoSerializer
+from contratos.models import EmpenhoSOFCache, ExecucaoContrato
+from contratos.serializers import (
+    EmpenhoSOFCacheSerializer, ExecucaoContratoSerializer)
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
@@ -41,3 +44,10 @@ class HomeView(generics.ListAPIView):
             'categoria_id', None)
         kwargs['year'] = self.request.query_params.get('year', None)
         return serializer_class(*args, **kwargs)
+
+
+class DownloadView(XLSXFileMixin, generics.ListAPIView):
+    renderer_classes = [XLSXRenderer]
+    queryset = EmpenhoSOFCache.objects.all()
+    serializer_class = EmpenhoSOFCacheSerializer
+    filename = 'contratos.xlsx'
