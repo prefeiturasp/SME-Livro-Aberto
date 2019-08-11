@@ -5,25 +5,35 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from contratos.dao.dao import (
-    CategoriasContratosDao, CategoriasContratosFromToDao, ContratosRawDao,
+    CategoriasContratosDao,
+    CategoriasContratosFromToDao,
+    ContratosRawDao,
     EmpenhosSOFCacheDao,
+    EmpenhosSOFCacheTempDao,
     EmpenhosFailedRequestsDao,
     ExecucoesContratosDao,
     FornecedoresDao,
     ModalidadesContratosDao,
     ObjetosContratosDao)
 from contratos.models import (
-    CategoriaContrato, CategoriaContratoFromTo, ContratoRaw,
-    EmpenhoSOFCache, EmpenhoSOFFailedAPIRequest, ExecucaoContrato,
-    Fornecedor, ModalidadeContrato,
+    CategoriaContrato,
+    CategoriaContratoFromTo,
+    ContratoRaw,
+    EmpenhoSOFCache,
+    EmpenhoSOFCacheTemp,
+    EmpenhoSOFFailedAPIRequest,
+    ExecucaoContrato,
+    Fornecedor,
+    ModalidadeContrato,
     ObjetoContrato)
 from contratos.tests.fixtures import (
+    EMPENHOS_DAO_CREATE_DATA,
     EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA,
     EXECUCAO_CONTRATO_CREATE_DATA,
 )
 
 
-class EmpenhosSOFCacheDAOTestCase(TestCase):
+class EmpenhosSOFCacheDaoTestCase(TestCase):
 
     @patch.object(EmpenhoSOFCache.objects, 'all')
     def test_get_all(self, mock_all):
@@ -36,6 +46,58 @@ class EmpenhosSOFCacheDAOTestCase(TestCase):
         ret = dao.get_all()
         assert ret == mocked_contratos
         mock_all.assert_called_once_with()
+
+
+class EmpenhosTempDaoTestCase(TestCase):
+
+    def setUp(self):
+        self.dao = EmpenhosSOFCacheTempDao()
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
+    def test_get_all(self, mock_all):
+        mocked_empenhos = [Mock(spec=EmpenhoSOFCacheTemp),
+                           Mock(spec=EmpenhoSOFCacheTemp)]
+        mock_all.return_value = mocked_empenhos
+
+        ret = self.dao.get_all()
+        assert ret == mocked_empenhos
+        mock_all.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'create')
+    def test_create(self, mock_create):
+        empenho_data = EMPENHOS_DAO_CREATE_DATA
+        empenho = mommy.prepare(EmpenhoSOFCacheTemp, **empenho_data)
+        mock_create.return_value = empenho
+
+        ret = self.dao.create(data=empenho_data)
+        mock_create.assert_called_once_with(**empenho_data)
+        assert ret == empenho
+
+    def test_delete(self):
+        empenho = mommy.prepare(EmpenhoSOFCacheTemp, _fill_optional=True)
+        empenho.delete = Mock()
+
+        self.dao.delete(empenho)
+
+        empenho.delete.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = self.dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
+    def test_erase_all(self, mock_all):
+        mocked_all_return = Mock()
+        mock_all.return_value = mocked_all_return
+
+        self.dao.erase_all()
+
+        mock_all.assert_called_once_with()
+        mocked_all_return.delete.assert_called_once_with()
 
 
 class EmpenhosFailedRequestsDaoTestCase(TestCase):

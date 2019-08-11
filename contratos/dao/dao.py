@@ -4,6 +4,7 @@ from contratos.models import (
     ContratoRaw,
     Fornecedor,
     EmpenhoSOFCache,
+    EmpenhoSOFCacheTemp,
     EmpenhoSOFFailedAPIRequest,
     ExecucaoContrato,
     ModalidadeContrato,
@@ -17,6 +18,27 @@ class EmpenhosSOFCacheDao:
 
     def get_all(self):
         return self.model.objects.all()
+
+
+class EmpenhosSOFCacheTempDao:
+
+    def __init__(self):
+        self.model = EmpenhoSOFCacheTemp
+
+    def get_all(self):
+        return self.model.objects.all()
+
+    def create(self, data):
+        return self.model.objects.create(**data)
+
+    def count_all(self):
+        return self.model.objects.count()
+
+    def delete(self, obj):
+        obj.delete()
+
+    def erase_all(self):
+        self.model.objects.all().delete()
 
 
 class EmpenhosFailedRequestsDao:
