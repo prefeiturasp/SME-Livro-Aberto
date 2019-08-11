@@ -11,6 +11,7 @@ from model_mommy import mommy
 from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import empenhos_dao, empenhos_temp_dao
+from contratos.dao.dao import ContratosRawDao
 from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 from contratos.models import ContratoRaw, EmpenhoSOFCacheTemp
 from contratos.tests.fixtures import (
@@ -22,14 +23,14 @@ MockedContratoRaw = namedtuple('MockedContratoRaw',
 
 
 @patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
-@patch('contratos.dao.contratos_raw_dao.get_all')
 def test_fetch_empenhos_from_sof_and_save_to_temp_table(
-        mock_get_all, mock_get_and_save_empenhos):
+        mock_get_and_save_empenhos):
+    m_contratos_dao = Mock(spec=ContratosRawDao)
     mocked_contratos = [MockedContratoRaw(111, 2018),
                         MockedContratoRaw(222, 2019)]
-    mock_get_all.return_value = mocked_contratos
+    m_contratos_dao.get_all.return_value = mocked_contratos
 
-    services.fetch_empenhos_from_sof_and_save_to_temp_table()
+    services.fetch_empenhos_from_sof_and_save_to_temp_table(m_contratos_dao)
 
     assert 2 == mock_get_and_save_empenhos.call_count
     for contrato in mocked_contratos:
@@ -96,27 +97,26 @@ MockedFailedRequest = namedtuple(
     ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
 
 
-@patch('contratos.dao.contratos_raw_dao.get')
 @patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
 @patch('contratos.dao.empenhos_failed_requests_dao.delete')
 @patch('contratos.dao.empenhos_failed_requests_dao.get_all')
 def test_retry_empenhos_sof_failed_api_requests(
-        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos,
-        mock_contratos_get):
+        mock_get_all_failed, mock_delete_failed, mock_get_and_save_empenhos):
     mocked_failed = [MockedFailedRequest(111, 2018, 2018),
                      MockedFailedRequest(222, 2018, 2019)]
     mock_get_all_failed.return_value = mocked_failed
 
+    m_contratos_dao = Mock(spec=ContratosRawDao)
     contratos = mommy.prepare(ContratoRaw, codContrato=cycle([111, 222]),
                               anoExercicioContrato=2018, _quantity=2)
-    mock_contratos_get.side_effect = contratos
+    m_contratos_dao.get.side_effect = contratos
 
-    services.retry_empenhos_sof_failed_api_requests()
+    services.retry_empenhos_sof_failed_api_requests(m_contratos_dao)
 
-    assert 2 == mock_contratos_get.call_count
+    assert 2 == m_contratos_dao.get.call_count
     assert 2 == mock_get_and_save_empenhos.call_count
     for failed_request, contrato in zip(mocked_failed, contratos):
-        mock_contratos_get.assert_any_call(
+        m_contratos_dao.get.assert_any_call(
             codcontrato=failed_request.cod_contrato,
             anoexercicio=failed_request.ano_exercicio)
         mock_get_and_save_empenhos.assert_any_call(
@@ -173,6 +173,7 @@ class TestVerifyTableLinesCount(TestCase):
         self.m_empenhos_temp_dao.count_all.assert_called_once_with()
 
 
+@patch.object(services, 'ContratosRawDao')
 @patch.object(services, 'update_empenho_sof_cache_from_temp_table')
 @patch.object(services, 'verify_table_lines_count')
 @patch.object(services, 'retry_empenhos_sof_failed_api_requests')
@@ -182,13 +183,16 @@ class TestVerifyTableLinesCount(TestCase):
 @patch.object(services, 'empenhos_dao')
 def test_get_empenhos_for_contratos(
         m_empenhos_dao, m_empenhos_temp_dao, m_empenhos_failed_dao,
-        m_fetch, m_retry, m_verify, m_update):
+        m_fetch, m_retry, m_verify, m_update, m_contratos_raw_dao):
+    mocked_contratos_dao = Mock(spec=ContratosRawDao)
+    m_contratos_raw_dao.return_value = mocked_contratos_dao
+
     m_empenhos_failed_dao.count_all.side_effect = [2, 1, 0]
 
     services.get_empenhos_for_contratos_from_sof_api()
 
     m_empenhos_temp_dao.erase_all.assert_called_once_with()
-    m_fetch.assert_called_once_with()
+    m_fetch.assert_called_once_with(mocked_contratos_dao)
     assert 2 == m_retry.call_count
     m_verify.assert_called_once_with(
         empenhos_dao=m_empenhos_dao, empenhos_temp_dao=m_empenhos_temp_dao)

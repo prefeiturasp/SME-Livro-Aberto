@@ -11,10 +11,10 @@ from django.core.files import File
 from freezegun import freeze_time
 from model_mommy import mommy
 
-from contratos.dao import contratos_raw_dao, empenhos_dao, empenhos_temp_dao, \
+from contratos.dao import empenhos_dao, empenhos_temp_dao, \
     empenhos_failed_requests_dao
 from contratos.models import (
-    ContratoRaw, CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
+    CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
     EmpenhoSOFCache,
     EmpenhoSOFCacheTemp,
     EmpenhoSOFFailedAPIRequest)
@@ -23,19 +23,6 @@ from contratos.tests.fixtures import (
     EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA,
     EMPENHOS_FAILED_API_REQUESTS_CREATE_DATA,
     SOF_API_REQUEST_RETURN_DICT)
-
-
-class ContratoRawDAOTestCase(TestCase):
-
-    @patch.object(ContratoRaw.objects, 'all')
-    def test_get_all(self, mock_all):
-        mocked_contratos = [Mock(spec=ContratoRaw),
-                            Mock(spec=ContratoRaw)]
-        mock_all.return_value = mocked_contratos
-
-        ret = contratos_raw_dao.get_all()
-        assert ret == mocked_contratos
-        mock_all.assert_called_once_with()
 
 
 class EmpenhoDAOTestCase(TestCase):

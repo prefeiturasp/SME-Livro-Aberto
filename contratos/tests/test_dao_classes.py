@@ -5,12 +5,15 @@ from unittest.mock import Mock, patch
 from model_mommy import mommy
 
 from contratos.dao.dao import (
-    CategoriasContratosDao, CategoriasContratosFromToDao, EmpenhosSOFCacheDao,
-    ExecucoesContratosDao, FornecedoresDao, ModalidadesContratosDao,
+    CategoriasContratosDao, CategoriasContratosFromToDao, ContratosRawDao,
+    EmpenhosSOFCacheDao,
+    ExecucoesContratosDao,
+    FornecedoresDao,
+    ModalidadesContratosDao,
     ObjetosContratosDao)
 from contratos.models import (
-    CategoriaContrato, CategoriaContratoFromTo, EmpenhoSOFCache,
-    ExecucaoContrato, Fornecedor, ModalidadeContrato,
+    CategoriaContrato, CategoriaContratoFromTo, ContratoRaw,
+    EmpenhoSOFCache, ExecucaoContrato, Fornecedor, ModalidadeContrato,
     ObjetoContrato)
 from contratos.tests.fixtures import EXECUCAO_CONTRATO_CREATE_DATA
 
@@ -23,6 +26,20 @@ class EmpenhosSOFCacheDAOTestCase(TestCase):
 
         mocked_contratos = [Mock(spec=EmpenhoSOFCache),
                             Mock(spec=EmpenhoSOFCache)]
+        mock_all.return_value = mocked_contratos
+
+        ret = dao.get_all()
+        assert ret == mocked_contratos
+        mock_all.assert_called_once_with()
+
+
+class ContratoRawDAOTestCase(TestCase):
+
+    @patch.object(ContratoRaw.objects, 'all')
+    def test_get_all(self, mock_all):
+        dao = ContratosRawDao()
+        mocked_contratos = [Mock(spec=ContratoRaw),
+                            Mock(spec=ContratoRaw)]
         mock_all.return_value = mocked_contratos
 
         ret = dao.get_all()

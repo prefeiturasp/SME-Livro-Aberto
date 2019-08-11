@@ -1,6 +1,11 @@
 from contratos.models import (
-    CategoriaContrato, CategoriaContratoFromTo, Fornecedor, EmpenhoSOFCache,
-    ExecucaoContrato, ModalidadeContrato,
+    CategoriaContrato,
+    CategoriaContratoFromTo,
+    ContratoRaw,
+    Fornecedor,
+    EmpenhoSOFCache,
+    ExecucaoContrato,
+    ModalidadeContrato,
     ObjetoContrato)
 
 
@@ -11,6 +16,18 @@ class EmpenhosSOFCacheDao:
 
     def get_all(self):
         return self.model.objects.all()
+
+
+class ContratosRawDao:
+
+    def __init__(self):
+        self.model = ContratoRaw
+
+    def get_all(self):
+        return self.model.objects.all()
+
+    def get(self, **data):
+        return self.model.objects.get(**data)
 
 
 class ExecucoesContratosDao:
