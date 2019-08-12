@@ -12,7 +12,7 @@ from freezegun import freeze_time
 from model_mommy import mommy
 
 from contratos.dao import sof_api_dao
-from contratos.dao.dao import EmpenhosFailedRequestsDao
+from contratos.dao.models_dao import EmpenhosFailedRequestsDao
 from contratos.models import (
     CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
 )

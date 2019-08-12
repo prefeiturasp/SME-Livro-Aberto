@@ -3,8 +3,7 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-from contratos.dao.dao import EmpenhosFailedRequestsDao
-from contratos.models import EmpenhoSOFCache
+from contratos.dao.models_dao import EmpenhosFailedRequestsDao
 
 
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):

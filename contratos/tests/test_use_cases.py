@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 from model_mommy import mommy
 
-from contratos.dao.dao import (
+from contratos.dao.models_dao import (
     CategoriasContratosDao, CategoriasContratosFromToDao, FornecedoresDao,
     EmpenhosSOFCacheDao, ExecucoesContratosDao,
     ModalidadesContratosDao, ObjetosContratosDao)

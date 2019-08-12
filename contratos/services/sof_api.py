@@ -1,6 +1,6 @@
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import sof_api_dao
-from contratos.dao.dao import (
+from contratos.dao.models_dao import (
     ContratosRawDao,
     EmpenhosSOFCacheDao,
     EmpenhosSOFCacheTempDao,
