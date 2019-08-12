@@ -324,5 +324,6 @@ class CategoriaContratoFromToSpreadsheet(models.Model):
             self.extract_data()
 
     def extract_data(self):
-        from contratos.dao import categorias_contratos_fromto_dao
-        categorias_contratos_fromto_dao.extract_spreadsheet(self)
+        from contratos.dao.models_dao import CategoriasContratosFromToDao
+        dao = CategoriasContratosFromToDao()
+        dao.extract_spreadsheet(self)
