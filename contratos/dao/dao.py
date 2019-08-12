@@ -1,3 +1,7 @@
+from django.db import IntegrityError, transaction
+
+from openpyxl import load_workbook
+
 from contratos.models import (
     CategoriaContrato,
     CategoriaContratoFromTo,
@@ -139,6 +143,46 @@ class CategoriasContratosFromToDao:
 
     def get_all(self):
         return self.model.objects.all()
+
+    def extract_spreadsheet(self, ssheet_obj):
+        if ssheet_obj.extracted:
+            return
+
+        filepath = ssheet_obj.spreadsheet.path
+        wb = load_workbook(filepath)
+        ws = wb.worksheets[0]
+
+        row = 2
+        row_is_valid = True
+        added = []
+        not_added = []
+        while row_is_valid:
+            indexer = ws['a' + str(row)].value
+            if not indexer:
+                row_is_valid = False
+                continue
+            categoria_name = ws['b' + str(row)].value
+            categoria_desc = ws['c' + str(row)].value
+
+            cat_ft = CategoriaContratoFromTo()
+            cat_ft.indexer = indexer
+            cat_ft.categoria_name = categoria_name
+            cat_ft.categoria_desc = categoria_desc
+            try:
+                with transaction.atomic():
+                    cat_ft.save()
+                added.append(cat_ft.indexer)
+            except IntegrityError:
+                # add to cat_ft.not_added
+                not_added.append(cat_ft.indexer)
+
+            row += 1
+
+        ssheet_obj.added_fromtos = added
+        ssheet_obj.not_added_fromtos = not_added
+        ssheet_obj.extracted = True
+        ssheet_obj.save()
+        return added, not_added
 
 
 class CategoriasContratosDao:
