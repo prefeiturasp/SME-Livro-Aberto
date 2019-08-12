@@ -153,3 +153,8 @@ CONTRATOS_RAW_DUMP_DIR_PATH = config(
     'CONTRATOS_RAW_DUMP_DIR_PATH', f'{BASE_DIR}/../contratos/data/')
 CONTRATOS_RAW_DUMP_FILENAME = config(
     'CONTRATOS_RAW_DUMP_FILENAME', 'contratos_raw_dump.zip')
+ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH = config(
+    'ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH',
+    f'{BASE_DIR}/../budget_execution/data/')
+ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME = config(
+    'ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME', 'orcamento_empenhos_dump.zip')
