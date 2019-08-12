@@ -10,9 +10,9 @@ from model_mommy import mommy
 
 from contratos.services import sof_api as services
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
-from contratos.dao import empenhos_dao
 from contratos.dao.dao import (
     ContratosRawDao,
+    EmpenhosSOFCacheDao,
     EmpenhosSOFCacheTempDao,
     EmpenhosFailedRequestsDao,
 )
@@ -48,7 +48,7 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
 
 @patch('contratos.services.sof_api.save_empenhos_sof_cache')
 @patch('contratos.services.sof_api.build_empenhos_data')
-@patch('contratos.dao.empenhos_dao.get_by_codcontrato_and_anoexercicio')
+@patch('contratos.dao.sof_api.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
     contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
@@ -140,7 +140,7 @@ def test_retry_empenhos_sof_failed_api_requests(mock_get_and_save_empenhos):
 
 
 def test_update_empenho_sof_cache_from_temp_table():
-    m_empenhos_dao = Mock(spec=empenhos_dao)
+    m_empenhos_dao = Mock(spec=EmpenhosSOFCacheDao)
 
     empenhos_temp = mommy.prepare(EmpenhoSOFCacheTemp, _quantity=2)
     m_empenhos_temp_dao = Mock(spec=EmpenhosSOFCacheTempDao)
@@ -161,7 +161,7 @@ def test_update_empenho_sof_cache_from_temp_table():
 class TestVerifyTableLinesCount(TestCase):
 
     def setUp(self):
-        self.m_empenhos_dao = Mock(spec=empenhos_dao)
+        self.m_empenhos_dao = Mock(spec=EmpenhosSOFCacheDao)
         self.m_empenhos_dao.count_all.return_value = 100
 
         self.m_empenhos_temp_dao = Mock(spec=EmpenhosSOFCacheTempDao)
@@ -195,10 +195,15 @@ class TestVerifyTableLinesCount(TestCase):
 @patch.object(services, 'fetch_empenhos_from_sof_and_save_to_temp_table')
 @patch.object(services, 'EmpenhosFailedRequestsDao')
 @patch.object(services, 'EmpenhosSOFCacheTempDao')
-@patch.object(services, 'empenhos_dao')
+@patch.object(services, 'EmpenhosSOFCacheDao')
+@patch.object(services, 'sof_api_dao')
 def test_get_empenhos_for_contratos(
-        m_empenhos_dao, m_empenhos_temp_dao, m_empenhos_failed_dao,
-        m_fetch, m_retry, m_verify, m_update, m_contratos_raw_dao):
+        m_sof_api_dao, m_empenhos_dao, m_empenhos_temp_dao,
+        m_empenhos_failed_dao, m_fetch, m_retry, m_verify, m_update,
+        m_contratos_raw_dao):
+    mocked_empenhos_dao = Mock(spec=EmpenhosSOFCacheTempDao)
+    m_empenhos_dao.return_value = mocked_empenhos_dao
+
     mocked_empenhos_temp_dao = Mock(spec=EmpenhosSOFCacheTempDao)
     m_empenhos_temp_dao.return_value = mocked_empenhos_temp_dao
 
@@ -215,6 +220,8 @@ def test_get_empenhos_for_contratos(
         empenhos_temp_dao=mocked_empenhos_temp_dao)
     assert 2 == m_retry.call_count
     m_verify.assert_called_once_with(
-        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=mocked_empenhos_temp_dao)
+        empenhos_dao=mocked_empenhos_dao,
+        empenhos_temp_dao=mocked_empenhos_temp_dao)
     m_update.assert_called_once_with(
-        empenhos_dao=m_empenhos_dao, empenhos_temp_dao=mocked_empenhos_temp_dao)
+        empenhos_dao=mocked_empenhos_dao,
+        empenhos_temp_dao=mocked_empenhos_temp_dao)

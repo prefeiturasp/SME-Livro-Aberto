@@ -35,17 +35,53 @@ from contratos.tests.fixtures import (
 
 class EmpenhosSOFCacheDaoTestCase(TestCase):
 
+    def setUp(self):
+        self.dao = EmpenhosSOFCacheDao()
+
     @patch.object(EmpenhoSOFCache.objects, 'all')
     def test_get_all(self, mock_all):
-        dao = EmpenhosSOFCacheDao()
-
         mocked_contratos = [Mock(spec=EmpenhoSOFCache),
                             Mock(spec=EmpenhoSOFCache)]
         mock_all.return_value = mocked_contratos
 
-        ret = dao.get_all()
+        ret = self.dao.get_all()
         assert ret == mocked_contratos
         mock_all.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCache.objects, 'count')
+    def test_count_all(self, mock_count):
+        mock_count.return_value = 2
+
+        ret = self.dao.count_all()
+        assert ret == 2
+        mock_count.assert_called_once_with()
+
+    @patch.object(EmpenhoSOFCache.objects, 'create')
+    def test_create(self, mock_create):
+        empenho_data = EMPENHOS_DAO_CREATE_DATA
+        empenho = mommy.prepare(EmpenhoSOFCache, **empenho_data)
+        mock_create.return_value = empenho
+
+        ret = self.dao.create(data=empenho_data)
+        mock_create.assert_called_once_with(**empenho_data)
+        assert ret == empenho
+
+    def test_create_from_temp_table_data(self):
+        mocked_empenho = Mock(spec=EmpenhoSOFCache)
+        self.dao.model = Mock(spec=EmpenhoSOFCache)
+        self.dao.model.return_value = mocked_empenho
+
+        empenho_temp = mommy.prepare(EmpenhoSOFCacheTemp, _fill_optional=True)
+
+        empenho = self.dao.create_from_temp_table_obj(
+            empenho_temp=empenho_temp)
+
+        for field in empenho_temp._meta.fields:
+            if field.primary_key is True:
+                continue
+            assert (getattr(empenho, field.name)
+                    == getattr(empenho_temp, field.name))
+        mocked_empenho.save.assert_called_once_with()
 
 
 class EmpenhosTempDaoTestCase(TestCase):

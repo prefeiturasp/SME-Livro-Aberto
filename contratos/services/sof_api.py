@@ -1,7 +1,8 @@
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
-from contratos.dao import empenhos_dao
+from contratos.dao import sof_api as sof_api_dao
 from contratos.dao.dao import (
     ContratosRawDao,
+    EmpenhosSOFCacheDao,
     EmpenhosSOFCacheTempDao,
     EmpenhosFailedRequestsDao,
 )
@@ -10,6 +11,7 @@ from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 
 def get_empenhos_for_contratos_from_sof_api():
     contratos_raw_dao = ContratosRawDao()
+    empenhos_dao = EmpenhosSOFCacheDao()
     empenhos_temp_dao = EmpenhosSOFCacheTempDao()
     empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
 
@@ -48,11 +50,11 @@ def get_empenhos_for_contrato_and_save(*, contrato, empenhos_temp_dao,
     ano_exercicio = contrato.anoExercicioContrato
 
     if not ano_empenho:
-        sof_data = empenhos_dao.get_by_codcontrato_and_anoexercicio(
+        sof_data = sof_api_dao.get_by_codcontrato_and_anoexercicio(
             cod_contrato=cod_contrato,
             ano_exercicio=ano_exercicio)
     else:
-        sof_data = empenhos_dao.get_by_ano_empenho(
+        sof_data = sof_api_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato,
             ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)

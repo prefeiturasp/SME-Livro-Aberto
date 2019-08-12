@@ -3,17 +3,8 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-# from contratos.dao import empenhos_failed_requests_dao
 from contratos.dao.dao import EmpenhosFailedRequestsDao
 from contratos.models import EmpenhoSOFCache
-
-
-def create(*, data):
-    return EmpenhoSOFCache.objects.create(**data)
-
-
-def count_all():
-    return EmpenhoSOFCache.objects.count()
 
 
 def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
@@ -68,13 +59,3 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
     data = response.json()
     return data['lstEmpenhos']
-
-
-def create_from_temp_table_obj(*, empenho_temp):
-    empenho = EmpenhoSOFCache()
-    for field in empenho_temp._meta.fields:
-        if field.primary_key is True:
-            continue
-        setattr(empenho, field.name, getattr(empenho_temp, field.name))
-    empenho.save()
-    return empenho

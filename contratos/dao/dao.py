@@ -19,6 +19,21 @@ class EmpenhosSOFCacheDao:
     def get_all(self):
         return self.model.objects.all()
 
+    def create(self, data):
+        return self.model.objects.create(**data)
+
+    def count_all(self):
+        return self.model.objects.count()
+
+    def create_from_temp_table_obj(self, empenho_temp):
+        empenho = self.model()
+        for field in empenho_temp._meta.fields:
+            if field.primary_key is True:
+                continue
+            setattr(empenho, field.name, getattr(empenho_temp, field.name))
+        empenho.save()
+        return empenho
+
 
 class EmpenhosSOFCacheTempDao:
 

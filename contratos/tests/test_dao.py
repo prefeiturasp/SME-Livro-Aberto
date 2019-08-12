@@ -3,7 +3,7 @@ import os
 import pytest
 
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from django.conf import settings
 from django.core.files import File
@@ -11,22 +11,19 @@ from django.core.files import File
 from freezegun import freeze_time
 from model_mommy import mommy
 
-from contratos.dao import empenhos_dao
+from contratos.dao import sof_api as sof_api_dao
 from contratos.dao.dao import EmpenhosFailedRequestsDao
 from contratos.models import (
     CategoriaContratoFromTo, CategoriaContratoFromToSpreadsheet,
-    EmpenhoSOFCache,
-    EmpenhoSOFCacheTemp,
 )
 from contratos.tests.fixtures import (
-    EMPENHOS_DAO_CREATE_DATA,
     EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA,
     SOF_API_REQUEST_RETURN_DICT)
 
 
 class EmpenhoDAOTestCase(TestCase):
 
-    @patch('contratos.dao.empenhos_dao.get_by_ano_empenho')
+    @patch('contratos.dao.sof_api.get_by_ano_empenho')
     def test_get_by_codcontrato_and_anoexercicio(self, mock_get_by_ano):
         empenhos_2018 = EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA[2018]
         empenhos_2019 = EMPENHOS_DAO_GET_BY_ANO_EMPENHO_DATA[2019]
@@ -36,7 +33,7 @@ class EmpenhoDAOTestCase(TestCase):
         mock_get_by_ano.side_effect = [empenhos_2018, empenhos_2019]
 
         with freeze_time('2019-1-1'):
-            ret = empenhos_dao.get_by_codcontrato_and_anoexercicio(
+            ret = sof_api_dao.get_by_codcontrato_and_anoexercicio(
                 cod_contrato=cod_contrato, ano_exercicio=ano_exercicio)
 
         assert ret == empenhos_2018 + empenhos_2019
@@ -48,7 +45,7 @@ class EmpenhoDAOTestCase(TestCase):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=2019)
 
-    @patch('contratos.dao.empenhos_dao.requests.get')
+    @patch('contratos.dao.sof_api.requests.get')
     def test_get_by_ano_empenho(self, mock_get):
         cod_contrato = 5555
         ano_exercicio = 2019
@@ -64,7 +61,7 @@ class EmpenhoDAOTestCase(TestCase):
         )
         headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
 
-        ret = empenhos_dao.get_by_ano_empenho(
+        ret = sof_api_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
@@ -72,7 +69,7 @@ class EmpenhoDAOTestCase(TestCase):
         mock_get.assert_called_once_with(url, headers=headers)
 
     @patch.object(EmpenhosFailedRequestsDao, 'create')
-    @patch('contratos.dao.empenhos_dao.requests.get')
+    @patch('contratos.dao.sof_api.requests.get')
     def test_get_by_ano_empenho_saves_failed_request(
             self, mock_get, mock_save_failed):
         cod_contrato = 5555
@@ -82,7 +79,7 @@ class EmpenhoDAOTestCase(TestCase):
         mock_get.return_value.status_code = 500
         mock_get.return_value.json.return_value = SOF_API_REQUEST_RETURN_DICT
 
-        ret = empenhos_dao.get_by_ano_empenho(
+        ret = sof_api_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
@@ -92,7 +89,7 @@ class EmpenhoDAOTestCase(TestCase):
             ano_empenho=ano_empenho, error_code=500)
 
     @patch.object(EmpenhosFailedRequestsDao, 'create')
-    @patch('contratos.dao.empenhos_dao.requests.get')
+    @patch('contratos.dao.sof_api.requests.get')
     def test_get_by_ano_empenho_saves_requests_exception(
             self, mock_get, mock_save_failed):
         cod_contrato = 5555
@@ -101,7 +98,7 @@ class EmpenhoDAOTestCase(TestCase):
 
         mock_get.side_effect = Exception()
 
-        ret = empenhos_dao.get_by_ano_empenho(
+        ret = sof_api_dao.get_by_ano_empenho(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho)
 
@@ -109,41 +106,6 @@ class EmpenhoDAOTestCase(TestCase):
         mock_save_failed.assert_called_once_with(
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=ano_empenho, error_code=-1)
-
-    @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
-    def test_create(self, mock_Empenho):
-        empenho_data = EMPENHOS_DAO_CREATE_DATA
-        empenho = mommy.prepare(EmpenhoSOFCache, **empenho_data)
-        mock_Empenho.objects.create.return_value = empenho
-
-        ret = empenhos_dao.create(data=empenho_data)
-        mock_Empenho.objects.create.assert_called_once_with(**empenho_data)
-        assert ret == empenho
-
-    @patch('contratos.dao.empenhos_dao.EmpenhoSOFCache')
-    def test_create_from_temp_table_data(self, mock_EmpenhoSOF):
-        mocked_empenho = Mock(spec=EmpenhoSOFCache)
-        mock_EmpenhoSOF.return_value = mocked_empenho
-
-        empenho_temp = mommy.prepare(EmpenhoSOFCacheTemp, _fill_optional=True)
-
-        empenho = empenhos_dao.create_from_temp_table_obj(
-            empenho_temp=empenho_temp)
-
-        for field in empenho_temp._meta.fields:
-            if field.primary_key is True:
-                continue
-            assert (getattr(empenho, field.name)
-                    == getattr(empenho_temp, field.name))
-        mocked_empenho.save.assert_called_once_with()
-
-    @patch.object(EmpenhoSOFCache.objects, 'count')
-    def test_count_all(self, mock_count):
-        mock_count.return_value = 2
-
-        ret = empenhos_dao.count_all()
-        assert ret == 2
-        mock_count.assert_called_once_with()
 
 
 class TestContratosCategoriasFromToDao:
