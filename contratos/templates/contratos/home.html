@@ -55,7 +55,7 @@
   <section id="top-5">
     <div class="wrapper">
       <h2>Top 5 <em>contratos</em></h2>
-      <form action="" method="post">
+      <form action="#top-5" method="get">
           <legend class="form-item">
               Visualizar:
           </legend>
@@ -69,8 +69,8 @@
               </select>
           </div>
           <div class="form-item">
-              <select name="category">
-                <option value="all">Todas as categorias</option>
+              <select name="categoria_id">
+                <option value="">Todas as categorias</option>
                 {% for categoria in filters.categorias %}
                     <option value="{{ categoria.id }}"
                             {% if categoria.id == filters.selected_categoria %}selected{% endif %}
@@ -78,6 +78,7 @@
                 {% endfor %}
               </select>
           </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       <table>
           <thead>
