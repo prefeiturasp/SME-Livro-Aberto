@@ -26,7 +26,7 @@ class TestApplicationServices(TestCase):
             "year": 2019,
             "empenhado": 600,
             "liquidado": 300,
-            "percent_liquidado": 50,
+            "percent_liquidado": .5,
         }
 
         ret = services.serialize_big_number_data(queryset)
@@ -34,8 +34,10 @@ class TestApplicationServices(TestCase):
         assert expected == ret
 
     def test_serialize_destinations(self):
-        category1 = mommy.make(CategoriaContrato, name='cat1', desc='desc 1')
-        category2 = mommy.make(CategoriaContrato, name='cat2', desc='desc 1')
+        category1 = mommy.make(CategoriaContrato, name='cat1', desc='desc 1',
+                slug='slug_1')
+        category2 = mommy.make(CategoriaContrato, name='cat2', desc='desc 1',
+                slug='slug_2')
 
         empenhado1 = 200
         empenhado2 = 400
@@ -53,19 +55,21 @@ class TestApplicationServices(TestCase):
                 'year': 2019,
                 'categoria_name': 'cat1',
                 'categoria_desc': 'desc 1',
+                'categoria_slug': 'slug_1',
                 'empenhado': 200.0,
                 'liquidado': 120.0,
-                'percent_liquidado': 60.0,
-                'percent_empenhado': empenhado1 * 100 / empenhado_total,
+                'percent_liquidado': .6,
+                'percent_empenhado': empenhado1 / empenhado_total,
             },
             {
                 'year': 2019,
                 'categoria_name': 'cat2',
                 'categoria_desc': 'desc 1',
+                'categoria_slug': 'slug_2',
                 'empenhado': 400.0,
                 'liquidado': 180.0,
-                'percent_liquidado': 45.0,
-                'percent_empenhado': empenhado2 * 100 / empenhado_total,
+                'percent_liquidado': 0.45,
+                'percent_empenhado': empenhado2 / empenhado_total,
             },
         ]
 
@@ -142,3 +146,21 @@ class TestApplicationServices(TestCase):
         ret = services.serialize_top5(queryset, categoria_id=categoria.id)
 
         assert expected == ret
+
+    def test_serialize_selected_filters_type(self):
+        queryset = ExecucaoContrato.objects.all()
+        ret = services.serialize_filters(queryset, categoria_id='42', year='2018')
+        assert 42 == ret['selected_categoria']
+        assert 2018 == ret['selected_year']
+
+        ret = services.serialize_filters(queryset, categoria_id=None, year=None)
+        assert None == ret['selected_categoria']
+        assert None == ret['selected_year']
+
+        ret = services.serialize_filters(queryset, categoria_id='', year='')
+        assert None == ret['selected_categoria']
+        assert None == ret['selected_year']
+
+        ret = services.serialize_filters(queryset, categoria_id='invalid', year='invalid')
+        assert None == ret['selected_categoria']
+        assert None == ret['selected_year']

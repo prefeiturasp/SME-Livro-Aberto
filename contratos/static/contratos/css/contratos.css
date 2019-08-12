@@ -201,6 +201,7 @@ section#destino .bar{
   line-height: 1rem;
 }
 
+.active > .description-box,
 :hover > .description-box{
   opacity: 1;
   margin-bottom: 1em;
@@ -212,4 +213,48 @@ section#destino .bar{
 
 .description-box > *{
   margin: 1em;
+}
+
+.subbar strong{
+  display: block;
+  font-weight: bold;
+}
+
+.subbar{
+  color: #fff;
+  font-size: 1.5rem;
+  text-indent: 0;
+  display: flex;
+}
+
+.subbar .value{
+  display: flex;
+}
+
+.subbar > .value > *{
+  padding: 1rem 2rem;
+  line-height: 1;
+  font-weight: lighter;
+  white-space: nowrap;
+}
+
+.bar-parent .subbar > .value{
+  opacity: 0;
+}
+
+.bar-parent.selected .subbar > .value{
+  opacity: 1;
+}
+
+.bar-parent .subbar > .value,
+.bar-parent > .bar > .value{
+  transition: all 0.5s;
+}
+
+.bar-parent.selected > .bar > .value{
+  width: 0 !important;
+}
+
+.bar-parent.selected > .bar > .value.active{
+  width: 100% !important;
 }

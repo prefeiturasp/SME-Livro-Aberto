@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from django.db.models import Sum
 
 from contratos.models import ExecucaoContrato
@@ -15,7 +17,7 @@ def serialize_big_number_data(queryset):
 
     empenhado = year_sum['total_empenhado']
     liquidado = year_sum['total_liquidado']
-    percent_liquidado = liquidado * 100 / empenhado
+    percent_liquidado = liquidado / empenhado
     year_dict = {
         'year': year_sum['year__year'],
         'empenhado': empenhado,
@@ -36,7 +38,7 @@ def serialize_destinations(queryset):
         return []
 
     categorias_sums = queryset \
-        .values("year__year", "categoria__name", "categoria__desc") \
+        .values("year__year", "categoria__name", "categoria__desc", "categoria__slug") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
                   total_liquidado=Sum('valor_liquidado'))
 
@@ -44,12 +46,13 @@ def serialize_destinations(queryset):
     for cat_data in categorias_sums:
         empenhado = cat_data['total_empenhado']
         liquidado = cat_data['total_liquidado']
-        percent_liquidado = liquidado * 100 / empenhado
-        percent_empenhado = empenhado * 100 / total_empenhado
+        percent_liquidado = liquidado / empenhado
+        percent_empenhado = empenhado / total_empenhado
         cat_dict = {
             'year': cat_data['year__year'],
             'categoria_name': cat_data['categoria__name'],
             'categoria_desc': cat_data['categoria__desc'],
+            'categoria_slug': cat_data['categoria__slug'],
             'empenhado': empenhado,
             'liquidado': liquidado,
             'percent_liquidado': percent_liquidado,
@@ -81,14 +84,20 @@ def serialize_top5(queryset, categoria_id=None):
     return top5_list
 
 
+def cast_to_int(value):
+    with suppress(TypeError, ValueError):
+        return int(value)
+
+
 def serialize_filters(queryset, categoria_id, year):
     years = ExecucaoContrato.objects.all().values('year__year').distinct() \
         .order_by('year')
     categorias = queryset.values('categoria__id', 'categoria__name'). distinct()
 
     ret = {
-        'selected_year': year,
-        'selected_categoria': categoria_id,
+        # TODO: A better solution may be serialize the filter form
+        'selected_year': cast_to_int(year),
+        'selected_categoria': cast_to_int(categoria_id),
         'years': [year_qs['year__year'] for year_qs in years]
     }
 
