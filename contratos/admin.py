@@ -12,6 +12,7 @@ class CategoriaContratoFromToAdmin(admin.ModelAdmin):
 class CategoriaContratoFromToSpreadsheeetAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'added_fromtos', 'not_added_fromtos')
 
+
 @admin.register(CategoriaContrato)
 class CategoriaContratoAdmin(admin.ModelAdmin):
     ordering = ('desc',)
