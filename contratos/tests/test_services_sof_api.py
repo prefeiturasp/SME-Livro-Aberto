@@ -48,7 +48,7 @@ def test_fetch_empenhos_from_sof_and_save_to_temp_table(
 
 @patch('contratos.services.sof_api.save_empenhos_sof_cache')
 @patch('contratos.services.sof_api.build_empenhos_data')
-@patch('contratos.dao.sof_api.get_by_codcontrato_and_anoexercicio')
+@patch('contratos.dao.sof_api_dao.get_by_codcontrato_and_anoexercicio')
 def test_get_empenhos_for_contrato_and_save(
         mock_get_empenhos, mock_build_data, mock_save_empenhos):
     contrato = mommy.prepare(ContratoRaw, _fill_optional=True)
