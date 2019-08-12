@@ -21,6 +21,7 @@
 
   <link rel="stylesheet" href="{% static 'css/bar.css' %}">
   <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+  <script type="text/javascript" src="{% static 'contratos/js/destination.js' %}"></script>
 {% endblock %}
 
 {%block header %}
@@ -44,11 +45,9 @@
       </ul>
       <div class="bar-parent">
         <div class="bar">
-            {% with total_empenhado=big_number.empenhado %}
-                {% for destination in destinations %}
-                  {% include 'contratos/_bar.html' with total_empenhado=total_empenhado empenhado=destination.empenhado slug=destination.categoria_slug %}
-                {% endfor %}
-            {% endwith %}
+            {% for destination in destinations %}
+              {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado percent_liquidado=destination.percent_liquidado slug=destination.categoria_slug %}
+            {% endfor %}
         </div>
       </div>
     </div>
