@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from django.db.models import Sum
 
 from contratos.models import ExecucaoContrato
@@ -83,8 +85,8 @@ def serialize_top5(queryset, categoria_id=None):
 
 
 def cast_to_int(value):
-    castable = type(value) == str and value != ''
-    return int(value) if castable else None
+    with suppress(TypeError, ValueError):
+        return int(value)
 
 
 def serialize_filters(queryset, categoria_id, year):

@@ -160,3 +160,7 @@ class TestApplicationServices(TestCase):
         ret = services.serialize_filters(queryset, categoria_id='', year='')
         assert None == ret['selected_categoria']
         assert None == ret['selected_year']
+
+        ret = services.serialize_filters(queryset, categoria_id='invalid', year='invalid')
+        assert None == ret['selected_categoria']
+        assert None == ret['selected_year']
