@@ -82,14 +82,20 @@ def serialize_top5(queryset, categoria_id=None):
     return top5_list
 
 
+def cast_to_int(value):
+    castable = type(value) == str and value != ''
+    return int(value) if castable else None
+
+
 def serialize_filters(queryset, categoria_id, year):
     years = ExecucaoContrato.objects.all().values('year__year').distinct() \
         .order_by('year')
     categorias = queryset.values('categoria__id', 'categoria__name'). distinct()
 
     ret = {
-        'selected_year': int(year), # TODO: add tests
-        'selected_categoria': categoria_id,
+        # TODO: A better solution may be serialize the filter form
+        'selected_year': cast_to_int(year),
+        'selected_categoria': cast_to_int(categoria_id),
         'years': [year_qs['year__year'] for year_qs in years]
     }
 
