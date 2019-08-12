@@ -214,7 +214,7 @@ tr > *:first-child::before{
 /* Inner Pages */
 .wrapper.container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-wrap: wrap;
 }
 
@@ -223,15 +223,16 @@ tr > *:first-child::before{
   align-self: flex-start;
 }
 
-.sidebar .card {
-  padding: 0 6% 6%;
+.sidebar > *{
+  padding: 1em;
   overflow: hidden;
+  border-radius: 0.5em;
 }
 
 .sidebar .voltar {
   display: block;
   padding: 0 0 0 25px;
-  margin: 28px 0 10px 5px;
+  margin: 1em 0 1em;
   background-image: url(../img/voltar.png);
   background-repeat: no-repeat;
   background-position: top 3px left;
@@ -245,7 +246,7 @@ tr > *:first-child::before{
   margin: 0 0 30px 0;
 }
 
-.card.sobre {
+.sobre {
   background: #80A684;
 }
 
@@ -278,7 +279,7 @@ tr > *:first-child::before{
 }
 
 .main h2 {
-  margin: 0 0 20px;
+  margin: 2em 0 1em;
   position: relative;
 }
 
@@ -296,10 +297,6 @@ tr > *:first-child::before{
 
 .verde img {
   max-width: 100%;
-}
-
-.main p {
-  margin: 0 0 20px;
 }
 
 .main ul {
@@ -359,10 +356,6 @@ tr > *:first-child::before{
 
 .main ul li h3 {
   margin: 0;
-}
-
-.main .txt {
-  padding: 5% 5% 0;
 }
 
 @media (min-width: 768px) {
@@ -450,4 +443,26 @@ tr > *:first-child::before{
 .table__about th,
 .table__about td {
   text-align: center;
+}
+
+.legend{
+  padding: 0;
+  margin: 1em 0 2em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  list-style: none;
+  font-weight: 800;
+}
+
+.legend > *{
+  margin-bottom: 1em;
+}
+
+.legend .icon{
+  height: 3em;
+  width: 3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  float: left;
 }

@@ -21,6 +21,7 @@
 
   <link rel="stylesheet" href="{% static 'css/bar.css' %}">
   <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+  <script type="text/javascript" src="{% static 'contratos/js/destination.js' %}"></script>
 {% endblock %}
 
 {%block header %}
@@ -31,42 +32,53 @@
 {%block sections %}
   <section id="total">
     <div class="wrapper">
-        {% include 'contratos/_big_number.html' with big_number=2847857939.93 liquidado=2135893454.95 liquidado_percent=0.75 %}
+        {% include 'contratos/_big_number.html' with big_number=big_number.empenhado liquidado=big_number.liquidado liquidado_percent=big_number.percent_liquidado %}
     </div>
   </section>
   <section id="destino">
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
       <ul class="legend">
-          {% for gnd in gnds %}
-          <li class="fg-{{ gnd.slug }}" data-gnd="{{ gnd.slug }}">
-              {% include 'contratos/_gnd_item.html' with slug=gnd.slug desc=gnd.desc%}
-          </li>
-          {% endfor %}
+        {% for destination in destinations %}
+          {% include 'contratos/_legend_item.html' with slug=destination.categoria_slug desc=destination.categoria_desc label=destination.categoria_name %}
+        {% endfor %}
       </ul>
+      <div class="bar-parent">
+        <div class="bar">
+            {% for destination in destinations %}
+              {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado percent_liquidado=destination.percent_liquidado slug=destination.categoria_slug %}
+            {% endfor %}
+        </div>
+      </div>
     </div>
   </section>
   <section id="top-5">
     <div class="wrapper">
       <h2>Top 5 <em>contratos</em></h2>
-      <form action="" method="post">
+      <form action="#top-5" method="get">
           <legend class="form-item">
               Visualizar:
           </legend>
           <div class="form-item">
               <select name="year">
-                  <option value="2018" selected>2018</option>
-                  <option value="2017">2017</option>
+                {% for year in filters.years %}
+                    <option value="{{ year }}"
+                            {% if year == filters.selected_year %}selected{% endif %}
+                            >{{ year }}</option>
+                {% endfor %}
               </select>
           </div>
           <div class="form-item">
-              <select name="category">
-                  <option value="all" selected>Todas as categorias</option>
-                  <option value="">Ações Culturais</option>
-                  <option value="">Alimentação</option>
-                  <option value="">Uniforme e material escolar</option>
+              <select name="categoria_id">
+                <option value="">Todas as categorias</option>
+                {% for categoria in filters.categorias %}
+                    <option value="{{ categoria.id }}"
+                            {% if categoria.id == filters.selected_categoria %}selected{% endif %}
+                            >{{ categoria.name }}</option>
+                {% endfor %}
               </select>
           </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       <table>
           <thead>
@@ -79,45 +91,28 @@
               </tr>
           </thead>
           <tbody>
+              {% for contrato in top5 %}
               <tr>
-                  <th>Fornecedor 1</th>
-                  <td>Categoria 1</td>
-                  <td>Modalidade 1</td>
-                  <td>R$ 938.872,99</td>
-                  <td></td>
+                  <th>{{ contrato.fornecedor }}</th>
+                  <td>{{ contrato.categoria_name }}</td>
+                  <td>{{ contrato.modalidade }}</td>
+                  <td>R$ {{ contrato.empenhado | intcomma }}</td>
+                  <td>
+                      <div class="description-parent">
+                          <div class="description-box">
+                              <h3>Objeto do contrato</h3>
+                              <p>
+                                  {{ contrato.objeto_contrato }}
+                              </p>
+                          </div>
+                      </div>
+                  </td>
               </tr>
-              <tr>
-                  <th>Fornecedor 2</th>
-                  <td>Categoria 2</td>
-                  <td>Modalidade 2</td>
-                  <td>R$ 938.872,99</td>
-                  <td></td>
-              </tr>
-              <tr>
-                  <th>Fornecedor 3</th>
-                  <td>Categoria 3</td>
-                  <td>Modalidade 3</td>
-                  <td>R$ 938.872,99</td>
-                  <td></td>
-              </tr>
-              <tr>
-                  <th>Fornecedor 4</th>
-                  <td>Categoria 4</td>
-                  <td>Modalidade 4</td>
-                  <td>R$ 938.872,99</td>
-                  <td></td>
-              </tr>
-              <tr>
-                  <th>Fornecedor 5</th>
-                  <td>Categoria 5</td>
-                  <td>Modalidade 5</td>
-                  <td>R$ 938.872,99</td>
-                  <td></td>
-              </tr>
+              {% endfor %}
           </tbody>
       </table>
       <div class="actions">
-          <a class="btn" href="#">Download de Dados</a>
+          <a class="btn" href="{% url 'contratos:download' %}">Download dos Dados</a>
       </div>
     </div>
   </section>

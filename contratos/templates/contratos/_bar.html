@@ -1,0 +1,24 @@
+{% load humanize %}
+{% load l10n %}
+<span class="value fg-{{ slug }}"
+      data-value="{{ empenhado | unlocalize }}"
+      data-percent="{% widthratio empenhado total_empenhado 100 %}"
+      style="width: {% widthratio empenhado total_empenhado 100 %}%">
+    <div class="subbar">
+        <div class="value"
+             style="width: {% widthratio percent_liquidado 1 100 %}%">
+            <div>
+                <strong>{% widthratio percent_liquidado 1 100 %}%</strong> do total
+            </div>
+            <div>
+                <strong>R$ {{ liquidado | intcomma }}</strong> liquidado
+            </div>
+            <div>
+                <strong>R$ {{ empenhado | intcomma }}</strong> empenhado
+            </div>
+        </div>
+        <div class="value"
+             style="width: calc(100% - {% widthratio percent_liquidado 1 100 %}%); background-color: rgba(255, 255, 255, 0.5)">
+        </div>
+    </div>
+</span>

@@ -4,3 +4,162 @@
 
 {% block title %}Transparência em Contratos{% endblock %}
 
+{%block head %}
+    <meta property="og:locale" content="pt_BR">
+
+    <meta property="og:title" content="Transparência em Contratos - SMESP">
+    <meta property="og:site_name" content="Transparência em Contratos - SMESP">
+    <meta property="og:description" content="Conheça a ferramenta Transparência em Contratos da Secretaria da Educação de São Paulo.">
+
+    <meta property="og:type" content="website">
+
+
+    <meta property="og:image" content="{% static 'contratos/img/og-contratos.png' %}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="854">
+    <meta property="og:image:height" content="216">
+
+    <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+{% endblock %}
+
+{%block header %}
+    <h1>Transparência em Contratos</h1>
+    <p>Execução de Contratos da Educação em São Paulo</p>
+    {% include '_header_nav.html' with about='contratos:sobre' %}
+{% endblock %}
+
+{%block sections %}
+    <section>
+        <div class="wrapper container">
+            <div class="sidebar">
+                <div class="card sobre">
+                    <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                    <h1>So<br />bre</h1>
+                    <p>
+                    O objetivo da ferramenta Contratos é mostrar, de forma interativa e simplificada, a execução de contratos relacionados à Educação na cidade de São Paulo, associando, a cada contrato, os gastos realizados; apresentando e separando por categorias as informações sobre objeto, fornecedores e vigência dos contratos, e permitindo download de dados abertos.
+                    </p>
+                </div>
+            </div>
+            <div class="main verde txt">
+                <h2>Sobre <span>❯ Contratos</span></h2>
+                <p>A ferramenta permite visualizar os <strong>contratos</strong> da Secretaria Municipal de Educação de São Paulo e a sua execução por meio da análise dos <strong>empenhos vinculados</strong>.
+                </p>
+                <p>
+                Para que uma prefeitura possa contratar serviços e adquirir bens junto aos seus fornecedores, é necessário passar por um amplo processo típico das compras públicas. A depender da modalidade de aquisição — licitação por pregão, tomada de preços, dispensa, inexigibilidade, entre outros — a prefeitura eventualmente firma contratos com empresas para fornecimento de diversos bens e serviços. No caso da Educação, praticamente todas as despesas com serviços de limpeza, alimentação, uniforme, material escolar, etc. são executadas através de contratos. Há, também, a possibilidade de fazê-lo por meio de parcerias, que acontecem quando a administração da escola é realizada integralmente por uma entidade terceira.
+                </p>
+                <p>
+                Uma vez contratado um serviço ou uma compra de determinado bem por parte da prefeitura, ou firmada uma determinada parceria, os contratos passam a ser executados. Isso significa que cada contrato prevê um determinado valor a ser gasto, e, à medida que o objeto contratado é executado, os pagamentos são realizados.
+                </p>
+                <p>
+                A rigor, toda despesa no orçamento público passa por diversas fases. Há uma previsão inicial no Projeto de Lei Orçamentária Anual (PLOA), chamada de dotação inicial, que, quando o projeto é aprovado e se torna lei (LOA), gera uma autorização de despesas para o ano, cujas cifras são chamadas de valores orçados. Esses valores podem passar por atualizações a partir de contingenciamento (bloqueio) de verbas ou da liberação de créditos extraordinários. Após esse processo, tem-se o chamado valor orçado atualizado, utilizado como base, por exemplo, nas ferramentas <a href="{% url 'mosaico:grupos' %}">Mosaico</a> e <a href="{% url 'geologia:home' %}">Geologia</a>.
+                </p>
+                <p>
+                Tem início, então, o processo de execução. Quando se faz uma reserva financeira para determinados gastos, diz-se que os valores foram <strong>empenhados</strong>. No caso dos contratos, essa será a nossa referência inicial. Então, quando se fala, na ferramenta, em “valores previstos em contratos para o ano”, estamos nos referindo aos empenhos vinculados aos contratos naquele ano, como mostra a tela inicial da ferramenta (Figura 1). A partir do empenho, a contrapartida de cada despesa — quer seja o serviço contratado ou o bem adquirido — ocorre de fato, gerando uma <strong>liquidação</strong>. Do ponto de vista da Secretaria Municipal de Educação da prefeitura de São Paulo, a despesa liquidada de cada contrato já é considerada executada. Na ferramenta, mostramos o percentual do liquidado sobre o empenhado em termos da taxa de execução dos contratos (na barra de execução, como mostra a Figura 1). Após a liquidação, a despesa ainda passa pela fase do pagamento, que é quando se registra uma ordem bancária. Na prática, é quando o recurso chega, de fato, ao destinatário final.
+                </p>
+                <p>
+                    <strong>Figura 1:</strong>
+                    Ferramenta de contratos: tela inicial
+                </p>
+                <img src="" alt="Figura 1" width="100%">
+                <h2>Sobre <span>❯ Categorias</span></h2>
+                <p>Para tornar a ferramenta mais amigável em termos da linguagem utilizada, criou-se uma tipologia de categorias com base nas dotações orçamentárias, que reflete os grupos típicos das despesas com Educação. As categorias utilizadas na ferramenta são:</p>
+
+                <ul>
+                    <li>Ações culturais;</li>
+                    <li>Alimentação;</li>
+                    <li>Construções;</li>
+                    <li>Parcerias;</li>
+                    <li>Pedagógico;</li>
+                    <li>Reformas e manutenção;</li>
+                    <li>Serviços contínuos;</li>
+                    <li>Transporte;</li>
+                    <li>Uniforme e material escolar;</li>
+                    <li>Outras aquisições.</li>
+                </ul>
+                <p>
+                Essas categorias podem ser exploradas na ferramenta conforme mostra a Figura 2. É possível observar o volume de gastos (empenhados e liquidados) por categoria de contrato, bem como aferir o tamanho dessa categoria em relação ao total.
+                </p>
+                <p>
+                    <strong>Figura 2:</strong>
+                    Ferramenta de contratos: destino das despesas em contratos por categoria
+                </p>
+                <img src="" alt="Figura 2" width="100%">
+
+                <p>
+                Algumas categorias são auto-explicativas, como é o caso dos gastos com <strong>Alimentação</strong>, <strong>Transporte</strong>, <strong>Reformas e manutenção</strong>, e, <strong>Uniforme e material escolar</strong>. Na categoria <strong>Pedagógico</strong>, agregam-se despesas com material de apoio, capacitação de professores, entre outras despesas relacionadas ao objeto de trabalho da Educação. Em <strong>Ações culturais</strong>, são categorizadas despesas com eventos e campanhas em geral.
+                </p>
+                <p>
+                A categoria <strong>Serviços contínuos</strong> contempla gastos com limpeza, vigilância, contas de luz, água e esgoto, gás, telefonia, internet, entre outros gastos correntes para a manutenção das unidades escolares.
+                </p>
+                <p>
+                Em <strong>Parcerias</strong>, agrega-se todo gasto vinculado à administração de unidades escolares por terceiras, como é o caso dos Centros de Educação Infantil (CEIs). Nesses casos, a prefeitura não realiza um contrato específico para cada tipo de despesa, mas repassa um valor específico para que outra entidade faça a administração da unidade e contrate, por conta própria, os fornecedores dos mais diversos serviços.
+                </p>
+                <p>
+                Por fim, compras de bens que não se inserem em nenhuma das demais categorias (como é o caso de compras de bens mobiliários e de material de cama, mesa e banho) são registradas em <strong>Outras aquisições</strong>.
+                </p>
+                <h2>Sobre <span>❯ Top 5</span> </h2>
+                <p>
+                A ferramenta mostra uma síntese dos principais contratos da Secretaria Municipal de Educação de São Paulo. É possível filtrá-los por categoria e por ano, como mostra a Figura 3. A tabela mostra informações como o objeto do contrato (campo descritivo que define ao que se refere um contrato de forma detalhada), a categoria, a vigência (prazo até a data final em que o contrato está vigente) e os valores empenhados e liquidados. É possível, ainda, classificar pela ordem de fornecedores, que lista as principais entidades que recebem recursos públicos para a execução de serviços ou a aquisição de bens.
+                </p>
+                <p>
+                    <strong>Figura 3:</strong>
+                    Ferramenta de contratos: top 5 contratos e fornecedores
+                </p>
+                <img src="" alt="Figura 3" width="100%">
+
+                <h2>Sobre <span>❯ Download dos dados</span></h2>
+                <p>
+                A ferramenta permite baixar a base de dados completa em formato aberto, a partir do botão disponibilizado logo abaixo da tabela dos Top 5, como mostra a Figura 4. O propósito é disponibilizar dados detalhados e com mais atributos do que os mostrados na ferramenta, o que permite análises mais aprofundadas e específicas de acordo com a demanda de cada usuário.
+                </p>
+                <p>
+                    <strong>Figura 4:</strong>
+                    Ferramenta de contratos: destaque para botão de download dos dados
+                </p>
+                <img src="" alt="Figura 4" width="100%">
+                <p>
+                A base de dados disponibilizada contempla todo o universo de empenhos a partir de 2018 vinculados a contratos da Secretaria Municipal de Educação e obtidos por meio da API (Application Programming Interface) do SOF (Sistema de Execução Orçamentária). Logo, essa base contempla todos os atributos disponíveis na consulta de empenhos e na consulta de contratos. Para obter essa base, foi necessário criar um algoritmo para consultar cada contrato na base de dados e vinculá-lo a um empenho da base de 2018 em diante. Quando tal vínculo não foi encontrado, entendeu-se que o empenho não é baseado em contrato (por exemplo, um gasto com pagamento de servidores públicos).
+                </p>
+                <p>
+                <strong>
+                    Observação: a ferramenta não disponibiliza a íntegra dos contratos em formato .pdf. Para mais detalhes sobre esse ponto, consulte a seção “Sobre contratos”.
+                </strong>
+                </p>
+                <h2>Sobre <span>❯ Deflacionamento</span></h2>
+                <p>
+                Assim como muitas variáveis econômicas, as despesas públicas são apresentadas na moeda Real. Contudo, ao contrário de outras unidades de medida, o valor da moeda varia ao longo do tempo. Isso se deve à inflação, ou seja, à elevação do nível geral de preços, que faz com que o poder de compra da moeda diminua ao longo dos anos (uma deflação, caso contrário, elevaria o poder de compra). Em termos práticos, a inflação faz com que R$ 1 neste ano tenha valor menor do que o mesmo R$ 1 em qualquer ano do passado. De forma equivalente, R$ 1 hoje vale mais do que R$ 1 no futuro.
+                </p>
+                <p>
+                Para que os efeitos da inflação não distorçam as análises que comparam os dados em diferentes anos, é importante considerar o efeito da mudança de valor da moeda. Por essa razão, todas as visualizações da ferramenta são construídas a partir de valores reais, isto é, valores trazidos a preços presentes. No caso desta ferramenta, estão contemplados gastos em contratos de 2018 em diante.
+                </p>
+                O Índice de Preços ao Consumidor Amplo (IPCA), do Instituto Brasileiro de Geografia e Estatística (IBGE), foi o índice selecionado para deflacionar as séries de dados utilizados na ferramenta. O IPCA é adotado pelo Banco Central como índice de referência para o cumprimento do regime de metas de inflação. Isso faz com que esse índice seja bastante divulgado e conhecido entre os brasileiros.
+                <p>
+                Para deflacionar as séries, utilizamos a tabela do IPCA (em formato .zip) que é disponibilizada na página do IBGE na Internet. Os dados utilizados estão disponíveis na planilha Série Histórica IPCA, na coluna Número Índice (Dez 93 = 100). Para cada ano entre 2018 e o mais recente, foi adotado o número de fechamento, ou seja, o valor do índice em dezembro. A série do deflator tem o ano mais recente como a sua base. Dessa forma, usando a série a seguir (Tabela 1), é correto afirmar que os valores deflacionados são apresentados a preços de 2019, que é o ano mais recente da ferramenta até o momento.
+                </p>
+                <table>
+                    <legend>
+                        Tabela 1: Tabela número índice
+                    </legend>
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>Número índice (maio de 2019 = 1)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2018</td>
+                            <td>0,978299688</td>
+                        </tr>
+                        <tr>
+                            <td>2019</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                A partir da série de deflatores, para obter a série temporal do orçamento deflacionada, basta dividir cada observação da série de dados orçamentários pela observação correspondente da série do deflator.
+                </p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

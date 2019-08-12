@@ -24,45 +24,96 @@ class ExecucaoContrato(models.Model):
 
 class ContratoRaw(models.Model):
     id = models.IntegerField(primary_key=True)
-    anoexercicio = models.IntegerField(blank=True, null=True)
-    codcontrato = models.IntegerField(blank=True, null=True)
-    codempresa = models.IntegerField(blank=True, null=True)
-    codmodalidade = models.IntegerField(blank=True, null=True)
-    codorgao = models.IntegerField(blank=True, null=True)
-    codprocesso = models.BigIntegerField(blank=True, null=True)
-    codtipocontratacao = models.IntegerField(blank=True, null=True)
-    datassinaturacontrato = models.DateField(blank=True, null=True)
-    datpublicacaocontrato = models.DateField(blank=True, null=True)
-    datvigencia = models.DateField(blank=True, null=True)
-    numoriginalcontrato = models.TextField(blank=True, null=True)
-    txtdescricaomodalidade = models.TextField(blank=True, null=True)
-    txtdescricaoorgao = models.TextField(blank=True, null=True)
-    txtobjetocontrato = models.TextField(blank=True, null=True)
-    txtrazaosocial = models.TextField(blank=True, null=True)
-    txttipocontratacao = models.TextField(blank=True, null=True)
-    valaditamentos = models.FloatField(blank=True, null=True)
-    valanulacao = models.FloatField(blank=True, null=True)
-    valanuladoempenho = models.FloatField(blank=True, null=True)
-    valempenhadoliquido = models.FloatField(blank=True, null=True)
-    valliquidado = models.FloatField(blank=True, null=True)
-    valpago = models.FloatField(blank=True, null=True)
-    valprincipal = models.FloatField(blank=True, null=True)
-    valreajustes = models.FloatField(blank=True, null=True)
-    valtotalempenhado = models.FloatField(blank=True, null=True)
-    data_extracao = models.DateField(blank=True, null=True)
-    dt_data_loaded = models.CharField(max_length=26, blank=True, null=True)
+    codContrato = models.IntegerField(
+        db_column='codcontrato', blank=True, null=True)
+    anoExercicioContrato = models.IntegerField(
+        db_column='anoexercicio', blank=True, null=True)
+    codModalidadeContrato = models.IntegerField(
+        db_column='codmodalidade', blank=True, null=True)
+    txtDescricaoModalidadeContrato = models.TextField(
+        db_column='txtdescricaomodalidade', blank=True, null=True)
+    txtObjetoContrato = models.TextField(
+        db_column='txtobjetocontrato', blank=True, null=True)
+    codEmpresaContrato = models.IntegerField(
+        db_column='codempresa', blank=True, null=True)
+    codOrgaoContrato = models.IntegerField(
+        db_column='codorgao', blank=True, null=True)
+    txtDescricaoOrgaoContrato = models.TextField(
+        db_column='txtdescricaoorgao', blank=True, null=True)
+    codProcessoContrato = models.BigIntegerField(
+        db_column='codprocesso', blank=True, null=True)
+    codTipoContratacaoContrato = models.IntegerField(
+        db_column='codtipocontratacao', blank=True, null=True)
+    txtTipoContratacaoContrato = models.TextField(
+        db_column='txttipocontratacao', blank=True, null=True)
+    datAssinaturaContrato = models.CharField(
+        db_column='datassinaturacontrato', max_length=26, blank=True, null=True)
+    datPublicacaoContrato = models.CharField(
+        db_column='datpublicacaocontrato', max_length=26, blank=True, null=True)
+    datVigenciaContrato = models.CharField(
+        db_column='datvigencia', max_length=26, blank=True, null=True)
+    numOriginalContrato = models.TextField(
+        db_column='numoriginalcontrato', blank=True, null=True)
+    txtRazaoSocialContrato = models.TextField(
+        db_column='txtrazaosocial', blank=True, null=True)
+    valAditamentosContrato = models.FloatField(
+        db_column='valaditamentos', blank=True, null=True)
+    valAnulacaoContrato = models.FloatField(
+        db_column='valanulacao', blank=True, null=True)
+    valAnuladoEmpenhoContrato = models.FloatField(
+        db_column='valanuladoempenho', blank=True, null=True)
+    valEmpenhadoLiquidoContrato = models.FloatField(
+        db_column='valempenhadoliquido', blank=True, null=True)
+    valliquidadoContrato = models.FloatField(
+        db_column='valliquidado', blank=True, null=True)
+    valPagoContrato = models.FloatField(
+        db_column='valpago', blank=True, null=True)
+    valPrincipalContrato = models.FloatField(
+        db_column='valprincipal', blank=True, null=True)
+    valReajustesContrato = models.FloatField(
+        db_column='valreajustes', blank=True, null=True)
+    valTotalEmpenhadoContrato = models.FloatField(
+        db_column='valtotalempenhado', blank=True, null=True)
+    dataExtracaoContrato = models.CharField(
+        db_column='data_extracao', max_length=26, blank=True, null=True)
+    dtDataLoadedContrato = models.CharField(
+        db_column='dt_data_loaded', max_length=26, blank=True, null=True)
 
     class Meta:
         db_table = 'contratos_raw_load'
 
 
 class EmpenhoSOFCache(models.Model):
-    # contrato fields
+    # contrato fields shown on interface
     codContrato = models.IntegerField(blank=True, null=True)
-    anoExercicio = models.IntegerField(blank=True, null=True)
+    anoExercicioContrato = models.IntegerField(blank=True, null=True)
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
+    # contrato fields not shown on interface. used only on download
+    codEmpresaContrato = models.IntegerField(blank=True, null=True)
+    codOrgaoContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgaoContrato = models.TextField(blank=True, null=True)
+    codProcessoContrato = models.BigIntegerField(blank=True, null=True)
+    codTipoContratacaoContrato = models.IntegerField(blank=True, null=True)
+    txtTipoContratacaoContrato = models.TextField(blank=True, null=True)
+    datAssinaturaContrato = models.DateField(blank=True, null=True)
+    datPublicacaoContrato = models.DateField(blank=True, null=True)
+    datVigenciaContrato = models.DateField(blank=True, null=True)
+    numOriginalContrato = models.TextField(blank=True, null=True)
+    txtRazaoSocialContrato = models.TextField(blank=True, null=True)
+    valAditamentosContrato = models.FloatField(blank=True, null=True)
+    valAnulacaoContrato = models.FloatField(blank=True, null=True)
+    valAnuladoEmpenhoContrato = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquidoContrato = models.FloatField(blank=True, null=True)
+    valliquidadoContrato = models.FloatField(blank=True, null=True)
+    valPagoContrato = models.FloatField(blank=True, null=True)
+    valPrincipalContrato = models.FloatField(blank=True, null=True)
+    valReajustesContrato = models.FloatField(blank=True, null=True)
+    valTotalEmpenhadoContrato = models.FloatField(blank=True, null=True)
+    dataExtracaoContrato = models.DateField(blank=True, null=True)
+    dtDataLoadedContrato = models.CharField(max_length=26, blank=True,
+                                            null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
@@ -120,10 +171,34 @@ class EmpenhoSOFCache(models.Model):
 class EmpenhoSOFCacheTemp(models.Model):
     # contrato fields
     codContrato = models.IntegerField(blank=True, null=True)
-    anoExercicio = models.IntegerField(blank=True, null=True)
+    anoExercicioContrato = models.IntegerField(blank=True, null=True)
     codModalidadeContrato = models.IntegerField(blank=True, null=True)
     txtDescricaoModalidadeContrato = models.TextField(blank=True, null=True)
     txtObjetoContrato = models.TextField(blank=True, null=True)
+    # contrato fields not shown on interface. used only on download
+    codEmpresaContrato = models.IntegerField(blank=True, null=True)
+    codOrgaoContrato = models.IntegerField(blank=True, null=True)
+    txtDescricaoOrgaoContrato = models.TextField(blank=True, null=True)
+    codProcessoContrato = models.BigIntegerField(blank=True, null=True)
+    codTipoContratacaoContrato = models.IntegerField(blank=True, null=True)
+    txtTipoContratacaoContrato = models.TextField(blank=True, null=True)
+    datAssinaturaContrato = models.DateField(blank=True, null=True)
+    datPublicacaoContrato = models.DateField(blank=True, null=True)
+    datVigenciaContrato = models.DateField(blank=True, null=True)
+    numOriginalContrato = models.TextField(blank=True, null=True)
+    txtRazaoSocialContrato = models.TextField(blank=True, null=True)
+    valAditamentosContrato = models.FloatField(blank=True, null=True)
+    valAnulacaoContrato = models.FloatField(blank=True, null=True)
+    valAnuladoEmpenhoContrato = models.FloatField(blank=True, null=True)
+    valEmpenhadoLiquidoContrato = models.FloatField(blank=True, null=True)
+    valliquidadoContrato = models.FloatField(blank=True, null=True)
+    valPagoContrato = models.FloatField(blank=True, null=True)
+    valPrincipalContrato = models.FloatField(blank=True, null=True)
+    valReajustesContrato = models.FloatField(blank=True, null=True)
+    valTotalEmpenhadoContrato = models.FloatField(blank=True, null=True)
+    dataExtracaoContrato = models.DateField(blank=True, null=True)
+    dtDataLoadedContrato = models.CharField(max_length=26, blank=True,
+                                            null=True)
     # empenho fields
     anoEmpenho = models.IntegerField(blank=True, null=True)
     codCategoria = models.IntegerField(blank=True, null=True)
@@ -200,8 +275,9 @@ class ModalidadeContrato(models.Model):
 
 
 class CategoriaContrato(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     desc = models.CharField(max_length=400)
+    slug = models.SlugField(null=True)
 
     def __str__(self):
         return self.name
@@ -249,5 +325,6 @@ class CategoriaContratoFromToSpreadsheet(models.Model):
             self.extract_data()
 
     def extract_data(self):
-        from contratos.dao import categorias_contratos_fromto_dao
-        categorias_contratos_fromto_dao.extract_spreadsheet(self)
+        from contratos.dao.models_dao import CategoriasContratosFromToDao
+        dao = CategoriasContratosFromToDao()
+        dao.extract_spreadsheet(self)

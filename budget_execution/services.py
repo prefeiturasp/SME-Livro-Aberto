@@ -1,3 +1,6 @@
+import os
+import zipfile
+
 from decimal import Decimal
 
 from django.core.management import call_command
@@ -6,7 +9,9 @@ from django.utils import timezone
 
 from budget_execution import constants
 from budget_execution import exceptions
-from budget_execution.constants import SME_ORGAO_ID
+from budget_execution.constants import (
+    SME_ORGAO_ID, ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH,
+    ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME)
 from budget_execution.models import (
     Execucao, ExecucaoTemp, Orcamento, OrcamentoRaw, Orgao,
     Empenho, EmpenhoRaw, MinimoLegal, ProjetoAtividade)
@@ -217,3 +222,19 @@ def apply_fromto():
     FonteDeRecursoFromTo.apply_all()
     SubelementoFromTo.apply_all()
     GNDFromTo.apply_all()
+
+
+def populate_orcamento_empenhos_raw_load_with_dump():
+    filepath = f'{ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH}{ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME}'  # noqa
+    with zipfile.ZipFile(filepath, "r") as zip_ref:
+        zip_ref.extractall(ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH)
+
+    json_filename = zip_ref.filelist[0].filename
+    json_filepath = f'{ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH}{json_filename}'
+
+    try:
+        call_command('loaddata', json_filepath)
+    except Exception as e:
+        print(e)
+        os.remove(json_filepath)
+    os.remove(json_filepath)

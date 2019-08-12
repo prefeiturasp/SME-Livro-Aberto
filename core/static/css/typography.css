@@ -122,10 +122,6 @@ thead th{
   color: #fff;
 }
 
-.main {
-  padding-top: 2em;
-}
-
 .main h2 {
   font-weight: 900;
   font-size: 18px;
@@ -162,9 +158,17 @@ thead th{
   text-transform: none;
 }
 
-.main .txt {
+.main{
   font-weight: 300;
   color: #4c4c4c;
+}
+
+strong{
+  font-weight: bold;
+}
+
+.legend .desc{
+  text-transform: uppercase;
 }
 
 /* Extra small devices (portrait phones, less than 576px) */

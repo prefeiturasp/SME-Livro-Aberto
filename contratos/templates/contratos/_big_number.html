@@ -1,40 +1,53 @@
 {% load humanize %}
 {% load l10n %}
 <header>
-  <p>
-  <span class="big-number">
-    <strong>
-      R$ {{ big_number | intcomma }}
-    </strong>
-  </span>
-  foram previstos em contratos para a educação da cidade de São Paulo em
-  <em>
-    <select name="year">
-      <option value="2018" selected>2018</option>
-      <option value="2017">2017</option>
-    </select>
-  </em>
-  </p>
+    <form action="#total" method="get">
+        <p>
+        <span class="big-number">
+            <strong>
+                R$ {{ big_number | intcomma }}
+            </strong>
+        </span>
+        foram previstos em contratos para a educação da cidade de São Paulo em
+        <em>
+            <select name="year">
+                {% for year in filters.years %}
+                    <option value="{{ year }}"
+                            {% if year == filters.selected_year %}selected{% endif %}
+                            >{{ year }}</option>
+                {% endfor %}
+            </select>
+        </em>
+        </p>
+        <input class="submit" type="submit" value="Filtrar" name="go">
+    </form>
 </header>
 <div class="body">
-  <div class="bar-parent">
-    <div class="bar" style="width: 100%">
-      <span class="value"
-            data-value="{{ liquidado | unlocalize }}"
-            data-currency-value="{% if liquidado %}{{ liquidado |intcomma }}{% else %}-{% endif %}"
-            data-percent="{% widthratio liquidado_percent 1 100 %}"
-            style="width: {% widthratio liquidado_percent 1 100 %}%">
-        {% widthratio liquidado_percent 1 100 %}%
-      </span>
+    <div class="bar-parent">
+        <div class="bar">
+            <span class="value description-parent"
+                  style="width: {% widthratio liquidado_percent 1 100 %}%">
+                <div class="description-box">
+                    <h3>Foram liquidados</h3>
+                    <p>R${{ liquidado |intcomma }} ({% widthratio liquidado_percent 1 100 %}%)</p>
+                </div>
+            </span>
+            <span class="value description-parent"
+                  style="width: calc(100% - {% widthratio liquidado_percent 1 100 %}%); background-color: transparent">
+                <div class="description-box">
+                    <h3>Foram empenhados</h3>
+                    <p>R${{ big_number | intcomma }} (100%)</p>
+                </div>
+            </span>
+        </div>
     </div>
-  </div>
 </div>
 <footer>
-  <p>
-  No ciclo orçamentário, o valor reservado para ser gasto em um ano é chamado de 'valor
-  empenhado'. Já o valor efetivamente executado e que será pago, neste caso, é o 'valor
-  liquidado'. O valor liquidado pode ser diferente do empenhado, pois os pagamentos dependem
-  de diversos fatores, como a realização satisfatória de serviços e entregas por parte da
-  contratada ou mesmo sua inexecução parcial ou integral, por exemplo.
-  </p>
+    <p>
+    No ciclo orçamentário, o valor reservado para ser gasto em um ano é chamado de 'valor
+    empenhado'. Já o valor efetivamente executado e que será pago, neste caso, é o 'valor
+    liquidado'. O valor liquidado pode ser diferente do empenhado, pois os pagamentos dependem
+    de diversos fatores, como a realização satisfatória de serviços e entregas por parte da
+    contratada ou mesmo sua inexecução parcial ou integral, por exemplo.
+    </p>
 </footer>
