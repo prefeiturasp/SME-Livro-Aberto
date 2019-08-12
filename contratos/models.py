@@ -46,12 +46,12 @@ class ContratoRaw(models.Model):
         db_column='codtipocontratacao', blank=True, null=True)
     txtTipoContratacaoContrato = models.TextField(
         db_column='txttipocontratacao', blank=True, null=True)
-    datAssinaturaContrato = models.DateField(
-        db_column='datassinaturacontrato', blank=True, null=True)
-    datPublicacaoContrato = models.DateField(
-        db_column='datpublicacaocontrato', blank=True, null=True)
-    datVigenciaContrato = models.DateField(
-        db_column='datvigencia', blank=True, null=True)
+    datAssinaturaContrato = models.CharField(
+        db_column='datassinaturacontrato', max_length=26, blank=True, null=True)
+    datPublicacaoContrato = models.CharField(
+        db_column='datpublicacaocontrato', max_length=26, blank=True, null=True)
+    datVigenciaContrato = models.CharField(
+        db_column='datvigencia', max_length=26, blank=True, null=True)
     numOriginalContrato = models.TextField(
         db_column='numoriginalcontrato', blank=True, null=True)
     txtRazaoSocialContrato = models.TextField(
@@ -74,8 +74,8 @@ class ContratoRaw(models.Model):
         db_column='valreajustes', blank=True, null=True)
     valTotalEmpenhadoContrato = models.FloatField(
         db_column='valtotalempenhado', blank=True, null=True)
-    dataExtracaoContrato = models.DateField(
-        db_column='data_extracao', blank=True, null=True)
+    dataExtracaoContrato = models.CharField(
+        db_column='data_extracao', max_length=26, blank=True, null=True)
     dtDataLoadedContrato = models.CharField(
         db_column='dt_data_loaded', max_length=26, blank=True, null=True)
 
