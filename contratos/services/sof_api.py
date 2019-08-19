@@ -41,7 +41,7 @@ def fetch_empenhos_from_sof_and_save_to_temp_table(
     for contrato in contratos_raw_dao.get_all():
         count = get_empenhos_for_contrato_and_save(
             contrato=contrato, empenhos_temp_dao=empenhos_temp_dao)
-        print(f'{count} empenhos saved for contrato {contrato.codcontrato}')
+        print(f'{count} empenhos saved for contrato {contrato.codContrato}')
 
 
 def get_empenhos_for_contrato_and_save(*, contrato, empenhos_temp_dao,
