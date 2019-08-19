@@ -187,6 +187,18 @@ class TestVerifyTableLinesCount(TestCase):
         self.m_empenhos_dao.count_all.assert_called_once_with()
         self.m_empenhos_temp_dao.count_all.assert_called_once_with()
 
+    def test_raises_exception_when_is_over_limit(self):
+        self.m_empenhos_temp_dao.count_all.return_value = (
+            100 * CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT + 1)
+
+        with pytest.raises(ContratosEmpenhosDifferenceOverLimit):
+            services.verify_table_lines_count(
+                empenhos_dao=self.m_empenhos_dao,
+                empenhos_temp_dao=self.m_empenhos_temp_dao)
+
+        self.m_empenhos_dao.count_all.assert_called_once_with()
+        self.m_empenhos_temp_dao.count_all.assert_called_once_with()
+
 
 @patch.object(services, 'ContratosRawDao')
 @patch.object(services, 'update_empenho_sof_cache_from_temp_table')
