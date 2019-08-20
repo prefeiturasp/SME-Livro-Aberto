@@ -108,6 +108,10 @@ class ExecucoesContratosDao:
             setattr(execucao, field, value)
         return execucao.save()
 
+    # TODO: add test
+    def erase_all(self):
+        self.model.objects.all().delete()
+
 
 class ModalidadesContratosDao:
 

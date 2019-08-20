@@ -12,6 +12,9 @@ class GenerateExecucoesContratosUseCase:
         self.fornecedores_dao = fornecedores_dao
 
     def execute(self):
+        # TODO: add test for erase all
+        self.execucoes_dao.erase_all()
+
         for empenho in self.empenhos_dao.get_all():
             self._create_execucao_by_empenho(empenho=empenho)
 
