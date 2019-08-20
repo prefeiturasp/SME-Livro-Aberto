@@ -38,7 +38,8 @@ def serialize_destinations(queryset):
         return []
 
     categorias_sums = queryset \
-        .values("year__year", "categoria__name", "categoria__desc", "categoria__slug") \
+        .values("year__year", "categoria__name", "categoria__desc",
+                "categoria__slug") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
                   total_liquidado=Sum('valor_liquidado'))
 
@@ -71,11 +72,19 @@ def serialize_top5(queryset, categoria_id=None):
 
     top5_list = []
     for execucao in top5_execucoes:
+        categoria = getattr(execucao, "categoria", None)
+        if categoria:
+            categoria_name = categoria.name
+            categoria_id = categoria.id
+        else:
+            categoria_name = None
+            categoria_id = None
+
         exec_dict = {
             'year': execucao.year.year,
             'fornecedor': execucao.fornecedor.razao_social,
-            'categoria_name': execucao.categoria.name,
-            'categoria_id': execucao.categoria.id,
+            'categoria_name': categoria_name,
+            'categoria_id': categoria_id,
             'objeto_contrato': execucao.objeto_contrato.desc,
             'modalidade': execucao.modalidade.desc,
             'empenhado': execucao.valor_empenhado,
