@@ -23,7 +23,7 @@ from contratos.tests.fixtures import (
 
 
 MockedContratoRaw = namedtuple('MockedContratoRaw',
-                               ['codcontrato', 'anoexercicio'])
+                               ['codContrato', 'anoExercicioContrato'])
 
 
 @patch('contratos.services.sof_api.get_empenhos_for_contrato_and_save')
@@ -125,17 +125,20 @@ def test_retry_empenhos_sof_failed_api_requests(mock_get_and_save_empenhos):
                               anoExercicioContrato=2018, _quantity=2)
     m_contratos_dao.get.side_effect = contratos
 
+    m_empenhos_temp_dao = Mock(spec=EmpenhosSOFCacheTempDao)
+
     services.retry_empenhos_sof_failed_api_requests(
-        m_contratos_dao, m_failed_requests_dao)
+        m_contratos_dao, m_failed_requests_dao, m_empenhos_temp_dao)
 
     assert 2 == m_contratos_dao.get.call_count
     assert 2 == mock_get_and_save_empenhos.call_count
     for failed_request, contrato in zip(mocked_failed, contratos):
         m_contratos_dao.get.assert_any_call(
-            codcontrato=failed_request.cod_contrato,
-            anoexercicio=failed_request.ano_exercicio)
+            codContrato=failed_request.cod_contrato,
+            anoExercicioContrato=failed_request.ano_exercicio)
         mock_get_and_save_empenhos.assert_any_call(
-            contrato=contrato, ano_empenho=failed_request.ano_empenho)
+            contrato=contrato, empenhos_temp_dao=m_empenhos_temp_dao,
+            ano_empenho=failed_request.ano_empenho)
         m_failed_requests_dao.delete.assert_any_call(failed_request)
 
 

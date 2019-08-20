@@ -25,7 +25,7 @@ def get_empenhos_for_contratos_from_sof_api():
     while empenhos_failed_requests_dao.count_all() > 0:
         print("Retrying failed API requests")
         retry_empenhos_sof_failed_api_requests(
-            contratos_raw_dao, empenhos_failed_requests_dao)
+            contratos_raw_dao, empenhos_failed_requests_dao, empenhos_temp_dao)
 
     print("Verifying count of lines in temp table")
     verify_table_lines_count(
@@ -86,14 +86,15 @@ def save_empenhos_sof_cache(*, empenhos_data, empenhos_temp_dao):
 
 
 def retry_empenhos_sof_failed_api_requests(
-        contratos_raw_dao, empenhos_failed_requests_dao):
+        contratos_raw_dao, empenhos_failed_requests_dao, empenhos_temp_dao):
     for failed_request in empenhos_failed_requests_dao.get_all():
         contrato = contratos_raw_dao.get(
-            codcontrato=failed_request.cod_contrato,
-            anoexercicio=failed_request.ano_exercicio)
+            codContrato=failed_request.cod_contrato,
+            anoExercicioContrato=failed_request.ano_exercicio)
 
         count = get_empenhos_for_contrato_and_save(
             contrato=contrato,
+            empenhos_temp_dao=empenhos_temp_dao,
             ano_empenho=failed_request.ano_empenho,
         )
         empenhos_failed_requests_dao.delete(failed_request)
