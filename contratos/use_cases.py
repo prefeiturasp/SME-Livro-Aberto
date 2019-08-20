@@ -54,7 +54,8 @@ class ApplyCategoriasContratosFromToUseCase:
     def _apply_fromto(self, fromto):
         categoria, _ = self.categorias_dao.get_or_create(
             name=fromto.categoria_name,
-            desc=fromto.categoria_desc)
-        execucao = self.execucoes_dao.get_by_indexer(fromto.indexer)
+            defaults={"desc": fromto.categoria_desc})
+        execucoes = self.execucoes_dao.filter_by_indexer(fromto.indexer)
         data = {"categoria_id": categoria.id}
-        self.execucoes_dao.update_with(execucao=execucao, **data)
+        for execucao in execucoes:
+            self.execucoes_dao.update_with(execucao=execucao, **data)
