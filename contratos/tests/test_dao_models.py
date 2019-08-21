@@ -208,15 +208,16 @@ class ExecucoesContratosDAOTestCase(TestCase):
         assert ret == mocked_execucao
         mock_create.assert_called_once_with(**data)
 
-    @patch.object(ExecucaoContrato.objects, 'get')
-    def test_get_by_indexer(self, mock_get):
-        mocked_execucao = Mock(spec=ExecucaoContrato)
-        mock_get.return_value = mocked_execucao
+    @patch.object(ExecucaoContrato.objects, 'filter')
+    def test_filter_by_indexer(self, mock_filter):
+        mocked_execucoes = [
+            Mock(spec=ExecucaoContrato), Mock(spec=ExecucaoContrato)]
+        mock_filter.return_value = mocked_execucoes
 
         indexer = '2018.16.2100.3.3.90.30.00.1'
-        ret = self.dao.get_by_indexer(indexer=indexer)
-        assert ret == mocked_execucao
-        mock_get.assert_called_once_with(empenho_indexer=indexer)
+        ret = self.dao.filter_by_indexer(indexer=indexer)
+        assert ret == mocked_execucoes
+        mock_filter.assert_called_once_with(empenho_indexer=indexer)
 
     def test_update_with(self):
         execucao = mommy.prepare(ExecucaoContrato, categoria=None,

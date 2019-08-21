@@ -101,10 +101,6 @@ class ExecucoesContratosDao:
     def create(self, **data):
         return self.model.objects.create(**data)
 
-    # TODO: remove method?
-    def get_by_indexer(self, indexer):
-        return self.model.objects.get(empenho_indexer=indexer)
-
     def filter_by_indexer(self, indexer):
         return self.model.objects.filter(empenho_indexer=indexer)
 
@@ -113,7 +109,6 @@ class ExecucoesContratosDao:
             setattr(execucao, field, value)
         return execucao.save()
 
-    # TODO: add test
     def erase_all(self):
         self.model.objects.all().delete()
 
