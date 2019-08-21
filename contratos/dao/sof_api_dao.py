@@ -29,7 +29,8 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
         f'&codContrato={cod_contrato}&codOrgao=16'
     )
     headers = {'Authorization': f'Bearer {settings.PRODAM_KEY}'}
-    print(f"getting empenhos for contrato {ano_exercicio}: {cod_contrato}")
+    print(f"getting empenhos for codcontrato {cod_contrato} | ano exercicio "
+          f"{ano_exercicio} | ano empenho {ano_empenho}")
     try:
         response = requests.get(url, headers=headers)
     except Exception as e:
