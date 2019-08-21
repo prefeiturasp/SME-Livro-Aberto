@@ -125,14 +125,15 @@ class TestApplyCategoriasContratosFromToUseCase(TestCase):
 
         m_execucao = mommy.prepare(ExecucaoContrato, categoria=None,
                                    _fill_optional=True)
-        self.m_execucoes_dao.get_by_indexer.return_value = m_execucao
+        self.m_execucoes_dao.filter_by_indexer.return_value = [m_execucao]
 
         fromto = mommy.prepare(CategoriaContratoFromTo, _fill_optional=True)
         self.uc._apply_fromto(fromto)
 
         self.m_categorias_dao.get_or_create.assert_called_once_with(
-            name=fromto.categoria_name, desc=fromto.categoria_desc)
-        self.m_execucoes_dao.get_by_indexer.assert_called_once_with(
+            name=fromto.categoria_name,
+            defaults={'desc': fromto.categoria_desc})
+        self.m_execucoes_dao.filter_by_indexer.assert_called_once_with(
             fromto.indexer)
         self.m_execucoes_dao.update_with.assert_called_once_with(
             execucao=m_execucao, categoria_id=m_categoria.id)
