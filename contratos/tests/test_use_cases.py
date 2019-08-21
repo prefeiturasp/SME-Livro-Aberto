@@ -38,13 +38,15 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
         assert self.uc.objetos_dao == self.m_objetos_dao
         assert self.uc.fornecedores_dao == self.m_fornecedores_dao
 
-    def test_execute_calls_create_execucao_for_each_empenho(self):
+    def test_execute_erases_execucoes_and_calls_create_execucao_for_each_empenho(self):  # noqa
         empenhos = mommy.prepare(EmpenhoSOFCache, _fill_optional=True,
                                  _quantity=2)
         self.m_empenhos_dao.get_all.return_value = empenhos
         self.uc._create_execucao_by_empenho = Mock()
 
         self.uc.execute()
+
+        self.m_execucoes_dao.erase_all.assert_called_once_with()
 
         self.m_empenhos_dao.get_all.assert_called_once_with()
         assert 2 == self.uc._create_execucao_by_empenho.call_count
