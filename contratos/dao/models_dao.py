@@ -86,7 +86,8 @@ class ContratosRawDao:
         self.model = ContratoRaw
 
     def get_all(self):
-        return self.model.objects.all()
+        return self.model.objects.all().order_by("anoExercicioContrato",
+                                                 "codContrato")
 
     def get(self, **data):
         return self.model.objects.get(**data)
