@@ -160,11 +160,23 @@ class EmpenhoSOFCache(models.Model):
 
     @property
     def indexer(self):
+        cod_modalidade = str(self.codModalidade)
+        if len(cod_modalidade) < 2:
+            cod_modalidade = '0' + cod_modalidade
+
+        cod_elemento = str(self.codElemento)
+        if len(cod_elemento) < 2:
+            cod_elemento = '0' + cod_elemento
+
+        cod_fonte = str(self.codFonteRecurso)
+        if len(cod_fonte) < 2:
+            cod_fonte = '0' + cod_fonte
+
         s = self
         return (
             f'{s.anoEmpenho}.{s.codOrgao}.{s.codProjetoAtividade}.'
-            f'{s.codCategoria}.{s.codGrupo}.{s.codModalidade}.'
-            f'{s.codElemento}.{s.codFonteRecurso}.{s.codSubElemento}'
+            f'{s.codCategoria}.{s.codGrupo}.{cod_modalidade}.'
+            f'{cod_elemento}.{cod_fonte}.{s.codSubElemento}'
         )
 
 
