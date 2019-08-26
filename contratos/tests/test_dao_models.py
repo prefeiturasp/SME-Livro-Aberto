@@ -186,7 +186,7 @@ class ContratoRawDAOTestCase(TestCase):
         dao = ContratosRawDao()
         mocked_contratos = [Mock(spec=ContratoRaw),
                             Mock(spec=ContratoRaw)]
-        mock_all.return_value = mocked_contratos
+        mock_all.return_value.order_by.return_value = mocked_contratos
 
         ret = dao.get_all()
         assert ret == mocked_contratos
