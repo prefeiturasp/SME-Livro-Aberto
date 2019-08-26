@@ -86,7 +86,8 @@ class ContratosRawDao:
         self.model = ContratoRaw
 
     def get_all(self):
-        return self.model.objects.all()
+        return self.model.objects.all().order_by("anoExercicioContrato",
+                                                 "codContrato")
 
     def get(self, **data):
         return self.model.objects.get(**data)
@@ -100,10 +101,6 @@ class ExecucoesContratosDao:
     def create(self, **data):
         return self.model.objects.create(**data)
 
-    # TODO: remove method?
-    def get_by_indexer(self, indexer):
-        return self.model.objects.get(empenho_indexer=indexer)
-
     def filter_by_indexer(self, indexer):
         return self.model.objects.filter(empenho_indexer=indexer)
 
@@ -112,7 +109,6 @@ class ExecucoesContratosDao:
             setattr(execucao, field, value)
         return execucao.save()
 
-    # TODO: add test
     def erase_all(self):
         self.model.objects.all().delete()
 
@@ -181,7 +177,6 @@ class CategoriasContratosFromToDao:
                     cat_ft.save()
                 added.append(cat_ft.indexer)
             except IntegrityError:
-                # add to cat_ft.not_added
                 not_added.append(cat_ft.indexer)
 
             row += 1

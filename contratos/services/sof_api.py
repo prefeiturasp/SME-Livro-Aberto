@@ -117,11 +117,18 @@ def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
     empenhos_temp_count = empenhos_temp_dao.count_all()
 
     if empenhos_count:
+        percent_limit = round(limit * 100)
         upper_limit = empenhos_count + (empenhos_count * limit)
         lower_limit = empenhos_count - (empenhos_count * limit)
-        if empenhos_temp_count > upper_limit \
-                or empenhos_temp_count < lower_limit:
-            percent_limit = round((1 - limit) * 100)
+        if empenhos_temp_count > upper_limit:
+            msg = (
+                f'O número de linhas na tabela temporária é {percent_limit}% '
+                'maior que o da tabela de produção. Os valores não serão '
+                'atualizados'
+            )
+            raise ContratosEmpenhosDifferenceOverLimit(msg)
+
+        if empenhos_temp_count < lower_limit:
             msg = (
                 f'O número de linhas na tabela temporária é {percent_limit}% '
                 'menor que o da tabela de produção. Os valores não serão '

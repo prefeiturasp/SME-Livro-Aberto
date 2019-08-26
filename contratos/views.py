@@ -20,11 +20,11 @@ class ExecucaoContratoFilter(filters.FilterSet):
 
 
 class HomeView(generics.ListAPIView):
-    # TODO: add tests
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoContratoFilter
-    queryset = ExecucaoContrato.objects.all()
+    # TODO: add view tests
+    queryset = ExecucaoContrato.objects.filter(categoria__isnull=False)
     serializer_class = ExecucaoContratoSerializer
     template_name = 'contratos/home.html'
 
@@ -47,7 +47,7 @@ class HomeView(generics.ListAPIView):
 
 
 class EmpenhoSOFCacheFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='anoEmpenho')
+    year = filters.NumberFilter(field_name='anoExercicioContrato')
 
     class Meta:
         model = EmpenhoSOFCache
@@ -66,7 +66,7 @@ class DownloadView(generics.ListAPIView):
             self.year = self.request.query_params['year']
         else:
             self.year = date.today().year
-            queryset = queryset.filter(anoEmpenho=self.year)
+            queryset = queryset.filter(anoExercicioContrato=self.year)
         return super().filter_queryset(queryset)
 
     def list(self, request, *args, **kwargs):

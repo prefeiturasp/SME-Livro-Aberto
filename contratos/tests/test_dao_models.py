@@ -186,7 +186,7 @@ class ContratoRawDAOTestCase(TestCase):
         dao = ContratosRawDao()
         mocked_contratos = [Mock(spec=ContratoRaw),
                             Mock(spec=ContratoRaw)]
-        mock_all.return_value = mocked_contratos
+        mock_all.return_value.order_by.return_value = mocked_contratos
 
         ret = dao.get_all()
         assert ret == mocked_contratos
@@ -208,15 +208,16 @@ class ExecucoesContratosDAOTestCase(TestCase):
         assert ret == mocked_execucao
         mock_create.assert_called_once_with(**data)
 
-    @patch.object(ExecucaoContrato.objects, 'get')
-    def test_get_by_indexer(self, mock_get):
-        mocked_execucao = Mock(spec=ExecucaoContrato)
-        mock_get.return_value = mocked_execucao
+    @patch.object(ExecucaoContrato.objects, 'filter')
+    def test_filter_by_indexer(self, mock_filter):
+        mocked_execucoes = [
+            Mock(spec=ExecucaoContrato), Mock(spec=ExecucaoContrato)]
+        mock_filter.return_value = mocked_execucoes
 
         indexer = '2018.16.2100.3.3.90.30.00.1'
-        ret = self.dao.get_by_indexer(indexer=indexer)
-        assert ret == mocked_execucao
-        mock_get.assert_called_once_with(empenho_indexer=indexer)
+        ret = self.dao.filter_by_indexer(indexer=indexer)
+        assert ret == mocked_execucoes
+        mock_filter.assert_called_once_with(empenho_indexer=indexer)
 
     def test_update_with(self):
         execucao = mommy.prepare(ExecucaoContrato, categoria=None,
@@ -229,6 +230,16 @@ class ExecucoesContratosDAOTestCase(TestCase):
         self.dao.update_with(execucao=execucao, **data)
         assert categoria.id == execucao.categoria_id
         execucao.save.assert_called_once_with()
+
+    @patch.object(ExecucaoContrato.objects, 'all')
+    def test_erase_all(self, mock_all):
+        mocked_all_return = Mock()
+        mock_all.return_value = mocked_all_return
+
+        self.dao.erase_all()
+
+        mock_all.assert_called_once_with()
+        mocked_all_return.delete.assert_called_once_with()
 
 
 class ModalidadesContratosDAOTestCase(TestCase):
