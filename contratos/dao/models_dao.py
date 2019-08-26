@@ -177,7 +177,6 @@ class CategoriasContratosFromToDao:
                     cat_ft.save()
                 added.append(cat_ft.indexer)
             except IntegrityError:
-                # add to cat_ft.not_added
                 not_added.append(cat_ft.indexer)
 
             row += 1
