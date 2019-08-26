@@ -66,7 +66,7 @@ class EmpenhoDAOTestCase(TestCase):
             ano_empenho=ano_empenho)
 
         assert SOF_API_REQUEST_RETURN_DICT["lstEmpenhos"] == ret
-        mock_get.assert_called_once_with(url, headers=headers)
+        mock_get.assert_called_once_with(url, headers=headers, timeout=20)
 
     @patch.object(EmpenhosFailedRequestsDao, 'create')
     @patch('contratos.dao.sof_api_dao.requests.get')

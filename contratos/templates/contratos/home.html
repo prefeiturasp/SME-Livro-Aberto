@@ -112,7 +112,7 @@
           </tbody>
       </table>
       <div class="actions">
-          <a class="btn" href="{% url 'contratos:download' %}">Download dos Dados</a>
+          <a class="btn" href="{% url 'contratos:download' %}{% if filters.selected_year %}?year={{ filters.selected_year }}{% endif %}">Download dos Dados</a>
       </div>
     </div>
   </section>

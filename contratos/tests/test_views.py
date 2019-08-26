@@ -24,9 +24,9 @@ class TestDownloadView(APITestCase):
 
     def setUp(self):
         self.curr_year = date.today().year
-        mommy.make(EmpenhoSOFCache, anoEmpenho=2018, _fill_optional=True,
-                   _quantity=2)
-        mommy.make(EmpenhoSOFCache, anoEmpenho=self.curr_year,
+        mommy.make(EmpenhoSOFCache, anoExercicioContrato=2018,
+                   _fill_optional=True, _quantity=2)
+        mommy.make(EmpenhoSOFCache, anoExercicioContrato=self.curr_year,
                    _fill_optional=True, _quantity=3)
         self.url = reverse('contratos:download')
 
@@ -36,10 +36,11 @@ class TestDownloadView(APITestCase):
     def prepare_expected_data(self, year=None):
         factory = RequestFactory()
         if year:
-            empenhos = EmpenhoSOFCache.objects.filter(anoEmpenho=year)
+            empenhos = EmpenhoSOFCache.objects.filter(anoExercicioContrato=year)
             request = factory.get(self.url, {'year': year})
         else:
-            empenhos = EmpenhoSOFCache.objects.filter(anoEmpenho=self.curr_year)
+            empenhos = EmpenhoSOFCache.objects.filter(
+                anoExercicioContrato=self.curr_year)
             request = factory.get(self.url)
 
         return EmpenhoSOFCacheSerializer(
