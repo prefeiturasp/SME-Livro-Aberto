@@ -32,7 +32,7 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
     print(f"getting empenhos for codcontrato {cod_contrato} | ano exercicio "
           f"{ano_exercicio} | ano empenho {ano_empenho}")
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=20)
     except Exception as e:
         error_code = -1
         empenhos_failed_requests_dao.create(
