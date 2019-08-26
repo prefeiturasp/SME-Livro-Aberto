@@ -47,7 +47,7 @@ class HomeView(generics.ListAPIView):
 
 
 class EmpenhoSOFCacheFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='anoEmpenho')
+    year = filters.NumberFilter(field_name='anoExercicioContrato')
 
     class Meta:
         model = EmpenhoSOFCache
@@ -66,7 +66,7 @@ class DownloadView(generics.ListAPIView):
             self.year = self.request.query_params['year']
         else:
             self.year = date.today().year
-            queryset = queryset.filter(anoEmpenho=self.year)
+            queryset = queryset.filter(anoExercicioContrato=self.year)
         return super().filter_queryset(queryset)
 
     def list(self, request, *args, **kwargs):
