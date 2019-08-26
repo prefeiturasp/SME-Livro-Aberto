@@ -1,9 +1,11 @@
+from copy import deepcopy
 from datetime import datetime
 from unittest import TestCase
 from unittest.mock import Mock
 
 from model_mommy import mommy
 
+from contratos.constants import CATEGORIA_FROM_TO_SLUG
 from contratos.dao.models_dao import (
     CategoriasContratosDao, CategoriasContratosFromToDao, FornecedoresDao,
     EmpenhosSOFCacheDao, ExecucoesContratosDao,
@@ -122,19 +124,27 @@ class TestApplyCategoriasContratosFromToUseCase(TestCase):
             self.uc._apply_fromto.assert_any_call(fromto)
 
     def test_apply_fromto(self):
-        m_categoria = mommy.prepare(CategoriaContrato, _fill_optional=True)
+        slugs_dict = deepcopy(CATEGORIA_FROM_TO_SLUG)
+        categoria_name, categoria_slug = slugs_dict.popitem()
+        m_categoria = mommy.prepare(
+            CategoriaContrato, name=categoria_name, _fill_optional=True)
         self.m_categorias_dao.get_or_create.return_value = (m_categoria, True)
 
         m_execucao = mommy.prepare(ExecucaoContrato, categoria=None,
                                    _fill_optional=True)
         self.m_execucoes_dao.filter_by_indexer.return_value = [m_execucao]
 
-        fromto = mommy.prepare(CategoriaContratoFromTo, _fill_optional=True)
+        fromto = mommy.prepare(
+            CategoriaContratoFromTo, categoria_name=categoria_name,
+            _fill_optional=True)
         self.uc._apply_fromto(fromto)
 
         self.m_categorias_dao.get_or_create.assert_called_once_with(
             name=fromto.categoria_name,
-            defaults={'desc': fromto.categoria_desc})
+            defaults={
+                'desc': fromto.categoria_desc,
+                'slug': categoria_slug,
+            })
         self.m_execucoes_dao.filter_by_indexer.assert_called_once_with(
             fromto.indexer)
         self.m_execucoes_dao.update_with.assert_called_once_with(

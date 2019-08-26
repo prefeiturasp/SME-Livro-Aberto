@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from contratos.constants import CATEGORIA_FROM_TO_SLUG
+
 
 class GenerateExecucoesContratosUseCase:
 
@@ -51,9 +53,14 @@ class ApplyCategoriasContratosFromToUseCase:
             self._apply_fromto(fromto)
 
     def _apply_fromto(self, fromto):
+        categoria_slug = CATEGORIA_FROM_TO_SLUG.get(fromto.categoria_name, None)
         categoria, _ = self.categorias_dao.get_or_create(
             name=fromto.categoria_name,
-            defaults={"desc": fromto.categoria_desc})
+            defaults={
+                "desc": fromto.categoria_desc,
+                "slug": categoria_slug,
+            })
+
         execucoes = self.execucoes_dao.filter_by_indexer(fromto.indexer)
         data = {"categoria_id": categoria.id}
         for execucao in execucoes:
