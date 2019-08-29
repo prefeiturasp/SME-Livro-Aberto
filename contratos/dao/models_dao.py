@@ -23,6 +23,11 @@ class EmpenhosSOFCacheDao:
     def get_all(self):
         return self.model.objects.all()
 
+    # TODO: add tests
+    def filter_by_ano_exercicio(self, year):
+        return self.model.objects.filter(anoExercicioContrato=year) \
+            .order_by('anoEmpenho', 'codContrato')
+
     def create(self, data):
         return self.model.objects.create(**data)
 
