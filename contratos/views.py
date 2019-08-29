@@ -47,7 +47,7 @@ class HomeView(generics.ListAPIView):
         return serializer_class(*args, **kwargs)
 
 
-# TODO: fix download view tests
+# TODO: add download view tests
 def download_view(request):
     if 'year' in request.GET:
         year = request.GET['year']

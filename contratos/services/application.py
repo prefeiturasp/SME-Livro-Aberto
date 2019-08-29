@@ -68,26 +68,24 @@ def serialize_top5(queryset, categoria_id=None):
     if categoria_id:
         queryset = queryset.filter(categoria_id=categoria_id)
 
-    top5_execucoes = queryset.order_by('-valor_empenhado')[:5]
+    top5_contratos = queryset \
+        .values("year__year", "cod_contrato", "fornecedor__razao_social",
+                "categoria__name", "categoria__desc", "modalidade__desc",
+                "objeto_contrato__desc") \
+        .annotate(total_empenhado=Sum('valor_empenhado')) \
+        .order_by('-valor_empenhado')[:5]
 
     top5_list = []
-    for execucao in top5_execucoes:
-        categoria = getattr(execucao, "categoria", None)
-        if categoria:
-            categoria_name = categoria.name
-            categoria_id = categoria.id
-        else:
-            categoria_name = None
-            categoria_id = None
-
+    for contrato in top5_contratos:
         exec_dict = {
-            'year': execucao.year.year,
-            'fornecedor': execucao.fornecedor.razao_social,
-            'categoria_name': categoria_name,
-            'categoria_id': categoria_id,
-            'objeto_contrato': execucao.objeto_contrato.desc,
-            'modalidade': execucao.modalidade.desc,
-            'empenhado': execucao.valor_empenhado,
+            'year': contrato['year__year'],
+            'cod_contrato': contrato['cod_contrato'],
+            'categoria_name': contrato['categoria__name'],
+            'categoria_desc': contrato['categoria__desc'],
+            'fornecedor': contrato['fornecedor__razao_social'],
+            'objeto_contrato': contrato['objeto_contrato__desc'],
+            'modalidade': contrato['modalidade__desc'],
+            'empenhado': contrato['total_empenhado'],
         }
         top5_list.append(exec_dict)
     return top5_list
