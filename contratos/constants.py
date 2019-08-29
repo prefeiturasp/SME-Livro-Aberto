@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 
 
@@ -17,3 +19,6 @@ CATEGORIA_FROM_TO_SLUG = {
     "Uniforme e Material Escolar": "uniformes",
     "Outras Aquisições": "outros",
 }
+
+CONTRATOS_BASE_DIR = os.path.join(settings.BASE_DIR, '../contratos')
+GENERATED_XLSX_PATH = os.path.join(CONTRATOS_BASE_DIR, 'data')

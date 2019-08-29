@@ -1,6 +1,8 @@
-from datetime import datetime
+import os
 
-from contratos.constants import CATEGORIA_FROM_TO_SLUG
+from datetime import datetime, date
+
+from contratos.constants import CATEGORIA_FROM_TO_SLUG, GENERATED_XLSX_PATH
 
 
 class GenerateExecucoesContratosUseCase:
@@ -65,3 +67,22 @@ class ApplyCategoriasContratosFromToUseCase:
         data = {"categoria_id": categoria.id}
         for execucao in execucoes:
             self.execucoes_dao.update_with(execucao=execucao, **data)
+
+
+# TODO: add tests for generate xlsx use case
+class GenerateXlsxFilesUseCase:
+
+    def __init__(self, empenhos_dao, data_handler):
+        self.empenhos_dao = empenhos_dao
+        self.data_handler = data_handler
+
+    def execute(self):
+        curr_year = date.today().year
+        for year in range(2018, curr_year + 1):
+            empenhos = self.empenhos_dao.filter_by_ano_exercicio(year).values()
+            if empenhos:
+                filename = f'contratos_{year}.xlsx'
+                filepath = os.path.join(GENERATED_XLSX_PATH, filename)
+                dataframe = self.data_handler.from_dict(empenhos)
+                dataframe.to_excel(filepath, index=False)
+                print(f'Spreadsheet generated: {filepath}')
