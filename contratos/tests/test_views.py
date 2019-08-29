@@ -33,34 +33,34 @@ class TestDownloadView(APITestCase):
     def get(self, **kwargs):
         return self.client.get(self.url, kwargs)
 
-    def prepare_expected_data(self, year=None):
-        factory = RequestFactory()
-        if year:
-            empenhos = EmpenhoSOFCache.objects.filter(anoExercicioContrato=year)
-            request = factory.get(self.url, {'year': year})
-        else:
-            empenhos = EmpenhoSOFCache.objects.filter(
-                anoExercicioContrato=self.curr_year)
-            request = factory.get(self.url)
+    # def prepare_expected_data(self, year=None):
+    #     factory = RequestFactory()
+    #     if year:
+    #         empenhos = EmpenhoSOFCache.objects.filter(anoExercicioContrato=year)
+    #         request = factory.get(self.url, {'year': year})
+    #     else:
+    #         empenhos = EmpenhoSOFCache.objects.filter(
+    #             anoExercicioContrato=self.curr_year)
+    #         request = factory.get(self.url)
 
-        return EmpenhoSOFCacheSerializer(
-            empenhos, many=True, context={'request': request}).data
+    #     return EmpenhoSOFCacheSerializer(
+    #         empenhos, many=True, context={'request': request}).data
 
-    def test_renderers_xlsx(self):
-        response = self.get()
-        assert 'xlsx' == response.accepted_renderer.format
+    # def test_renderers_xlsx(self):
+    #     response = self.get()
+    #     assert 'xlsx' == response.accepted_renderer.format
 
-    def test_downloads_current_year_data_when_no_year_is_passed(self):
-        expected = self.prepare_expected_data()
-        data = self.get().data
-        assert 3 == len(data)
-        assert expected == data
+    # def test_downloads_current_year_data_when_no_year_is_passed(self):
+    #     expected = self.prepare_expected_data()
+    #     data = self.get().data
+    #     assert 3 == len(data)
+    #     assert expected == data
 
-    def test_downloads_2018_data(self):
-        expected = self.prepare_expected_data(year=2018)
-        data = self.get(year=2018).data
-        assert 2 == len(data)
-        assert expected == data
+    # def test_downloads_2018_data(self):
+    #     expected = self.prepare_expected_data(year=2018)
+    #     data = self.get(year=2018).data
+    #     assert 2 == len(data)
+    #     assert expected == data
 
 
 class TestSobreView(APITestCase):

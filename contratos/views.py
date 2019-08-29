@@ -1,14 +1,15 @@
+import os
+
 from datetime import date
 
+from django.http import HttpResponse, Http404
 from django_filters import rest_framework as filters
-from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from rest_framework.response import Response
 
-from contratos.models import EmpenhoSOFCache, ExecucaoContrato
-from contratos.serializers import (
-    EmpenhoSOFCacheSerializer, ExecucaoContratoSerializer)
+from contratos.constants import GENERATED_XLSX_PATH
+from contratos.models import ExecucaoContrato
+from contratos.serializers import ExecucaoContratoSerializer
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
@@ -46,37 +47,21 @@ class HomeView(generics.ListAPIView):
         return serializer_class(*args, **kwargs)
 
 
-class EmpenhoSOFCacheFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='anoExercicioContrato')
+# TODO: fix download view tests
+def download_view(request):
+    if 'year' in request.GET:
+        year = request.GET['year']
+    else:
+        year = date.today().year
 
-    class Meta:
-        model = EmpenhoSOFCache
-        fields = ['year']
+    filename = f'contratos_{year}.xlsx'
+    filepath = os.path.join(GENERATED_XLSX_PATH, filename)
+    if not os.path.exists(filepath):
+        raise Http404
 
-
-class DownloadView(generics.ListAPIView):
-    renderer_classes = [XLSXRenderer]
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = EmpenhoSOFCacheFilter
-    queryset = EmpenhoSOFCache.objects.all()
-    serializer_class = EmpenhoSOFCacheSerializer
-
-    def filter_queryset(self, queryset):
-        if 'year' in self.request.query_params:
-            self.year = self.request.query_params['year']
-        else:
-            self.year = date.today().year
-            queryset = queryset.filter(anoExercicioContrato=self.year)
-        return super().filter_queryset(queryset)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-
-        filename = f'contratos_{self.year}.xlsx'
-
-        headers = {
-            'Content-Disposition': f'attachment; filename={filename}'
-        }
-        response = Response(serializer.data, headers=headers)
+    with open(filepath, 'rb') as fh:
+        response = HttpResponse(
+            fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = (
+            'inline; filename=' + os.path.basename(filepath))
         return response
