@@ -1,10 +1,13 @@
+from pandas import DataFrame
+
 from contratos.dao.models_dao import (
     CategoriasContratosDao, CategoriasContratosFromToDao, EmpenhosSOFCacheDao,
     ExecucoesContratosDao, FornecedoresDao, ModalidadesContratosDao,
     ObjetosContratosDao)
 from contratos.use_cases import (
     ApplyCategoriasContratosFromToUseCase,
-    GenerateExecucoesContratosUseCase)
+    GenerateExecucoesContratosUseCase,
+    GenerateXlsxFilesUseCase)
 
 
 def generate_execucoes_contratos_and_apply_fromto():
@@ -23,3 +26,10 @@ def generate_execucoes_contratos_and_apply_fromto():
         categorias_fromto_dao=CategoriasContratosFromToDao(),
         categorias_dao=CategoriasContratosDao())
     apply_fromto_uc.execute()
+
+    # TODO: add tests
+    print("Generating xlsx files")
+    generate_xlsx_uc = GenerateXlsxFilesUseCase(
+        empenhos_dao=EmpenhosSOFCacheDao(),
+        data_handler=DataFrame)
+    generate_xlsx_uc.execute()
