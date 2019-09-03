@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import json
 import os
 
 from decouple import config, Csv
@@ -158,3 +159,13 @@ ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH = config(
     f'{BASE_DIR}/../budget_execution/data/')
 ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME = config(
     'ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME', 'orcamento_empenhos_dump.zip')
+categoria_from_to_json = config(
+    'CATEGORIA_FROM_TO_SLUG',
+    ('{"Ações Culturais": "acoes-culturais", "Alimentação": "alimentacao", '
+     '"Construções": "contrucoes", "Parcerias": "parcerias", "Pedagógico": '
+     '"pedagogico", "Reformas e Manutenção": "manutencao", '
+     '"Serviços Contínuos": "servicos", "Transporte": "transportes", '
+     '"Uniforme e Material Escolar": "uniformes", "Outras Aquisições": '
+     '"outros"}')
+)
+CATEGORIA_FROM_TO_SLUG = json.loads(categoria_from_to_json)

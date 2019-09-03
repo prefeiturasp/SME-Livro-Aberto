@@ -2,6 +2,17 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
+class ExecucaoContratoManager(models.Manager):
+
+    def get_date_updated(self):
+        last_execucao = self.get_queryset().order_by('-dt_created') \
+            .first()
+        if last_execucao:
+            return last_execucao.dt_created.strftime('%d/%m/%Y')
+        else:
+            return None
+
+
 class ExecucaoContrato(models.Model):
     cod_contrato = models.IntegerField()
     empenho_indexer = models.CharField(max_length=28)
@@ -16,6 +27,9 @@ class ExecucaoContrato(models.Model):
     # from-to field
     categoria = models.ForeignKey("CategoriaContrato", null=True,
                                   on_delete=models.PROTECT)
+    dt_created = models.DateTimeField(auto_now_add=True)
+
+    objects = ExecucaoContratoManager()
 
     def __str__(self):
         return (f'{self.year}: {self.cod_contrato} - '
