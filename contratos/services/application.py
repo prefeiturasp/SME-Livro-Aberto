@@ -117,3 +117,7 @@ def serialize_filters(queryset, categoria_id, year):
         categorias_list.append(categoria_dict)
     ret['categorias'] = categorias_list
     return ret
+
+
+def serialize_date_updated():
+    return ExecucaoContrato.objects.get_date_updated()
