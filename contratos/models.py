@@ -16,6 +16,7 @@ class ExecucaoContrato(models.Model):
     # from-to field
     categoria = models.ForeignKey("CategoriaContrato", null=True,
                                   on_delete=models.PROTECT)
+    dt_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return (f'{self.year}: {self.cod_contrato} - '
