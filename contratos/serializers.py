@@ -20,6 +20,7 @@ class ExecucaoContratoSerializer:
             'top5': services.serialize_top5(self.queryset, self.categoria_id),
             'filters': services.serialize_filters(
                 self.queryset, self.categoria_id, self.year),
+            'dt_updated': services.serialize_date_updated(),
         }
 
 
