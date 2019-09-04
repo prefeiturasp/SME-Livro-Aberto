@@ -11,10 +11,10 @@
                 <strong>{% widthratio percent_liquidado 1 100 %}%</strong> do total
             </div>
             <div>
-                <strong>R$ {{ liquidado }}</strong> liquidado
+                <strong>R$ {{ liquidado | floatformat:2 }}</strong> liquidado
             </div>
             <div>
-                <strong>R$ {{ empenhado }}</strong> empenhado
+                <strong>R$ {{ empenhado | floatformat:2 }}</strong> empenhado
             </div>
         </div>
         <div class="value"

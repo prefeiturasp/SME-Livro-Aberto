@@ -96,7 +96,7 @@
                   <th>{{ contrato.fornecedor }}</th>
                   <td>{{ contrato.categoria_name }}</td>
                   <td>{{ contrato.modalidade }}</td>
-                  <td>R$ {{ contrato.empenhado }}</td>
+                  <td>R$ {{ contrato.empenhado | floatformat:2 }}</td>
                   <td>
                       <div class="description-parent">
                           <div class="description-box">
