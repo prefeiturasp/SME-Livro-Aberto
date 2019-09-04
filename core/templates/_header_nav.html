@@ -23,6 +23,10 @@
     {% endif %}
   </ul>
   {% if dt_updated %}
-    <div>Última despesa registrada em: {{ dt_updated }}</div>
+    {% if last_update_header %}
+      <div>{{ last_update_header }}{{ dt_updated }}</div>
+    {% else %}
+      <div>Última despesa registrada em: {{ dt_updated }}</div>
+    {% endif %}
   {% endif %}
 </nav>
