@@ -30,8 +30,22 @@ class ExecucaoContratoFilter(filters.FilterSet):
         fields = ['year']
 
 
+class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_context(self, data, renderer_context):
+        data = super().get_template_context(data, renderer_context)
+        view = renderer_context['view']
+        request = renderer_context['request']
+
+        filter_backend = view.filter_backends[0]()
+        qs = view.get_queryset()
+        filterset = filter_backend.get_filterset(request, qs, view)
+        data['filter_form'] = filterset.form
+
+        return data
+
+
 class HomeView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoContratoFilter
     # TODO: add view tests

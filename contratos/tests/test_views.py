@@ -19,21 +19,6 @@ class TestHomeView(APITestCase):
         self.categoria = mommy.make('CategoriaContrato',
             name='Alimentação', slug='alimentacao')
 
-    @property
-    def empty_state(self):
-        return {
-            'big_number': {},
-            'destinations': [],
-            'dt_updated': None,
-            'filters': {
-                'categorias': [],
-                'selected_categoria': None,
-                'selected_year': None,
-                'years': []
-            },
-            'top5': [],
-        }
-
     def get_execucao(self, **kwargs):
         return mommy.make('ExecucaoContrato', categoria=self.categoria,
                 **kwargs)
@@ -45,32 +30,35 @@ class TestHomeView(APITestCase):
 
     def test_empty_state(self):
         response = self.get()
-        assert self.empty_state == response.data
+        assert {} == response.data['big_number']
+        assert [] == response.data['destinations']
+        assert None == response.data['dt_updated']
+        assert [] == response.data['top5']
 
     def test_most_recent_year_as_default(self):
         year = 1500
         empenhado = 42
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get()
-        assert year == response.data['filters']['selected_year']
+        assert year == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
 
         year = 2018
         empenhado = 10
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get()
-        assert year == response.data['filters']['selected_year']
+        assert year == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
 
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get()
-        assert year == response.data['filters']['selected_year']
+        assert year == response.context['filter_form']['year'].value()
         assert 20 == response.data['big_number']['empenhado']
 
         empenhado = 17
         self.get_execucao(year=date(1998, 1, 1), valor_empenhado=empenhado)
         response = self.get()
-        assert year == response.data['filters']['selected_year']
+        assert year == response.context['filter_form']['year'].value()
         assert 20 == response.data['big_number']['empenhado']
 
     def test_filter_by_year(self):
@@ -78,14 +66,14 @@ class TestHomeView(APITestCase):
         empenhado = 42
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get(year=year)
-        assert year == response.data['filters']['selected_year']
+        assert str(year) == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
 
         year = 2018
         empenhado = 10
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get(year=year)
-        assert year == response.data['filters']['selected_year']
+        assert str(year) == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
 
         year = 3000

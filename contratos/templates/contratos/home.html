@@ -60,13 +60,7 @@
               Visualizar:
           </legend>
           <div class="form-item">
-              <select name="year">
-                {% for year in filters.years %}
-                    <option value="{{ year }}"
-                            {% if year == filters.selected_year %}selected{% endif %}
-                            >{{ year | unlocalize }}</option>
-                {% endfor %}
-              </select>
+              {{ filter_form.year }}
           </div>
           <div class="form-item">
               <select name="categoria_id">
