@@ -15,10 +15,82 @@ class TestHomeView(APITestCase):
         url = reverse('contratos:home')
         return self.client.get(url, kwargs)
 
+    def setUp(self):
+        self.categoria = mommy.make('CategoriaContrato',
+            name='Alimentação', slug='alimentacao')
+
+    @property
+    def empty_state(self):
+        return {
+            'big_number': {},
+            'destinations': [],
+            'dt_updated': None,
+            'filters': {
+                'categorias': [],
+                'selected_categoria': None,
+                'selected_year': None,
+                'years': []
+            },
+            'top5': [],
+        }
+
+    def get_execucao(self, **kwargs):
+        return mommy.make('ExecucaoContrato', categoria=self.categoria,
+                **kwargs)
+
     def test_render_correct_template(self):
+        self.get_execucao()
         response = self.get()
         self.assertTemplateUsed(response, 'contratos/home.html')
 
+    def test_empty_state(self):
+        response = self.get()
+        assert self.empty_state == response.data
+
+    def test_most_recent_year_as_default(self):
+        year = 1500
+        empenhado = 42
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.data['filters']['selected_year']
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 2018
+        empenhado = 10
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.data['filters']['selected_year']
+        assert empenhado == response.data['big_number']['empenhado']
+
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.data['filters']['selected_year']
+        assert 20 == response.data['big_number']['empenhado']
+
+        empenhado = 17
+        self.get_execucao(year=date(1998, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.data['filters']['selected_year']
+        assert 20 == response.data['big_number']['empenhado']
+
+    def test_filter_by_year(self):
+        year = 1500
+        empenhado = 42
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get(year=year)
+        assert year == response.data['filters']['selected_year']
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 2018
+        empenhado = 10
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get(year=year)
+        assert year == response.data['filters']['selected_year']
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 3000
+        response = self.get(year=year)
+        assert 400 == response.status_code
 
 class TestDownloadView(APITestCase):
 

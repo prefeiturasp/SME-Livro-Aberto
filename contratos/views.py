@@ -13,7 +13,17 @@ from contratos.serializers import ExecucaoContratoSerializer
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='year', lookup_expr='year')
+    year = filters.AllValuesFilter(field_name='year__year', empty_label=None)
+
+    def __init__(self, data=None, queryset=None, *args, **kwargs):
+        super().__init__(data=data, queryset=queryset, *args, **kwargs)
+        if 'year' not in self.data:
+            ordered = queryset.order_by('-year__year')
+            year = ordered.values_list('year__year', flat=True).first()
+
+            data = self.data.copy()
+            data['year'] = year
+            self.data = data
 
     class Meta:
         model = ExecucaoContrato
@@ -29,22 +39,17 @@ class HomeView(generics.ListAPIView):
     serializer_class = ExecucaoContratoSerializer
     template_name = 'contratos/home.html'
 
-    def filter_queryset(self, queryset):
-        if 'year' not in self.request.query_params:
-            curr_year = date.today().year
-            queryset = queryset.filter(year__year=curr_year)
-        return super().filter_queryset(queryset)
-
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer(self, queryset, *args, **kwargs):
         """
         Return the serializer instance that should be used for validating and
         deserializing input, and for serializing output.
         """
         serializer_class = self.get_serializer_class()
+        kwargs['year'] = queryset.values_list('year__year',
+                flat=True).first()
         kwargs['categoria_id'] = self.request.query_params.get(
             'categoria_id', None)
-        kwargs['year'] = self.request.query_params.get('year', None)
-        return serializer_class(*args, **kwargs)
+        return serializer_class(queryset, *args, **kwargs)
 
 
 # TODO: add download view tests
