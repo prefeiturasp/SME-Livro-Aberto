@@ -64,7 +64,7 @@
                 {% for year in filters.years %}
                     <option value="{{ year }}"
                             {% if year == filters.selected_year %}selected{% endif %}
-                            >{{ year }}</option>
+                            >{{ year | unlocalize }}</option>
                 {% endfor %}
               </select>
           </div>
@@ -96,7 +96,7 @@
                   <th>{{ contrato.fornecedor }}</th>
                   <td>{{ contrato.categoria_name }}</td>
                   <td>{{ contrato.modalidade }}</td>
-                  <td>R$ {{ contrato.empenhado | intcomma }}</td>
+                  <td>R$ {{ contrato.empenhado | floatformat:2 }}</td>
                   <td>
                       <div class="description-parent">
                           <div class="description-box">

@@ -32,7 +32,7 @@
                         data-group="{{ item.subgrupo}}"
                         data-name="{{ item.slug}}"
                         data-value="{{ item.value|unlocalize }}"
-                        data-currency-value="{% if item.value %}{{ item.value|intcomma }}{% else %}-{% endif %}"
+                        data-currency-value="{% if item.value %}{{ item.value }}{% else %}-{% endif %}"
                         data-percent="{% widthratio item.percent 1 100 %}"
                         style="width: {% widthratio item.percent 1 100 %}%">
                     {% widthratio item.percent 1 100 %}%

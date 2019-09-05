@@ -5,7 +5,7 @@
   <header>
     <h3 class="title">{{ title }}</h3>
     <div class="value">
-      {% if data.total %}R$ {{ data.total|intcomma }}{% else %}-{% endif %}
+      {% if data.total %}R$ {{ data.total }}{% else %}-{% endif %}
     </div>
   </header>
   <div class="body">
@@ -21,7 +21,7 @@
             <span class="fg-{{ item.slug }}" title="{{ item.name }}">●</span>
             {{ item.percent | percentage | floatformat:2 }}%
           </td>
-          <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
+          <td>{% if item.value %}R$ {{ item.value }}{% else %}-{% endif %}</td>
         </tr>
         {% endif %}
         {% endfor %}
