@@ -8,12 +8,15 @@ from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from contratos.constants import GENERATED_XLSX_PATH
-from contratos.models import ExecucaoContrato
+from contratos.models import ExecucaoContrato, CategoriaContrato
 from contratos.serializers import ExecucaoContratoSerializer
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
     year = filters.AllValuesFilter(field_name='year__year', empty_label=None)
+    category = filters.ModelChoiceFilter(
+        queryset=CategoriaContrato.objects.all(), field_name='categoria',
+        empty_label='Todas categorias')
 
     def __init__(self, data=None, queryset=None, *args, **kwargs):
         super().__init__(data=data, queryset=queryset, *args, **kwargs)
@@ -27,7 +30,7 @@ class ExecucaoContratoFilter(filters.FilterSet):
 
     class Meta:
         model = ExecucaoContrato
-        fields = ['year']
+        fields = ['year', 'category']
 
 
 class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
@@ -54,16 +57,12 @@ class HomeView(generics.ListAPIView):
     template_name = 'contratos/home.html'
 
     def get_serializer(self, queryset, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output.
-        """
+        original_qs = self.queryset
+        year = self.request.GET.get('year')
+        qs_year_filtered = self.filterset_class(dict(year=year), original_qs).qs
+
         serializer_class = self.get_serializer_class()
-        kwargs['year'] = queryset.values_list('year__year',
-                flat=True).first()
-        kwargs['categoria_id'] = self.request.query_params.get(
-            'categoria_id', None)
-        return serializer_class(queryset, *args, **kwargs)
+        return serializer_class(qs_year_filtered, queryset)
 
 
 # TODO: add download view tests

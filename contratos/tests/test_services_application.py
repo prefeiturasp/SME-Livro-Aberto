@@ -153,21 +153,3 @@ class TestApplicationServices(TestCase):
     #     ret = services.serialize_top5(queryset, categoria_id=categoria.id)
 
     #     assert expected == ret
-
-    def test_serialize_selected_filters_type(self):
-        queryset = ExecucaoContrato.objects.all()
-        ret = services.serialize_filters(queryset, categoria_id='42', year='2018')
-        assert 42 == ret['selected_categoria']
-        assert 2018 == ret['selected_year']
-
-        ret = services.serialize_filters(queryset, categoria_id=None, year=None)
-        assert None == ret['selected_categoria']
-        assert None == ret['selected_year']
-
-        ret = services.serialize_filters(queryset, categoria_id='', year='')
-        assert None == ret['selected_categoria']
-        assert None == ret['selected_year']
-
-        ret = services.serialize_filters(queryset, categoria_id='invalid', year='invalid')
-        assert None == ret['selected_categoria']
-        assert None == ret['selected_year']

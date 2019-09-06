@@ -63,14 +63,7 @@
               {{ filter_form.year }}
           </div>
           <div class="form-item">
-              <select name="categoria_id">
-                <option value="">Todas as categorias</option>
-                {% for categoria in filters.categorias %}
-                    <option value="{{ categoria.id }}"
-                            {% if categoria.id == filters.selected_categoria %}selected{% endif %}
-                            >{{ categoria.name }}</option>
-                {% endfor %}
-              </select>
+              {{ filter_form.category }}
           </div>
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
