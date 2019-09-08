@@ -56,13 +56,13 @@ class HomeView(generics.ListAPIView):
     serializer_class = ExecucaoContratoSerializer
     template_name = 'contratos/home.html'
 
-    def get_serializer(self, queryset, *args, **kwargs):
+    def get_serializer(self, qs_category_filtered, *args, **kwargs):
         original_qs = self.queryset
         year = self.request.GET.get('year')
         qs_year_filtered = self.filterset_class(dict(year=year), original_qs).qs
 
         serializer_class = self.get_serializer_class()
-        return serializer_class(qs_year_filtered, queryset)
+        return serializer_class(qs_year_filtered, qs_category_filtered)
 
 
 # TODO: add download view tests
