@@ -8,20 +8,47 @@ from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from contratos.constants import GENERATED_XLSX_PATH
-from contratos.models import ExecucaoContrato
+from contratos.models import ExecucaoContrato, CategoriaContrato
 from contratos.serializers import ExecucaoContratoSerializer
 
 
 class ExecucaoContratoFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='year', lookup_expr='year')
+    year = filters.AllValuesFilter(field_name='year__year', empty_label=None)
+    category = filters.ModelChoiceFilter(
+        queryset=CategoriaContrato.objects.all(), field_name='categoria',
+        empty_label='Todas categorias')
+
+    def __init__(self, data=None, queryset=None, *args, **kwargs):
+        super().__init__(data=data, queryset=queryset, *args, **kwargs)
+        if 'year' not in self.data:
+            ordered = queryset.order_by('-year__year')
+            year = ordered.values_list('year__year', flat=True).first()
+
+            data = self.data.copy()
+            data['year'] = year
+            self.data = data
 
     class Meta:
         model = ExecucaoContrato
-        fields = ['year']
+        fields = ['year', 'category']
+
+
+class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_context(self, data, renderer_context):
+        data = super().get_template_context(data, renderer_context)
+        view = renderer_context['view']
+        request = renderer_context['request']
+
+        filter_backend = view.filter_backends[0]()
+        qs = view.get_queryset()
+        filterset = filter_backend.get_filterset(request, qs, view)
+        data['filter_form'] = filterset.form
+
+        return data
 
 
 class HomeView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoContratoFilter
     # TODO: add view tests
@@ -29,22 +56,13 @@ class HomeView(generics.ListAPIView):
     serializer_class = ExecucaoContratoSerializer
     template_name = 'contratos/home.html'
 
-    def filter_queryset(self, queryset):
-        if 'year' not in self.request.query_params:
-            curr_year = date.today().year
-            queryset = queryset.filter(year__year=curr_year)
-        return super().filter_queryset(queryset)
+    def get_serializer(self, qs_category_filtered, *args, **kwargs):
+        original_qs = self.queryset
+        year = self.request.GET.get('year')
+        qs_year_filtered = self.filterset_class(dict(year=year), original_qs).qs
 
-    def get_serializer(self, *args, **kwargs):
-        """
-        Return the serializer instance that should be used for validating and
-        deserializing input, and for serializing output.
-        """
         serializer_class = self.get_serializer_class()
-        kwargs['categoria_id'] = self.request.query_params.get(
-            'categoria_id', None)
-        kwargs['year'] = self.request.query_params.get('year', None)
-        return serializer_class(*args, **kwargs)
+        return serializer_class(qs_year_filtered, qs_category_filtered)
 
 
 # TODO: add download view tests

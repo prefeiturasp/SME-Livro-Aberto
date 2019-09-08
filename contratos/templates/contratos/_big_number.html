@@ -9,15 +9,7 @@
             </strong>
         </span>
         foram previstos em contratos para a educação da cidade de São Paulo em
-        <em>
-            <select name="year">
-                {% for year in filters.years %}
-                    <option value="{{ year }}"
-                            {% if year == filters.selected_year %}selected{% endif %}
-                            >{{ year | unlocalize }}</option>
-                {% endfor %}
-            </select>
-        </em>
+        <em>{{ filter_form.year }}</em>
         </p>
         <input class="submit" type="submit" value="Filtrar" name="go">
     </form>

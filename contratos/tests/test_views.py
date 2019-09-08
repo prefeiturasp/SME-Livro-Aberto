@@ -15,9 +15,121 @@ class TestHomeView(APITestCase):
         url = reverse('contratos:home')
         return self.client.get(url, kwargs)
 
+    def setUp(self):
+        self.categoria = mommy.make('CategoriaContrato',
+            name='Alimentação', slug='alimentacao')
+
+    def get_execucao(self, **kwargs):
+        return mommy.make('ExecucaoContrato', categoria=self.categoria,
+                **kwargs)
+
     def test_render_correct_template(self):
+        self.get_execucao()
         response = self.get()
         self.assertTemplateUsed(response, 'contratos/home.html')
+
+    def test_empty_state(self):
+        response = self.get()
+        assert {} == response.data['big_number']
+        assert [] == response.data['destinations']
+        assert None == response.data['dt_updated']
+        assert [] == response.data['top5']
+
+    def test_most_recent_year_as_default(self):
+        year = 1500
+        empenhado = 42
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.context['filter_form']['year'].value()
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 2018
+        empenhado = 10
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.context['filter_form']['year'].value()
+        assert empenhado == response.data['big_number']['empenhado']
+
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.context['filter_form']['year'].value()
+        assert 20 == response.data['big_number']['empenhado']
+
+        empenhado = 17
+        self.get_execucao(year=date(1998, 1, 1), valor_empenhado=empenhado)
+        response = self.get()
+        assert year == response.context['filter_form']['year'].value()
+        assert 20 == response.data['big_number']['empenhado']
+
+    def test_filter_by_year(self):
+        year = 1500
+        empenhado = 42
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get(year=year)
+        assert str(year) == response.context['filter_form']['year'].value()
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 2018
+        empenhado = 10
+        self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
+        response = self.get(year=year)
+        assert str(year) == response.context['filter_form']['year'].value()
+        assert empenhado == response.data['big_number']['empenhado']
+
+        year = 3000
+        response = self.get(year=year)
+        assert 400 == response.status_code
+
+
+class TestHomeViewCategory(APITestCase):
+
+    def get(self, **kwargs):
+        url = reverse('contratos:home')
+        return self.client.get(url, kwargs)
+
+    def test_filter_by_category(self):
+        category = mommy.make('CategoriaContrato',
+            name='Alimentação', slug='alimentacao')
+        mommy.make('ExecucaoContrato', categoria=category)
+
+        response = self.get(category=category.id)
+        assert str(category.id) == response.context['filter_form']['category'].value()
+        assert 1 == len(response.context['top5'])
+        assert category.name == response.context['top5'][0]['categoria_name']
+
+        other_category = mommy.make('CategoriaContrato',
+            name='Parcerias', slug='parcerias')
+        mommy.make('ExecucaoContrato', categoria=other_category)
+        response = self.get(category=other_category.id)
+        assert str(other_category.id) == response.context['filter_form']['category'].value()
+        assert 1 == len(response.context['top5'])
+        assert other_category.name == response.context['top5'][0]['categoria_name']
+
+        response = self.get()
+        assert None == response.context['filter_form']['category'].value()
+        assert 2 == len(response.context['top5'])
+
+        invalid = 'invalid category'
+        response = self.get(category=invalid)
+        assert 400 == response.status_code
+
+    def test_filter_by_category_shoultnt_touch_upper_sections(self):
+        empenhado = 40
+        category = mommy.make('CategoriaContrato',
+            name='Alimentação', slug='alimentacao')
+        mommy.make('ExecucaoContrato', categoria=category,
+                valor_empenhado=empenhado)
+
+        other_empenhado = 2
+        other_category = mommy.make('CategoriaContrato',
+            name='Parcerias', slug='parcerias')
+        mommy.make('ExecucaoContrato', categoria=other_category,
+                valor_empenhado=other_empenhado)
+
+        response = self.get(category=category.id)
+        assert 42 == response.data['big_number']['empenhado']
+        assert 1 == len(response.context['top5'])
+        assert category.name == response.context['top5'][0]['categoria_name']
 
 
 class TestDownloadView(APITestCase):
