@@ -161,10 +161,11 @@ ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH = config(
 ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME = config(
     'ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME', 'orcamento_empenhos_dump.zip')
 categoria_from_to_json = config(
-    'CATEGORIA_FROM_TO_SLUG',
-    ('{"Ações Culturais": "acoes-culturais", "Alimentação": "alimentacao", '
-     '"Construções": "contrucoes", "Parcerias": "parcerias", "Pedagógico": '
-     '"pedagogico", "Reformas e Manutenção": "manutencao", '
+    'CATEGORIA_FROM_TO_SLUG_STR',
+    ('{"Eventos Culturais e Esportivos em CEUs": "acoes-culturais", '
+     '"Alimentação": "alimentacao", '
+     '"Obras": "contrucoes", "Parcerias": "parcerias", "Pedagógico": '
+     '"pedagogico", "Manutenção e Operação de Unidades": "manutencao", '
      '"Serviços Contínuos": "servicos", "Transporte": "transportes", '
      '"Uniforme e Material Escolar": "uniformes", "Outras Aquisições": '
      '"outros"}')
