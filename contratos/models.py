@@ -190,7 +190,7 @@ class EmpenhoSOFCache(models.Model):
         return (
             f'{s.anoEmpenho}.{s.codOrgao}.{s.codProjetoAtividade}.'
             f'{s.codCategoria}.{s.codGrupo}.{cod_modalidade}.'
-            f'{cod_elemento}.{cod_fonte}.{s.codSubElemento}'
+            f'{cod_elemento}.{cod_fonte}'
         )
 
 
