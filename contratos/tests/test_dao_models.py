@@ -1,7 +1,12 @@
+import os
+
+import pytest
+
 from copy import deepcopy
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
+from django.core.files import File
 from model_mommy import mommy
 
 from contratos.dao.models_dao import (
@@ -18,6 +23,7 @@ from contratos.dao.models_dao import (
 from contratos.models import (
     CategoriaContrato,
     CategoriaContratoFromTo,
+    CategoriaContratoFromToSpreadsheet,
     ContratoRaw,
     EmpenhoSOFCache,
     EmpenhoSOFCacheTemp,
@@ -288,6 +294,73 @@ class FornecedoresDAOTestCase(TestCase):
 
 
 class CategoriasContratosFromToDaoTestCase(TestCase):
+
+    @pytest.fixture()
+    def file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_CategoriaContratoFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in CategoriaContratoFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    def test_extract_data(self, file_fixture):
+        ssheet = mommy.make(
+            CategoriaContratoFromToSpreadsheet,
+            spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = CategoriaContratoFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        indexers = ['2018.16.2100.3.3.90.30.00.1',
+                    '2018.16.2100.3.3.90.30.00.14']
+
+        assert fts[0].indexer == indexers[0]
+        assert fts[0].categoria_name == 'categoria'
+        assert fts[0].categoria_desc == 'categoria desc'
+
+        assert fts[1].indexer == indexers[1]
+        assert fts[1].categoria_name == 'outra categoria'
+        assert fts[1].categoria_desc == 'outra categoria desc'
+
+        ssheet.refresh_from_db()
+        assert ssheet.extracted
+        assert indexers == ssheet.added_fromtos
+        assert [] == ssheet.not_added_fromtos
+
+    def test_extract_data_when_indexer_already_exists(self, file_fixture):
+        mommy.make(
+            CategoriaContratoFromTo,
+            indexer='2018.16.2100.3.3.90.30.00.1',
+            categoria_name='old categoria',
+            categoria_desc='old categoria desc')
+
+        ssheet = mommy.make(
+            CategoriaContratoFromToSpreadsheet,
+            spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = CategoriaContratoFromTo.objects.all()
+        assert 2 == len(fts)
+
+        indexers = ['2018.16.2100.3.3.90.30.00.1',
+                    '2018.16.2100.3.3.90.30.00.14']
+
+        assert fts[0].indexer == indexers[0]
+        assert fts[0].categoria_name == 'old categoria'
+        assert fts[0].categoria_desc == 'old categoria desc'
+
+        assert fts[1].indexer == indexers[1]
+        assert fts[1].categoria_name == 'outra categoria'
+        assert fts[1].categoria_desc == 'outra categoria desc'
+
+        ssheet.refresh_from_db()
+        assert ssheet.extracted
+        assert [indexers[1]] == ssheet.added_fromtos
+        assert [indexers[0]] == ssheet.not_added_fromtos
 
     @patch.object(CategoriaContratoFromTo.objects, 'all')
     def test_get_all(self, mock_all):
