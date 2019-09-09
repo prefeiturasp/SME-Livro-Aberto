@@ -388,3 +388,16 @@ class CategoriasContratosDaoTestCase(TestCase):
         ret = dao.get_or_create(**data)
         assert ret == mocked_return
         mock_get_or_create.assert_called_once_with(**data)
+
+    def test_update_with(self):
+        dao = CategoriasContratosDao()
+
+        categoria = mommy.prepare(CategoriaContrato, slug=None,
+                                  _fill_optional=True)
+        categoria.save = Mock()
+
+        slug = "cat_slug"
+
+        dao.update_with(categoria=categoria, slug=slug)
+        assert slug == categoria.slug
+        categoria.save.assert_called_once_with()
