@@ -315,9 +315,9 @@ class CategoriaContratoFromTo(models.Model):
     ones shown on frontend.
     """
     indexer = models.CharField('Indexador', max_length=28, unique=True)
-    categoria_name = models.CharField('Nome da categoria', max_length=30)
-    categoria_desc = models.CharField(
-        'Descrição da categoria', max_length=400)
+    categoria_name = models.CharField('Nome da categoria', max_length=60)
+    categoria_desc = models.TextField(
+        'Descrição da categoria')
 
     class Meta:
         verbose_name = 'De-Para: Contratos Categorias'
