@@ -41,7 +41,8 @@ def serialize_destinations(queryset):
         .values("year__year", "categoria__name", "categoria__desc",
                 "categoria__slug") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
-                  total_liquidado=Sum('valor_liquidado'))
+                  total_liquidado=Sum('valor_liquidado')) \
+        .order_by("categoria__name")
 
     year_list = []
     for cat_data in categorias_sums:
