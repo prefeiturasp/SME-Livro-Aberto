@@ -293,7 +293,7 @@ class FornecedoresDAOTestCase(TestCase):
         mock_get_or_create.assert_called_once_with(**data)
 
 
-class CategoriasContratosFromToDaoTestCase(TestCase):
+class TestCategoriasContratosFromToDao():
 
     @pytest.fixture()
     def file_fixture(self, db):
@@ -315,8 +315,8 @@ class CategoriasContratosFromToDaoTestCase(TestCase):
         fts = CategoriaContratoFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        indexers = ['2018.16.2100.3.3.90.30.00.1',
-                    '2018.16.2100.3.3.90.30.00.14']
+        indexers = ['2018.16.2100.3.3.90.30.00',
+                    '2018.16.2100.3.3.90.30.99']
 
         assert fts[0].indexer == indexers[0]
         assert fts[0].categoria_name == 'categoria'
@@ -334,7 +334,7 @@ class CategoriasContratosFromToDaoTestCase(TestCase):
     def test_extract_data_when_indexer_already_exists(self, file_fixture):
         mommy.make(
             CategoriaContratoFromTo,
-            indexer='2018.16.2100.3.3.90.30.00.1',
+            indexer='2018.16.2100.3.3.90.30.00',
             categoria_name='old categoria',
             categoria_desc='old categoria desc')
 
@@ -346,8 +346,8 @@ class CategoriasContratosFromToDaoTestCase(TestCase):
         fts = CategoriaContratoFromTo.objects.all()
         assert 2 == len(fts)
 
-        indexers = ['2018.16.2100.3.3.90.30.00.1',
-                    '2018.16.2100.3.3.90.30.00.14']
+        indexers = ['2018.16.2100.3.3.90.30.00',
+                    '2018.16.2100.3.3.90.30.99']
 
         assert fts[0].indexer == indexers[0]
         assert fts[0].categoria_name == 'old categoria'

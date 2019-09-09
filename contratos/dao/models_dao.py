@@ -170,8 +170,8 @@ class CategoriasContratosFromToDao:
             if not indexer:
                 row_is_valid = False
                 continue
-            categoria_name = ws['b' + str(row)].value
-            categoria_desc = ws['c' + str(row)].value
+            categoria_name = ws['b' + str(row)].value.strip()
+            categoria_desc = ws['c' + str(row)].value.strip()
 
             cat_ft = CategoriaContratoFromTo()
             cat_ft.indexer = indexer
