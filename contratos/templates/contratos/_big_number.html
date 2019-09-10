@@ -5,17 +5,20 @@
         <p>
         <span class="big-number">
             <strong>
-                R$ {{ big_number | intcomma }}
+                R$ {{ big_number | floatformat:2  }}
             </strong>
         </span>
         foram previstos em contratos para a educação da cidade de São Paulo em
         <em>
-            <select name="year">
-                {% for year in filters.years %}
-                    <option value="{{ year }}"
-                            {% if year == filters.selected_year %}selected{% endif %}
-                            >{{ year }}</option>
+            <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
+                {% localize off %}
+                {% for value, label in filter_form.year.field.choices %}
+                    <option value="{{ value }}"
+                            {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
+
+                    </option>
                 {% endfor %}
+                {% endlocalize %}
             </select>
         </em>
         </p>
@@ -29,14 +32,14 @@
                   style="width: {% widthratio liquidado_percent 1 100 %}%">
                 <div class="description-box">
                     <h3>Foram liquidados</h3>
-                    <p>R${{ liquidado |intcomma }} ({% widthratio liquidado_percent 1 100 %}%)</p>
+                    <p>R${{ liquidado | floatformat:2 }} ({% widthratio liquidado_percent 1 100 %}%)</p>
                 </div>
             </span>
             <span class="value description-parent"
                   style="width: calc(100% - {% widthratio liquidado_percent 1 100 %}%); background-color: transparent">
                 <div class="description-box">
                     <h3>Foram empenhados</h3>
-                    <p>R${{ big_number | intcomma }} (100%)</p>
+                    <p>R${{ big_number | floatformat:2 }} (100%)</p>
                 </div>
             </span>
         </div>

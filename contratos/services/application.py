@@ -41,7 +41,8 @@ def serialize_destinations(queryset):
         .values("year__year", "categoria__name", "categoria__desc",
                 "categoria__slug") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
-                  total_liquidado=Sum('valor_liquidado'))
+                  total_liquidado=Sum('valor_liquidado')) \
+        .order_by("categoria__name")
 
     year_list = []
     for cat_data in categorias_sums:
@@ -64,10 +65,7 @@ def serialize_destinations(queryset):
     return year_list
 
 
-def serialize_top5(queryset, categoria_id=None):
-    if categoria_id:
-        queryset = queryset.filter(categoria_id=categoria_id)
-
+def serialize_top5(queryset):
     top5_contratos = queryset \
         .values("year__year", "cod_contrato", "fornecedor__razao_social",
                 "categoria__name", "categoria__desc", "modalidade__desc",
@@ -94,29 +92,6 @@ def serialize_top5(queryset, categoria_id=None):
 def cast_to_int(value):
     with suppress(TypeError, ValueError):
         return int(value)
-
-
-def serialize_filters(queryset, categoria_id, year):
-    years = ExecucaoContrato.objects.all().values('year__year').distinct() \
-        .order_by('year')
-    categorias = queryset.values('categoria__id', 'categoria__name'). distinct()
-
-    ret = {
-        # TODO: A better solution may be serialize the filter form
-        'selected_year': cast_to_int(year),
-        'selected_categoria': cast_to_int(categoria_id),
-        'years': [year_qs['year__year'] for year_qs in years]
-    }
-
-    categorias_list = []
-    for categoria_qs in categorias:
-        categoria_dict = {
-            'id': categoria_qs['categoria__id'],
-            'name': categoria_qs['categoria__name'],
-        }
-        categorias_list.append(categoria_dict)
-    ret['categorias'] = categorias_list
-    return ret
 
 
 def serialize_date_updated():

@@ -149,3 +149,35 @@ class TestApplyCategoriasContratosFromToUseCase(TestCase):
             fromto.indexer)
         self.m_execucoes_dao.update_with.assert_called_once_with(
             execucao=m_execucao, categoria_id=m_categoria.id)
+
+    def test_apply_fromto_fills_slug_when_category_exists(self):
+        slugs_dict = deepcopy(CATEGORIA_FROM_TO_SLUG)
+        categoria_name, categoria_slug = slugs_dict.popitem()
+        m_categoria = mommy.prepare(
+            CategoriaContrato, name=categoria_name, slug=None,
+            _fill_optional=True)
+        self.m_categorias_dao.get_or_create.return_value = (m_categoria, False)
+
+        m_execucao = mommy.prepare(ExecucaoContrato, categoria=None,
+                                   _fill_optional=True)
+        self.m_execucoes_dao.filter_by_indexer.return_value = [m_execucao]
+
+        fromto = mommy.prepare(
+            CategoriaContratoFromTo, categoria_name=categoria_name,
+            _fill_optional=True)
+        self.uc._apply_fromto(fromto)
+
+        self.m_categorias_dao.get_or_create.assert_called_once_with(
+            name=fromto.categoria_name,
+            defaults={
+                'desc': fromto.categoria_desc,
+                'slug': categoria_slug,
+            })
+        # assert fills slug
+        self.m_categorias_dao.update_with.assert_called_once_with(
+            m_categoria, slug=categoria_slug)
+
+        self.m_execucoes_dao.filter_by_indexer.assert_called_once_with(
+            fromto.indexer)
+        self.m_execucoes_dao.update_with.assert_called_once_with(
+            execucao=m_execucao, categoria_id=m_categoria.id)

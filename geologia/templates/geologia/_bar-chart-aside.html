@@ -8,7 +8,7 @@
       <h3 class="title">{{ year.year }}</h3>
       <small>Orçamento total</small>
       <div class="value">
-        {% if year.total %}R$ {{ year.total|intcomma }}{% else %}-{% endif %}
+        {% if year.total %}R$ {{ year.total }}{% else %}-{% endif %}
       </div>
     </header>
     <div class="body">
@@ -26,7 +26,7 @@
               </span>
               {{ item.percent | percentage | floatformat:2 }}%
             </td>
-            <td>{% if item.value %}R$ {{ item.value|intcomma }}{% else %}-{% endif %}</td>
+            <td>{% if item.value %}R$ {{ item.value }}{% else %}-{% endif %}</td>
           </tr>
           {% endif %}
           {% endfor %}

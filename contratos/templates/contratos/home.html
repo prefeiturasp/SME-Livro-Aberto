@@ -60,23 +60,19 @@
               Visualizar:
           </legend>
           <div class="form-item">
-              <select name="year">
-                {% for year in filters.years %}
-                    <option value="{{ year }}"
-                            {% if year == filters.selected_year %}selected{% endif %}
-                            >{{ year }}</option>
+            <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
+                {% localize off %}
+                {% for value, label in filter_form.year.field.choices %}
+                    <option value="{{ value }}"
+                            {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
+
+                    </option>
                 {% endfor %}
-              </select>
+                {% endlocalize %}
+            </select>
           </div>
           <div class="form-item">
-              <select name="categoria_id">
-                <option value="">Todas as categorias</option>
-                {% for categoria in filters.categorias %}
-                    <option value="{{ categoria.id }}"
-                            {% if categoria.id == filters.selected_categoria %}selected{% endif %}
-                            >{{ categoria.name }}</option>
-                {% endfor %}
-              </select>
+              {{ filter_form.category }}
           </div>
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
@@ -96,7 +92,7 @@
                   <th>{{ contrato.fornecedor }}</th>
                   <td>{{ contrato.categoria_name }}</td>
                   <td>{{ contrato.modalidade }}</td>
-                  <td>R$ {{ contrato.empenhado | intcomma }}</td>
+                  <td>R$ {{ contrato.empenhado | floatformat:2 }}</td>
                   <td>
                       <div class="description-parent">
                           <div class="description-box">
