@@ -170,8 +170,8 @@ class CategoriasContratosFromToDao:
             if not indexer:
                 row_is_valid = False
                 continue
-            categoria_name = ws['b' + str(row)].value
-            categoria_desc = ws['c' + str(row)].value
+            categoria_name = ws['b' + str(row)].value.strip()
+            categoria_desc = ws['c' + str(row)].value.strip()
 
             cat_ft = CategoriaContratoFromTo()
             cat_ft.indexer = indexer
@@ -200,3 +200,8 @@ class CategoriasContratosDao:
 
     def get_or_create(self, **data):
         return self.model.objects.get_or_create(**data)
+
+    def update_with(self, categoria, **data):
+        for field, value in data.items():
+            setattr(categoria, field, value)
+        return categoria.save()

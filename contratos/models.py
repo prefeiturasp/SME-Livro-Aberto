@@ -190,7 +190,7 @@ class EmpenhoSOFCache(models.Model):
         return (
             f'{s.anoEmpenho}.{s.codOrgao}.{s.codProjetoAtividade}.'
             f'{s.codCategoria}.{s.codGrupo}.{cod_modalidade}.'
-            f'{cod_elemento}.{cod_fonte}.{s.codSubElemento}'
+            f'{cod_elemento}.{cod_fonte}'
         )
 
 
@@ -301,8 +301,8 @@ class ModalidadeContrato(models.Model):
 
 
 class CategoriaContrato(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-    desc = models.CharField(max_length=400)
+    name = models.CharField(max_length=60, unique=True)
+    desc = models.TextField()
     slug = models.SlugField(null=True)
 
     def __str__(self):
@@ -315,9 +315,9 @@ class CategoriaContratoFromTo(models.Model):
     ones shown on frontend.
     """
     indexer = models.CharField('Indexador', max_length=28, unique=True)
-    categoria_name = models.CharField('Nome da categoria', max_length=30)
-    categoria_desc = models.CharField(
-        'Descrição da categoria', max_length=400)
+    categoria_name = models.CharField('Nome da categoria', max_length=60)
+    categoria_desc = models.TextField(
+        'Descrição da categoria')
 
     class Meta:
         verbose_name = 'De-Para: Contratos Categorias'

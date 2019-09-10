@@ -13,8 +13,7 @@ class TestEmpenhoSOFCacheModel:
         expected = (
             f'{emp.anoEmpenho}.{emp.codOrgao}.{emp.codProjetoAtividade}.'
             f'{emp.codCategoria}.{emp.codGrupo}.0{emp.codModalidade}.'
-            f'0{emp.codElemento}.0{emp.codFonteRecurso}.'
-            f'{emp.codSubElemento}'
+            f'0{emp.codElemento}.0{emp.codFonteRecurso}'
         )
 
         assert expected == emp.indexer

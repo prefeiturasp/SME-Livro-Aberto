@@ -59,6 +59,10 @@ class HomeView(generics.ListAPIView):
     def get_serializer(self, qs_category_filtered, *args, **kwargs):
         original_qs = self.queryset
         year = self.request.GET.get('year')
+        # TODO: refactor it. couldn't find a way to avoid repeating this code
+        if not year:
+            ordered = qs_category_filtered.order_by('-year__year')
+            year = ordered.values_list('year__year', flat=True).first()
         qs_year_filtered = self.filterset_class(dict(year=year), original_qs).qs
 
         serializer_class = self.get_serializer_class()

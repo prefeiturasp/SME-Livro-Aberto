@@ -42,6 +42,7 @@ class TestHomeView(APITestCase):
         response = self.get()
         assert year == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
+        assert 1 == len(response.data['destinations'])
 
         year = 2018
         empenhado = 10
@@ -49,17 +50,20 @@ class TestHomeView(APITestCase):
         response = self.get()
         assert year == response.context['filter_form']['year'].value()
         assert empenhado == response.data['big_number']['empenhado']
+        assert 1 == len(response.data['destinations'])
 
         self.get_execucao(year=date(year, 1, 1), valor_empenhado=empenhado)
         response = self.get()
         assert year == response.context['filter_form']['year'].value()
         assert 20 == response.data['big_number']['empenhado']
+        assert 1 == len(response.data['destinations'])
 
         empenhado = 17
         self.get_execucao(year=date(1998, 1, 1), valor_empenhado=empenhado)
         response = self.get()
         assert year == response.context['filter_form']['year'].value()
         assert 20 == response.data['big_number']['empenhado']
+        assert 1 == len(response.data['destinations'])
 
     def test_filter_by_year(self):
         year = 1500
