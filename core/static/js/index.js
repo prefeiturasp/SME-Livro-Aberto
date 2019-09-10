@@ -29,10 +29,13 @@ window.addEventListener("DOMContentLoaded", function(){
     function submit(eventHandler){
         let form = eventHandler.currentTarget;
         let input = eventHandler.target;
+        let hash = new URL(form.action).hash
         if(input.name == 'simples')
             window.location = input.dataset.href;
-        else if(input.name != 'empenhado') // TODO: improve this solution
+        else if(input.name != 'empenhado'){ // TODO: improve this solution
+            document.querySelector(hash).scrollIntoView()
             form.submit();
+        }
     }
     for(form of document.forms){
         if(form.go){
