@@ -9,7 +9,18 @@
             </strong>
         </span>
         foram previstos em contratos para a educação da cidade de São Paulo em
-        <em>{{ filter_form.year }}</em>
+        <em>
+            <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
+                {% localize off %}
+                {% for value, label in filter_form.year.field.choices %}
+                    <option value="{{ value }}"
+                            {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
+
+                    </option>
+                {% endfor %}
+                {% endlocalize %}
+            </select>
+        </em>
         </p>
         <input class="submit" type="submit" value="Filtrar" name="go">
     </form>
