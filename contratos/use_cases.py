@@ -99,15 +99,15 @@ class GenerateXlsxFilesUseCase:
             fields_names = [field.name for field in empenhos.model._meta.fields]
             fields_names.pop(0)
             sheet.append(fields_names)
-            # workbook.save(filepath)
 
             paginator = Paginator(empenhos, 5000)
-            for page_num in range(4):
+            for page_num in range(paginator.num_pages):
                 page = paginator.get_page(page_num)
                 empenhos = page.object_list
-                print(f'writing chunk {page_num + 1}/{paginator.num_pages}')
+                print(f'getting chunk {page_num + 1}/{paginator.num_pages}')
                 for empenho in empenhos:
                     empenho_row = [empenho.get(field) for field in fields_names]
                     sheet.append(empenho_row)
+            print('Writing to file')
             workbook.save(filepath)
             print(f'Spreadsheet generated: {filepath}')
