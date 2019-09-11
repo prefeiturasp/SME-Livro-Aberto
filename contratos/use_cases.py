@@ -93,20 +93,21 @@ class GenerateXlsxFilesUseCase:
 
             filename = f'contratos_{year}.xlsx'
             filepath = os.path.join(GENERATED_XLSX_PATH, filename)
-            sheet = self.data_handler.create_sheet(index=0, title=str(year))
+            workbook = self.data_handler.Workbook(write_only=True)
+            sheet = workbook.create_sheet(index=0, title=str(year))
 
             fields_names = [field.name for field in empenhos.model._meta.fields]
             fields_names.pop(0)
             sheet.append(fields_names)
-            self.data_handler.save(filepath)
+            # workbook.save(filepath)
 
             paginator = Paginator(empenhos, 5000)
-            for page_num in range(paginator.num_pages):
+            for page_num in range(4):
                 page = paginator.get_page(page_num)
                 empenhos = page.object_list
                 print(f'writing chunk {page_num + 1}/{paginator.num_pages}')
                 for empenho in empenhos:
                     empenho_row = [empenho.get(field) for field in fields_names]
                     sheet.append(empenho_row)
-                self.data_handler.save(filepath)
+            workbook.save(filepath)
             print(f'Spreadsheet generated: {filepath}')
