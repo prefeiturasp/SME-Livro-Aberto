@@ -1,4 +1,4 @@
-from openpyxl import Workbook
+import openpyxl
 
 from contratos.dao.models_dao import (
     CategoriasContratosDao, CategoriasContratosFromToDao, EmpenhosSOFCacheDao,
@@ -31,5 +31,5 @@ def generate_execucoes_contratos_and_apply_fromto():
     print("Generating xlsx files")
     generate_xlsx_uc = GenerateXlsxFilesUseCase(
         empenhos_dao=EmpenhosSOFCacheDao(),
-        data_handler=Workbook())
+        data_handler=openpyxl)
     generate_xlsx_uc.execute()
