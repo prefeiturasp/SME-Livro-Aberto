@@ -101,7 +101,8 @@ class GenerateXlsxFilesUseCase:
             sheet.append(fields_names)
 
             paginator = Paginator(empenhos, 5000)
-            for page_num in range(paginator.num_pages):
+            for page_num in range(4):
+            # for page_num in range(paginator.num_pages):
                 page = paginator.get_page(page_num)
                 empenhos = page.object_list
                 print(f'getting chunk {page_num + 1}/{paginator.num_pages}')
