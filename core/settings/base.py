@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': config(
-        'DATABASE_URL',
+        'DATABASE_URL2',
         default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
         cast=db_url
     )
@@ -155,6 +155,10 @@ CONTRATOS_RAW_DUMP_DIR_PATH = config(
     'CONTRATOS_RAW_DUMP_DIR_PATH', f'{BASE_DIR}/../contratos/data/')
 CONTRATOS_RAW_DUMP_FILENAME = config(
     'CONTRATOS_RAW_DUMP_FILENAME', 'contratos_raw_dump.zip')
+EXECUCOES_CONTRATOS_DUMP_DIR_PATH = config(
+    'EXECUCOES_CONTRATOS_DUMP_DIR_PATH', f'{BASE_DIR}/../contratos/data/')
+EXECUCOES_CONTRATOS_DUMP_FILENAME = config(
+    'EXECUCOES_CONTRATOS_DUMP_FILENAME', 'execucaocontrato_and_fks_dump.zip')
 ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH = config(
     'ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH',
     f'{BASE_DIR}/../budget_execution/data/')
