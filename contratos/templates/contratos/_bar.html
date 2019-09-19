@@ -6,9 +6,9 @@
       style="width: {% widthratio empenhado total_empenhado 100 %}%">
     <div class="subbar">
         <div class="value"
-             style="width: {% widthratio percent_liquidado 1 100 %}%">
+             style="width: {% widthratio empenhado total_empenhado 100 %}%">
             <div>
-                <strong>{% widthratio percent_liquidado 1 100 %}%</strong> do total
+                <strong>{% widthratio empenhado total_empenhado 100 %}%</strong> do total
             </div>
             <div>
                 <strong>R$ {{ liquidado | floatformat:2 }}</strong> liquidado
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="value"
-             style="width: calc(100% - {% widthratio percent_liquidado 1 100 %}%); background-color: rgba(255, 255, 255, 0.5)">
+             style="width: calc(100% - {% widthratio empenhado total_empenhado 100 %}%); background-color: rgba(255, 255, 255, 0.5)">
         </div>
     </div>
 </span>
