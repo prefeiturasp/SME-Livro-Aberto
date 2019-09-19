@@ -46,7 +46,7 @@
       <div class="bar-parent">
         <div class="bar">
             {% for destination in destinations %}
-              {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado percent_liquidado=destination.percent_liquidado slug=destination.categoria_slug %}
+              {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado slug=destination.categoria_slug %}
             {% endfor %}
         </div>
       </div>
