@@ -188,3 +188,14 @@ class TestSobreView(APITestCase):
     def test_render_correct_template(self):
         response = self.get()
         self.assertTemplateUsed(response, 'contratos/sobre.html')
+
+
+class TestSaibaMaisView(APITestCase):
+
+    def get(self, **kwargs):
+        url = reverse('contratos:saiba_mais')
+        return self.client.get(url, kwargs)
+
+    def test_render_correct_template(self):
+        response = self.get()
+        self.assertTemplateUsed(response, 'contratos/saiba_mais.html')
