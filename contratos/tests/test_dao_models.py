@@ -184,6 +184,16 @@ class EmpenhosFailedRequestsDaoTestCase(TestCase):
         assert ret == 2
         mock_count.assert_called_once_with()
 
+    @patch.object(EmpenhoSOFCacheTemp.objects, 'all')
+    def test_erase_all(self, mock_all):
+        mocked_all_return = Mock()
+        mock_all.return_value = mocked_all_return
+
+        self.dao.erase_all()
+
+        mock_all.assert_called_once_with()
+        mocked_all_return.delete.assert_called_once_with()
+
 
 class ContratoRawDAOTestCase(TestCase):
 
