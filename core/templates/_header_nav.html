@@ -13,11 +13,21 @@
     {% endif %}
     {% if methodology %}
       <li>
-        <a href="{% url methodology%}">
+        <a href="{% url methodology %}">
           <svg viewBox="0 0 320 320" height="32" class="icon">
             <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
           </svg>
           Metodologia
+        </a>
+      </li>
+    {% endif %}
+    {% if more %}
+      <li>
+        <a href="{% url more %}">
+          <svg viewBox="0 0 320 320" height="32" class="icon">
+            <use xlink:href="{% static 'img/icon-info.svg' %}#icon-info"></use>
+          </svg>
+          Sobre
         </a>
       </li>
     {% endif %}
