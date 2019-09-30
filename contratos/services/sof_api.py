@@ -16,6 +16,7 @@ def get_empenhos_for_contratos_from_sof_api():
     empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
 
     empenhos_temp_dao.erase_all()
+    empenhos_failed_requests_dao.erase_all()
 
     print("Fetching empenhos from SOF API and saving to temp table")
     fetch_empenhos_from_sof_and_save_to_temp_table(

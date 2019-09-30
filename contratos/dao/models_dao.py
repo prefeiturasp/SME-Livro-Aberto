@@ -84,6 +84,9 @@ class EmpenhosFailedRequestsDao:
     def delete(self, obj):
         obj.delete()
 
+    def erase_all(self):
+        self.model.objects.all().delete()
+
 
 class ContratosRawDao:
 
