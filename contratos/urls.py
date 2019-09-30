@@ -10,4 +10,5 @@ urlpatterns = [
     path('download/', download_view, name='download'),
     path('sobre/', TemplateView.as_view(template_name='contratos/sobre.html'),
          name='sobre'),
+    path('saiba-mais/', TemplateView.as_view(template_name='contratos/saiba_mais.html'), name='saiba_mais'),
 ]
