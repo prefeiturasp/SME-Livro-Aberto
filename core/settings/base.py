@@ -175,3 +175,13 @@ categoria_from_to_json = config(
      '"outros"}')
 )
 CATEGORIA_FROM_TO_SLUG = json.loads(categoria_from_to_json)
+
+SENTRY_URL = config('SENTRY_URL', None)
+if SENTRY_URL:
+    import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn=SENTRY_URL,
+        integrations=[DjangoIntegration(), CeleryIntegration()]
+    )
