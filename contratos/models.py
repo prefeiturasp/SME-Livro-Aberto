@@ -172,6 +172,9 @@ class EmpenhoSOFCache(models.Model):
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = 'Empenhos SOF Cache'
+
     @property
     def indexer(self):
         cod_modalidade = str(self.codModalidade)
@@ -269,6 +272,31 @@ class EmpenhoSOFCacheTemp(models.Model):
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
 
+    # TODO: test it or make EmpenhoSOFCache.indexer generic for both classes
+    @property
+    def indexer(self):
+        cod_modalidade = str(self.codModalidade)
+        if len(cod_modalidade) < 2:
+            cod_modalidade = '0' + cod_modalidade
+
+        cod_elemento = str(self.codElemento)
+        if len(cod_elemento) < 2:
+            cod_elemento = '0' + cod_elemento
+
+        cod_fonte = str(self.codFonteRecurso)
+        if len(cod_fonte) < 2:
+            cod_fonte = '0' + cod_fonte
+
+        s = self
+        return (
+            f'{s.anoEmpenho}.{s.codOrgao}.{s.codProjetoAtividade}.'
+            f'{s.codCategoria}.{s.codGrupo}.{cod_modalidade}.'
+            f'{cod_elemento}.{cod_fonte}'
+        )
+
+    class Meta:
+        verbose_name_plural = 'Empenhos SOF Cache (Temp table)'
+
 
 class EmpenhoSOFFailedAPIRequest(models.Model):
     cod_contrato = models.IntegerField()
@@ -276,6 +304,14 @@ class EmpenhoSOFFailedAPIRequest(models.Model):
     ano_empenho = models.IntegerField()
     error_code = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Empenhos SOF APi Failed Requests'
+
+    def __str__(self):
+        return (
+            f'codcontrato {self.cod_contrato}: '
+            f'{self.ano_exercicio} - {self.ano_empenho}')
 
 
 class Fornecedor(models.Model):
