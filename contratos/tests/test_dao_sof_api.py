@@ -5,6 +5,7 @@ from django.conf import settings
 
 from freezegun import freeze_time
 
+from contratos.constants import PRODAM_URL
 from contratos.dao import sof_api_dao
 from contratos.dao.models_dao import EmpenhosFailedRequestsDao
 from contratos.tests.fixtures import (
@@ -45,8 +46,7 @@ class EmpenhoDAOTestCase(TestCase):
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = SOF_API_REQUEST_RETURN_DICT
         url = (
-            'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
-            f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'
+            f'{PRODAM_URL}?anoEmpenho={ano_empenho}&mesEmpenho=12'
             f'&anoExercicio={ano_exercicio}'
             f'&codContrato={cod_contrato}&codOrgao=16'
         )
