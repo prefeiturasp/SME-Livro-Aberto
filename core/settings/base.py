@@ -148,6 +148,9 @@ EMPENHADO_DIFFERENCE_PERCENT_LIMIT = config(
     'EMPENHADO_DIFFERENCE_PERCENT_LIMIT', 0.2)
 
 # If you just want to run tests, set `PRODAM_KEY` as empty
+PRODAM_URL = config(
+    'PRODAM_URL',
+    'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v3.0.1/empenhos')  # noqa
 PRODAM_KEY = config('PRODAM_KEY')
 CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT = config(
     'CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT', 0.3)
