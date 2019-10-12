@@ -17,7 +17,11 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=year)
         if data:
-            empenhos_list += data
+            # TODO: changed in new version of sof api. add test.
+            if isinstance(data, list):
+                empenhos_list += data
+            else:
+                empenhos_list.append(data)
     return empenhos_list
 
 
