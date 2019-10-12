@@ -3,6 +3,7 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
+from contratos.constants import PRODAM_URL
 from contratos.dao.models_dao import EmpenhosFailedRequestsDao
 
 
@@ -23,8 +24,7 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
 def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
     empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
     url = (
-        'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/'
-        f'v2.1.0/consultaEmpenhos?anoEmpenho={ano_empenho}&mesEmpenho=12'
+        f'{PRODAM_URL}?anoEmpenho={ano_empenho}&mesEmpenho=12'
         f'&anoExercicio={ano_exercicio}'
         f'&codContrato={cod_contrato}&codOrgao=16'
     )
