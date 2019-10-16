@@ -17,11 +17,8 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
             cod_contrato=cod_contrato, ano_exercicio=ano_exercicio,
             ano_empenho=year)
         if data:
-            # TODO: changed in new version of sof api. add test.
-            if isinstance(data, list):
-                empenhos_list += data
-            else:
-                empenhos_list.append(data)
+            empenhos_list += data
+
     return empenhos_list
 
 
@@ -62,4 +59,8 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
         return None
 
     data = response.json()
-    return data['lstEmpenhos']
+    empenhos = data['lstEmpenhos']
+    # TODO: changed in new version of sof api. add test.
+    if empenhos and not isinstance(empenhos, list):
+        empenhos = [empenhos]
+    return empenhos
