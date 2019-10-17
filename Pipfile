@@ -20,6 +20,7 @@ xlrd = "*"
 drf-renderer-xlsx = "*"
 requests = "*"
 sentry-sdk = "*"
+celery = "*"
 
 [dev-packages]
 ipdb = "*"
