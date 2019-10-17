@@ -172,6 +172,8 @@ class EmpenhoSOFCache(models.Model):
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         verbose_name_plural = 'Empenhos SOF Cache'
 
@@ -271,6 +273,8 @@ class EmpenhoSOFCacheTemp(models.Model):
     valPagoExercicio = models.FloatField(blank=True, null=True)
     valPagoRestos = models.FloatField(blank=True, null=True)
     valTotalEmpenhado = models.FloatField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # TODO: test it or make EmpenhoSOFCache.indexer generic for both classes
     @property
