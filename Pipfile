@@ -19,6 +19,7 @@ pandas = "*"
 xlrd = "*"
 drf-renderer-xlsx = "*"
 requests = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 ipdb = "*"
