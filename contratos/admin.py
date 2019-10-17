@@ -26,13 +26,13 @@ class CategoriaContratoAdmin(admin.ModelAdmin):
 @admin.register(EmpenhoSOFCache)
 class EmpenhoSOFCacheAdmin(admin.ModelAdmin):
     list_display = ('indexer', 'codContrato', 'anoExercicioContrato',
-                    'anoEmpenho')
+                    'anoEmpenho', 'created_at')
 
 
 @admin.register(EmpenhoSOFCacheTemp)
 class EmpenhoSOFCacheTempAdmin(admin.ModelAdmin):
     list_display = ('indexer', 'codContrato', 'anoExercicioContrato',
-                    'anoEmpenho')
+                    'anoEmpenho', 'created_at')
 
 
 @admin.register(EmpenhoSOFFailedAPIRequest)
