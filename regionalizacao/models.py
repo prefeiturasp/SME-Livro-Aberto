@@ -39,11 +39,21 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
         verbose_name_plural = 'Planilhas PTRF'
 
 
+class PtrfFromTo(models.Model):
+    codesc = models.IntegerField(unique=True)
+    vlrepasse = models.IntegerField()
+
+
 class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
 
     class Meta:
         verbose_name = 'Planilha Distrito-Zona'
         verbose_name_plural = 'Planilhas Distrito-Zona'
+
+
+class DistritoZonaFromTo(models.Model):
+    coddist = models.IntegerField(unique=True)
+    zona = models.CharField(max_length=10)
 
 
 class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
@@ -53,8 +63,22 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name_plural = 'Planilhas Etapa-TipoEscola'
 
 
+class EtapaTipoEscolaFromTo(models.Model):
+    tipoesc = models.CharField(max_length=10)
+    desctipoesc = models.CharField(max_length=100)
+    etapa = models.CharField(max_length=20)
+
+
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
         verbose_name_plural = 'Planilhas Unidade-Recursos'
+
+
+class UnidadeRecursosFromTo(models.Model):
+    codesc = models.IntegerField(unique=True)
+    grupo = models.CharField(max_length=30)
+    subgrupo = models.CharField(max_length=30, null=True, blank=True)
+    valor = models.IntegerField()
+    label = models.CharField(max_length=20)
