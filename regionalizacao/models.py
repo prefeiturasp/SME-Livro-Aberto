@@ -2,6 +2,18 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
+class Escola(models.Model):
+    codesc = models.IntegerField(unique=True)
+    nomesc = models.CharField(max_length=120)
+    endereco = models.CharField(max_length=200)
+    numero = models.IntegerField()
+    bairro = models.CharField(max_length=100)
+    cep = models.IntegerField()
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    total_vagas = models.IntegerField()
+
+
 class FromToSpreadsheet(models.Model):
     spreadsheet = models.FileField(
         'Planilha', upload_to='regionalizacao/fromto_spreadsheets')
