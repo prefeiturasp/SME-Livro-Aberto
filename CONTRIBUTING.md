@@ -12,6 +12,7 @@ DEBUG=True
 ALLOWED_HOSTS='*'
 STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage'
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/livro-aberto
+PRODAM_KEY=your-key-here-without-quotes>
 ```
 
 Finally, run migrations and start the server:
