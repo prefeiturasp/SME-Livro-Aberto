@@ -47,16 +47,9 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
         verbose_name_plural = 'Planilhas PTRF'
 
     def extract_data(self):
-        if self.extracted:
-            return
-
-        from regionalizacao import services
-
-        added, not_added = services.extract_ptrf_spreadsheet(self)
-        self.added_fromtos = added
-        self.not_added_fromtos = not_added
-        self.extracted = True
-        self.save()
+        from regionalizacao.dao.models_dao import PtrfFromToDao
+        dao = PtrfFromToDao()
+        dao.extract_spreadsheet(self)
 
 
 class PtrfFromTo(models.Model):

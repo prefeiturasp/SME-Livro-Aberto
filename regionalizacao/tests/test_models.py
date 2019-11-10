@@ -1,11 +1,12 @@
 import pytest
 
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from model_mommy import mommy
 
 from regionalizacao import services
+from regionalizacao.dao import models_dao
 from regionalizacao.models import (
     DistritoZonaFromToSpreadsheet,
     PtrfFromToSpreadsheet,
@@ -25,15 +26,14 @@ class TestPtrfFromToSpreadsheet(TestCase):
         mommy.make(PtrfFromToSpreadsheet, extracted=True)
         assert 0 == mocked_extract.call_count
 
-    @patch.object(services, 'extract_ptrf_spreadsheet')
-    def test_extract_data_calls_extract_service(self, mock_extract):
-        mock_extract.return_value = (['added'], ['not_added'])
+    @patch.object(models_dao, 'PtrfFromToDao')
+    def test_extract_data_calls_extract_service(self, MockDao):
+        mocked_dao = Mock()
+        MockDao.return_value = mocked_dao
+
         sheet = mommy.make(PtrfFromToSpreadsheet, extracted=False)
 
-        sheet.refresh_from_db()
-        assert sheet.added_fromtos == ['added']
-        assert sheet.not_added_fromtos == ['not_added']
-        assert sheet.extracted is True
+        mocked_dao.extract_spreadsheet.assert_called_once_with(sheet)
 
 
 @pytest.mark.django_db
