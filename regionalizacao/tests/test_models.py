@@ -10,7 +10,7 @@ from regionalizacao.models import PtrfFromToSpreadsheet
 
 
 @pytest.mark.django_db
-class TestFromToSpreadsheetAbstractModel(TestCase):
+class TestPtrfFromToSpreadsheet(TestCase):
 
     @patch.object(PtrfFromToSpreadsheet, 'extract_data')
     def test_calls_extract_data_on_save(self, mocked_extract):
@@ -23,5 +23,11 @@ class TestFromToSpreadsheetAbstractModel(TestCase):
         assert 0 == mocked_extract.call_count
 
     @patch.object(services, 'extract_ptrf_spreadsheet')
-    def test_extract_data(self):
-        pass
+    def test_extract_data_calls_extract_service(self, mock_extract):
+        mock_extract.return_value = (['added'], ['not_added'])
+        sheet = mommy.make(PtrfFromToSpreadsheet, extracted=False)
+
+        sheet.refresh_from_db()
+        assert sheet.added_fromtos == ['added']
+        assert sheet.not_added_fromtos == ['not_added']
+        assert sheet.extracted is True

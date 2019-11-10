@@ -50,6 +50,15 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
         if self.extracted:
             return
 
+        from regionalizacao import services
+
+        added, not_added = services.extract_ptrf_spreadsheet(self)
+        self.added_fromtos = added
+        self.not_added_fromtos = not_added
+        self.extracted = True
+        self.save()
+
+
 class PtrfFromTo(models.Model):
     codesc = models.IntegerField(unique=True)
     vlrepasse = models.IntegerField()
