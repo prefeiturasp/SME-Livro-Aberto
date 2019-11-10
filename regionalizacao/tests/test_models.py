@@ -6,7 +6,10 @@ from unittest.mock import patch
 from model_mommy import mommy
 
 from regionalizacao import services
-from regionalizacao.models import PtrfFromToSpreadsheet
+from regionalizacao.models import (
+    DistritoZonaFromToSpreadsheet,
+    PtrfFromToSpreadsheet,
+)
 
 
 @pytest.mark.django_db
@@ -26,6 +29,30 @@ class TestPtrfFromToSpreadsheet(TestCase):
     def test_extract_data_calls_extract_service(self, mock_extract):
         mock_extract.return_value = (['added'], ['not_added'])
         sheet = mommy.make(PtrfFromToSpreadsheet, extracted=False)
+
+        sheet.refresh_from_db()
+        assert sheet.added_fromtos == ['added']
+        assert sheet.not_added_fromtos == ['not_added']
+        assert sheet.extracted is True
+
+
+@pytest.mark.django_db
+class TestDistritoZonaFromToSpreadsheet(TestCase):
+
+    @patch.object(DistritoZonaFromToSpreadsheet, 'extract_data')
+    def test_calls_extract_data_on_save(self, mocked_extract):
+        mommy.make(DistritoZonaFromToSpreadsheet, extracted=False)
+        mocked_extract.assert_called_once_with()
+
+    @patch.object(DistritoZonaFromToSpreadsheet, 'extract_data')
+    def test_doesnt_call_extract_data_extracted_is_true(self, mocked_extract):
+        mommy.make(DistritoZonaFromToSpreadsheet, extracted=True)
+        assert 0 == mocked_extract.call_count
+
+    @patch.object(services, 'extract_distrito_zona_spreadsheet')
+    def test_extract_data_calls_extract_service(self, mock_extract):
+        mock_extract.return_value = (['added'], ['not_added'])
+        sheet = mommy.make(DistritoZonaFromToSpreadsheet, extracted=False)
 
         sheet.refresh_from_db()
         assert sheet.added_fromtos == ['added']
