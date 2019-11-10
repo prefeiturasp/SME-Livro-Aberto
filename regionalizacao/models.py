@@ -31,6 +31,14 @@ class FromToSpreadsheet(models.Model):
     def __str__(self):
         return f'{self.spreadsheet.name.split("/")[-1]}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
+
+    def extract_data(self):
+        return NotImplemented
+
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
 
@@ -38,6 +46,9 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha PTRF'
         verbose_name_plural = 'Planilhas PTRF'
 
+    def extract_data(self):
+        if self.extracted:
+            return
 
 class PtrfFromTo(models.Model):
     codesc = models.IntegerField(unique=True)
