@@ -56,6 +56,13 @@ class PtrfFromTo(models.Model):
     codesc = models.IntegerField(unique=True)
     vlrepasse = models.FloatField()
 
+    class Meta:
+        verbose_name = 'De-Para: PTRF'
+        verbose_name_plural = 'De-Para: PTRF'
+
+    def __str__(self):
+        return f'{self.codesc} - {self.vlrepasse}'
+
 
 class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
 
@@ -72,6 +79,13 @@ class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
 class DistritoZonaFromTo(models.Model):
     coddist = models.IntegerField(unique=True)
     zona = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = 'De-Para: Distrito-Zona'
+        verbose_name_plural = 'De-Para: Distrito-Zona'
+
+    def __str__(self):
+        return f'{self.coddist} - {self.zona}'
 
 
 class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
@@ -95,6 +109,13 @@ class EtapaTipoEscolaFromTo(models.Model):
     desctipoesc = models.CharField(max_length=100)
     etapa = models.CharField(max_length=20)
 
+    class Meta:
+        verbose_name = 'De-Para: Etapa-Tipo Escola'
+        verbose_name_plural = 'De-Para: Etapa-Tipo Escola'
+
+    def __str__(self):
+        return f'{self.tipoesc} - {self.etapa}'
+
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
@@ -116,3 +137,10 @@ class UnidadeRecursosFromTo(models.Model):
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
     valor = models.FloatField()
     label = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name = 'De-Para: Unidade-Recursos'
+        verbose_name_plural = 'De-Para: Unidade-Recursos'
+
+    def __str__(self):
+        return f'{self.codesc} - {self.grupo} - {self.subgrupo}'
