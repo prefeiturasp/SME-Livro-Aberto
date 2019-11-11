@@ -39,3 +39,7 @@ class PtrfFromToDao:
         sheet.extracted = True
         sheet.save()
         return added, not_added
+
+
+class DistritoZonaFromToDao:
+    pass
