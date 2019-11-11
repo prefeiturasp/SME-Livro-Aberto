@@ -1,5 +1,6 @@
-from django.db import IntegrityError, transaction
+from collections import namedtuple
 
+from django.db import IntegrityError, transaction
 from openpyxl import load_workbook
 
 from regionalizacao.models import (
@@ -8,7 +9,11 @@ from regionalizacao.models import (
 )
 
 
-class PtrfFromToDao:
+SheetField = namedtuple('SheetField', ['name', 'column'])
+
+
+class FromToDao:
+
     def extract_spreadsheet(self, sheet):
         filepath = sheet.spreadsheet.path
         wb = load_workbook(filepath)
@@ -19,21 +24,21 @@ class PtrfFromToDao:
         added = []
         not_added = []
         while row_is_valid:
-            codesc = ws['a' + str(row)].value
-            if not codesc:
+            ft_key = ws[self.fields[0].column + str(row)].value
+            if not ft_key:
                 row_is_valid = False
                 continue
-            vlrepasse = ws['d' + str(row)].value
 
-            ft = PtrfFromTo()
-            ft.codesc = codesc
-            ft.vlrepasse = vlrepasse
+            ft = self.model()
+            for field in self.fields:
+                value = ws[field.column + str(row)].value
+                setattr(ft, field.name, value)
             try:
                 with transaction.atomic():
                     ft.save()
-                added.append(ft.codesc)
+                added.append(ft_key)
             except IntegrityError:
-                not_added.append(ft.codesc)
+                not_added.append(ft_key)
 
             row += 1
 
@@ -44,37 +49,21 @@ class PtrfFromToDao:
         return added, not_added
 
 
-class DistritoZonaFromToDao:
-    def extract_spreadsheet(self, sheet):
-        filepath = sheet.spreadsheet.path
-        wb = load_workbook(filepath)
-        ws = wb.worksheets[0]
+class PtrfFromToDao(FromToDao):
 
-        row = 2
-        row_is_valid = True
-        added = []
-        not_added = []
-        while row_is_valid:
-            coddist = ws['a' + str(row)].value
-            if not coddist:
-                row_is_valid = False
-                continue
-            zona = ws['c' + str(row)].value
+    def __init__(self):
+        self.model = PtrfFromTo
+        self.fields = [
+            SheetField('codesc', 'a'),
+            SheetField('vlrepasse', 'd'),
+        ]
 
-            ft = DistritoZonaFromTo()
-            ft.coddist = coddist
-            ft.zona = zona
-            try:
-                with transaction.atomic():
-                    ft.save()
-                added.append(ft.coddist)
-            except IntegrityError:
-                not_added.append(ft.coddist)
 
-            row += 1
+class DistritoZonaFromToDao(FromToDao):
 
-        sheet.added_fromtos = added
-        sheet.not_added_fromtos = not_added
-        sheet.extracted = True
-        sheet.save()
-        return added, not_added
+    def __init__(self):
+        self.model = DistritoZonaFromTo
+        self.fields = [
+            SheetField('coddist', 'a'),
+            SheetField('zona', 'c'),
+        ]
