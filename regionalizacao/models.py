@@ -54,7 +54,7 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
 
 class PtrfFromTo(models.Model):
     codesc = models.IntegerField(unique=True)
-    vlrepasse = models.IntegerField()
+    vlrepasse = models.FloatField()
 
 
 class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
