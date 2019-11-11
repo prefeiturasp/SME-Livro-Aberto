@@ -107,5 +107,5 @@ class UnidadeRecursosFromTo(models.Model):
     codesc = models.IntegerField(unique=True)
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
-    valor = models.IntegerField()
+    valor = models.FloatField()
     label = models.CharField(max_length=20)
