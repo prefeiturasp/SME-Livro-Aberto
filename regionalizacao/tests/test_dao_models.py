@@ -10,6 +10,8 @@ from regionalizacao.models import (
     PtrfFromToSpreadsheet,
     DistritoZonaFromTo,
     DistritoZonaFromToSpreadsheet,
+    EtapaTipoEscolaFromTo,
+    EtapaTipoEscolaFromToSpreadsheet,
 )
 
 
@@ -80,4 +82,41 @@ class TestDistritoZonaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert coddists == sheet.added_fromtos
+        assert [] == sheet.not_added_fromtos
+
+
+class TestEtapaTipoEscolaFromToDao:
+
+    @pytest.fixture()
+    def file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_EtapaTipoEscolaFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in EtapaTipoEscolaFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    def test_extract_spreadsheet(self, file_fixture):
+        sheet = mommy.make(
+            EtapaTipoEscolaFromToSpreadsheet, spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = EtapaTipoEscolaFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        tipoescs = ['CCI/CIPS', 'CEI DIRET']
+
+        assert fts[0].tipoesc == tipoescs[0]
+        assert fts[0].desctipoesc == 'desc1'
+        assert fts[0].etapa == 'Infantil'
+
+        assert fts[1].tipoesc == tipoescs[1]
+        assert fts[1].desctipoesc == 'desc2'
+        assert fts[1].etapa == 'Infantil tb'
+
+        sheet.refresh_from_db()
+        assert sheet.extracted is True
+        assert tipoescs == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos

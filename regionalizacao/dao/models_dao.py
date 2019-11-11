@@ -5,6 +5,7 @@ from openpyxl import load_workbook
 
 from regionalizacao.models import (
     DistritoZonaFromTo,
+    EtapaTipoEscolaFromTo,
     PtrfFromTo,
 )
 
@@ -66,4 +67,15 @@ class DistritoZonaFromToDao(FromToDao):
         self.fields = [
             SheetField('coddist', 'a'),
             SheetField('zona', 'c'),
+        ]
+
+
+class EtapaTipoEscolaFromToDao(FromToDao):
+
+    def __init__(self):
+        self.model = EtapaTipoEscolaFromTo
+        self.fields = [
+            SheetField('tipoesc', 'a'),
+            SheetField('desctipoesc', 'b'),
+            SheetField('etapa', 'c'),
         ]

@@ -84,6 +84,11 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Etapa-TipoEscola'
         verbose_name_plural = 'Planilhas Etapa-TipoEscola'
 
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import EtapaTipoEscolaFromToDao
+        dao = EtapaTipoEscolaFromToDao()
+        dao.extract_spreadsheet(self)
+
 
 class EtapaTipoEscolaFromTo(models.Model):
     tipoesc = models.CharField(max_length=10)
