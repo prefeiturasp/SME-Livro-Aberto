@@ -102,6 +102,11 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Unidade-Recursos'
         verbose_name_plural = 'Planilhas Unidade-Recursos'
 
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import UnidadeRecursosFromToDao
+        dao = UnidadeRecursosFromToDao()
+        dao.extract_spreadsheet(self)
+
 
 class UnidadeRecursosFromTo(models.Model):
     # TODO: What should be unique? Is it possible to have the same

@@ -12,6 +12,8 @@ from regionalizacao.models import (
     DistritoZonaFromToSpreadsheet,
     EtapaTipoEscolaFromTo,
     EtapaTipoEscolaFromToSpreadsheet,
+    UnidadeRecursosFromTo,
+    UnidadeRecursosFromToSpreadsheet,
 )
 
 
@@ -119,4 +121,45 @@ class TestEtapaTipoEscolaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert tipoescs == sheet.added_fromtos
+        assert [] == sheet.not_added_fromtos
+
+
+class TestUnidadeRecursosFromToDao:
+
+    @pytest.fixture()
+    def file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_UnidadeRecursosFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in UnidadeRecursosFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    def test_extract_spreadsheet(self, file_fixture):
+        sheet = mommy.make(
+            UnidadeRecursosFromToSpreadsheet, spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = UnidadeRecursosFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        codescs = [400415, 400415]
+
+        assert fts[0].codesc == codescs[0]
+        assert fts[0].grupo == 'Repasse'
+        assert fts[0].subgrupo == 'IPTU'
+        assert fts[0].valor == 1000
+        assert fts[0].label == 'R$'
+
+        assert fts[1].codesc == codescs[1]
+        assert fts[1].grupo == 'Repasse'
+        assert fts[1].subgrupo == 'Vagas Contratadas'
+        assert fts[1].valor == 130
+        assert fts[1].label == 'Unidades'
+
+        sheet.refresh_from_db()
+        assert sheet.extracted is True
+        assert codescs == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos

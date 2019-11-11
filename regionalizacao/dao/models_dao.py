@@ -7,6 +7,7 @@ from regionalizacao.models import (
     DistritoZonaFromTo,
     EtapaTipoEscolaFromTo,
     PtrfFromTo,
+    UnidadeRecursosFromTo,
 )
 
 
@@ -78,4 +79,17 @@ class EtapaTipoEscolaFromToDao(FromToDao):
             SheetField('tipoesc', 'a'),
             SheetField('desctipoesc', 'b'),
             SheetField('etapa', 'c'),
+        ]
+
+
+class UnidadeRecursosFromToDao(FromToDao):
+
+    def __init__(self):
+        self.model = UnidadeRecursosFromTo
+        self.fields = [
+            SheetField('codesc', 'a'),
+            SheetField('grupo', 'b'),
+            SheetField('subgrupo', 'c'),
+            SheetField('valor', 'd'),
+            SheetField('label', 'e'),
         ]
