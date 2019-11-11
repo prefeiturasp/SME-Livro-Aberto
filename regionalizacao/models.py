@@ -104,7 +104,9 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
 
 class UnidadeRecursosFromTo(models.Model):
-    codesc = models.IntegerField(unique=True)
+    # TODO: What should be unique? Is it possible to have the same
+    # codesc+grupo+subgrupo?
+    codesc = models.IntegerField()
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
     valor = models.FloatField()
