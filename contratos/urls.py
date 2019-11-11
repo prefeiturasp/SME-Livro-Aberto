@@ -12,6 +12,6 @@ urlpatterns = [
          name='sobre'),
     path('saiba-mais/', TemplateView.as_view(template_name='contratos/saiba_mais.html'), name='saiba_mais'),
     path('metodologia', TemplateView.as_view(template_name='contratos/metodologia.html'), name='metodologia'),
-    path('tutorial/', TemplateView.as_view(template_name='geologia/tutorial.html'), name='tutorial'),
+    path('tutorial/', TemplateView.as_view(template_name='contratos/tutorial.html'), name='tutorial'),
 
 ]

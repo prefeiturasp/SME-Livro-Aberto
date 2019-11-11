@@ -1,0 +1,125 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Mosaico{% endblock %}
+
+{%block head %}
+<link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+
+{% endblock %}
+
+{%block header %}
+  <h1>Contrato Social</h1>
+  <p>Execução de contratos da Educação em São Paulo</p>
+  {% include '_header_nav.html' with about='contratos:sobre'%}
+{% endblock %}
+
+{%block sections %}
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                <h1>So<br />bre</h1>
+                <p>
+                O objetivo da ferramenta Contratos é mostrar, de forma interativa e simplificada, a execução de contratos relacionados à Educação na cidade de São Paulo, associando, a cada contrato, os gastos realizados; apresentando e separando por categorias as informações sobre objeto, fornecedores e vigência dos contratos, e permitindo download de dados abertos.
+                </p>
+            </div>
+            <ul>
+                <li><a href="{% url 'contratos:sobre' %}">Sobre</a></li>
+                <li class="active"><a href="{% url 'contratos:tutorial' %}">Tutorial</a></li>
+            </ul>
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="tutorial">
+
+
+                <div class="metodologia_mosaico verde">
+                    <h2>Contrato Social <span>❯ Obtenção das íntegras no Portal da Transparência</span></h2>
+                    <p>
+                    O Portal da Transparência, disponível neste link, pode ser utilizado para consultar a íntegra de um contrato efetuado pela prefeitura. Na página principal do portal, selecione “Contratos, convênios e parcerias” (Figura 1):
+                    </p>
+                    <p>
+                        <strong>Figura 1:</strong>
+                        Página principal do Portal da Transparência
+                    </p>
+                    <img src="{% static 'contratos/img/initial-portal-transparencia.png' %}" alt="Figura 1" width="100%">
+                    <p>
+                    Para obter todos os contratos da Secretaria de Educação na página de pesquisa, selecione “Órgãos”, “Educação” e o ano desejado nas opções de busca, conforme indicado a seguir (Figura 2). Ao clicar na lupa, será apresentada a lista dos contratos da Secretaria para o ano desejado. Cada contrato listado possui um link para download da íntegra na coluna à esquerda, e a lista completa dos contratos pode ser exportada pelos ícones ao lado da busca.
+                    </p>
+                    <p>
+                        <strong>Figura 2:</strong>
+                        Página de busca de contratos no Portal da Transparência
+                    </p>
+                    <img src="{% static 'contratos/img/search-portal-transparencia.png' %}" alt="Figura 2" width="100%">
+    
+                    <p>
+                    Caso deseje consultar um contrato específico nesse portal, é possível escolher “Contrato” nas opções de busca e, então, inserir o código identificador. É possível, também, realizar buscas por objeto, modalidade, valor e fornecedor.
+                    </p>
+                    <p>
+                    <strong>Nota:</strong> As íntegras dos contratos estão disponíveis apenas para os contratos publicados a partir de janeiro de 2014​.
+                    </p>
+                    <h2>Contratos <span>❯ Obtenção de informações sobre o processo de compra no portal E-negócios</span></h2>
+                    <p>
+                    O sistema
+                    <a href="http://e-negocioscidadesp.prefeitura.sp.gov.br/BuscaLicitacao.aspx">E-Negócios</a>
+                    pode ser utilizado para consultar as etapas de contratação, o que não é disponibilizado no Portal da Transparência. Porém, o portal não contém a íntegra dos contratos. Entrando na busca, é apresentado um formulário de busca completa que retorna informações sobre o processo de compra desejado. Para efetuar buscas relacionadas à ferramenta Contratos, são necessários somente os campos 4, 6 e 8. Um exemplo de busca está apresentado a seguir (Figura 3). O código do processo (que pode ser obtido a partir do download da planilha de dados na ferramenta Contratos) é inserido no campo 5 “Número do processo”, e a data de início de “Abertura da Sessão” recomendada, nesse caso, é 01/01/2017. Caso o status do processo não seja conhecido, é possível realizar outras tentativas com as três opções do campo 4.
+                    </p>
+                    <p>
+                        <strong>Figura 3:</strong>
+                        Exemplo de busca no sistema E-Negócios
+                    </p>
+                    <img src="{% static 'contratos/img/search-enegocios.png' %}" alt="Figura 3" width="100%">
+                    <p>
+                    A busca mostrará todos os processos que se adequarem aos critérios. Ao encontrar o item desejado, o link do “Número da Publicação” abre a página de detalhes, em que é possível acessar documentos relativos ao processo de compra, como, por exemplo, o edital de abertura da licitação (Figura 8).
+                    </p>
+                    <p>
+                        <strong>Figura 4:</strong>
+                        Exemplo de resultado de busca feita no sistema E-Negócios
+                    </p>
+                    <img src="{% static 'contratos/img/search-result-enegocios-1.png' %}" alt="Figura 4" width="100%">
+                    <img src="{% static 'contratos/img/search-result-enegocios-2.png' %}" alt="Figura 4" width="100%">
+                    <h2>Não encontrou o que procurava?</h2>
+                    <p>
+                        Faça uma solicitação com base na lei de acesso à informação!
+                    </p>
+                    <h3>Como?</h3>
+                    <p>
+                    <strong>*Texto fornecido por:</strong>
+                    <a href="http://transparencia.prefeitura.sp.gov.br/acesso-a-informacao/Paginas/Como-pedir-uma-informacao.aspx">Transparência Prefeitura SP</a>
+                    </p>
+                    <p>
+                    1. Acesse o e-SIC (Sistema Eletrônico do Serviço de Informações ao Cidadão):
+                    </p>
+                    <p>
+                    <strong>
+                        <a href="http://esic.prefeitura.sp.gov.br">http://esic.prefeitura.sp.gov.br</a>
+                    </strong>
+                    </p>
+                    <img src="{% static 'contratos/img/esic-login.png' %}" alt="Figura 6" width="100%">
+                    <p>
+                    2. No e-SIC, clique em “Cadastre-se” para realizar o seu cadastro no sistema. Na própria tela de cadastro, você escolhe o seu nome de usuário e a sua senha de acesso.
+                    </p>
+                    <img src="{% static 'contratos/img/esic-dados-cadastrais.png' %}" alt="Figura 6" width="100%">
+                    <p>
+                    3. Acesse o sistema com seu nome de usuário e senha.
+                    </p>
+                    <p>
+                    4. Clique em “Registrar Pedido” e preencha o formulário de solicitação de pedido. Atenção: antes de realizar o pedido, leia atentamente as dicas para o pedido e conheça os procedimentos que devem ser adotados para fazer a sua solicitação.
+                    </p>
+                    <img src="{% static 'contratos/img/esic-menu.png' %}" alt="Figura 5" width="100%">
+                    <p>
+                    5. O e-SIC disponibilizará um número de protocolo e, também, o enviará por e-mail. Guarde o seu número de protocolo, pois ele é o comprovante do cadastro da solicitação via sistema.
+                    </p>
+    
+                </div>
+           
+            </div>            
+        </div>
+    </div>
+{% endblock %}
