@@ -1,0 +1,67 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Contrato Social{% endblock %}
+
+{%block head %}
+  <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
+{% endblock %}
+
+{%block header %}
+  <h1>Contrato Social</h1>
+  <p>Execução de contratos da Educação em São Paulo</p>
+  {% include '_header_nav.html' with about='contratos:sobre'%}
+{% endblock %}
+
+{%block sections %}
+    <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card sobre">
+                <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                <h1>Meto<br/>dolo<br/>gia</h1>
+                <p>Os dados foram retirados da API do SOF (Sistema de Execução Orçamentária) da Prefeitura de São Paulo e da base de dados de execução orçamentária disponibilizada pela Secretaria de Fazenda da Prefeitura de São Paulo.</p>
+            </div>
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+
+            <div class="metodologia_mosaico">
+                <div class="txt verde">
+                    <h2>Metodologia <span>❯ Obtenção das íntegras no Portal da Transparência</span></h2>
+
+                    <p>
+                        O processo de compras e contratações públicas possui várias etapas que devem ser seguidas até chegar na assinatura do termo de contrato que sela o compromisso entre a prefeitura municipal de São Paulo e o fornecedor.
+                        </p>
+    
+                        <p>
+                        Essas etapas são, no mínimo:
+                            <p><b class="color">1)</b> abertura do processo, </p>
+                            <p><b class="color">2)</b> publicação do edital, </p>
+                                <p><b class="color">3)</b> resultado da licitação (ata de sessão pública) e, por fim, </p>
+                                    <p><b class="color">4)</b> contratação.</p>
+                        </p>
+                        <p>
+                        Para encontrar mais informações sobre as etapas listadas, acesse o portal
+                        <a href="http://e-negocioscidadesp.prefeitura.sp.gov.br/BuscaLicitacao.aspx">E-NegóciosCidadeSP.</a>
+                        Nesse link, estão disponíveis o edital na íntegra e, também, o compilado de publicações feitas no Diário Oficial da União para cada processo licitatório. A seguir, apresentamos um tutorial de como utilizar informações obtidas na ferramenta Contrato Social para localizar um determinado contrato no portal E-Negócios.
+                        </p>
+                        <p>
+                        Apresentamos, também, um tutorial para obtenção das íntegras de contratos, bem como outros documentos, tais como nota de empenho, carta-contrato, etc. a partir do Portal da Transparência da prefeitura de São Paulo.
+                        </p>
+                        <p>
+                        *Texto fornecido por: <a href="http://transparencia.prefeitura.sp.gov.br/contas/Paginas/Contratos-v2.aspx">Portal da Transparência</a>.
+                        </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

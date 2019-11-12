@@ -25,7 +25,8 @@
 {%block header %}
     <h1>Contrato Social</h1>
     <p>Execução de Contratos da Educação em São Paulo</p>
-    {% include '_header_nav.html' with about='contratos:sobre' %}
+    {% include '_header_nav.html' with methodology='contratos:metodologia'%}
+
 {% endblock %}
 
 {%block sections %}
@@ -39,9 +40,13 @@
                     O objetivo da ferramenta Contratos é mostrar, de forma interativa e simplificada, a execução de contratos relacionados à Educação na cidade de São Paulo, associando, a cada contrato, os gastos realizados; apresentando e separando por categorias as informações sobre objeto, fornecedores e vigência dos contratos, e permitindo download de dados abertos.
                     </p>
                 </div>
+                <ul>
+                    <li class="active"><a href="{% url 'contratos:sobre' %}">Sobre</a></li>
+                    <li><a href="{% url 'contratos:tutorial' %}">Tutorial</a></li>
+                </ul>
             </div>
             <div class="main verde txt">
-                <h2>Sobre <span>❯ Contratos</span></h2>
+                <h2>Sobre <span>❯ A ferramenta Contrato Social</span></h2>
                 <p>A ferramenta permite visualizar os <strong>contratos</strong> da Secretaria Municipal de Educação de São Paulo e a sua execução por meio da análise dos <strong>empenhos vinculados</strong>.
                 </p>
                 <p>
