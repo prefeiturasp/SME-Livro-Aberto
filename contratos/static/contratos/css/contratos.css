@@ -39,7 +39,7 @@ body > header {
 
 #total footer p{
   align-self: end;
-  max-width: 35rem;
+  /*max-width: 35rem;*/
   color: #7b858d;
   font-family: 'Ubuntu';
 }
