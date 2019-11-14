@@ -67,7 +67,7 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
             m_fornecedor, True)
 
         empenho = mommy.prepare(EmpenhoSOFCache, anoEmpenho=2019,
-                                _fill_optional=True)
+                                _fill_optional=True, id=1)
 
         self.uc._create_execucao_by_empenho(empenho)
 
@@ -88,6 +88,7 @@ class TestGenerateExecucoesContratosUseCase(TestCase):
             "modalidade_id": m_modalidade.id,
             "objeto_contrato_id": m_objeto.id,
             "fornecedor_id": m_fornecedor.id,
+            "empenho_id": empenho.id,
         }
 
         self.m_execucoes_dao.create.assert_called_once_with(

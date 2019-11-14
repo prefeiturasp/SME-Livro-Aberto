@@ -28,6 +28,10 @@ class ExecucaoContrato(models.Model):
     categoria = models.ForeignKey("CategoriaContrato", null=True,
                                   on_delete=models.PROTECT)
     dt_created = models.DateTimeField(auto_now_add=True)
+    # used only to filter empenhos without categoria when generating
+    # the xlsx files
+    empenho = models.OneToOneField("EmpenhoSOFCache", null=True,
+                                   on_delete=models.SET_NULL)
 
     objects = ExecucaoContratoManager()
 
