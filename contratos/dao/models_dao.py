@@ -24,8 +24,10 @@ class EmpenhosSOFCacheDao:
         return self.model.objects.all()
 
     # TODO: add tests
-    def filter_by_ano_exercicio(self, year):
-        return self.model.objects.filter(anoExercicioContrato=year) \
+    def filter_by_ano_exercicio_and_categoria(self, year):
+        return self.model.objects.filter(
+            anoExercicioContrato=year,
+            execucaocontrato__categoria__isnull=False) \
             .order_by('anoEmpenho', 'codContrato')
 
     def create(self, data):
