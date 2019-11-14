@@ -41,6 +41,7 @@ class GenerateExecucoesContratosUseCase:
             "modalidade_id": modalidade.id,
             "objeto_contrato_id": objeto_contrato.id,
             "fornecedor_id": fornecedor.id,
+            "empenho_id": empenho.id,
         }
         return self.execucoes_dao.create(**execucao_data)
 
@@ -86,7 +87,8 @@ class GenerateXlsxFilesUseCase:
         for year in range(2018, curr_year + 1):
             print(f'Genarating for year {year}')
 
-            empenhos = self.empenhos_dao.filter_by_ano_exercicio(year) \
+            empenhos = self.empenhos_dao \
+                .filter_by_ano_exercicio_and_categoria(year) \
                 .order_by('codContrato').values()
             if not empenhos:
                 return
