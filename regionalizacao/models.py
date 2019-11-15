@@ -1,5 +1,10 @@
+from datetime import date
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
+
+YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
 
 class Escola(models.Model):
@@ -41,6 +46,7 @@ class FromToSpreadsheet(models.Model):
 
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
 
     class Meta:
         verbose_name = 'Planilha PTRF'
@@ -118,6 +124,7 @@ class EtapaTipoEscolaFromTo(models.Model):
 
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
@@ -130,8 +137,6 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
 
 class UnidadeRecursosFromTo(models.Model):
-    # TODO: What should be unique? Is it possible to have the same
-    # codesc+grupo+subgrupo?
     codesc = models.IntegerField()
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
