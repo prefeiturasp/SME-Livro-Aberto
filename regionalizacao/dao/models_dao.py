@@ -26,6 +26,7 @@ class FromToDao:
         added = []
         not_added = []
         while row_is_valid:
+            ft_key_name = self.sheet_columns[0].name
             ft_key = ws[self.sheet_columns[0].letter + str(row)].value
             if not ft_key:
                 row_is_valid = False
@@ -47,6 +48,9 @@ class FromToDao:
                     ft.save()
                 added.append(ft_key)
             except IntegrityError:
+                old_ft = self.model.objects.get(**{ft_key_name: ft_key})
+                old_ft.delete()
+                ft.save()
                 not_added.append(ft_key)
 
             row += 1

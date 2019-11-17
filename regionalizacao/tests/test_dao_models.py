@@ -101,6 +101,29 @@ class TestDistritoZonaFromToDao:
         assert coddists == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos
 
+    def test_update_value_when_fromto_exists(self, file_fixture):
+        mommy.make(DistritoZonaFromTo, coddist=1, zona='other')
+
+        sheet = mommy.make(
+            DistritoZonaFromToSpreadsheet, spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = DistritoZonaFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        coddists = [1, 2]
+
+        assert fts[0].coddist == coddists[0]
+        assert fts[0].zona == 'LESTE'
+
+        assert fts[1].coddist == coddists[1]
+        assert fts[1].zona == 'OESTE'
+
+        sheet.refresh_from_db()
+        assert sheet.extracted is True
+        assert [2] == sheet.added_fromtos
+        assert [1] == sheet.not_added_fromtos
+
 
 class TestEtapaTipoEscolaFromToDao:
 
