@@ -200,6 +200,7 @@ section#destino .bar{
   line-height: 1rem;
 }
 
+[checked] + .description-box,
 .active > .description-box,
 :hover > .description-box{
   opacity: 1;
