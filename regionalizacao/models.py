@@ -112,7 +112,7 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
 
 
 class EtapaTipoEscolaFromTo(models.Model):
-    tipoesc = models.CharField(max_length=10)
+    tipoesc = models.CharField(max_length=10, unique=True)
     desctipoesc = models.CharField(max_length=100)
     etapa = models.CharField(max_length=20)
 
