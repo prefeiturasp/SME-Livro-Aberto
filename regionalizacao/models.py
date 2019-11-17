@@ -27,8 +27,8 @@ class FromToSpreadsheet(models.Model):
     # fields used to store which FromTos where successfully added
     added_fromtos = ArrayField(models.IntegerField(), null=True,
                                editable=False)
-    not_added_fromtos = ArrayField(models.IntegerField(), null=True,
-                                   editable=False)
+    updated_fromtos = ArrayField(models.IntegerField(), null=True,
+                                 editable=False)
 
     class Meta:
         abstract = True
@@ -98,8 +98,8 @@ class DistritoZonaFromTo(models.Model):
 class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
     added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
                                editable=False)
-    not_added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
-                                   editable=False)
+    updated_fromtos = ArrayField(models.CharField(max_length=10), null=True,
+                                 editable=False)
 
     class Meta:
         verbose_name = 'Planilha Etapa-TipoEscola'

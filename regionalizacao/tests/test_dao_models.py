@@ -51,7 +51,7 @@ class TestPtrfFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert codescs == sheet.added_fromtos
-        assert [] == sheet.not_added_fromtos
+        assert [] == sheet.updated_fromtos
 
     def test_replace_fromtos_of_the_same_year(self, file_fixture):
         mommy.make(PtrfFromTo, year=2018, _quantity=1)
@@ -99,7 +99,7 @@ class TestDistritoZonaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert coddists == sheet.added_fromtos
-        assert [] == sheet.not_added_fromtos
+        assert [] == sheet.updated_fromtos
 
     def test_update_value_when_fromto_exists(self, file_fixture):
         mommy.make(DistritoZonaFromTo, coddist=1, zona='other')
@@ -122,7 +122,7 @@ class TestDistritoZonaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert [2] == sheet.added_fromtos
-        assert [1] == sheet.not_added_fromtos
+        assert [1] == sheet.updated_fromtos
 
 
 class TestEtapaTipoEscolaFromToDao:
@@ -159,7 +159,7 @@ class TestEtapaTipoEscolaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert tipoescs == sheet.added_fromtos
-        assert [] == sheet.not_added_fromtos
+        assert [] == sheet.updated_fromtos
 
     def test_update_value_when_fromto_exists(self, file_fixture):
         mommy.make(EtapaTipoEscolaFromTo, tipoesc='CCI/CIPS', etapa='other')
@@ -184,7 +184,7 @@ class TestEtapaTipoEscolaFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert ['CEI DIRET'] == sheet.added_fromtos
-        assert ['CCI/CIPS'] == sheet.not_added_fromtos
+        assert ['CCI/CIPS'] == sheet.updated_fromtos
 
 
 class TestUnidadeRecursosFromToDao:
@@ -227,7 +227,7 @@ class TestUnidadeRecursosFromToDao:
         sheet.refresh_from_db()
         assert sheet.extracted is True
         assert codescs == sheet.added_fromtos
-        assert [] == sheet.not_added_fromtos
+        assert [] == sheet.updated_fromtos
 
     def test_replace_fromtos_of_the_same_year(self, file_fixture):
         mommy.make(UnidadeRecursosFromTo, year=2018, _quantity=1)

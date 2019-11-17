@@ -24,7 +24,7 @@ class FromToDao:
         row = 2
         row_is_valid = True
         added = []
-        not_added = []
+        updated = []
         while row_is_valid:
             ft_key_name = self.sheet_columns[0].name
             ft_key = ws[self.sheet_columns[0].letter + str(row)].value
@@ -51,15 +51,15 @@ class FromToDao:
                 old_ft = self.model.objects.get(**{ft_key_name: ft_key})
                 old_ft.delete()
                 ft.save()
-                not_added.append(ft_key)
+                updated.append(ft_key)
 
             row += 1
 
         sheet.added_fromtos = added
-        sheet.not_added_fromtos = not_added
+        sheet.updated_fromtos = updated
         sheet.extracted = True
         sheet.save()
-        return added, not_added
+        return added, updated
 
 
 class PtrfFromToDao(FromToDao):
