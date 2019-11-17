@@ -42,9 +42,11 @@ class TestPtrfFromToDao:
 
         assert fts[0].codesc == codescs[0]
         assert fts[0].vlrepasse == 2.55
+        assert fts[0].year == sheet.year
 
         assert fts[1].codesc == codescs[1]
         assert fts[1].vlrepasse == 1.99
+        assert fts[1].year == sheet.year
 
         sheet.refresh_from_db()
         assert sheet.extracted is True
@@ -152,12 +154,14 @@ class TestUnidadeRecursosFromToDao:
         assert fts[0].subgrupo == 'IPTU'
         assert fts[0].valor == 1000
         assert fts[0].label == 'R$'
+        assert fts[0].year == sheet.year
 
         assert fts[1].codesc == codescs[1]
         assert fts[1].grupo == 'Repasse'
         assert fts[1].subgrupo == 'Vagas Contratadas'
         assert fts[1].valor == 130
         assert fts[1].label == 'Unidades'
+        assert fts[1].year == sheet.year
 
         sheet.refresh_from_db()
         assert sheet.extracted is True

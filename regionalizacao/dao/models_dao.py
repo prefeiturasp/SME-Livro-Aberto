@@ -11,7 +11,7 @@ from regionalizacao.models import (
 )
 
 
-SheetField = namedtuple('SheetField', ['name', 'column'])
+SheetColumn = namedtuple('SheetColumn', ['name', 'letter'])
 
 
 class FromToDao:
@@ -26,15 +26,20 @@ class FromToDao:
         added = []
         not_added = []
         while row_is_valid:
-            ft_key = ws[self.fields[0].column + str(row)].value
+            ft_key = ws[self.sheet_columns[0].letter + str(row)].value
             if not ft_key:
                 row_is_valid = False
                 continue
 
             ft = self.model()
-            for field in self.fields:
-                value = ws[field.column + str(row)].value
-                setattr(ft, field.name, value)
+            for column in self.sheet_columns:
+                value = ws[column.letter + str(row)].value
+                setattr(ft, column.name, value)
+
+            # setting year when applies
+            year = getattr(sheet, 'year', None)
+            if year:
+                ft.year = year
             try:
                 with transaction.atomic():
                     ft.save()
@@ -55,9 +60,9 @@ class PtrfFromToDao(FromToDao):
 
     def __init__(self):
         self.model = PtrfFromTo
-        self.fields = [
-            SheetField('codesc', 'a'),
-            SheetField('vlrepasse', 'd'),
+        self.sheet_columns = [
+            SheetColumn('codesc', 'a'),
+            SheetColumn('vlrepasse', 'd'),
         ]
 
 
@@ -65,9 +70,9 @@ class DistritoZonaFromToDao(FromToDao):
 
     def __init__(self):
         self.model = DistritoZonaFromTo
-        self.fields = [
-            SheetField('coddist', 'a'),
-            SheetField('zona', 'c'),
+        self.sheet_columns = [
+            SheetColumn('coddist', 'a'),
+            SheetColumn('zona', 'c'),
         ]
 
 
@@ -75,10 +80,10 @@ class EtapaTipoEscolaFromToDao(FromToDao):
 
     def __init__(self):
         self.model = EtapaTipoEscolaFromTo
-        self.fields = [
-            SheetField('tipoesc', 'a'),
-            SheetField('desctipoesc', 'b'),
-            SheetField('etapa', 'c'),
+        self.sheet_columns = [
+            SheetColumn('tipoesc', 'a'),
+            SheetColumn('desctipoesc', 'b'),
+            SheetColumn('etapa', 'c'),
         ]
 
 
@@ -86,10 +91,10 @@ class UnidadeRecursosFromToDao(FromToDao):
 
     def __init__(self):
         self.model = UnidadeRecursosFromTo
-        self.fields = [
-            SheetField('codesc', 'a'),
-            SheetField('grupo', 'b'),
-            SheetField('subgrupo', 'c'),
-            SheetField('valor', 'd'),
-            SheetField('label', 'e'),
+        self.sheet_columns = [
+            SheetColumn('codesc', 'a'),
+            SheetColumn('grupo', 'b'),
+            SheetColumn('subgrupo', 'c'),
+            SheetColumn('valor', 'd'),
+            SheetColumn('label', 'e'),
         ]
