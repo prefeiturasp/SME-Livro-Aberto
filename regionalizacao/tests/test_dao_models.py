@@ -161,6 +161,31 @@ class TestEtapaTipoEscolaFromToDao:
         assert tipoescs == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos
 
+    def test_update_value_when_fromto_exists(self, file_fixture):
+        mommy.make(EtapaTipoEscolaFromTo, tipoesc='CCI/CIPS', etapa='other')
+
+        sheet = mommy.make(
+            EtapaTipoEscolaFromToSpreadsheet, spreadsheet=File(file_fixture))
+        # data is extracted on save
+
+        fts = EtapaTipoEscolaFromTo.objects.all().order_by('id')
+        assert 2 == len(fts)
+
+        tipoescs = ['CCI/CIPS', 'CEI DIRET']
+
+        assert fts[0].tipoesc == tipoescs[0]
+        assert fts[0].desctipoesc == 'desc1'
+        assert fts[0].etapa == 'Infantil'
+
+        assert fts[1].tipoesc == tipoescs[1]
+        assert fts[1].desctipoesc == 'desc2'
+        assert fts[1].etapa == 'Infantil tb'
+
+        sheet.refresh_from_db()
+        assert sheet.extracted is True
+        assert ['CEI DIRET'] == sheet.added_fromtos
+        assert ['CCI/CIPS'] == sheet.not_added_fromtos
+
 
 class TestUnidadeRecursosFromToDao:
 
