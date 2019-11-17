@@ -53,6 +53,19 @@ class TestPtrfFromToDao:
         assert codescs == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos
 
+    def test_replace_fromtos_of_the_same_year(self, file_fixture):
+        mommy.make(PtrfFromTo, year=2018, _quantity=1)
+        mommy.make(PtrfFromTo, year=2019, _quantity=2)
+
+        mommy.make(
+            PtrfFromToSpreadsheet, spreadsheet=File(file_fixture), year=2019)
+        # data is extracted on save
+
+        fts = PtrfFromTo.objects.all().order_by('id')
+        assert 3 == len(fts)
+        assert 2 == fts.filter(year=2019).count()
+        assert 1 == fts.filter(year=2018).count()
+
 
 class TestDistritoZonaFromToDao:
 
@@ -167,3 +180,17 @@ class TestUnidadeRecursosFromToDao:
         assert sheet.extracted is True
         assert codescs == sheet.added_fromtos
         assert [] == sheet.not_added_fromtos
+
+    def test_replace_fromtos_of_the_same_year(self, file_fixture):
+        mommy.make(UnidadeRecursosFromTo, year=2018, _quantity=1)
+        mommy.make(UnidadeRecursosFromTo, year=2019, _quantity=2)
+
+        mommy.make(
+            UnidadeRecursosFromToSpreadsheet, spreadsheet=File(file_fixture),
+            year=2019)
+        # data is extracted on save
+
+        fts = UnidadeRecursosFromTo.objects.all().order_by('id')
+        assert 3 == len(fts)
+        assert 2 == fts.filter(year=2019).count()
+        assert 1 == fts.filter(year=2018).count()

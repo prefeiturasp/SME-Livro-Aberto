@@ -40,6 +40,8 @@ class FromToDao:
             year = getattr(sheet, 'year', None)
             if year:
                 ft.year = year
+
+            # saving fromto object
             try:
                 with transaction.atomic():
                     ft.save()
@@ -64,6 +66,11 @@ class PtrfFromToDao(FromToDao):
             SheetColumn('codesc', 'a'),
             SheetColumn('vlrepasse', 'd'),
         ]
+
+    def extract_spreadsheet(self, sheet):
+        year_fromtos = self.model.objects.filter(year=sheet.year)
+        year_fromtos.delete()
+        return super().extract_spreadsheet(sheet)
 
 
 class DistritoZonaFromToDao(FromToDao):
@@ -98,3 +105,8 @@ class UnidadeRecursosFromToDao(FromToDao):
             SheetColumn('valor', 'd'),
             SheetColumn('label', 'e'),
         ]
+
+    def extract_spreadsheet(self, sheet):
+        year_fromtos = self.model.objects.filter(year=sheet.year)
+        year_fromtos.delete()
+        return super().extract_spreadsheet(sheet)
