@@ -36,9 +36,7 @@
                 <div class="card sobre">
                     <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
                     <h1>So<br />bre</h1>
-                    <p>
-                    O objetivo da ferramenta Contratos é mostrar, de forma interativa e simplificada, a execução de contratos relacionados à Educação na cidade de São Paulo, associando, a cada contrato, os gastos realizados; apresentando e separando por categorias as informações sobre objeto, fornecedores e vigência dos contratos, e permitindo download de dados abertos.
-                    </p>
+                    <p>O objetivo da ferramenta <strong>Contratos</strong> &eacute; mostrar, de forma interativa e simplificada, <strong>a execu&ccedil;&atilde;o de contratos</strong> <strong>relacionados &agrave; Educa&ccedil;&atilde;o na cidade de S&atilde;o Paulo</strong>, associando a cada contrato os gastos realizados; apresentando e separando por categorias as informa&ccedil;&otilde;es sobre objeto, fornecedores e vig&ecirc;ncia dos contratos; e permitindo download de dados abertos.</p>
                 </div>
                 <ul>
                     <li class="active"><a href="{% url 'contratos:sobre' %}">Sobre</a></li>
@@ -46,91 +44,57 @@
                 </ul>
             </div>
             <div class="main verde txt">
-                <h2>Sobre <span>❯ A ferramenta Contrato Social</span></h2>
-                <p>A ferramenta permite visualizar os <strong>contratos</strong> da Secretaria Municipal de Educação de São Paulo e a sua execução por meio da análise dos <strong>empenhos vinculados</strong>.
-                </p>
-                <p>
-                Para que uma prefeitura possa contratar serviços e adquirir bens junto aos seus fornecedores, é necessário passar por um amplo processo típico das compras públicas. A depender da modalidade de aquisição — licitação por pregão, tomada de preços, dispensa, inexigibilidade, entre outros — a prefeitura eventualmente firma contratos com empresas para fornecimento de diversos bens e serviços. No caso da Educação, praticamente todas as despesas com serviços de limpeza, alimentação, uniforme, material escolar, etc. são executadas através de contratos. Há, também, a possibilidade de fazê-lo por meio de parcerias, que acontecem quando a administração da escola é realizada integralmente por uma entidade terceira.
-                </p>
-                <p>
-                Uma vez contratado um serviço ou uma compra de determinado bem por parte da prefeitura, ou firmada uma determinada parceria, os contratos passam a ser executados. Isso significa que cada contrato prevê um determinado valor a ser gasto, e, à medida que o objeto contratado é executado, os pagamentos são realizados.
-                </p>
-                <p>
-                A rigor, toda despesa no orçamento público passa por diversas fases. Há uma previsão inicial no Projeto de Lei Orçamentária Anual (PLOA), chamada de dotação inicial, que, quando o projeto é aprovado e se torna lei (LOA), gera uma autorização de despesas para o ano, cujas cifras são chamadas de valores orçados. Esses valores podem passar por atualizações a partir de contingenciamento (bloqueio) de verbas ou da liberação de créditos extraordinários. Após esse processo, tem-se o chamado valor orçado atualizado, utilizado como base, por exemplo, nas ferramentas <a href="{% url 'mosaico:grupos' %}">Mosaico</a> e <a href="{% url 'geologia:home' %}">Geologia</a>.
-                </p>
-                <p>
-                Tem início, então, o processo de execução. Quando se faz uma reserva financeira para determinados gastos, diz-se que os valores foram <strong>empenhados</strong>. No caso dos contratos, essa será a nossa referência inicial. Então, quando se fala, na ferramenta, em “valores previstos em contratos para o ano”, estamos nos referindo aos empenhos vinculados aos contratos naquele ano, como mostra a tela inicial da ferramenta (Figura 1). A partir do empenho, a contrapartida de cada despesa — quer seja o serviço contratado ou o bem adquirido — ocorre de fato, gerando uma <strong>liquidação</strong>. Do ponto de vista da Secretaria Municipal de Educação da prefeitura de São Paulo, a despesa liquidada de cada contrato já é considerada executada. Na ferramenta, mostramos o percentual do liquidado sobre o empenhado em termos da taxa de execução dos contratos (na barra de execução, como mostra a Figura 1). Após a liquidação, a despesa ainda passa pela fase do pagamento, que é quando se registra uma ordem bancária. Na prática, é quando o recurso chega, de fato, ao destinatário final.
-                </p>
-                <p>
-                    <strong>Figura 1:</strong>
-                    Ferramenta de contratos: tela inicial
-                </p>
-                <img src="{% static 'contratos/img/initial.png' %}" alt="Figura 1" width="100%">
-                <h2>Sobre <span>❯ Categorias</span></h2>
-                <p>Para tornar a ferramenta mais amigável em termos da linguagem utilizada, criou-se uma tipologia de categorias com base nas dotações orçamentárias, que reflete os grupos típicos das despesas com Educação. As categorias utilizadas na ferramenta são:</p>
-
+                <h2><strong>SOBRE </strong>❯ O Contrato Social</h2>
+                <p>A ferramenta permite visualizar os <strong>contratos </strong>associados &agrave; Secretaria Municipal de Educa&ccedil;&atilde;o de S&atilde;o Paulo e a sua execu&ccedil;&atilde;o por meio da an&aacute;lise dos <strong>empenhos vinculados</strong>.</p>
+                <p>Para que uma prefeitura possa contratar servi&ccedil;os e adquirir bens junto aos seus fornecedores, &eacute; necess&aacute;rio passar por um amplo processo t&iacute;pico das compras p&uacute;blicas. A depender da modalidade de aquisi&ccedil;&atilde;o &mdash; licita&ccedil;&atilde;o por preg&atilde;o, tomada de pre&ccedil;os, dispensa, inexigibilidade, entre outros &mdash;, a prefeitura eventualmente firma contratos com empresas para fornecimento de diversos bens e servi&ccedil;os. No caso da Educa&ccedil;&atilde;o, praticamente todas as despesas com servi&ccedil;os de limpeza, alimenta&ccedil;&atilde;o, uniforme, material escolar etc. s&atilde;o executadas atrav&eacute;s de contratos. H&aacute;, tamb&eacute;m, a possibilidade de faz&ecirc;-lo por meio de parcerias, que acontecem quando a administra&ccedil;&atilde;o da escola &eacute; realizada integralmente por uma entidade terceira.</p>
+                <p>Uma vez contratado um servi&ccedil;o ou uma compra de determinado bem, por parte da prefeitura, ou firmada uma determinada parceria, os contratos passam a ser executados. Isso significa que cada contrato prev&ecirc; um determinado valor a ser gasto, e, &agrave; medida que o objeto contratado &eacute; executado, os pagamentos s&atilde;o realizados.</p>
+                <p>A rigor, toda despesa no or&ccedil;amento p&uacute;blico passa por diversas fases. H&aacute; uma previs&atilde;o inicial no <strong>Projeto de Lei Or&ccedil;ament&aacute;ria Anual (PLOA)</strong>, chamada de dota&ccedil;&atilde;o inicial, que, quando o projeto &eacute; aprovado e se torna lei (LOA), gera uma autoriza&ccedil;&atilde;o de despesas para o ano, cujas cifras s&atilde;o chamadas de valores or&ccedil;ados. Esses valores podem passar por atualiza&ccedil;&otilde;es a partir de contingenciamento (bloqueio) de verbas ou da libera&ccedil;&atilde;o de cr&eacute;ditos extraordin&aacute;rios. Ap&oacute;s esse processo, tem-se o chamado valor or&ccedil;ado atualizado, utilizado como base, por exemplo, nas ferramentas <a href="http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/mosaico/">Mosaico</a> e <a href="http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/geologia">Geologia</a>.</p>
+                <p>Tem in&iacute;cio, ent&atilde;o, o processo de execu&ccedil;&atilde;o. Quando se faz uma reserva financeira para determinados gastos, diz-se que os valores foram <strong>empenhados</strong><strong>. </strong>No caso dos contratos, essa ser&aacute; a nossa refer&ecirc;ncia inicial. Ent&atilde;o, quando se fala, na ferramenta, em &ldquo;valores previstos em contratos para o ano&rdquo;, estamos nos referindo aos empenhos vinculados aos contratos naquele ano, como mostra a primeira parte da ferramenta <strong>(Figura 1)</strong>. A partir do empenho, a contrapartida de cada despesa &mdash; quer seja o servi&ccedil;o contratado ou o bem adquirido &mdash; ocorre de fato, gerando uma <strong>liquida&ccedil;&atilde;o</strong><strong>.</strong> Do ponto de vista da Secretaria Municipal de Educa&ccedil;&atilde;o da prefeitura de S&atilde;o Paulo, a despesa liquidada de cada contrato j&aacute; &eacute; considerada executada. Na ferramenta, mostra-se o percentual do liquidado sobre o empenhado em termos da taxa de execu&ccedil;&atilde;o dos contratos (na barra de execu&ccedil;&atilde;o, como mostra a <strong>Figura 1</strong>). Ap&oacute;s a liquida&ccedil;&atilde;o, a despesa ainda passa pela fase do pagamento, que &eacute; quando se registra uma ordem banc&aacute;ria. Na pr&aacute;tica, &eacute; quando o recurso chega, de fato, ao destinat&aacute;rio final. A ferramenta apresenta dados de 2018 em diante, que podem ser selecionados atrav&eacute;s do seletor ao lado do ano, como mostra a <strong>Figura 1</strong>.</p>
+            
+                <p><strong>Figura 1:</strong> Ferramenta de contratos: primeira parte</p>
+                <img src="{% static 'contratos/img/contratos-figura-1.png' %}" alt="Figura 1" width="100%">
+                <p><br /><br /></p>
+            
+            
+                <h2><strong>SOBRE </strong>❯ Categorias</h2>
+                <p>Para tornar a ferramenta mais amig&aacute;vel em termos da linguagem utilizada, criou-se uma tipologia de categorias com base nas dota&ccedil;&otilde;es or&ccedil;ament&aacute;rias, que reflete os grupos t&iacute;picos das despesas com Educa&ccedil;&atilde;o. As categorias utilizadas na ferramenta s&atilde;o:</p>
                 <ul>
-                    <li>Alimentação;</li>
-                    <li>Eventos culturais e esportivos em CEUs;</li>
-                    <li>Manutenção e operação das unidades;</li>
-                    <li>Obras;</li>
-                    <li>Parcerias;</li>
-                    <li>Pedagógico;</li>
-                    <li>Transporte;</li>
-                    <li>Uniforme e material escolar;</li>
+                <li>Alimenta&ccedil;&atilde;o;</li>
+                <li>Eventos culturais e esportivos em CEUs;</li>
+                <li>Manuten&ccedil;&atilde;o e opera&ccedil;&atilde;o das unidades;</li>
+                <li>Obras;</li>
+                <li>Parcerias;</li>
+                <li>Pedag&oacute;gico;</li>
+                <li>Transporte;</li>
+                <li>Uniforme e material escolar;</li>
                 </ul>
-                <p>
-                Essas categorias podem ser exploradas na ferramenta conforme mostra a Figura 2. É possível observar o volume de gastos (empenhados e liquidados) por categoria de contrato, bem como aferir o tamanho dessa categoria em relação ao total.
-                </p>
-                <p>
-                    <strong>Figura 2:</strong>
-                    Ferramenta de contratos: destino das despesas em contratos por categoria
-                </p>
-                <img src="{% static 'contratos/img/destination.png' %}" alt="Figura 2" width="100%">
-
-                <p>
-                Algumas categorias são auto-explicativas, como é o caso dos gastos com <strong>Alimentação</strong>, <strong>Transporte</strong>, <strong>Reformas e manutenção</strong>, e, <strong>Uniforme e material escolar</strong>. Na categoria <strong>Pedagógico</strong>, agregam-se despesas com material de apoio, capacitação de professores, entre outras despesas relacionadas ao objeto de trabalho da Educação. Em <strong>Ações culturais</strong>, são categorizadas despesas com eventos e campanhas em geral.
-                </p>
-                <p>
-                A categoria <strong>Serviços contínuos</strong> contempla gastos com limpeza, vigilância, contas de luz, água e esgoto, gás, telefonia, internet, entre outros gastos correntes para a manutenção das unidades escolares.
-                </p>
-                <p>
-                Em <strong>Parcerias</strong>, agrega-se todo gasto vinculado à administração de unidades escolares por terceiras, como é o caso dos Centros de Educação Infantil (CEIs). Nesses casos, a prefeitura não realiza um contrato específico para cada tipo de despesa, mas repassa um valor específico para que outra entidade faça a administração da unidade e contrate, por conta própria, os fornecedores dos mais diversos serviços.
-                </p>
-                <p>
-                Por fim, compras de bens que não se inserem em nenhuma das demais categorias (como é o caso de compras de bens mobiliários e de material de cama, mesa e banho) são registradas em <strong>Outras aquisições</strong>.
-                </p>
-                <h2>Sobre <span>❯ Top 5</span> </h2>
-                <p>
-                A ferramenta mostra uma síntese dos principais contratos da Secretaria Municipal de Educação de São Paulo. É possível filtrá-los por categoria e por ano, como mostra a Figura 3. A tabela mostra informações como o objeto do contrato (campo descritivo que define ao que se refere um contrato de forma detalhada), a categoria, a vigência (prazo até a data final em que o contrato está vigente) e os valores empenhados e liquidados. É possível, ainda, classificar pela ordem de fornecedores, que lista as principais entidades que recebem recursos públicos para a execução de serviços ou a aquisição de bens.
-                </p>
-                <p>
-                    <strong>Figura 3:</strong>
-                    Ferramenta de contratos: top 5 contratos e fornecedores
-                </p>
-                <img src="{% static 'contratos/img/top5.png' %}" alt="Figura 3" width="100%">
-
-                <h2>Sobre <span>❯ Download dos dados</span></h2>
-                <p>
-                A ferramenta permite baixar a base de dados completa em formato aberto, a partir do botão disponibilizado logo abaixo da tabela dos Top 5, como mostra a Figura 4. O propósito é disponibilizar dados detalhados e com mais atributos do que os mostrados na ferramenta, o que permite análises mais aprofundadas e específicas de acordo com a demanda de cada usuário.
-                </p>
-                <p>
-                    <strong>Figura 4:</strong>
-                    Ferramenta de contratos: destaque para botão de download dos dados
-                </p>
-                <img src="{% static 'contratos/img/download.png' %}" alt="Figura 4" width="100%">
-                <p>
-                A base de dados disponibilizada contempla todo o universo de empenhos a partir de 2018 vinculados a contratos da Secretaria Municipal de Educação e obtidos por meio da API (Application Programming Interface) do SOF (Sistema de Execução Orçamentária). Logo, essa base contempla todos os atributos disponíveis na consulta de empenhos e na consulta de contratos. Para obter essa base, foi necessário criar um algoritmo para consultar cada contrato na base de dados e vinculá-lo a um empenho da base de 2018 em diante. Quando tal vínculo não foi encontrado, entendeu-se que o empenho não é baseado em contrato (por exemplo, um gasto com pagamento de servidores públicos).
-                </p>
-                <p>
-                <strong>
-                    Observação: a ferramenta não disponibiliza a íntegra dos contratos em formato .pdf. Para mais detalhes sobre esse ponto, consulte a seção “Sobre contratos”.
-                </strong>
-                </p>
-                <h2>Sobre <span>❯ Deflacionamento</span></h2>
-                <p>
-                Os valores apresentados são nominais, isto é, estão a preços correntes de cada ano.
-                </p>
+                <p>&nbsp;</p>
+                <p>Essas categorias podem ser exploradas na ferramenta conforme mostra a <strong>Figura 2</strong>. &Eacute; poss&iacute;vel observar o volume de gastos (empenhados e liquidados) por categoria de contrato, bem como aferir o percentual empenhado&nbsp; dessa categoria em rela&ccedil;&atilde;o ao total empenhado de contratos categorizados e exibidos na <strong>Figura 1</strong>.</p>
+            
+                <p><strong>Figura 2:</strong> Ferramenta de contratos: destino das despesas em contratos por categoria</p>
+                <img src="{% static 'contratos/img/contratos-figura-2.png' %}" alt="Figura 1" width="100%">
+            
+                <p>Cada categoria cont&eacute;m uma explica&ccedil;&atilde;o, disponibilizada na forma de um <em>tooltip</em>, sobre o conte&uacute;do das despesas que a integram. As despesas de <strong>Alimenta&ccedil;&atilde;o</strong> escolar incorporam, tamb&eacute;m, o Programa Leve Leite. A categoria <strong>Eventos culturais e esportivos em CEUs </strong>incorpora despesas relacionadas a eventos culturais e esportivos realizados em Centros Educacionais Unificados (CEUs).&nbsp;</p>
+                <p>As despesas de <strong>Manuten&ccedil;&atilde;o e opera&ccedil;&atilde;o das unidades</strong> se relacionam a servi&ccedil;os, reformas e reparos (de 1&ordm; e 2&ordm; escal&atilde;o, que compreendem tarefas preventivas de baixa e m&eacute;dia complexidade realizadas continuamente ou em empreitadas de curta dura&ccedil;&atilde;o) aplicados &agrave;s escolas e unidades administrativas, bem como a servi&ccedil;os cont&iacute;nuos, como limpeza, vigil&acirc;ncia, &aacute;gua, esgoto, luz e telefone, entre outros gastos correntes para a manuten&ccedil;&atilde;o das unidades. Incorpora, tamb&eacute;m, aquisi&ccedil;&otilde;es de itens de higiene e mobili&aacute;rios. J&aacute; a despesa com <strong>Obras</strong> contempla especificamente a constru&ccedil;&atilde;o de novas unidades, al&eacute;m de amplia&ccedil;&otilde;es, desapropria&ccedil;&otilde;es e reformas de 3&ordm; escal&atilde;o (que contemplam tarefas de mais alta complexidade e que exigem conhecimento t&eacute;cnico espec&iacute;fico, geralmente, com dura&ccedil;&atilde;o mais elevada).</p>
+                <p>Na categoria<strong> Parcerias, </strong>agrega-se todo gasto vinculado &agrave; administra&ccedil;&atilde;o de unidades escolares por terceiras, como &eacute; o caso dos Centros de Educa&ccedil;&atilde;o Infantil (CEIs) e do Programa Movimento de Alfabetiza&ccedil;&atilde;o de Jovens e Adultos (MOVA). Nesses casos, a prefeitura n&atilde;o realiza um contrato espec&iacute;fico para cada tipo de despesa, mas repassa um valor espec&iacute;fico para que outra entidade fa&ccedil;a a administra&ccedil;&atilde;o da unidade e contrate, por conta pr&oacute;pria, os fornecedores dos mais diversos servi&ccedil;os.</p>
+                <p>Na categoria <strong>Pedag&oacute;gico</strong>, agregam-se despesas relacionadas a a&ccedil;&otilde;es pedag&oacute;gicas e educacionais, incluindo a capacita&ccedil;&atilde;o de professores, entre outras despesas relacionadas ao objeto de trabalho da Educa&ccedil;&atilde;o. Em <strong>Transporte</strong>, s&atilde;o registradas as despesas relativas ao Transporte Escolar Gratuito (TEG). Por fim, despesas relacionadas &agrave; aquisi&ccedil;&atilde;o e &agrave; distribui&ccedil;&atilde;o gratuita de uniforme escolar e de kits de material escolar s&atilde;o agregadas na categoria <strong>Uniforme e material escolar.</strong></p>
+                <h2><strong>OBSERVA&Ccedil;&Atilde;O:</strong> O universo apresentado na ferramenta <strong>Contrato Social</strong> n&atilde;o contempla os dados do Programa de Transfer&ecirc;ncia de Recursos Financeiros (PTRF), por n&atilde;o configurarem uma contrata&ccedil;&atilde;o, apesar de estarem originalmente presentes na base de dados de contratos obtida na <em>Application Programming Interface</em> (API) do Sistema de Execu&ccedil;&atilde;o Or&ccedil;ament&aacute;ria (SOF). Esses dados, no entanto, correspondem a recursos de gest&atilde;o descentralizada, que s&atilde;o direcionados a cada unidade escolar e que, por esse motivo, est&atilde;o presentes na ferramenta <a href="http://ferramentas.livroaberto.sme.prefeitura.sp.gov.br/regionalizacao/"><strong>Regionaliza&ccedil;&atilde;o</strong></a>.</h2>
+                <p>&nbsp;</p>
+                <h2><strong>SOBRE </strong>❯ Top 5</h2>
+                <p>A ferramenta mostra uma s&iacute;ntese dos principais contratos da Secretaria Municipal de Educa&ccedil;&atilde;o de S&atilde;o Paulo. &Eacute; poss&iacute;vel filtr&aacute;-los por categoria e por ano, como mostra a <strong>Figura 3</strong>. A tabela mostra informa&ccedil;&otilde;es como o fornecedor (entidade que recebe recursos p&uacute;blicos para a execu&ccedil;&atilde;o de servi&ccedil;os ou a aquisi&ccedil;&atilde;o de bens), a categoria, a modalidade de contrata&ccedil;&atilde;o (dispensa de licita&ccedil;&atilde;o, tomada de pre&ccedil;os etc.), o valor empenhado do contrato e um <em>tooltip </em>com o objeto do contrato (campo descritivo que define, de forma detalhada, a que se refere um contrato). &Eacute; poss&iacute;vel selecionar categorias e verificar os principais contratos dessa categoria, bem como selecionar o ano de refer&ecirc;ncia.</p>
+            
+                <p><strong>Figura 3:</strong> Ferramenta de contratos: Top 5 contratos</p>
+                <img src="{% static 'contratos/img/contratos-figura-3.png' %}" alt="Figura 1" width="100%">
+            
+                <h2><strong>SOBRE </strong>❯ Download dos dados</h2>
+                <p>A ferramenta permite baixar a base de dados completa em formato aberto, a partir do bot&atilde;o disponibilizado logo abaixo da tabela dos Top 5, como mostra a <strong>Figura 4</strong>. O prop&oacute;sito &eacute; disponibilizar dados detalhados e com mais atributos do que os mostrados na ferramenta, o que permite an&aacute;lises mais aprofundadas e espec&iacute;ficas de acordo com a demanda de cada usu&aacute;rio.</p>
+            
+                <p><strong>Figura 4:</strong> Ferramenta de contratos: destaque para bot&atilde;o de download dos dados</p>
+                <img src="{% static 'contratos/img/contratos-figura-4.png' %}" alt="Figura 1" width="100%">
+            
+                <p>&nbsp;</p>
+                <p>A base de dados disponibilizada contempla todo o universo de empenhos a partir de 2018 vinculados a contratos da Secretaria Municipal de Educa&ccedil;&atilde;o e obtidos por meio da <em>Application Programming Interface</em> (API) do Sistema de Execu&ccedil;&atilde;o Or&ccedil;ament&aacute;ria (SOF). Logo, essa base contempla todos os atributos dispon&iacute;veis na consulta de empenhos e na consulta de contratos. Para obter essa base, foi necess&aacute;rio criar um algoritmo para consultar cada contrato na base de dados e vincul&aacute;-lo a um empenho da base de 2018 em diante. Quando tal v&iacute;nculo n&atilde;o foi encontrado, entendeu-se que o empenho n&atilde;o &eacute; baseado em contrato (por exemplo, um gasto com pagamento de servidores p&uacute;blicos).&nbsp;</p>
+                <p><br /><strong>Observa&ccedil;&atilde;o:</strong> <strong>a ferramenta n&atilde;o disponibiliza a &iacute;ntegra dos contratos em formato .pdf. Para mais detalhes sobre esse ponto, consulte a se&ccedil;&atilde;o &ldquo;Sobre contratos&rdquo; em &ldquo;Tutorial&rdquo;.</strong></p>
             </div>
         </div>
     </section>
