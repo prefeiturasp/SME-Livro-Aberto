@@ -8,12 +8,21 @@ YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
 
 class Escola(models.Model):
+    REDES = (
+        ('DIR', 'Rede direta SME'),
+        ('CON', 'Rede parceira contratada'),
+    )
+
+    dre = models.ForeignKey('Dre', on_delete=models.PROTECT)
     codesc = models.IntegerField(unique=True)
+    tipoesc = models.ForeignKey('TipoEscola', on_delete=models.PROTECT)
     nomesc = models.CharField(max_length=120)
     endereco = models.CharField(max_length=200)
     numero = models.IntegerField()
     bairro = models.CharField(max_length=100)
     cep = models.IntegerField()
+    distrito = models.ForeignKey('Distrito', on_delete=models.PROTECT)
+    rede = models.CharField(max_length=3, choices=REDES)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
