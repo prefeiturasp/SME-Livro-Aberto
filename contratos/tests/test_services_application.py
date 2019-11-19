@@ -34,10 +34,10 @@ class TestApplicationServices(TestCase):
         assert expected == ret
 
     def test_serialize_destinations(self):
-        category1 = mommy.make(CategoriaContrato, name='cat1', desc='desc 1',
-                slug='slug_1')
-        category2 = mommy.make(CategoriaContrato, name='cat2', desc='desc 1',
-                slug='slug_2')
+        category1 = mommy.make(CategoriaContrato, id=3, name='cat1',
+                desc='desc 1', slug='slug_1')
+        category2 = mommy.make(CategoriaContrato, id=4, name='cat2',
+                desc='desc 1', slug='slug_2')
 
         empenhado1 = 200
         empenhado2 = 400
@@ -53,6 +53,7 @@ class TestApplicationServices(TestCase):
         expected = [
             {
                 'year': 2019,
+                'categoria_id': '3',
                 'categoria_name': 'cat1',
                 'categoria_desc': 'desc 1',
                 'categoria_slug': 'slug_1',
@@ -63,6 +64,7 @@ class TestApplicationServices(TestCase):
             },
             {
                 'year': 2019,
+                'categoria_id': '4',
                 'categoria_name': 'cat2',
                 'categoria_desc': 'desc 1',
                 'categoria_slug': 'slug_2',

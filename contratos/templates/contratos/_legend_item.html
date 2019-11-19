@@ -1,8 +1,17 @@
 {% load static %}
-<li class="fg-{{ slug }} description-parent" data-slug="{{ slug }}">
-    {% include '_legend_icon.html' with app='contratos' slug=slug desc=label %}
+<li class="fg-{{ destination.categoria_slug }} description-parent" data-slug="{{ destination.categoria_slug }}">
+    {% with id_for_label=filter_form.category.id_for_label|add:destination.categoria_id %}
+    <label for="{{ id_for_label }}" >
+        {% include '_legend_icon.html' with app='contratos' slug=destination.categoria_slug desc=destination.categoria_name%}
+    </label>
+    <input type="radio" style="display: none"
+           value="{{ destination.categoria_id }}"
+           id="{{ id_for_label }}"
+           name="{{ filter_form.category.name }}"
+          {% if filter_form.category.value == destination.categoria_id %}checked{% endif %}>
+{% endwith %}
     <div class="description-box">
-        <h3>{{ label }}</h3>
-        <p>{{ desc }}</p>
+        <h3>{{ destination.categoria_name }}</h3>
+        <p>{{ destination.categoria_desc }}</p>
     </div>
 </li>
