@@ -11,7 +11,7 @@ from regionalizacao.models import (
 )
 
 
-SheetField = namedtuple('SheetField', ['name', 'column'])
+SheetColumn = namedtuple('SheetColumn', ['name', 'letter'])
 
 
 class FromToDao:
@@ -24,50 +24,66 @@ class FromToDao:
         row = 2
         row_is_valid = True
         added = []
-        not_added = []
+        updated = []
         while row_is_valid:
-            ft_key = ws[self.fields[0].column + str(row)].value
+            ft_key_name = self.sheet_columns[0].name
+            ft_key = ws[self.sheet_columns[0].letter + str(row)].value
             if not ft_key:
                 row_is_valid = False
                 continue
 
             ft = self.model()
-            for field in self.fields:
-                value = ws[field.column + str(row)].value
-                setattr(ft, field.name, value)
+            for column in self.sheet_columns:
+                value = ws[column.letter + str(row)].value
+                setattr(ft, column.name, value)
+
+            # setting year when applies
+            year = getattr(sheet, 'year', None)
+            if year:
+                ft.year = year
+
+            # saving fromto object
             try:
                 with transaction.atomic():
                     ft.save()
                 added.append(ft_key)
             except IntegrityError:
-                not_added.append(ft_key)
+                old_ft = self.model.objects.get(**{ft_key_name: ft_key})
+                old_ft.delete()
+                ft.save()
+                updated.append(ft_key)
 
             row += 1
 
         sheet.added_fromtos = added
-        sheet.not_added_fromtos = not_added
+        sheet.updated_fromtos = updated
         sheet.extracted = True
         sheet.save()
-        return added, not_added
+        return added, updated
 
 
 class PtrfFromToDao(FromToDao):
 
     def __init__(self):
         self.model = PtrfFromTo
-        self.fields = [
-            SheetField('codesc', 'a'),
-            SheetField('vlrepasse', 'd'),
+        self.sheet_columns = [
+            SheetColumn('codesc', 'a'),
+            SheetColumn('vlrepasse', 'd'),
         ]
+
+    def extract_spreadsheet(self, sheet):
+        year_fromtos = self.model.objects.filter(year=sheet.year)
+        year_fromtos.delete()
+        return super().extract_spreadsheet(sheet)
 
 
 class DistritoZonaFromToDao(FromToDao):
 
     def __init__(self):
         self.model = DistritoZonaFromTo
-        self.fields = [
-            SheetField('coddist', 'a'),
-            SheetField('zona', 'c'),
+        self.sheet_columns = [
+            SheetColumn('coddist', 'a'),
+            SheetColumn('zona', 'c'),
         ]
 
 
@@ -75,10 +91,10 @@ class EtapaTipoEscolaFromToDao(FromToDao):
 
     def __init__(self):
         self.model = EtapaTipoEscolaFromTo
-        self.fields = [
-            SheetField('tipoesc', 'a'),
-            SheetField('desctipoesc', 'b'),
-            SheetField('etapa', 'c'),
+        self.sheet_columns = [
+            SheetColumn('tipoesc', 'a'),
+            SheetColumn('desctipoesc', 'b'),
+            SheetColumn('etapa', 'c'),
         ]
 
 
@@ -86,10 +102,15 @@ class UnidadeRecursosFromToDao(FromToDao):
 
     def __init__(self):
         self.model = UnidadeRecursosFromTo
-        self.fields = [
-            SheetField('codesc', 'a'),
-            SheetField('grupo', 'b'),
-            SheetField('subgrupo', 'c'),
-            SheetField('valor', 'd'),
-            SheetField('label', 'e'),
+        self.sheet_columns = [
+            SheetColumn('codesc', 'a'),
+            SheetColumn('grupo', 'b'),
+            SheetColumn('subgrupo', 'c'),
+            SheetColumn('valor', 'd'),
+            SheetColumn('label', 'e'),
         ]
+
+    def extract_spreadsheet(self, sheet):
+        year_fromtos = self.model.objects.filter(year=sheet.year)
+        year_fromtos.delete()
+        return super().extract_spreadsheet(sheet)

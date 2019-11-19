@@ -1,5 +1,10 @@
+from datetime import date
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
+
+YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
 
 class Escola(models.Model):
@@ -22,8 +27,8 @@ class FromToSpreadsheet(models.Model):
     # fields used to store which FromTos where successfully added
     added_fromtos = ArrayField(models.IntegerField(), null=True,
                                editable=False)
-    not_added_fromtos = ArrayField(models.IntegerField(), null=True,
-                                   editable=False)
+    updated_fromtos = ArrayField(models.IntegerField(), null=True,
+                                 editable=False)
 
     class Meta:
         abstract = True
@@ -41,6 +46,7 @@ class FromToSpreadsheet(models.Model):
 
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
 
     class Meta:
         verbose_name = 'Planilha PTRF'
@@ -53,7 +59,8 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
 
 
 class PtrfFromTo(models.Model):
-    codesc = models.IntegerField(unique=True)
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+    codesc = models.IntegerField()
     vlrepasse = models.FloatField()
 
     class Meta:
@@ -91,8 +98,8 @@ class DistritoZonaFromTo(models.Model):
 class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
     added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
                                editable=False)
-    not_added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
-                                   editable=False)
+    updated_fromtos = ArrayField(models.CharField(max_length=10), null=True,
+                                 editable=False)
 
     class Meta:
         verbose_name = 'Planilha Etapa-TipoEscola'
@@ -105,7 +112,7 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
 
 
 class EtapaTipoEscolaFromTo(models.Model):
-    tipoesc = models.CharField(max_length=10)
+    tipoesc = models.CharField(max_length=10, unique=True)
     desctipoesc = models.CharField(max_length=100)
     etapa = models.CharField(max_length=20)
 
@@ -118,6 +125,7 @@ class EtapaTipoEscolaFromTo(models.Model):
 
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
@@ -130,8 +138,7 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
 
 class UnidadeRecursosFromTo(models.Model):
-    # TODO: What should be unique? Is it possible to have the same
-    # codesc+grupo+subgrupo?
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
     codesc = models.IntegerField()
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
