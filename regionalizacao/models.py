@@ -19,6 +19,30 @@ class Escola(models.Model):
     total_vagas = models.IntegerField()
 
 
+class Dre(models.Model):
+    '''Diretoria Regional Escolar'''
+    code = models.CharField(max_length=3, unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+
+
+class TipoEscola(models.Model):
+    code = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f'{self.code}'
+
+
+class Distrito(models.Model):
+    code = models.IntegerField(unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+
+
 class FromToSpreadsheet(models.Model):
     spreadsheet = models.FileField(
         'Planilha', upload_to='regionalizacao/fromto_spreadsheets')
