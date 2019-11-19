@@ -39,7 +39,7 @@ def serialize_destinations(queryset):
 
     categorias_sums = queryset \
         .values("year__year", "categoria__name", "categoria__desc",
-                "categoria__slug") \
+                "categoria__slug", "categoria__id") \
         .annotate(total_empenhado=Sum('valor_empenhado'),
                   total_liquidado=Sum('valor_liquidado')) \
         .order_by("categoria__name")
@@ -52,6 +52,7 @@ def serialize_destinations(queryset):
         percent_empenhado = empenhado / total_empenhado
         cat_dict = {
             'year': cat_data['year__year'],
+            'categoria_id': str(cat_data['categoria__id']),
             'categoria_name': cat_data['categoria__name'],
             'categoria_desc': cat_data['categoria__desc'],
             'categoria_slug': cat_data['categoria__slug'],

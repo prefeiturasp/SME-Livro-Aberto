@@ -38,18 +38,25 @@
   <section id="destino">
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
+      <form action="#destino" method="get">
       <ul class="legend">
         {% for destination in destinations %}
-          {% include 'contratos/_legend_item.html' with slug=destination.categoria_slug desc=destination.categoria_desc label=destination.categoria_name %}
+          {% include 'contratos/_legend_item.html' with destination=destination %}
         {% endfor %}
       </ul>
-      <div class="bar-parent">
+      <div class="bar-parent{% if filter_form.category.value%} selected{% endif %}">
         <div class="bar">
             {% for destination in destinations %}
-              {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado slug=destination.categoria_slug %}
+              {% if filter_form.category.value == destination.categoria_id %}
+                  {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado slug=destination.categoria_slug class='active'%}
+              {% else %}
+                  {% include 'contratos/_bar.html' with total_empenhado=big_number.empenhado empenhado=destination.empenhado liquidado=destination.liquidado slug=destination.categoria_slug %}
+              {% endif %}
             {% endfor %}
         </div>
       </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
+      </form>
     </div>
   </section>
   <section id="top-5">
