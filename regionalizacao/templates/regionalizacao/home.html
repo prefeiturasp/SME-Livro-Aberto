@@ -1,35 +1,39 @@
-{% extends 'base.html'  %}
-{% load static %}
+{% extends 'regionalizacao/base.html'  %}
 {% load humanize %}
 {% load l10n %}
-{% load fullurl %}
 
 {% block title %}Regionalização{% endblock %}
-
-{%block head %}
-  <meta property="og:locale" content="pt_BR">
-
-  <meta property="og:title" content="Regionalização - SMESP">
-  <meta property="og:site_name" content="Regionalização - SMESP">
-  <meta property="og:description" content="Conheça a ferramenta Regionalização da Secretaria da Educação de São Paulo.">
-
-  <meta property="og:type" content="website">
-
-
-  <meta property="og:image" content="{% static 'regionalizacao/img/og-regionalizacao.png' %}">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="854">
-  <meta property="og:image:height" content="216">
-
-  <link rel="stylesheet" href="{% static 'regionalizacao/css/style.css' %}">
-{% endblock %}
 
 {%block header %}
   <h1>Regionalização</h1>
   <p>Saiba onde está o orçamento da educação de São Paulo</p>
-  {% include '_header_nav.html' with more='regionalizacao:saiba_mais' last_update_header='Última atualização em: ' %}
+  {% include '_header_nav.html' with about='regionalizacao:saiba_mais' last_update_header='Última atualização em: ' %}
 {% endblock %}
+{%block sections %}
+  <section id="mapa">
+    <div class="wrapper">
+        <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
+      <form action="#top-5" method="get">
+          <div class="form-item">
+            <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
+                {% localize off %}
+                {% for value, label in filter_form.year.field.choices %}
+                    <option value="{{ value }}"
+                            {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
 
-{%block fb_link %}https://www.facebook.com/sharer/sharer.php?u={% fullurl 'regionalizacao:home' %}{% endblock %}
+                    </option>
+                {% endfor %}
+                {% endlocalize %}
+            </select>
+          </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
+      </form>
+      <h2>São Paulo</h2>
 
-{%block tw_link %}https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Regionalização%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url={% fullurl 'regionalizacao:home' %}{% endblock %}
+    </div>
+  </section>
+  <section id="localidade">
+    <div class="wrapper">
+      <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+  </section>
+{% endblock %}
