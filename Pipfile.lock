@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1ff13812a37d00fbbcf58d7d2a8a691d0f6f18e7789db174b0b0b6532bac3577"
+            "sha256": "509187383b263f0b925dfbbe10344b61d30a9c0804eeb9c961c1a8923a42d662"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -115,11 +115,11 @@
         },
         "drf-renderer-xlsx": {
             "hashes": [
-                "sha256:2230957a7a447f91e3d11c267ff80b252a8354cd0f72f36a1af3c287c7b925a6",
-                "sha256:5d0ef32945ab2c27d75ead858ad9a87cd1905e8ba7b9862412842fe57de72f7e"
+                "sha256:4c3dec2a95758f475095acef6f2fcd3093a47e142452e052c1e370fb5ca223d0",
+                "sha256:d159fd99cd4bb39cb32dd123629ca585bee56cccc6d9b3ec4e2cb7448981e736"
             ],
             "index": "pypi",
-            "version": "==0.3.5"
+            "version": "==0.3.3"
         },
         "et-xmlfile": {
             "hashes": [
