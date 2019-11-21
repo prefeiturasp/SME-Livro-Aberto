@@ -13,7 +13,12 @@
   <section id="mapa">
     <div class="wrapper">
         <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
-      <form action="#top-5" method="get">
+      <form action="#mapa" method="get" class="query">
+        <div class="form-item switch">
+          <input type="checkbox" name="" id="executed-switch">
+          <label for="executed-switch">Unidades diretas</label>
+          <label for="executed-switch">Unidades parceiras</label>
+        </div>
           <div class="form-item">
             <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
                 {% localize off %}
