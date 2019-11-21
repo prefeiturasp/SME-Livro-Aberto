@@ -21,6 +21,7 @@ drf-renderer-xlsx = "*"
 requests = "*"
 sentry-sdk = "*"
 celery = "*"
+django-fullurl = "*"
 
 [dev-packages]
 ipdb = "*"
