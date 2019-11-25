@@ -38,7 +38,7 @@ class Dre(models.Model):
 
 
 class TipoEscola(models.Model):
-    code = models.CharField(max_length=15)
+    code = models.CharField(max_length=15, unique=True)
 
     def __str__(self):
         return f'{self.code}'
