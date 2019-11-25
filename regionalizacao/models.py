@@ -16,7 +16,7 @@ class Escola(models.Model):
     dre = models.ForeignKey('Dre', on_delete=models.PROTECT)
     tipoesc = models.ForeignKey('TipoEscola', on_delete=models.PROTECT)
     distrito = models.ForeignKey('Distrito', on_delete=models.PROTECT)
-    codesc = models.IntegerField(unique=True)
+    codesc = models.CharField(max_length=7, unique=True)
     nomesc = models.CharField(max_length=120)
     endereco = models.CharField(max_length=200)
     numero = models.IntegerField()
