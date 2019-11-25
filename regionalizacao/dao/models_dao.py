@@ -8,6 +8,7 @@ from regionalizacao.models import (
     EtapaTipoEscolaFromTo,
     PtrfFromTo,
     UnidadeRecursosFromTo,
+    Dre,
 )
 
 
@@ -114,3 +115,30 @@ class UnidadeRecursosFromToDao(FromToDao):
         year_fromtos = self.model.objects.filter(year=sheet.year)
         year_fromtos.delete()
         return super().extract_spreadsheet(sheet)
+
+
+# TODO: add unit tests
+class DreDao:
+
+    def __init__(self):
+        self.model = Dre
+
+    def update_or_create(self, code, name):
+        try:
+            with transaction.atomic():
+                dre = self.create(code=code, name=name)
+            created = True
+        except IntegrityError:
+            dre = self.update(code=code, name=name)
+            created = False
+
+        return dre, created
+
+    def create(self, code, name):
+        return self.model.objects.create(code=code, name=name)
+
+    def update(self, code, name):
+        dre = self.model.objects.get(code=code)
+        dre.name = name
+        dre.save()
+        return dre
