@@ -9,6 +9,7 @@ from regionalizacao.models import (
     PtrfFromTo,
     UnidadeRecursosFromTo,
     Dre,
+    TipoEscola,
 )
 
 
@@ -142,3 +143,13 @@ class DreDao:
         dre.name = name
         dre.save()
         return dre
+
+
+# TODO: add unit tests
+class TipoEscolaDao:
+
+    def __init__(self):
+        self.model = TipoEscola
+
+    def get_or_create(self, code):
+        return self.model.objects.get_or_create(code=code)
