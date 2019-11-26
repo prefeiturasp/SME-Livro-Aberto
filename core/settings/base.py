@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.humanize',
     'rest_framework',
+    'fullurl',
     'mosaico',
     'geologia',
     'contratos',

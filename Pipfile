@@ -17,10 +17,11 @@ django-filter = "*"
 djangorestframework-csv = "*"
 pandas = "*"
 xlrd = "*"
-drf-renderer-xlsx = "*"
+drf-renderer-xlsx = "==0.3.3"
 requests = "*"
 sentry-sdk = "*"
 celery = "*"
+django-fullurl = "*"
 
 [dev-packages]
 ipdb = "*"

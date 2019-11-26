@@ -1,0 +1,32 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load fullurl %}
+
+{% block title %}Regionalização{% endblock %}
+
+{%block head %}
+  <meta property="og:locale" content="pt_BR">
+
+  <meta property="og:title" content="Regionalização - SMESP">
+  <meta property="og:site_name" content="Regionalização - SMESP">
+  <meta property="og:description" content="Conheça a ferramenta Regionalização da Secretaria da Educação de São Paulo.">
+
+  <meta property="og:type" content="website">
+
+  <meta property="og:image" content="{% static 'regionalizacao/img/og-regionalizacao.png' %}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="854">
+  <meta property="og:image:height" content="216">
+
+  <link rel="stylesheet" href="{% static 'regionalizacao/css/style.css' %}">
+{% endblock %}
+
+{%block header %}
+  <h1>Regionalização</h1>
+  <p>Saiba onde está o orçamento da educação de São Paulo</p>
+  {% include '_header_nav.html' with last_update_header='Última atualização em: ' more='regionalizacao:saiba_mais' %}
+{% endblock %}
+
+{%block fb_link %}https://www.facebook.com/sharer/sharer.php?u={% fullurl 'regionalizacao:home' %}{% endblock %}
+
+{%block tw_link %}https://twitter.com/intent/tweet?text=Conheça%20a%20ferramenta%20Regionalização%20do%20projeto%20Livro%20Aberto%20da%20Secretaria%20da%20Educação%20de%20São%20Paulo&url={% fullurl 'regionalizacao:home' %}{% endblock %}

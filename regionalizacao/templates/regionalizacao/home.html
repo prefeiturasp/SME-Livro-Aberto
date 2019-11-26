@@ -1,1 +1,44 @@
-{% extends 'base.html'  %}
+{% extends 'regionalizacao/base.html'  %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Regionalização{% endblock %}
+
+{%block header %}
+  <h1>Regionalização</h1>
+  <p>Saiba onde está o orçamento da educação de São Paulo</p>
+  {% include '_header_nav.html' with last_update_header='Última atualização em: ' about='regionalizacao:saiba_mais' %}
+{% endblock %}
+{%block sections %}
+  <section id="mapa">
+    <div class="wrapper">
+        <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
+      <form action="#mapa" method="get" class="query">
+        <div class="form-item switch">
+          <input type="checkbox" name="" id="executed-switch">
+          <label for="executed-switch">Unidades diretas</label>
+          <label for="executed-switch">Unidades parceiras</label>
+        </div>
+          <div class="form-item">
+            <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
+                {% localize off %}
+                {% for value, label in filter_form.year.field.choices %}
+                    <option value="{{ value }}"
+                            {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
+
+                    </option>
+                {% endfor %}
+                {% endlocalize %}
+            </select>
+          </div>
+        <input class="submit" type="submit" value="Filtrar" name="go">
+      </form>
+      <h2>São Paulo</h2>
+
+    </div>
+  </section>
+  <section id="localidade">
+    <div class="wrapper">
+      <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+  </section>
+{% endblock %}
