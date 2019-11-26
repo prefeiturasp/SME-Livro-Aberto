@@ -1,0 +1,11 @@
+body > header {
+  background-color: #65C55A;
+  background-image: url('../img/bg-header.svg');
+  background-repeat: no-repeat;
+  background-position: center 80%;
+  background-size: auto 150%;
+}
+
+body > header h1 + p {
+    color: #5F6B6D;
+}

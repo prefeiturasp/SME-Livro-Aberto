@@ -39,6 +39,7 @@
     <div class="wrapper">
       <h2>Este valor teve como <em>destino</em></h2>
       <form action="#destino" method="get">
+          <input type="hidden" name="{{ filter_form.year.name }}" value="{{filter_form.year.value|unlocalize}}">
       <ul class="legend">
         {% for destination in destinations %}
           {% include 'contratos/_legend_item.html' with destination=destination %}

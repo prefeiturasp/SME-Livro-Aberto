@@ -1,0 +1,21 @@
+stages:
+  - test
+
+variables:
+  APP_NAME: livro-aberto
+
+test:
+  image: python:latest
+  variables:
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/test_db"
+
+  services:
+    - postgres:latest
+
+  before_script:
+    - python -V
+    - pip install -U pipenv
+    - pipenv install --dev
+
+  script:
+  - pipenv run pytest
