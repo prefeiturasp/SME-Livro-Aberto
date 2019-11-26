@@ -18,9 +18,8 @@ from regionalizacao.models import (
 @pytest.mark.django_db
 class TestUpdateDreTable(TestCase):
 
-    @patch.object(requests, 'get')
-    def test_populate_dre_table(self, mock_get):
-        api_return = {
+    def dres_fixture(self):
+        return {
             "results": [
                 {
                     "dre": "BT",
@@ -32,6 +31,10 @@ class TestUpdateDreTable(TestCase):
                 },
             ],
         }
+
+    @patch.object(requests, 'get')
+    def test_populate_dre_table(self, mock_get):
+        api_return = self.dres_fixture()
         mock_get.return_value = api_return
 
         created, updated = update_dre_table()
@@ -49,18 +52,7 @@ class TestUpdateDreTable(TestCase):
     def test_updates_existing_dre(self, mock_get):
         mommy.make(Dre, code="BT", name="old name")
 
-        api_return = {
-            "results": [
-                {
-                    "dre": "BT",
-                    "diretoria": "DIRETORIA REGIONAL DE EDUCACAO BUTANTA",
-                },
-                {
-                    "dre": "SA",
-                    "diretoria": "DIRETORIA REGIONAL DE EDUCACAO SANTO AMARO"
-                },
-            ],
-        }
+        api_return = self.dres_fixture()
         mock_get.return_value = api_return
 
         created, updated = update_dre_table()
@@ -78,9 +70,8 @@ class TestUpdateDreTable(TestCase):
 @pytest.mark.django_db
 class TestUpdateTipoEscolaTable(TestCase):
 
-    @patch.object(requests, 'get')
-    def test_populate_tipo_escola_table(self, mock_get):
-        api_return = {
+    def tipos_escola_fixture(self):
+        return {
             "results": [
                 {
                     "tipoesc": "CIEJA",
@@ -90,6 +81,10 @@ class TestUpdateTipoEscolaTable(TestCase):
                 },
             ],
         }
+
+    @patch.object(requests, 'get')
+    def test_populate_tipo_escola_table(self, mock_get):
+        api_return = self.tipos_escola_fixture()
         mock_get.return_value = api_return
 
         created = update_tipo_escola_table()
@@ -105,16 +100,7 @@ class TestUpdateTipoEscolaTable(TestCase):
     def test_ignores_when_tipo_already_exist(self, mock_get):
         mommy.make(TipoEscola, code="CIEJA")
 
-        api_return = {
-            "results": [
-                {
-                    "tipoesc": "CIEJA",
-                },
-                {
-                    "tipoesc": "MOVA",
-                },
-            ],
-        }
+        api_return = self.tipos_escola_fixture()
         mock_get.return_value = api_return
 
         created = update_tipo_escola_table()
@@ -130,9 +116,8 @@ class TestUpdateTipoEscolaTable(TestCase):
 @pytest.mark.django_db
 class TestUpdateEscolaTable(TestCase):
 
-    @patch.object(requests, 'get')
-    def test_populate_escola_table(self, mock_get):
-        api_return = {
+    def escolas_fixture(self):
+        return {
             "results": [
                 {
                   "dre": "BT",
@@ -172,6 +157,10 @@ class TestUpdateEscolaTable(TestCase):
                 },
             ],
         }
+
+    @patch.object(requests, 'get')
+    def test_populate_escola_table(self, mock_get):
+        api_return = self.escolas_fixture()
         mock_get.return_value = api_return
 
         created = update_escola_table()
@@ -203,6 +192,47 @@ class TestUpdateEscolaTable(TestCase):
         for escola, expected in zip(escolas, api_return['results']):
             assert escola.dre == dre
             assert escola.tipoesc == tipo
+            assert escola.distrito.code == int(expected['coddist'])
+            assert escola.codesc == expected['codesc']
+            assert escola.nomesc == expected['nomesc']
+            assert escola.endereco == expected['endereco']
+            assert escola.numero == int(expected['numero'])
+            assert escola.bairro == expected['bairro']
+            assert escola.cep == expected['cep']
+            assert escola.rede == expected['rede']
+            assert str(escola.latitude) == str(expected['latitude'])
+            assert str(escola.longitude) == str(expected['longitude'])
+            assert escola.total_vagas == expected['total_vagas']
+
+    @patch.object(requests, 'get')
+    def test_updates_existing_escola(self, mock_get):
+        mommy.make(Escola, codesc="000191", _fill_optional=True)
+        assert 1 == Dre.objects.count()
+        assert 1 == TipoEscola.objects.count()
+        assert 1 == Distrito.objects.count()
+        assert 1 == Escola.objects.count()
+
+        api_return = self.escolas_fixture()
+        mock_get.return_value = api_return
+
+        created = update_escola_table()
+        assert 1 == created
+
+        dres = Dre.objects.all()
+        assert 2 == dres.count()
+
+        tipos = TipoEscola.objects.all()
+        assert 2 == tipos.count()
+
+        distritos = Distrito.objects.all().order_by('-code')
+        assert 3 == distritos.count()
+
+        escolas = Escola.objects.all().order_by('codesc')
+        assert 2 == escolas.count()
+
+        for escola, expected in zip(escolas, api_return['results']):
+            assert escola.dre.code == expected['dre']
+            assert escola.tipoesc.code == expected['tipoesc']
             assert escola.distrito.code == int(expected['coddist'])
             assert escola.codesc == expected['codesc']
             assert escola.nomesc == expected['nomesc']

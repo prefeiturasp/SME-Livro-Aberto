@@ -177,7 +177,7 @@ class EscolaDao:
         self.tipos_dao = TipoEscolaDao()
         self.distritos_dao = DistritoDao()
 
-    def get_or_create(self, **kwargs):
+    def update_or_create(self, **kwargs):
         dre, _ = self.dres_dao.update_or_create(
             code=kwargs['dre'], name=kwargs['diretoria'])
         tipo, _ = self.tipos_dao.get_or_create(code=kwargs['tipoesc'])
@@ -199,4 +199,25 @@ class EscolaDao:
             longitude=kwargs['longitude'],
             total_vagas=kwargs['total_vagas'],
         )
-        return self.model.objects.get_or_create(**escola_data)
+
+        try:
+            with transaction.atomic():
+                escola = self.create(**escola_data)
+            created = True
+        except IntegrityError:
+            escola = self.update(**escola_data)
+            created = False
+
+        return escola, created
+
+    def create(self, **data):
+        return self.model.objects.create(**data)
+
+    def update(self, **data):
+        codesc = data.pop('codesc')
+        escola = self.model.objects.get(codesc=codesc)
+
+        for field_name, value in data.items():
+            setattr(escola, field_name, value)
+        escola.save()
+        return escola

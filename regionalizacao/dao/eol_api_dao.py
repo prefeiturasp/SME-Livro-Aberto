@@ -53,7 +53,7 @@ def update_escola_table():
 
     created_count = 0
     for escola_dict in results:
-        _, created = escola_dao.get_or_create(
+        _, created = escola_dao.update_or_create(
             dre=escola_dict["dre"],
             codesc=escola_dict["codesc"],
             tipoesc=escola_dict["tipoesc"],
