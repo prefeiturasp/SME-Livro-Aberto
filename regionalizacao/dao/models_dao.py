@@ -10,6 +10,8 @@ from regionalizacao.models import (
     UnidadeRecursosFromTo,
     Dre,
     TipoEscola,
+    Distrito,
+    Escola,
 )
 
 
@@ -153,3 +155,48 @@ class TipoEscolaDao:
 
     def get_or_create(self, code):
         return self.model.objects.get_or_create(code=code)
+
+
+# TODO: add unit tests
+class DistritoDao:
+
+    def __init__(self):
+        self.model = Distrito
+
+    def get_or_create(self, code, name):
+        return self.model.objects.get_or_create(
+            code=code, defaults={'name': name})
+
+
+# TODO: add unit tests
+class EscolaDao:
+
+    def __init__(self):
+        self.model = Escola
+        self.dres_dao = DreDao()
+        self.tipos_dao = TipoEscolaDao()
+        self.distritos_dao = DistritoDao()
+
+    def get_or_create(self, **kwargs):
+        dre, _ = self.dres_dao.update_or_create(
+            code=kwargs['dre'], name=kwargs['diretoria'])
+        tipo, _ = self.tipos_dao.get_or_create(code=kwargs['tipoesc'])
+        distrito, _ = self.distritos_dao.get_or_create(
+            code=kwargs['coddist'], name=kwargs['distrito'])
+
+        escola_data = dict(
+            dre=dre,
+            tipoesc=tipo,
+            distrito=distrito,
+            codesc=kwargs['codesc'],
+            nomesc=kwargs['nomesc'],
+            endereco=kwargs['endereco'],
+            numero=kwargs['numero'],
+            bairro=kwargs['bairro'],
+            cep=kwargs['cep'],
+            rede=kwargs['rede'],
+            latitude=kwargs['latitude'],
+            longitude=kwargs['longitude'],
+            total_vagas=kwargs['total_vagas'],
+        )
+        return self.model.objects.get_or_create(**escola_data)
