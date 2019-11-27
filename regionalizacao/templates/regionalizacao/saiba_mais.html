@@ -1,0 +1,31 @@
+{% extends 'regionalizacao/base.html'  %}
+
+{%block header %}
+    <h1>Regionalização</h1>
+    <p>Execução de Contratos da Educação em São Paulo</p>
+    {% include '_header_nav.html' with about='regionalizacao:saiba_mais' %}
+{% endblock %}
+
+{% block title %}Regionalização - Saiba mais{% endblock %}
+
+{%block sections %}
+    <section>
+        <div class="wrapper container">
+            <div class="sidebar">
+                <div class="card sobre">
+                    <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                    <h1>
+                        Re<br />
+                        gio<br />
+                        na<br />
+                        li<br />
+                        za<br />
+                        ção<br />
+                    </h1>
+                </div>
+            </div>
+            <div class="main verde txt">
+            </div>
+        </div>
+    </section>
+{% endblock %}
