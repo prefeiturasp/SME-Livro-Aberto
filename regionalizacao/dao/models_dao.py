@@ -8,6 +8,10 @@ from regionalizacao.models import (
     EtapaTipoEscolaFromTo,
     PtrfFromTo,
     UnidadeRecursosFromTo,
+    Dre,
+    TipoEscola,
+    Distrito,
+    Escola,
 )
 
 
@@ -114,3 +118,106 @@ class UnidadeRecursosFromToDao(FromToDao):
         year_fromtos = self.model.objects.filter(year=sheet.year)
         year_fromtos.delete()
         return super().extract_spreadsheet(sheet)
+
+
+# TODO: add unit tests
+class DreDao:
+
+    def __init__(self):
+        self.model = Dre
+
+    def update_or_create(self, code, name):
+        try:
+            with transaction.atomic():
+                dre = self.create(code=code, name=name)
+            created = True
+        except IntegrityError:
+            dre = self.update(code=code, name=name)
+            created = False
+
+        return dre, created
+
+    def create(self, code, name):
+        return self.model.objects.create(code=code, name=name)
+
+    def update(self, code, name):
+        dre = self.model.objects.get(code=code)
+        dre.name = name
+        dre.save()
+        return dre
+
+
+# TODO: add unit tests
+class TipoEscolaDao:
+
+    def __init__(self):
+        self.model = TipoEscola
+
+    def get_or_create(self, code):
+        return self.model.objects.get_or_create(code=code)
+
+
+# TODO: add unit tests
+class DistritoDao:
+
+    def __init__(self):
+        self.model = Distrito
+
+    def get_or_create(self, code, name):
+        return self.model.objects.get_or_create(
+            code=code, defaults={'name': name})
+
+
+# TODO: add unit tests
+class EscolaDao:
+
+    def __init__(self):
+        self.model = Escola
+        self.dres_dao = DreDao()
+        self.tipos_dao = TipoEscolaDao()
+        self.distritos_dao = DistritoDao()
+
+    def update_or_create(self, **kwargs):
+        dre, _ = self.dres_dao.update_or_create(
+            code=kwargs['dre'], name=kwargs['diretoria'])
+        tipo, _ = self.tipos_dao.get_or_create(code=kwargs['tipoesc'])
+        distrito, _ = self.distritos_dao.get_or_create(
+            code=kwargs['coddist'], name=kwargs['distrito'])
+
+        escola_data = dict(
+            dre=dre,
+            tipoesc=tipo,
+            distrito=distrito,
+            codesc=kwargs['codesc'],
+            nomesc=kwargs['nomesc'],
+            endereco=kwargs['endereco'],
+            numero=kwargs['numero'],
+            bairro=kwargs['bairro'],
+            cep=kwargs['cep'],
+            rede=kwargs['rede'],
+            latitude=kwargs['latitude'],
+            longitude=kwargs['longitude'],
+            total_vagas=kwargs['total_vagas'],
+        )
+
+        try:
+            with transaction.atomic():
+                escola = self.create(**escola_data)
+            created = True
+        except IntegrityError:
+            escola = self.update(**escola_data)
+            created = False
+
+        return escola, created
+
+    def create(self, **data):
+        return self.model.objects.create(**data)
+
+    def update(self, **data):
+        codesc = data.pop('codesc')
+        escola = self.model.objects.get(codesc=codesc)
+
+        for field_name, value in data.items():
+            setattr(escola, field_name, value)
+        escola.save()
+        return escola

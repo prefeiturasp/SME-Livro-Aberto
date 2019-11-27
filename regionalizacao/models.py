@@ -8,15 +8,48 @@ YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
 
 class Escola(models.Model):
-    codesc = models.IntegerField(unique=True)
+    REDES = (
+        ('DIR', 'Rede direta SME'),
+        ('CON', 'Rede parceira contratada'),
+    )
+
+    dre = models.ForeignKey('Dre', on_delete=models.PROTECT)
+    tipoesc = models.ForeignKey('TipoEscola', on_delete=models.PROTECT)
+    distrito = models.ForeignKey('Distrito', on_delete=models.PROTECT)
+    codesc = models.CharField(max_length=7, unique=True)
     nomesc = models.CharField(max_length=120)
     endereco = models.CharField(max_length=200)
     numero = models.IntegerField()
     bairro = models.CharField(max_length=100)
     cep = models.IntegerField()
+    rede = models.CharField(max_length=3, choices=REDES)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
+
+
+class Dre(models.Model):
+    '''Diretoria Regional Escolar'''
+    code = models.CharField(max_length=3, unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+
+
+class TipoEscola(models.Model):
+    code = models.CharField(max_length=15, unique=True)
+
+    def __str__(self):
+        return f'{self.code}'
+
+
+class Distrito(models.Model):
+    code = models.IntegerField(unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
 
 
 class FromToSpreadsheet(models.Model):
