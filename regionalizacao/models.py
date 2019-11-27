@@ -93,7 +93,7 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
 
 class PtrfFromTo(models.Model):
     year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
-    codesc = models.IntegerField()
+    codesc = models.CharField(max_length=7)
     vlrepasse = models.FloatField()
 
     class Meta:
@@ -172,7 +172,7 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
 class UnidadeRecursosFromTo(models.Model):
     year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
-    codesc = models.IntegerField()
+    codesc = models.CharField(max_length=7)
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
     valor = models.FloatField()
