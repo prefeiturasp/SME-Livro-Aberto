@@ -14,11 +14,10 @@ body > header {
   background-color: #65C55A;
 }
 
-#localidade .bar {
-  background-color: #65C55A;
+#localidade .bar{
   padding: 0.5rem 0;
   border-radius: 3px;
-  margin: .25rem;
+  margin: .25rem 0;
   font-size: 0.75em;
   white-space: nowrap;
 }
