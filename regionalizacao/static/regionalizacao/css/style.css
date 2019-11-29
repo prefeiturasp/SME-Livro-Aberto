@@ -1,5 +1,4 @@
 body > header {
-  background-color: #65C55A;
   background-image: url('../img/bg-header.svg');
   background-repeat: no-repeat;
   background-position: center 80%;
@@ -8,4 +7,30 @@ body > header {
 
 body > header h1 + p {
     color: #5F6B6D;
+}
+
+#localidade .bar,
+body > header {
+  background-color: #65C55A;
+}
+
+#localidade .bar{
+  transition: all 0.5s ease;
+}
+
+#localidade .bar{
+  padding: 0.5rem 0;
+  border-radius: 3px;
+  margin: 0 0 .25rem 0;
+  font-size: 0.75em;
+  white-space: nowrap;
+}
+
+#localidade .bar > *{
+  padding: 0 1rem;
+}
+
+#localidade .bar .label{
+  text-transform: uppercase;
+  font-weight: bold;
 }

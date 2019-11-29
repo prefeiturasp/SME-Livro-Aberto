@@ -38,7 +38,47 @@
     </div>
   </section>
   <section id="localidade">
-    <div class="wrapper">
-      <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+      <div class="wrapper">
+          <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+          <form action="#localidade" method="get" class="query">
+              <div class="form-item">
+                  Visualizar por:
+              </div>
+              <div class="form-item">
+                  <select name="">
+                      <option value="">Zona</option>
+                      <option value="">Diretoria Regional de Ensino</option>
+                  </select>
+              </div>
+              <div class="form-item switch">
+                  <input type="checkbox" name="" id="localidade-order">
+                  <label for="localidade-order">Ordem Alfabética</label>
+                  <label for="localidade-order">Ordem Crescente</label>
+              </div>
+              <input class="submit" type="submit" value="Filtrar" name="go">
+          </form>
+          <div class="barchart">
+              <div class="bar" data-label="Leste" data-value="100993" data-percentage="100">
+                  <div class="label">Leste</div>
+                  <div class="value">R$ 100.993,00</div>
+              </div>
+              <div class="bar" data-label="Oeste" data-value="75993" data-percentage="75" style="width: 75%">
+                  <div class="label">Oeste</div>
+                  <div class="value">R$ 75.993,00</div>
+              </div>
+              <div class="bar" data-label="Centro" data-value="50993" data-percentage="50" style="width: 50%">
+                  <div class="label">Centro</div>
+                  <div class="value">R$ 50.993,00</div>
+              </div>
+              <div class="bar" data-label="Norte" data-value="50993" data-percentage="50" style="width: 50%">
+                  <div class="label">Norte</div>
+                  <div class="value">R$ 50.993,00</div>
+              </div>
+              <div class="bar" data-label="Sul" data-value="5993" data-percentage="5" style="width: 5%">
+                  <div class="label">Sul</div>
+                  <div class="value">R$ 5.993,00</div>
+              </div>
+          </div>
+      </div>
   </section>
 {% endblock %}
