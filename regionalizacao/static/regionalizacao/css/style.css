@@ -15,9 +15,13 @@ body > header {
 }
 
 #localidade .bar{
+  transition: all 0.5s ease;
+}
+
+#localidade .bar{
   padding: 0.5rem 0;
   border-radius: 3px;
-  margin: .25rem 0;
+  margin: 0 0 .25rem 0;
   font-size: 0.75em;
   white-space: nowrap;
 }

@@ -1,3 +1,14 @@
+let style =  el => window.getComputedStyle(el);
+let margin = (name, el) => parseFloat(style(el)['margin' + name]) || 0;
+let px = n => parseFloat(n) + 'px';
+
+function height(el){
+    let baseHeight = el.getClientRects()[0].height
+    let margins = margin('Top', el) + margin('Bottom', el);
+    console.log(baseHeight, margins);
+    return baseHeight + margins;
+}
+
 function byLabel(a, b) {
     let nameA = a.dataset.label.toUpperCase();
     let nameB = b.dataset.label.toUpperCase();
@@ -11,26 +22,32 @@ function byValue(a, b) {
 }
 
 window.addEventListener("DOMContentLoaded", function(){
-    document.querySelector('#localidade-order').addEventListener('change', function(){
-        let barsEl = document.querySelectorAll('#localidade .barchart > .bar');
-        let bars = Array.prototype.slice.call(barsEl);
+    let barsEl = document.querySelectorAll('#localidade .barchart > .bar');
+    let bars = Array.prototype.slice.call(barsEl);
+    let ys = bars.map((bar, i) => height(bar) * i);
 
-        if(this.checked){
-            bars.sort(byLabel)
-        }else{
-            bars.sort(byValue)
-        }
+    let style = document.createElement('style');
+    style.type = 'text/css';
+    let rule = (y, i) => `.localidade-bar-${i}{ transform: translateY(${px(y)}); }`;
+    let rules = ys.map(rule);
+    style.innerHTML = rules.join('\n');
+    document.getElementsByTagName('head')[0].appendChild(style);
 
-        let barchart = document.querySelector('#localidade .barchart');
-        barchart.style.position = 'relative';
-        barchart.style.height = '20em';
+    let barchart = document.querySelector('#localidade .barchart');
+    barchart.style.position = 'relative';
+    barchart.style.height = px(height(bars[0]) + ys[ys.length - 1]);
+
+    function sortOnChange(){
+        let sortFunc = this.checked? byLabel : byValue;
+        bars.sort(sortFunc)
         bars.forEach((bar, i) => {
             bar.style.position = 'absolute';
-            bar.style.top = (5 * i) + 'em';
+            bar.className = `bar localidade-bar-${i}`;
         });
-        bars.forEach(bar => barchart.appendChild(bar));
-        bars.forEach(bar => {
-            bar.style.opacity = '1';
-        });
-    });
+
+    }
+
+    let localidadeOrderSwitch = document.querySelector('#localidade-order');
+    localidadeOrderSwitch.addEventListener('change', sortOnChange);
+    sortOnChange.call(localidadeOrderSwitch)
 });
