@@ -61,9 +61,9 @@ class FromToSpreadsheet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     extracted = models.BooleanField(default=False, editable=False)
     # fields used to store which FromTos where successfully added
-    added_fromtos = ArrayField(models.IntegerField(), null=True,
+    added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
                                editable=False)
-    updated_fromtos = ArrayField(models.IntegerField(), null=True,
+    updated_fromtos = ArrayField(models.CharField(max_length=10), null=True,
                                  editable=False)
 
     class Meta:
@@ -94,6 +94,47 @@ class PtrfFromToSpreadsheet(FromToSpreadsheet):
         dao.extract_spreadsheet(self)
 
 
+class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
+    added_fromtos = ArrayField(models.IntegerField(), null=True,
+                               editable=False)
+    updated_fromtos = ArrayField(models.IntegerField(), null=True,
+                                 editable=False)
+
+    class Meta:
+        verbose_name = 'Planilha Distrito-Zona'
+        verbose_name_plural = 'Planilhas Distrito-Zona'
+
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import DistritoZonaFromToDao
+        dao = DistritoZonaFromToDao()
+        dao.extract_spreadsheet(self)
+
+
+class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
+
+    class Meta:
+        verbose_name = 'Planilha Etapa-TipoEscola'
+        verbose_name_plural = 'Planilhas Etapa-TipoEscola'
+
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import EtapaTipoEscolaFromToDao
+        dao = EtapaTipoEscolaFromToDao()
+        dao.extract_spreadsheet(self)
+
+
+class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+
+    class Meta:
+        verbose_name = 'Planilha Unidade-Recursos'
+        verbose_name_plural = 'Planilhas Unidade-Recursos'
+
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import UnidadeRecursosFromToDao
+        dao = UnidadeRecursosFromToDao()
+        dao.extract_spreadsheet(self)
+
+
 class PtrfFromTo(models.Model):
     year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
     codesc = models.CharField(max_length=7)
@@ -105,18 +146,6 @@ class PtrfFromTo(models.Model):
 
     def __str__(self):
         return f'{self.codesc} - {self.vlrepasse}'
-
-
-class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
-
-    class Meta:
-        verbose_name = 'Planilha Distrito-Zona'
-        verbose_name_plural = 'Planilhas Distrito-Zona'
-
-    def extract_data(self):
-        from regionalizacao.dao.models_dao import DistritoZonaFromToDao
-        dao = DistritoZonaFromToDao()
-        dao.extract_spreadsheet(self)
 
 
 class DistritoZonaFromTo(models.Model):
@@ -131,22 +160,6 @@ class DistritoZonaFromTo(models.Model):
         return f'{self.coddist} - {self.zona}'
 
 
-class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
-    added_fromtos = ArrayField(models.CharField(max_length=10), null=True,
-                               editable=False)
-    updated_fromtos = ArrayField(models.CharField(max_length=10), null=True,
-                                 editable=False)
-
-    class Meta:
-        verbose_name = 'Planilha Etapa-TipoEscola'
-        verbose_name_plural = 'Planilhas Etapa-TipoEscola'
-
-    def extract_data(self):
-        from regionalizacao.dao.models_dao import EtapaTipoEscolaFromToDao
-        dao = EtapaTipoEscolaFromToDao()
-        dao.extract_spreadsheet(self)
-
-
 class EtapaTipoEscolaFromTo(models.Model):
     tipoesc = models.CharField(max_length=10, unique=True)
     desctipoesc = models.CharField(max_length=100)
@@ -158,19 +171,6 @@ class EtapaTipoEscolaFromTo(models.Model):
 
     def __str__(self):
         return f'{self.tipoesc} - {self.etapa}'
-
-
-class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
-    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
-
-    class Meta:
-        verbose_name = 'Planilha Unidade-Recursos'
-        verbose_name_plural = 'Planilhas Unidade-Recursos'
-
-    def extract_data(self):
-        from regionalizacao.dao.models_dao import UnidadeRecursosFromToDao
-        dao = UnidadeRecursosFromToDao()
-        dao.extract_spreadsheet(self)
 
 
 class UnidadeRecursosFromTo(models.Model):

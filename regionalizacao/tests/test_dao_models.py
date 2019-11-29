@@ -38,7 +38,7 @@ class TestPtrfFromToDao:
         fts = PtrfFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        codescs = [400003, 400010]
+        codescs = ['400003', '400010']
 
         assert fts[0].codesc == codescs[0]
         assert fts[0].vlrepasse == 2.55
@@ -208,7 +208,7 @@ class TestUnidadeRecursosFromToDao:
         fts = UnidadeRecursosFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        codescs = [400415, 400415]
+        codescs = ['400415', '400415']
 
         assert fts[0].codesc == codescs[0]
         assert fts[0].grupo == 'Repasse'
