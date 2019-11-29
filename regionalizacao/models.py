@@ -1,10 +1,7 @@
-from datetime import date
-
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
-YEAR_CHOICES = [(y, y) for y in range(2011, date.today().year + 1)]
 
 
 class Escola(models.Model):
@@ -82,7 +79,7 @@ class FromToSpreadsheet(models.Model):
 
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
-    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+    year = models.IntegerField('Ano dos dados')
 
     class Meta:
         verbose_name = 'Planilha PTRF'
@@ -123,7 +120,7 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
 
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
-    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+    year = models.IntegerField('Ano dos dados')
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
@@ -136,7 +133,7 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
 
 
 class PtrfFromTo(models.Model):
-    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+    year = models.IntegerField('Ano dos dados')
     codesc = models.CharField(max_length=7)
     vlrepasse = models.FloatField()
 
@@ -174,7 +171,7 @@ class EtapaTipoEscolaFromTo(models.Model):
 
 
 class UnidadeRecursosFromTo(models.Model):
-    year = models.IntegerField('Ano dos dados', choices=YEAR_CHOICES)
+    year = models.IntegerField('Ano dos dados')
     codesc = models.CharField(max_length=7)
     grupo = models.CharField(max_length=30)
     subgrupo = models.CharField(max_length=30, null=True, blank=True)
