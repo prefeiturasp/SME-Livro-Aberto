@@ -90,6 +90,9 @@ class DistritoZonaFromToDao(FromToDao):
             SheetColumn('zona', 'c'),
         ]
 
+    def get_all(self):
+        return self.model.objects.all().order_by('coddist')
+
 
 class EtapaTipoEscolaFromToDao(FromToDao):
 
@@ -162,6 +165,9 @@ class DistritoDao:
 
     def __init__(self):
         self.model = Distrito
+
+    def get(self, coddist):
+        return self.model.objects.get(coddist=coddist)
 
     def get_or_create(self, coddist, name):
         return self.model.objects.get_or_create(

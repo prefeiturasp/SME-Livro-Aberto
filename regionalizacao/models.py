@@ -52,7 +52,7 @@ class Distrito(models.Model):
     zona = models.CharField(max_length=10, null=True)
 
     def __str__(self):
-        return f'{self.code} - {self.name}'
+        return f'{self.coddist} - {self.name}'
 
 
 class FromToSpreadsheet(models.Model):
