@@ -163,9 +163,9 @@ class DistritoDao:
     def __init__(self):
         self.model = Distrito
 
-    def get_or_create(self, code, name):
+    def get_or_create(self, coddist, name):
         return self.model.objects.get_or_create(
-            code=code, defaults={'name': name})
+            coddist=coddist, defaults={'name': name})
 
 
 # TODO: add unit tests
@@ -182,7 +182,7 @@ class EscolaDao:
             code=kwargs['dre'], name=kwargs['diretoria'])
         tipo, _ = self.tipos_dao.get_or_create(code=kwargs['tipoesc'])
         distrito, _ = self.distritos_dao.get_or_create(
-            code=kwargs['coddist'], name=kwargs['distrito'])
+            coddist=kwargs['coddist'], name=kwargs['distrito'])
 
         escola_data = dict(
             dre=dre,

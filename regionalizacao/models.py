@@ -47,16 +47,9 @@ class TipoEscola(models.Model):
 
 
 class Distrito(models.Model):
-    ZONAS = (
-        (1, 'Norte'),
-        (2, 'Sul'),
-        (3, 'Leste'),
-        (4, 'Oeste'),
-        (5, 'Centro'),
-    )
-    code = models.IntegerField(unique=True)
+    coddist = models.IntegerField(unique=True)
     name = models.CharField(max_length=100)
-    zona = models.CharField(max_length=6, null=True)
+    zona = models.CharField(max_length=10, null=True)
 
     def __str__(self):
         return f'{self.code} - {self.name}'

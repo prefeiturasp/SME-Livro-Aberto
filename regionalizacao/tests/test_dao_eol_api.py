@@ -172,7 +172,7 @@ class TestUpdateEscolaTable(TestCase):
         tipos = TipoEscola.objects.all()
         assert 1 == tipos.count()
 
-        distritos = Distrito.objects.all().order_by('-code')
+        distritos = Distrito.objects.all().order_by('-coddist')
         assert 2 == distritos.count()
 
         escolas = Escola.objects.all().order_by('codesc')
@@ -186,13 +186,13 @@ class TestUpdateEscolaTable(TestCase):
         assert 'EMEF' == tipo.code
 
         for distrito, expected in zip(distritos, api_return['results']):
-            assert distrito.code == int(expected['coddist'])
+            assert distrito.coddist == int(expected['coddist'])
             assert distrito.name == expected['distrito']
 
         for escola, expected in zip(escolas, api_return['results']):
             assert escola.dre == dre
             assert escola.tipoesc == tipo
-            assert escola.distrito.code == int(expected['coddist'])
+            assert escola.distrito.coddist == int(expected['coddist'])
             assert escola.codesc == expected['codesc']
             assert escola.nomesc == expected['nomesc']
             assert escola.endereco == expected['endereco']
@@ -233,7 +233,7 @@ class TestUpdateEscolaTable(TestCase):
         for escola, expected in zip(escolas, api_return['results']):
             assert escola.dre.code == expected['dre']
             assert escola.tipoesc.code == expected['tipoesc']
-            assert escola.distrito.code == int(expected['coddist'])
+            assert escola.distrito.coddist == int(expected['coddist'])
             assert escola.codesc == expected['codesc']
             assert escola.nomesc == expected['nomesc']
             assert escola.endereco == expected['endereco']
