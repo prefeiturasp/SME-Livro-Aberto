@@ -2,6 +2,14 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
+class ExecucaoEscola(models.Model):
+    escola = models.ForeignKey('Escola', on_delete=models.PROTECT)
+    year = models.DateField()
+    ptrf = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return (f'{self.year.strftime("%Y")} - {self.escola.codesc} - '
+                f'{self.escola.nomesc}')
 
 
 class Escola(models.Model):
