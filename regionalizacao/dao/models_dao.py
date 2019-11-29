@@ -104,6 +104,9 @@ class EtapaTipoEscolaFromToDao(FromToDao):
             SheetColumn('etapa', 'c'),
         ]
 
+    def get_all(self):
+        return self.model.objects.all().order_by('tipoesc')
+
 
 class UnidadeRecursosFromToDao(FromToDao):
 
@@ -156,6 +159,12 @@ class TipoEscolaDao:
     def __init__(self):
         self.model = TipoEscola
 
+    def get(self, code):
+        try:
+            return self.model.objects.get(code=code)
+        except self.model.DoesNotExist:
+            return None
+
     def get_or_create(self, code):
         return self.model.objects.get_or_create(code=code)
 
@@ -167,7 +176,10 @@ class DistritoDao:
         self.model = Distrito
 
     def get(self, coddist):
-        return self.model.objects.get(coddist=coddist)
+        try:
+            return self.model.objects.get(coddist=coddist)
+        except self.model.DoesNotExist:
+            return None
 
     def get_or_create(self, coddist, name):
         return self.model.objects.get_or_create(
