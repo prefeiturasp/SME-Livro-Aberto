@@ -80,6 +80,9 @@ class PtrfFromToDao(FromToDao):
         year_fromtos.delete()
         return super().extract_spreadsheet(sheet)
 
+    def get_all(self):
+        return self.model.objects.all().order_by('codesc')
+
 
 class DistritoZonaFromToDao(FromToDao):
 
@@ -194,6 +197,12 @@ class EscolaDao:
         self.dres_dao = DreDao()
         self.tipos_dao = TipoEscolaDao()
         self.distritos_dao = DistritoDao()
+
+    def get(self, codesc):
+        try:
+            return self.model.objects.get(codesc=codesc)
+        except self.model.DoesNotExist:
+            return None
 
     def update_or_create(self, **kwargs):
         dre, _ = self.dres_dao.update_or_create(

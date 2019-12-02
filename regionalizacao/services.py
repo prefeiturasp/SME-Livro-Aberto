@@ -1,17 +1,17 @@
 from regionalizacao.dao.models_dao import (
-    DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
-    TipoEscolaDao,
+    DistritoDao, DistritoZonaFromToDao, EscolaDao, EtapaTipoEscolaFromToDao,
+    TipoEscolaDao, PtrfFromToDao,
 )
 
 
 def apply_distrito_zona_fromto():
     ft_dao = DistritoZonaFromToDao()
-    distritos_dao = DistritoDao()
+    distrito_dao = DistritoDao()
 
     fts = ft_dao.get_all()
 
     for ft in fts:
-        distrito = distritos_dao.get(coddist=ft.coddist)
+        distrito = distrito_dao.get(coddist=ft.coddist)
         if distrito:
             distrito.zona = ft.zona
             distrito.save()
@@ -19,13 +19,26 @@ def apply_distrito_zona_fromto():
 
 def apply_etapa_tipo_escola_fromto():
     ft_dao = EtapaTipoEscolaFromToDao()
-    tipos_dao = TipoEscolaDao()
+    tipo_dao = TipoEscolaDao()
 
     fts = ft_dao.get_all()
 
     for ft in fts:
-        tipo = tipos_dao.get(code=ft.tipoesc)
+        tipo = tipo_dao.get(code=ft.tipoesc)
         if tipo:
             tipo.desc = ft.desctipoesc
             tipo.etapa = ft.etapa
             tipo.save()
+
+
+def apply_ptrf_fromto():
+    ft_dao = PtrfFromToDao()
+    escola_dao = EscolaDao()
+
+    fts = ft_dao.get_all()
+
+    for ft in fts:
+        escola = escola_dao.get(codesc=ft.codesc)
+        if escola:
+            escola.ptrf = ft.vlrepasse
+            escola.save()
