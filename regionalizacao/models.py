@@ -37,7 +37,7 @@ class Recurso(models.Model):
     escola = models.ForeignKey('Escola', on_delete=models.CASCADE,
                                related_name='recursos')
     subgrupo = models.ForeignKey('Subgrupo', on_delete=models.CASCADE)
-    cost = models.FloatField()
+    cost = models.FloatField(null=True)
     label = models.CharField(max_length=150, null=True, blank=True)
     amount = models.IntegerField(null=True, blank=True)
 
