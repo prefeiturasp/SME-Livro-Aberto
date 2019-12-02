@@ -29,6 +29,18 @@ class EscolaInfo(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
+
+    class Meta:
+        unique_together = ('escola', 'year')
+
+    def __str__(self):
+        return f'{self.escola.codesc}: {self.nomesc}'
+
+
+class Budget(models.Model):
+    escola = models.ForeignKey('Escola', on_delete=models.CASCADE,
+                               related_name='budgets')
+    year = models.PositiveSmallIntegerField(default=date.today().year)
     ptrf = models.FloatField(null=True, blank=True)
 
     class Meta:
@@ -39,7 +51,7 @@ class EscolaInfo(models.Model):
 
 
 class Recurso(models.Model):
-    escola = models.ForeignKey('Escola', on_delete=models.CASCADE,
+    budget = models.ForeignKey('Budget', on_delete=models.CASCADE,
                                related_name='recursos')
     subgrupo = models.ForeignKey('Subgrupo', on_delete=models.CASCADE)
     cost = models.FloatField(null=True)
