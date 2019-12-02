@@ -5,15 +5,21 @@ from django.db import models
 
 
 class Escola(models.Model):
+    codesc = models.CharField(max_length=7, unique=True)
+
+
+class EscolaInfo(models.Model):
     REDES = (
         ('DIR', 'Rede direta SME'),
         ('CON', 'Rede parceira contratada'),
     )
 
+    escola = models.ForeignKey('Escola', on_delete=models.CASCADE,
+                               related_name='infos')
+    year = models.PositiveSmallIntegerField(default=date.today().year)
     dre = models.ForeignKey('Dre', on_delete=models.PROTECT)
     tipoesc = models.ForeignKey('TipoEscola', on_delete=models.PROTECT)
     distrito = models.ForeignKey('Distrito', on_delete=models.PROTECT)
-    codesc = models.CharField(max_length=7)
     nomesc = models.CharField(max_length=120)
     endereco = models.CharField(max_length=200)
     numero = models.IntegerField()
@@ -23,14 +29,13 @@ class Escola(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
-    year = models.PositiveSmallIntegerField(default=date.today().year)
     ptrf = models.FloatField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('codesc', 'year')
+        unique_together = ('escola', 'year')
 
     def __str__(self):
-        return f'{self.codesc}: {self.nomesc}'
+        return f'{self.escola.codesc}: {self.nomesc}'
 
 
 class Recurso(models.Model):
