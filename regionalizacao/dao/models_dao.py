@@ -198,9 +198,9 @@ class EscolaDao:
         self.tipos_dao = TipoEscolaDao()
         self.distritos_dao = DistritoDao()
 
-    def get(self, codesc):
+    def get(self, codesc, year):
         try:
-            return self.model.objects.get(codesc=codesc)
+            return self.model.objects.get(codesc=codesc, year=year)
         except self.model.DoesNotExist:
             return None
 

@@ -38,7 +38,7 @@ def apply_ptrf_fromto():
     fts = ft_dao.get_all()
 
     for ft in fts:
-        escola = escola_dao.get(codesc=ft.codesc)
+        escola = escola_dao.get(codesc=ft.codesc, year=ft.year)
         if escola:
             escola.ptrf = ft.vlrepasse
             escola.save()

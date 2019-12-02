@@ -61,14 +61,14 @@ class TestApplyPtrfFromTo(TestCase):
     def test_apply_ptrf_fromto(self):
         mommy.make(Escola, codesc='01', year=2019, ptrf=None)
         mommy.make(Escola, codesc='02', year=2019, ptrf=None)
-        mommy.make(Escola, codesc='03', year=2018, ptrf=None)
+        mommy.make(Escola, codesc='01', year=2020, ptrf=None)
 
         ft1 = mommy.make(PtrfFromTo, codesc='01', year=2019, vlrepasse=50)
         ft2 = mommy.make(PtrfFromTo, codesc='02', year=2019, vlrepasse=60)
 
         apply_ptrf_fromto()
 
-        escolas = Escola.objects.all().order_by('codesc')
+        escolas = Escola.objects.all().order_by('year', 'codesc')
         assert escolas[0].ptrf == ft1.vlrepasse
         assert escolas[1].ptrf == ft2.vlrepasse
         assert escolas[2].ptrf is None

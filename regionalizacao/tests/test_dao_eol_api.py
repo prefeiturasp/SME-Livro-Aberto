@@ -1,6 +1,7 @@
 import pytest
 import requests
 
+from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -206,7 +207,8 @@ class TestUpdateEscolaTable(TestCase):
 
     @patch.object(requests, 'get')
     def test_updates_existing_escola(self, mock_get):
-        mommy.make(Escola, codesc="000191", _fill_optional=True)
+        mommy.make(Escola, codesc="000191", year=date.today().year,
+                   _fill_optional=True)
         assert 1 == Dre.objects.count()
         assert 1 == TipoEscola.objects.count()
         assert 1 == Distrito.objects.count()
