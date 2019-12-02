@@ -24,6 +24,10 @@ class Escola(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
     year = models.PositiveSmallIntegerField(default=date.today().year)
+    ptrf = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.codesc}: {self.nomesc}'
 
 
 class Recurso(models.Model):
