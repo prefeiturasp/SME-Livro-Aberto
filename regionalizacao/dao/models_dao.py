@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import date
 
 from django.db import IntegrityError, transaction
 from openpyxl import load_workbook
@@ -12,6 +13,7 @@ from regionalizacao.models import (
     TipoEscola,
     Distrito,
     Escola,
+    EscolaInfo,
 )
 
 
@@ -194,9 +196,10 @@ class EscolaDao:
 
     def __init__(self):
         self.model = Escola
-        self.dres_dao = DreDao()
-        self.tipos_dao = TipoEscolaDao()
-        self.distritos_dao = DistritoDao()
+        self.info_dao = EscolaInfoDao()
+        self.dre_dao = DreDao()
+        self.tipo_dao = TipoEscolaDao()
+        self.distrito_dao = DistritoDao()
 
     def get(self, codesc, year):
         try:
@@ -204,18 +207,24 @@ class EscolaDao:
         except self.model.DoesNotExist:
             return None
 
+    def get_or_create(self, codesc):
+        return self.model.objects.get_or_create(codesc=codesc)
+
     def update_or_create(self, **kwargs):
-        dre, _ = self.dres_dao.update_or_create(
+        escola, created = self.get_or_create(codesc=kwargs['codesc'])
+
+        dre, _ = self.dre_dao.update_or_create(
             code=kwargs['dre'], name=kwargs['diretoria'])
-        tipo, _ = self.tipos_dao.get_or_create(code=kwargs['tipoesc'])
-        distrito, _ = self.distritos_dao.get_or_create(
+        tipo, _ = self.tipo_dao.get_or_create(code=kwargs['tipoesc'])
+        distrito, _ = self.distrito_dao.get_or_create(
             coddist=kwargs['coddist'], name=kwargs['distrito'])
 
-        escola_data = dict(
+        escola_info = dict(
+            escola_id=escola.id,
+            year=date.today().year,
             dre=dre,
             tipoesc=tipo,
             distrito=distrito,
-            codesc=kwargs['codesc'],
             nomesc=kwargs['nomesc'],
             endereco=kwargs['endereco'],
             numero=kwargs['numero'],
@@ -227,24 +236,43 @@ class EscolaDao:
             total_vagas=kwargs['total_vagas'],
         )
 
-        try:
-            with transaction.atomic():
-                escola = self.create(**escola_data)
-            created = True
-        except IntegrityError:
-            escola = self.update(**escola_data)
-            created = False
+        self.info_dao.update_or_create(**escola_info)
 
         return escola, created
 
     def create(self, **data):
         return self.model.objects.create(**data)
 
+
+# TODO: add unit tests
+class EscolaInfoDao:
+
+    def __init__(self):
+        self.model = EscolaInfo
+
+    def get(self, escola_id, year):
+        return self.model.objects.get(escola__id=escola_id, year=year)
+
+    def update_or_create(self, **data):
+        try:
+            with transaction.atomic():
+                info = self.create(**data)
+            created = True
+        except IntegrityError:
+            info = self.update(**data)
+            created = False
+
+        return info, created
+
+    def create(self, **data):
+        return self.model.objects.create(**data)
+
     def update(self, **data):
-        codesc = data.pop('codesc')
-        escola = self.model.objects.get(codesc=codesc)
+        escola_id = data.pop('escola_id')
+        year = data.pop('year')
+        info = self.get(escola_id=escola_id, year=year)
 
         for field_name, value in data.items():
-            setattr(escola, field_name, value)
-        escola.save()
-        return escola
+            setattr(info, field_name, value)
+        info.save()
+        return info
