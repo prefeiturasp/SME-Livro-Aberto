@@ -7,11 +7,12 @@ from model_mommy import mommy
 
 from regionalizacao.models import (
     Distrito, DistritoZonaFromTo, Escola, EtapaTipoEscolaFromTo, PtrfFromTo,
-    TipoEscola)
+    TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget)
 from regionalizacao.services import (
     apply_distrito_zona_fromto,
     apply_etapa_tipo_escola_fromto,
     apply_ptrf_fromto,
+    apply_unidade_recursos_fromto,
 )
 
 
@@ -59,16 +60,18 @@ class TestApplyEtapaTipoEscolaFromTo(TestCase):
 class TestApplyPtrfFromTo(TestCase):
 
     def test_apply_ptrf_fromto(self):
-        mommy.make(Escola, codesc='01', year=2019, ptrf=None)
-        mommy.make(Escola, codesc='02', year=2019, ptrf=None)
-        mommy.make(Escola, codesc='01', year=2020, ptrf=None)
+        escola1 = mommy.make(Escola, codesc='01')
+        escola2 = mommy.make(Escola, codesc='02')
+        mommy.make(Budget, escola=escola1, year=2019, ptrf=None)
+        mommy.make(Budget, escola=escola2, year=2019, ptrf=None)
+        mommy.make(Budget, escola=escola1, year=2020, ptrf=None)
 
         ft1 = mommy.make(PtrfFromTo, codesc='01', year=2019, vlrepasse=50)
         ft2 = mommy.make(PtrfFromTo, codesc='02', year=2019, vlrepasse=60)
 
         apply_ptrf_fromto()
 
-        escolas = Escola.objects.all().order_by('year', 'codesc')
-        assert escolas[0].ptrf == ft1.vlrepasse
-        assert escolas[1].ptrf == ft2.vlrepasse
-        assert escolas[2].ptrf is None
+        budgets = Budget.objects.all().order_by('year', 'escola__codesc')
+        assert budgets[0].ptrf == ft1.vlrepasse
+        assert budgets[1].ptrf == ft2.vlrepasse
+        assert budgets[2].ptrf is None

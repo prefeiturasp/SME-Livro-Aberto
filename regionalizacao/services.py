@@ -1,6 +1,7 @@
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EscolaDao, EtapaTipoEscolaFromToDao,
-    TipoEscolaDao, PtrfFromToDao,
+    TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
+    BudgetDao,
 )
 
 
@@ -33,12 +34,12 @@ def apply_etapa_tipo_escola_fromto():
 
 def apply_ptrf_fromto():
     ft_dao = PtrfFromToDao()
-    escola_dao = EscolaDao()
+    budget_dao = BudgetDao()
 
     fts = ft_dao.get_all()
 
     for ft in fts:
-        escola = escola_dao.get(codesc=ft.codesc, year=ft.year)
-        if escola:
-            escola.ptrf = ft.vlrepasse
-            escola.save()
+        budget_dao.update_or_create(codesc=ft.codesc, year=ft.year,
+                                    ptrf=ft.vlrepasse)
+
+

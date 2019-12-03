@@ -14,6 +14,7 @@ from regionalizacao.models import (
     Distrito,
     Escola,
     EscolaInfo,
+    Budget,
 )
 
 
@@ -276,3 +277,44 @@ class EscolaInfoDao:
             setattr(info, field_name, value)
         info.save()
         return info
+
+
+# TODO: add unit tests
+class BudgetDao:
+
+    def __init__(self):
+        self.model = Budget
+        self.escola_dao = EscolaDao()
+
+    def get(self, escola_id, year):
+        try:
+            return self.model.objects.get(escola_id=escola_id, year=year)
+        except self.model.DoesNotExist:
+            return None
+
+    def update_or_create(self, **data):
+        codesc = data.pop('codesc')
+        escola, _ = self.escola_dao.get_or_create(codesc=codesc)
+        data['escola_id'] = escola.id
+        try:
+            with transaction.atomic():
+                info = self.create(**data)
+            created = True
+        except IntegrityError:
+            info = self.update(**data)
+            created = False
+
+        return info, created
+
+    def create(self, **data):
+        return self.model.objects.create(**data)
+
+    def update(self, **data):
+        escola_id = data.pop('escola_id')
+        year = data.pop('year')
+        budget = self.get(escola_id=escola_id, year=year)
+
+        for field_name, value in data.items():
+            setattr(budget, field_name, value)
+        budget.save()
+        return budget
