@@ -47,7 +47,7 @@ class Budget(models.Model):
         unique_together = ('escola', 'year')
 
     def __str__(self):
-        return f'{self.escola.codesc}: {self.nomesc}'
+        return f'{self.year} - {self.escola.codesc}'
 
 
 class Recurso(models.Model):
@@ -58,6 +58,9 @@ class Recurso(models.Model):
     label = models.CharField(max_length=150, null=True, blank=True)
     amount = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        unique_together = ('budget', 'subgrupo')
+
     def __str__(self):
         return f'{self.subgrupo} - {self.cost}'
 
@@ -66,12 +69,15 @@ class Subgrupo(models.Model):
     grupo = models.ForeignKey('Grupo', on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
 
+    class Meta:
+        unique_together = ('grupo', 'name')
+
     def __str__(self):
         return f'{self.name}'
 
 
 class Grupo(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
         return f'{self.name}'
