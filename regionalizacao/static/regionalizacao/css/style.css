@@ -74,16 +74,36 @@ aside > .card > .body{
   font-size: 0.75rem;
 }
 
+.bg-infantil{
+  background-color: #e94363;
+  color: #fff;
+}
+
 .fg-infantil{
   color: #e94363;
+}
+
+.bg-fundamental{
+  background-color: #edb93b;
+  color: #fff;
 }
 
 .fg-fundamental{
   color: #edb93b;
 }
 
+.bg-medio{
+  background-color: #277fcd;
+  color: #fff;
+}
+
 .fg-medio{
   color: #277fcd;
+}
+
+.bg-especial{
+  background-color: #73379e;
+  color: #fff;
 }
 
 .fg-especial{
@@ -129,4 +149,37 @@ body > header {
 
 svg.icon .stroke{
   stroke: currentColor;
+}
+
+aside > .card svg.icon {
+  cursor: help;
+}
+
+aside > .card .tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+aside > .card svg.icon + .tooltip {
+  opacity: 0;
+  position: absolute;
+  transition: all 0.5s ease;
+  border-radius: 3px;
+  margin: -5em -5em 0 0;
+  padding: 1em;
+  pointer-events: none;
+  width: 10em;
+}
+
+aside > .card svg.icon:hover + .tooltip {
+  opacity: 1;
+  margin: -5em 0 0 2em;
+}
+
+aside > .card svg.icon + .tooltip > :first-child {
+  margin-top: 0;
+}
+
+aside > .card svg.icon + .tooltip > :last-child {
+  margin-bottom: 0;
 }
