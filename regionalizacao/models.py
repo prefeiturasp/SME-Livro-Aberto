@@ -22,7 +22,7 @@ class EscolaInfo(models.Model):
     distrito = models.ForeignKey('Distrito', on_delete=models.PROTECT)
     nomesc = models.CharField(max_length=120)
     endereco = models.CharField(max_length=200)
-    numero = models.IntegerField()
+    numero = models.CharField(max_length=20)
     bairro = models.CharField(max_length=100)
     cep = models.IntegerField()
     rede = models.CharField(max_length=3, choices=REDES)

@@ -200,7 +200,7 @@ class TestUpdateEscolaTable(TestCase):
             assert info.distrito.coddist == int(expected['coddist'])
             assert info.nomesc == expected['nomesc']
             assert info.endereco == expected['endereco']
-            assert info.numero == int(expected['numero'])
+            assert info.numero == expected['numero'].strip()
             assert info.bairro == expected['bairro']
             assert info.cep == expected['cep']
             assert info.rede == expected['rede']
@@ -247,7 +247,7 @@ class TestUpdateEscolaTable(TestCase):
             assert info.distrito.coddist == int(expected['coddist'])
             assert info.nomesc == expected['nomesc']
             assert info.endereco == expected['endereco']
-            assert info.numero == int(expected['numero'])
+            assert info.numero == expected['numero'].strip()
             assert info.bairro == expected['bairro']
             assert info.cep == expected['cep']
             assert info.rede == expected['rede']

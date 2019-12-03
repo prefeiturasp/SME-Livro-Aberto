@@ -221,10 +221,10 @@ class EscolaDao:
         escola, created = self.get_or_create(codesc=kwargs['codesc'])
 
         dre, _ = self.dre_dao.update_or_create(
-            code=kwargs['dre'], name=kwargs['diretoria'])
+            code=kwargs['dre'], name=kwargs['diretoria'].strip())
         tipo, _ = self.tipo_dao.get_or_create(code=kwargs['tipoesc'])
         distrito, _ = self.distrito_dao.get_or_create(
-            coddist=kwargs['coddist'], name=kwargs['distrito'])
+            coddist=kwargs['coddist'], name=kwargs['distrito'].strip())
 
         escola_info = dict(
             escola_id=escola.id,
@@ -232,10 +232,10 @@ class EscolaDao:
             dre=dre,
             tipoesc=tipo,
             distrito=distrito,
-            nomesc=kwargs['nomesc'],
-            endereco=kwargs['endereco'],
-            numero=kwargs['numero'],
-            bairro=kwargs['bairro'],
+            nomesc=kwargs['nomesc'].strip(),
+            endereco=kwargs['endereco'].strip(),
+            numero=kwargs['numero'].strip(),
+            bairro=kwargs['bairro'].strip(),
             cep=kwargs['cep'],
             rede=kwargs['rede'],
             latitude=kwargs['latitude'],
