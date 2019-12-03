@@ -84,6 +84,10 @@ fieldset{
   border: none;
 }
 
+form{
+  margin: 1em 0 2em;
+}
+
 .form-item{
   display: inline-block;
   margin-right: 3em;
@@ -174,6 +178,21 @@ tr > *:first-child::before{
 
 .chart > svg{
   width: 100%;
+}
+
+.card{
+  vertical-align: top;
+  border-radius: 0.5em;
+  overflow: hidden;
+}
+
+.card header{
+  padding: 1em;
+  border-radius: 0.5em 0.5em 0 0;
+}
+
+.card header .title{
+  margin: 0;
 }
 
 /* Extra small devices (portrait phones, less than 576px) */

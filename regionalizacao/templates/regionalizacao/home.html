@@ -1,4 +1,5 @@
 {% extends 'regionalizacao/base.html'  %}
+{% load static %}
 {% load humanize %}
 {% load l10n %}
 
@@ -34,11 +35,247 @@
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       <h2>São Paulo</h2>
-
+      <aside>
+          <div class="card">
+              <header>
+                  <h3>São Paulo</h3>
+                  <div class="numbers">
+                      <div class="cell">
+                          <strong class="bignumber">
+                              R$
+                              <span class="number">
+                                  189,3
+                              </span>
+                              mil
+                          </strong>
+                          <div class="description">
+                              em recursos
+                          </div>
+                      </div>
+                      <div class="cell">
+                          <strong class="bignumber">
+                              <span class="number">
+                                  15.920
+                              </span>
+                          </strong>
+                          <div class="description">
+                              vagas oferecidas
+                          </div>
+                      </div>
+                  </div>
+                  <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
+              </header>
+              <div class="body">
+                  <h3>
+                      <strong>Principais recurso</strong>
+                      por tipo de unidade educacional
+                  </h3>
+                  <div class="total bignumber">
+                      <strong class="number">
+                          100.000
+                      </strong>
+                      unidades diretas
+                      <div class="bar">
+                          <span class="value fg-infantil" data-execution="0.5" style="width: 50%">50%</span>
+                          <span class="value fg-fundamental" data-execution="0.25" style="width: 25%">25%</span>
+                          <span class="value fg-medio" data-execution="0.125" style="width: 12.5%">12.5%</span>
+                          <span class="value fg-especial" data-execution="0.125" style="width: 12.5%">12.5%</span>
+                      </div>
+                  </div>
+                  <table>
+                      <tr>
+                          <td>
+                              <strong class="number">
+                                  50.000
+                              </strong>
+                              unidades
+                              <div class="tooltip-container">
+                                  <svg class="icon">
+                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                                  </svg>
+                                  <div class="tooltip bg-infantil">
+                                      <h4>Tipos de unidades</h4>
+                                      <h5>EMEFM</h4>
+                                      <p>Escola Municipal de Ensino Fundamental</p>
+                                  </div>
+                              </div>
+                              <div class="description fg-infantil">
+                                  <strong>
+                                      Ensino infantil
+                                  </strong>
+                              </div>
+                          </td>
+                          <td>
+                              <strong>
+                                  R$ 50.000,00
+                              </strong>
+                              <div class="description">
+                                  em recursos
+                              </div>
+                              <strong>
+                                      421
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          </td>
+                      <tr>
+                          <td>
+                              <strong class="number">
+                                  25.000
+                              </strong>
+                              unidades
+                              <div class="tooltip-container">
+                                  <svg class="icon">
+                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                                  </svg>
+                                  <div class="tooltip bg-fundamental">
+                                      <h4>Tipos de unidades</h4>
+                                      <h5>EMEFM</h4>
+                                      <p>Escola Municipal de Ensino Fundamental</p>
+                                  </div>
+                              </div>
+                              <div class="description fg-fundamental">
+                                  <strong>
+                                      Ensino fundamental
+                                  </strong>
+                              </div>
+                          </td>
+                          <td>
+                              <strong>
+                                  R$ 50.000,00
+                              </strong>
+                              <div class="description">
+                                  em recursos
+                              </div>
+                              <strong>
+                                      421
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          </td>
+                      <tr>
+                          <td>
+                              <strong class="number">
+                                  12.500
+                              </strong>
+                              unidades
+                              <div class="tooltip-container">
+                                  <svg class="icon">
+                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                                  </svg>
+                                  <div class="tooltip bg-medio">
+                                      <h4>Tipos de unidades</h4>
+                                      <h5>EMEFM</h4>
+                                      <p>Escola Municipal de Ensino Fundamental</p>
+                                  </div>
+                              </div>
+                              <div class="description fg-medio">
+                                  <strong>
+                                      Ensino médio
+                                  </strong>
+                              </div>
+                          </td>
+                          <td>
+                              <strong>
+                                  R$ 50.000,00
+                              </strong>
+                              <div class="description">
+                                  em recursos
+                              </div>
+                              <strong>
+                                      421
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          </td>
+                      <tr>
+                          <td>
+                              <strong class="number">
+                                 12.500
+                              </strong>
+                              unidades
+                              <div class="tooltip-container">
+                                  <svg class="icon">
+                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                                  </svg>
+                                  <div class="tooltip bg-especial">
+                                      <h4>Tipos de unidades</h4>
+                                      <h5>EMEFM</h4>
+                                      <p>Escola Municipal de Ensino Fundamental</p>
+                                  </div>
+                              </div>
+                              <div class="description fg-especial">
+                                  <strong>
+                                      Ensino especial
+                                  </strong>
+                              </div>
+                          </td>
+                          <td>
+                              <strong>
+                                  R$ 50.000,00
+                              </strong>
+                              <div class="description">
+                                  em recursos
+                              </div>
+                              <strong>
+                                      421
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          </td>
+                      </tr>
+                  </table>
+              </div>
+          </div>
+      </aside>
     </div>
   </section>
   <section id="localidade">
-    <div class="wrapper">
-      <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+      <div class="wrapper">
+          <h2>Principais recursos por <em>localidade</em> em 2019</h2>
+          <form action="#localidade" method="get" class="query">
+              <div class="form-item">
+                  Visualizar por:
+              </div>
+              <div class="form-item">
+                  <select name="">
+                      <option value="">Zona</option>
+                      <option value="">Diretoria Regional de Ensino</option>
+                  </select>
+              </div>
+              <div class="form-item switch">
+                  <input type="checkbox" name="" id="localidade-order">
+                  <label for="localidade-order">Ordem Alfabética</label>
+                  <label for="localidade-order">Ordem Crescente</label>
+              </div>
+              <input class="submit" type="submit" value="Filtrar" name="go">
+          </form>
+          <div class="barchart">
+              <div class="bar" data-label="Leste" data-value="100993" data-percentage="100">
+                  <div class="label">Leste</div>
+                  <div class="value">R$ 100.993,00</div>
+              </div>
+              <div class="bar" data-label="Oeste" data-value="75993" data-percentage="75" style="width: 75%">
+                  <div class="label">Oeste</div>
+                  <div class="value">R$ 75.993,00</div>
+              </div>
+              <div class="bar" data-label="Centro" data-value="50993" data-percentage="50" style="width: 50%">
+                  <div class="label">Centro</div>
+                  <div class="value">R$ 50.993,00</div>
+              </div>
+              <div class="bar" data-label="Norte" data-value="50993" data-percentage="50" style="width: 50%">
+                  <div class="label">Norte</div>
+                  <div class="value">R$ 50.993,00</div>
+              </div>
+              <div class="bar" data-label="Sul" data-value="5993" data-percentage="5" style="width: 5%">
+                  <div class="label">Sul</div>
+                  <div class="value">R$ 5.993,00</div>
+              </div>
+          </div>
+      </div>
   </section>
 {% endblock %}
