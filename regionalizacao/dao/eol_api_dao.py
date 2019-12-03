@@ -48,9 +48,11 @@ def update_escola_table():
     escola_dao = EscolaDao()
     url = f'{EOL_API_URL}livroaberto_escolas/'
 
+    print('Fetching schools data from EOL API')
     response = requests.get(url)
-    results = response['results']
+    results = response.json()['results']
 
+    print('Saving data')
     created_count = 0
     for escola_dict in results:
         _, created = escola_dao.update_or_create(

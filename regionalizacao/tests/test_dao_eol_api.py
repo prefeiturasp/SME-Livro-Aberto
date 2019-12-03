@@ -162,7 +162,7 @@ class TestUpdateEscolaTable(TestCase):
     @patch.object(requests, 'get')
     def test_populate_escola_table(self, mock_get):
         api_return = self.escolas_fixture()
-        mock_get.return_value = api_return
+        mock_get.return_value.json.return_value = api_return
 
         created = update_escola_table()
         assert 2 == created
@@ -220,7 +220,7 @@ class TestUpdateEscolaTable(TestCase):
         assert 1 == EscolaInfo.objects.count()
 
         api_return = self.escolas_fixture()
-        mock_get.return_value = api_return
+        mock_get.return_value.json.return_value = api_return
 
         created = update_escola_table()
         assert 1 == created
