@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import date
 from itertools import cycle
 from unittest import TestCase
 
@@ -75,3 +76,82 @@ class TestApplyPtrfFromTo(TestCase):
         assert budgets[0].ptrf == ft1.vlrepasse
         assert budgets[1].ptrf == ft2.vlrepasse
         assert budgets[2].ptrf is None
+
+
+@pytest.mark.django_db
+class TestApplyUnidadeRecursosFromTo(TestCase):
+
+    def test_apply_creates_new_budget_instance(self):
+        escola = mommy.make(Escola, codesc='01')
+        year = date.today().year
+        other_budget = mommy.make(Budget, escola=escola, year=year-1)
+
+        mommy.make(
+            UnidadeRecursosFromTo, codesc='01', year=year,
+            grupo='Material escolar', subgrupo='Kit fundamental',
+            valor=15, label='Unidades')
+        mommy.make(
+            UnidadeRecursosFromTo, codesc='01', year=year,
+            grupo='Material escolar', subgrupo='Kit fundamental',
+            valor=50.23, label='R$')
+
+        apply_unidade_recursos_fromto()
+
+        assert 2 == Budget.objects.count()
+        assert 1 == Recurso.objects.count()
+        assert 1 == Subgrupo.objects.count()
+        assert 1 == Grupo.objects.count()
+
+        budget = Budget.objects.all().order_by('-year').first()
+        assert budget.escola == escola
+        assert budget.year == year
+        other_budget.refresh_from_db()
+        assert other_budget.escola == escola
+        assert other_budget.year == year - 1
+        assert other_budget.recursos.count() == 0
+
+        recurso = Recurso.objects.first()
+        assert budget == recurso.budget
+        assert 'Kit fundamental' == recurso.subgrupo.name
+        assert 'Material escolar' == recurso.subgrupo.grupo.name
+        assert 15 == recurso.amount
+        assert 'Unidades' == recurso.label
+        assert 50.23 == recurso.cost
+
+    def test_apply_updates_existing_budget_instance(self):
+        escola = mommy.make(Escola, codesc='01')
+        year = date.today().year
+        budget = mommy.make(Budget, escola=escola, year=year)
+        other_budget = mommy.make(Budget, escola=escola, year=year-1)
+
+        mommy.make(
+            UnidadeRecursosFromTo, codesc='01', year=year,
+            grupo='Material escolar', subgrupo='Kit fundamental',
+            valor=15, label='Unidades')
+        mommy.make(
+            UnidadeRecursosFromTo, codesc='01', year=year,
+            grupo='Material escolar', subgrupo='Kit fundamental',
+            valor=50.23, label='R$')
+
+        apply_unidade_recursos_fromto()
+
+        assert 2 == Budget.objects.count()
+        assert 1 == Recurso.objects.count()
+        assert 1 == Subgrupo.objects.count()
+        assert 1 == Grupo.objects.count()
+
+        budget.refresh_from_db()
+        assert budget.escola == escola
+        assert budget.year == year
+        other_budget.refresh_from_db()
+        assert other_budget.escola == escola
+        assert other_budget.year == year - 1
+        assert other_budget.recursos.count() == 0
+
+        recurso = Recurso.objects.first()
+        assert budget == recurso.budget
+        assert 'Kit fundamental' == recurso.subgrupo.name
+        assert 'Material escolar' == recurso.subgrupo.grupo.name
+        assert 15 == recurso.amount
+        assert 'Unidades' == recurso.label
+        assert 50.23 == recurso.cost

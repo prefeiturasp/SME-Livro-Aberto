@@ -14,7 +14,10 @@ from regionalizacao.models import (
     Distrito,
     Escola,
     EscolaInfo,
+    Recurso,
+    Subgrupo,
     Budget,
+    Grupo,
 )
 
 
@@ -130,6 +133,9 @@ class UnidadeRecursosFromToDao(FromToDao):
         year_fromtos = self.model.objects.filter(year=sheet.year)
         year_fromtos.delete()
         return super().extract_spreadsheet(sheet)
+
+    def get_all(self):
+        return self.model.objects.all().order_by('year', 'codesc')
 
 
 # TODO: add unit tests
@@ -292,6 +298,10 @@ class BudgetDao:
         except self.model.DoesNotExist:
             return None
 
+    def get_or_create(self, codesc, year):
+        escola, _ = self.escola_dao.get_or_create(codesc=codesc)
+        return self.model.objects.get_or_create(escola=escola, year=year)
+
     def update_or_create(self, **data):
         codesc = data.pop('codesc')
         escola, _ = self.escola_dao.get_or_create(codesc=codesc)
@@ -318,3 +328,73 @@ class BudgetDao:
             setattr(budget, field_name, value)
         budget.save()
         return budget
+
+
+class RecursoDao:
+
+    def __init__(self):
+        self.model = Recurso
+        self.budget_dao = BudgetDao()
+        self.subgrupo_dao = SubgrupoDao()
+
+    def get(self, budget_id, subgrupo_id):
+        try:
+            return self.model.objects.get(budget_id=budget_id,
+                                          subgrupo_id=subgrupo_id)
+        except self.model.DoesNotExist:
+            return None
+
+    def update_or_create(self, codesc, year, grupo_name, subgrupo_name, valor,
+                         label):
+        budget, _ = self.budget_dao.get_or_create(codesc=codesc, year=year)
+        subgrupo, _ = self.subgrupo_dao.get_or_create(name=subgrupo_name,
+                                                      grupo_name=grupo_name)
+        data = dict(budget_id=budget.id, subgrupo_id=subgrupo.id)
+        if label == 'R$':
+            data['cost'] = valor
+        else:
+            data['amount'] = valor
+            data['label'] = label
+
+        try:
+            with transaction.atomic():
+                recurso = self.create(**data)
+            created = True
+        except IntegrityError:
+            recurso = self.update(**data)
+            created = False
+
+        return recurso, created
+
+    def create(self, **data):
+        return self.model.objects.create(**data)
+
+    def update(self, **data):
+        budget_id = data.pop('budget_id')
+        subgrupo_id = data.pop('subgrupo_id')
+        recurso = self.get(budget_id=budget_id, subgrupo_id=subgrupo_id)
+
+        for field_name, value in data.items():
+            setattr(recurso, field_name, value)
+        recurso.save()
+        return recurso
+
+
+class SubgrupoDao:
+
+    def __init__(self):
+        self.model = Subgrupo
+        self.grupo_dao = GrupoDao()
+
+    def get_or_create(self, name, grupo_name):
+        grupo, _ = self.grupo_dao.get_or_create(name=grupo_name)
+        return self.model.objects.get_or_create(name=name, grupo=grupo)
+
+
+class GrupoDao:
+
+    def __init__(self):
+        self.model = Grupo
+
+    def get_or_create(self, name):
+        return self.model.objects.get_or_create(name=name)

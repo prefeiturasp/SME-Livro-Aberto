@@ -1,5 +1,5 @@
 from regionalizacao.dao.models_dao import (
-    DistritoDao, DistritoZonaFromToDao, EscolaDao, EtapaTipoEscolaFromToDao,
+    DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
     BudgetDao,
 )
@@ -43,3 +43,16 @@ def apply_ptrf_fromto():
                                     ptrf=ft.vlrepasse)
 
 
+def apply_unidade_recursos_fromto():
+    ft_dao = UnidadeRecursosFromToDao()
+    recurso_dao = RecursoDao()
+
+    fts = ft_dao.get_all()
+    for ft in fts:
+        recurso_dao.update_or_create(
+            codesc=ft.codesc,
+            year=ft.year,
+            grupo_name=ft.grupo,
+            subgrupo_name=ft.subgrupo,
+            valor=ft.valor,
+            label=ft.label)
