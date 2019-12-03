@@ -1,5 +1,4 @@
 body > header {
-  background-color: #65C55A;
   background-image: url('../img/bg-header.svg');
   background-repeat: no-repeat;
   background-position: center 80%;
@@ -96,4 +95,30 @@ aside > .card td{
 
 aside > .card tr:last-child td{
   border-bottom-width: 0px;
+}
+
+#localidade .bar,
+body > header {
+  background-color: #65C55A;
+}
+
+#localidade .bar{
+  transition: all 0.5s ease;
+}
+
+#localidade .bar{
+  padding: 0.5rem 0;
+  border-radius: 3px;
+  margin: 0 0 .25rem 0;
+  font-size: 0.75em;
+  white-space: nowrap;
+}
+
+#localidade .bar > *{
+  padding: 0 1rem;
+}
+
+#localidade .bar .label{
+  text-transform: uppercase;
+  font-weight: bold;
 }
