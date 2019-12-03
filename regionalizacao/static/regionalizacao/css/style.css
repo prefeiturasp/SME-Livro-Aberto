@@ -66,6 +66,10 @@ aside > .card > .body > .total{
   font-size: 1.25em;
 }
 
+aside > .card > .body{
+  color: #222b34;
+}
+
 .bar{
   font-size: 0.75rem;
 }
@@ -121,4 +125,8 @@ body > header {
 #localidade .bar .label{
   text-transform: uppercase;
   font-weight: bold;
+}
+
+svg.icon .stroke{
+  stroke: currentColor;
 }

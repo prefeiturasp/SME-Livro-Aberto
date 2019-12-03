@@ -1,4 +1,5 @@
 {% extends 'regionalizacao/base.html'  %}
+{% load static %}
 {% load humanize %}
 {% load l10n %}
 
@@ -88,6 +89,9 @@
                                   50.000
                               </strong>
                               unidades
+                              <svg class="icon">
+                                  <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                              </svg>
                               <div class="description fg-infantil">
                                   <strong>
                                       Ensino infantil
@@ -114,6 +118,9 @@
                                   25.000
                               </strong>
                               unidades
+                              <svg class="icon">
+                                  <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                              </svg>
                               <div class="description fg-fundamental">
                                   <strong>
                                       Ensino fundamental
@@ -140,6 +147,9 @@
                                   12.500
                               </strong>
                               unidades
+                              <svg class="icon">
+                                  <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                              </svg>
                               <div class="description fg-medio">
                                   <strong>
                                       Ensino médio
@@ -166,6 +176,9 @@
                                  12.500
                               </strong>
                               unidades
+                              <svg class="icon">
+                                  <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                              </svg>
                               <div class="description fg-especial">
                                   <strong>
                                       Ensino especial
