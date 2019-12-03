@@ -79,6 +79,7 @@ aside > .card > .body{
   color: #fff;
 }
 
+.bg-infantil.tooltip::after,
 .fg-infantil{
   color: #e94363;
 }
@@ -88,6 +89,7 @@ aside > .card > .body{
   color: #fff;
 }
 
+.bg-fundamental.tooltip::after,
 .fg-fundamental{
   color: #edb93b;
 }
@@ -97,6 +99,7 @@ aside > .card > .body{
   color: #fff;
 }
 
+.bg-medio.tooltip::after,
 .fg-medio{
   color: #277fcd;
 }
@@ -106,6 +109,7 @@ aside > .card > .body{
   color: #fff;
 }
 
+.bg-especial.tooltip::after,
 .fg-especial{
   color: #73379e;
 }
@@ -174,6 +178,16 @@ aside > .card svg.icon + .tooltip {
 aside > .card svg.icon:hover + .tooltip {
   opacity: 1;
   margin: -5em 0 0 2em;
+}
+
+aside > .card .tooltip-container .tooltip::after {
+  content: ' ';
+  position: absolute;
+  top: 4em;
+  right: 100%;
+  border-width: .25em;
+  border-style: solid;
+  border-color: transparent currentColor transparent transparent;
 }
 
 aside > .card svg.icon + .tooltip > :first-child {
