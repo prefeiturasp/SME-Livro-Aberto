@@ -231,10 +231,10 @@ class EtapaTipoEscolaFromTo(models.Model):
 class UnidadeRecursosFromTo(models.Model):
     year = models.IntegerField('Ano dos dados')
     codesc = models.CharField(max_length=7)
-    grupo = models.CharField(max_length=30)
-    subgrupo = models.CharField(max_length=30, null=True, blank=True)
+    grupo = models.CharField(max_length=150)
+    subgrupo = models.CharField(max_length=150, null=True, blank=True)
     valor = models.FloatField()
-    label = models.CharField(max_length=20)
+    label = models.CharField(max_length=150)
 
     class Meta:
         verbose_name = 'De-Para: Unidade-Recursos'
