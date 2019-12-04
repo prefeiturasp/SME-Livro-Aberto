@@ -20,20 +20,23 @@ class TestHomeView(APITestCase):
                                 coddist=1)
         distrito_n = mommy.make(Distrito, zona='Norte', name='Distrito n',
                                 coddist=2)
-        tipo_i = mommy.make(TipoEscola, etapa='Ensino Infantil')
-        tipo_f = mommy.make(TipoEscola, etapa='Ensino Fundamental')
+        tipo_i = mommy.make(TipoEscola, code='TI', etapa='Ensino Infantil')
+        tipo_f = mommy.make(TipoEscola, code='TF', etapa='Ensino Fundamental')
         dre_x = mommy.make(Dre, name='Dre x', code='x')
         dre_y = mommy.make(Dre, name='Dre y', code='y')
 
-        mommy.make(EscolaInfo, escola=escola1, distrito=distrito_s, dre=dre_x,
-                   budget_total=100, tipoesc=tipo_i, year=year,
-                   rede='DIR')
-        mommy.make(EscolaInfo, escola=escola2, distrito=distrito_s, dre=dre_y,
-                   budget_total=200, tipoesc=tipo_f, year=year,
-                   rede='DIR')
-        mommy.make(EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
-                   budget_total=55, tipoesc=tipo_i, year=year,
-                   rede='DIR')
+        self.info1 = mommy.make(
+            EscolaInfo, escola=escola1, distrito=distrito_s, dre=dre_x,
+            budget_total=100, tipoesc=tipo_i, year=year,
+            rede='DIR')
+        self.info2 = mommy.make(
+            EscolaInfo, escola=escola2, distrito=distrito_s, dre=dre_y,
+            budget_total=200, tipoesc=tipo_f, year=year,
+            rede='DIR')
+        self.info3 = mommy.make(
+            EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
+            budget_total=55, tipoesc=tipo_i, year=year,
+            rede='DIR')
 
     def get(self, **kwargs):
         url = reverse('regionalizacao:home')
@@ -96,6 +99,7 @@ class TestHomeView(APITestCase):
     def test_returns_dre_data(self):
         response = self.get(zona='Sul', dre='y')
 
+        # TODO: botar slug
         expected = {
             'total': 255,
             'places': [
@@ -114,6 +118,61 @@ class TestHomeView(APITestCase):
                     'total': 55,
                 },
             ]
+        }
+
+        assert expected == response.data
+
+    def test_returns_distrito_data(self):
+        escola1_recursos = {
+            "total": 100,
+            "ptrf": 100,
+            "grupos": [],
+        }
+        self.info1.nomesc = "Escola 1"
+        self.info1.endereco = "Rua 1"
+        self.info1.numero = 10
+        self.info1.bairro = 'Bairro 1'
+        self.info1.cep = '10100000'
+        self.info1.recursos = escola1_recursos
+        self.info1.save()
+
+        escola2_recursos = {
+            "total": 200,
+            "ptrf": 200,
+            "grupos": [],
+        }
+
+        self.info2.nomesc = "Escola 2"
+        self.info2.endereco = "Rua 2"
+        self.info2.numero = 20
+        self.info2.bairro = 'Bairro 2'
+        self.info2.cep = '20200000'
+        self.info2.recursos = escola2_recursos
+        self.info2.save()
+
+        self.info1.refresh_from_db()
+        self.info2.refresh_from_db()
+
+        response = self.get(zona='Sul', dre='y', distrito=1)
+
+        expected = {
+            'total': 300,
+            'places': [
+                {
+                    'name': 'TF - Escola 2',
+                    'address': 'Rua 2, 20 - Bairro 2',
+                    'cep': 20200000,
+                    'total': 200,
+                    'recursos': escola2_recursos,
+                },
+                {
+                    'name': 'TI - Escola 1',
+                    'address': 'Rua 1, 10 - Bairro 1',
+                    'cep': 10100000,
+                    'total': 100,
+                    'recursos': escola1_recursos,
+                },
+            ],
         }
 
         assert expected == response.data

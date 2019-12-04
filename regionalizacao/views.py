@@ -10,10 +10,13 @@ from regionalizacao.serializers import PlacesSerializer
 class EscolaInfoFilter(filters.FilterSet):
     zona = filters.CharFilter(field_name='distrito__zona')
     dre = filters.CharFilter(field_name='dre__code')
+    distrito = filters.NumberFilter(field_name='distrito__coddist')
 
     def filter_queryset(self, queryset):
         if self.form.cleaned_data['dre']:
             self.form.cleaned_data['zona'] = ''
+        if self.form.cleaned_data['distrito']:
+            self.form.cleaned_data['dre'] = ''
         return super().filter_queryset(queryset)
 
 
@@ -36,6 +39,8 @@ class HomeView(BaseListView):
             level = 1
         if 'dre' in request.query_params:
             level = 2
+        if 'distrito' in request.query_params:
+            level = 3
         serializer = self.get_serializer(queryset, level=level)
 
         return Response(serializer.data)

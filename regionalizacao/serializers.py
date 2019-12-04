@@ -1,6 +1,9 @@
 from itertools import groupby
 
 from django.db.models import Sum
+from rest_framework import serializers
+
+from regionalizacao.models import EscolaInfo
 
 
 class PlacesSerializer:
@@ -12,12 +15,17 @@ class PlacesSerializer:
     @property
     def data(self):
         total = self.queryset.aggregate(total=Sum('budget_total'))['total']
+        places = self.build_places_data()
 
-        return {
+        ret = {
             'total': total,
-            'places': self.build_places_data(),
-            'etapas': self.build_etapas_data(),
+            'places': places,
         }
+
+        if self.level < 3:
+            ret['etapas'] = self.build_etapas_data()
+
+        return ret
 
     def build_places_data(self):
         pĺaces = []
@@ -48,6 +56,10 @@ class PlacesSerializer:
                                'total': total_pĺaces})
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
+        elif self.level == 3:
+            qs = self.queryset.order_by('-budget_total')
+            return EscolaInfoSerializer(self.queryset, many=True).data
+
         return pĺaces
 
     def build_etapas_data(self):
@@ -61,3 +73,19 @@ class PlacesSerializer:
                            'total': total_etapas})
         etapas.sort(key=lambda e: (e['unidades'], e['total']), reverse=True)
         return etapas
+
+
+class EscolaInfoSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    address = serializers.SerializerMethodField()
+    total = serializers.FloatField(source='budget_total')
+
+    class Meta:
+        model = EscolaInfo
+        fields = ('name', 'address', 'cep', 'total', 'recursos')
+
+    def get_name(self, obj):
+        return f'{obj.tipoesc.code} - {obj.nomesc}'
+
+    def get_address(self, obj):
+        return f'{obj.endereco}, {obj.numero} - {obj.bairro}'
