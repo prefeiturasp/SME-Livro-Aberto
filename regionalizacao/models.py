@@ -29,7 +29,9 @@ class EscolaInfo(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
-    recursos = JSONField(null=True)
+    # populated after from-tos are applied
+    budget_total = models.FloatField(null=True, blank=True)
+    recursos = JSONField(null=True, blank=True)
 
     class Meta:
         unique_together = ('escola', 'year')
