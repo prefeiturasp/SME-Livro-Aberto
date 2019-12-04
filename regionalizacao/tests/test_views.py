@@ -20,8 +20,8 @@ class TestHomeView(APITestCase):
         distrito_n = mommy.make(Distrito, zona='Norte')
         tipo_i = mommy.make(TipoEscola, etapa='Ensino Infantil')
         tipo_f = mommy.make(TipoEscola, etapa='Ensino Fundamental')
-        dre_x = mommy.make(Dre, name='Dre x')
-        dre_y = mommy.make(Dre, name='Dre y')
+        dre_x = mommy.make(Dre, name='Dre x', code='x')
+        dre_y = mommy.make(Dre, name='Dre y', code='y')
 
         mommy.make(EscolaInfo, escola=escola1, distrito=distrito_s, dre=dre_x,
                    budget_total=100, tipoesc=tipo_i, year=year,
@@ -61,6 +61,31 @@ class TestHomeView(APITestCase):
                     'unidades': 1,
                     'total': 200,
                 }
+            ]
+        }
+
+        assert expected == response.data
+
+    def test_returns_zona_data(self):
+        response = self.get(zona='Sul')
+
+        expected = {
+            'total': 300,
+            'places': [
+                {'code': 'y', 'name': 'Dre y', 'total': 200},
+                {'code': 'x', 'name': 'Dre x', 'total': 100},
+            ],
+            'etapas': [
+                {
+                    'name': 'Ensino Fundamental',
+                    'unidades': 1,
+                    'total': 200,
+                },
+                {
+                    'name': 'Ensino Infantil',
+                    'unidades': 1,
+                    'total': 100,
+                },
             ]
         }
 
