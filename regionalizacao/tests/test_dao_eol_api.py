@@ -1,6 +1,7 @@
 import pytest
 import requests
 
+from datetime import date
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -12,7 +13,7 @@ from regionalizacao.dao.eol_api_dao import (
     update_tipo_escola_table,
 )
 from regionalizacao.models import (
-    Distrito, Dre, Escola, TipoEscola)
+    Distrito, Dre, Escola, TipoEscola, EscolaInfo)
 
 
 @pytest.mark.django_db
@@ -161,7 +162,7 @@ class TestUpdateEscolaTable(TestCase):
     @patch.object(requests, 'get')
     def test_populate_escola_table(self, mock_get):
         api_return = self.escolas_fixture()
-        mock_get.return_value = api_return
+        mock_get.return_value.json.return_value = api_return
 
         created = update_escola_table()
         assert 2 == created
@@ -172,11 +173,14 @@ class TestUpdateEscolaTable(TestCase):
         tipos = TipoEscola.objects.all()
         assert 1 == tipos.count()
 
-        distritos = Distrito.objects.all().order_by('-code')
+        distritos = Distrito.objects.all().order_by('-coddist')
         assert 2 == distritos.count()
 
         escolas = Escola.objects.all().order_by('codesc')
         assert 2 == escolas.count()
+
+        infos = EscolaInfo.objects.all().order_by('escola__codesc')
+        assert 2 == infos.count()
 
         dre = dres.first()
         assert 'BT' == dre.code
@@ -186,34 +190,37 @@ class TestUpdateEscolaTable(TestCase):
         assert 'EMEF' == tipo.code
 
         for distrito, expected in zip(distritos, api_return['results']):
-            assert distrito.code == int(expected['coddist'])
+            assert distrito.coddist == int(expected['coddist'])
             assert distrito.name == expected['distrito']
 
-        for escola, expected in zip(escolas, api_return['results']):
-            assert escola.dre == dre
-            assert escola.tipoesc == tipo
-            assert escola.distrito.code == int(expected['coddist'])
-            assert escola.codesc == expected['codesc']
-            assert escola.nomesc == expected['nomesc']
-            assert escola.endereco == expected['endereco']
-            assert escola.numero == int(expected['numero'])
-            assert escola.bairro == expected['bairro']
-            assert escola.cep == expected['cep']
-            assert escola.rede == expected['rede']
-            assert str(escola.latitude) == str(expected['latitude'])
-            assert str(escola.longitude) == str(expected['longitude'])
-            assert escola.total_vagas == expected['total_vagas']
+        for info, expected in zip(infos, api_return['results']):
+            assert info.escola.codesc == expected['codesc']
+            assert info.dre == dre
+            assert info.tipoesc == tipo
+            assert info.distrito.coddist == int(expected['coddist'])
+            assert info.nomesc == expected['nomesc']
+            assert info.endereco == expected['endereco']
+            assert info.numero == expected['numero'].strip()
+            assert info.bairro == expected['bairro']
+            assert info.cep == expected['cep']
+            assert info.rede == expected['rede']
+            assert str(info.latitude) == str(expected['latitude'])
+            assert str(info.longitude) == str(expected['longitude'])
+            assert info.total_vagas == expected['total_vagas']
+            assert info.year == date.today().year
 
     @patch.object(requests, 'get')
     def test_updates_existing_escola(self, mock_get):
-        mommy.make(Escola, codesc="000191", _fill_optional=True)
+        mommy.make(EscolaInfo, escola__codesc="000191", year=date.today().year,
+                   _fill_optional=True)
         assert 1 == Dre.objects.count()
         assert 1 == TipoEscola.objects.count()
         assert 1 == Distrito.objects.count()
         assert 1 == Escola.objects.count()
+        assert 1 == EscolaInfo.objects.count()
 
         api_return = self.escolas_fixture()
-        mock_get.return_value = api_return
+        mock_get.return_value.json.return_value = api_return
 
         created = update_escola_table()
         assert 1 == created
@@ -230,17 +237,21 @@ class TestUpdateEscolaTable(TestCase):
         escolas = Escola.objects.all().order_by('codesc')
         assert 2 == escolas.count()
 
-        for escola, expected in zip(escolas, api_return['results']):
-            assert escola.dre.code == expected['dre']
-            assert escola.tipoesc.code == expected['tipoesc']
-            assert escola.distrito.code == int(expected['coddist'])
-            assert escola.codesc == expected['codesc']
-            assert escola.nomesc == expected['nomesc']
-            assert escola.endereco == expected['endereco']
-            assert escola.numero == int(expected['numero'])
-            assert escola.bairro == expected['bairro']
-            assert escola.cep == expected['cep']
-            assert escola.rede == expected['rede']
-            assert str(escola.latitude) == str(expected['latitude'])
-            assert str(escola.longitude) == str(expected['longitude'])
-            assert escola.total_vagas == expected['total_vagas']
+        infos = EscolaInfo.objects.all().order_by('escola__codesc')
+        assert 2 == infos.count()
+
+        for info, expected in zip(infos, api_return['results']):
+            assert info.escola.codesc == expected['codesc']
+            assert info.dre.code == expected['dre']
+            assert info.tipoesc.code == expected['tipoesc']
+            assert info.distrito.coddist == int(expected['coddist'])
+            assert info.nomesc == expected['nomesc']
+            assert info.endereco == expected['endereco']
+            assert info.numero == expected['numero'].strip()
+            assert info.bairro == expected['bairro']
+            assert info.cep == expected['cep']
+            assert info.rede == expected['rede']
+            assert str(info.latitude) == str(expected['latitude'])
+            assert str(info.longitude) == str(expected['longitude'])
+            assert info.total_vagas == expected['total_vagas']
+            assert info.year == date.today().year

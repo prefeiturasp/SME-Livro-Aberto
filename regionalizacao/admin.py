@@ -34,7 +34,7 @@ class UnidadeRecursosFromToSpreadsheetAdmin(admin.ModelAdmin):
 
 @admin.register(PtrfFromTo)
 class PtrfFromToAdmin(admin.ModelAdmin):
-    list_display = ('codesc', 'vlrepasse')
+    list_display = ('year', 'codesc', 'vlrepasse')
 
 
 @admin.register(DistritoZonaFromTo)
@@ -49,4 +49,4 @@ class EtapaTipoEscolaFromToAdmin(admin.ModelAdmin):
 
 @admin.register(UnidadeRecursosFromTo)
 class UnidadeRecursosFromToAdmin(admin.ModelAdmin):
-    list_display = ('codesc', 'grupo', 'subgrupo', 'valor', 'label')
+    list_display = ('year', 'codesc', 'grupo', 'subgrupo', 'valor', 'label')

@@ -5,6 +5,10 @@ import pytest
 from django.core.files import File
 from model_mommy import mommy
 
+from regionalizacao.dao.models_dao import (
+    DistritoDao,
+    TipoEscolaDao,
+)
 from regionalizacao.models import (
     PtrfFromTo,
     PtrfFromToSpreadsheet,
@@ -38,7 +42,7 @@ class TestPtrfFromToDao:
         fts = PtrfFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        codescs = [400003, 400010]
+        codescs = ['400003', '400010']
 
         assert fts[0].codesc == codescs[0]
         assert fts[0].vlrepasse == 2.55
@@ -208,7 +212,7 @@ class TestUnidadeRecursosFromToDao:
         fts = UnidadeRecursosFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
 
-        codescs = [400415, 400415]
+        codescs = ['400415', '400415']
 
         assert fts[0].codesc == codescs[0]
         assert fts[0].grupo == 'Repasse'
@@ -242,3 +246,21 @@ class TestUnidadeRecursosFromToDao:
         assert 3 == len(fts)
         assert 2 == fts.filter(year=2019).count()
         assert 1 == fts.filter(year=2018).count()
+
+
+@pytest.mark.django_db
+class TestDistritoDao:
+
+    def test_get_doesnt_raise_exception_when_tipo_doesnt_exist(self):
+        dao = DistritoDao()
+        distrito = dao.get(coddist=1)
+        assert distrito is None
+
+
+@pytest.mark.django_db
+class TestTipoEscolaDao:
+
+    def test_get_doesnt_raise_exception_when_tipo_doesnt_exist(self):
+        dao = TipoEscolaDao()
+        tipo = dao.get(code='xxx')
+        assert tipo is None
