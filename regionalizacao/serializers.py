@@ -39,6 +39,15 @@ class PlacesSerializer:
                                'total': total_pĺaces})
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
+        elif self.level == 2:
+            qs = self.queryset.order_by('distrito')
+            for distrito, infos in groupby(qs, lambda i: i.distrito):
+                infos = list(infos)
+                total_pĺaces = sum(info.budget_total for info in infos)
+                pĺaces.append({'code': distrito.coddist, 'name': distrito.name,
+                               'total': total_pĺaces})
+            pĺaces.sort(key=lambda z: z['total'], reverse=True)
+
         return pĺaces
 
     def build_etapas_data(self):

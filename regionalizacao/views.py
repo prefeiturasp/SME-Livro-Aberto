@@ -9,6 +9,12 @@ from regionalizacao.serializers import PlacesSerializer
 
 class EscolaInfoFilter(filters.FilterSet):
     zona = filters.CharFilter(field_name='distrito__zona')
+    dre = filters.CharFilter(field_name='dre__code')
+
+    def filter_queryset(self, queryset):
+        if self.form.cleaned_data['dre']:
+            self.form.cleaned_data['zona'] = ''
+        return super().filter_queryset(queryset)
 
 
 class BaseListView(generics.ListAPIView):
