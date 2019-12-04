@@ -5,10 +5,33 @@ from model_mommy import mommy
 from rest_framework.test import APITestCase
 
 from regionalizacao.models import (
-    Escola, EscolaInfo, TipoEscola, Distrito)
+    Escola, EscolaInfo, TipoEscola, Distrito, Dre)
 
 
 class TestHomeView(APITestCase):
+
+    def setUp(self):
+        year = date.today().year
+        escola1 = mommy.make(Escola, codesc='01')
+        escola2 = mommy.make(Escola, codesc='02')
+        escola3 = mommy.make(Escola, codesc='03')
+
+        distrito_s = mommy.make(Distrito, zona='Sul')
+        distrito_n = mommy.make(Distrito, zona='Norte')
+        tipo_i = mommy.make(TipoEscola, etapa='Ensino Infantil')
+        tipo_f = mommy.make(TipoEscola, etapa='Ensino Fundamental')
+        dre_x = mommy.make(Dre, name='Dre x')
+        dre_y = mommy.make(Dre, name='Dre y')
+
+        mommy.make(EscolaInfo, escola=escola1, distrito=distrito_s, dre=dre_x,
+                   budget_total=100, tipoesc=tipo_i, year=year,
+                   rede='DIR')
+        mommy.make(EscolaInfo, escola=escola2, distrito=distrito_s, dre=dre_y,
+                   budget_total=200, tipoesc=tipo_f, year=year,
+                   rede='DIR')
+        mommy.make(EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
+                   budget_total=55, tipoesc=tipo_i, year=year,
+                   rede='DIR')
 
     def get(self, **kwargs):
         url = reverse('regionalizacao:home')
@@ -19,29 +42,11 @@ class TestHomeView(APITestCase):
         self.assertTemplateUsed(response, 'regionalizacao/home.html')
 
     def test_returns_city_data(self):
-        year = date.today().year
-        escola1 = mommy.make(Escola, codesc='01')
-        escola2 = mommy.make(Escola, codesc='02')
-        escola3 = mommy.make(Escola, codesc='03')
-
-        distrito_s = mommy.make(Distrito, zona='Sul')
-        distrito_n = mommy.make(Distrito, zona='Norte')
-        tipo_i = mommy.make(TipoEscola, etapa='Ensino Infantil')
-        tipo_f = mommy.make(TipoEscola, etapa='Ensino Fundamental')
-
-        mommy.make(EscolaInfo, escola=escola1, distrito=distrito_s,
-                   recursos={'total': 100}, tipoesc=tipo_i, year=year,
-                   rede='DIR')
-        mommy.make(EscolaInfo, escola=escola2, distrito=distrito_s,
-                   recursos={'total': 200}, tipoesc=tipo_f, year=year,
-                   rede='DIR')
-        mommy.make(EscolaInfo, escola=escola3, distrito=distrito_n,
-                   recursos={'total': 55}, tipoesc=tipo_i, year=year,
-                   rede='DIR')
+        response = self.get()
 
         expected = {
             'total': 355,
-            'zonas': [
+            'places': [
                 {'name': 'Sul', 'total': 300},
                 {'name': 'Norte', 'total': 55},
             ],
@@ -58,8 +63,6 @@ class TestHomeView(APITestCase):
                 }
             ]
         }
-
-        response = self.get()
 
         assert expected == response.data
 
