@@ -164,6 +164,8 @@ class TestHomeView(APITestCase):
                     'cep': 20200000,
                     'total': 200,
                     'recursos': escola2_recursos,
+                    'latitude': str(self.info2.latitude),
+                    'longitude': str(self.info2.longitude),
                 },
                 {
                     'name': 'TI - Escola 1',
@@ -171,6 +173,8 @@ class TestHomeView(APITestCase):
                     'cep': 10100000,
                     'total': 100,
                     'recursos': escola1_recursos,
+                    'latitude': str(self.info1.latitude),
+                    'longitude': str(self.info1.longitude),
                 },
             ],
         }

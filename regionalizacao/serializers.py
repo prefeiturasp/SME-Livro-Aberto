@@ -58,7 +58,7 @@ class PlacesSerializer:
 
         elif self.level == 3:
             qs = self.queryset.order_by('-budget_total')
-            return EscolaInfoSerializer(self.queryset, many=True).data
+            return EscolaInfoSerializer(qs, many=True).data
 
         return pĺaces
 
@@ -82,7 +82,8 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EscolaInfo
-        fields = ('name', 'address', 'cep', 'total', 'recursos')
+        fields = ('name', 'address', 'cep', 'total', 'recursos', 'latitude',
+                  'longitude')
 
     def get_name(self, obj):
         return f'{obj.tipoesc.code} - {obj.nomesc}'
