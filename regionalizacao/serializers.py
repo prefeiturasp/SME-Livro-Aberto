@@ -1,6 +1,8 @@
 from itertools import groupby
 
 from django.db.models import Sum
+from django.http import QueryDict
+from django.urls import reverse
 from rest_framework import serializers
 
 from regionalizacao.models import EscolaInfo
@@ -8,9 +10,10 @@ from regionalizacao.models import EscolaInfo
 
 class PlacesSerializer:
 
-    def __init__(self, queryset, level, *args, **kwargs):
+    def __init__(self, queryset, level, query_params, *args, **kwargs):
         self.queryset = queryset
         self.level = level
+        self.query_params = {k: v for k, v in query_params.items() if v}
 
     @property
     def data(self):
@@ -27,6 +30,14 @@ class PlacesSerializer:
 
         return ret
 
+    def url(self, params):
+        url = reverse('regionalizacao:home')
+        if params:
+            qdict = QueryDict('', mutable=True)
+            qdict.update(params)
+            url = f'{url}?{qdict.urlencode()}'
+        return url
+
     def build_places_data(self):
         pĺaces = []
 
@@ -35,7 +46,15 @@ class PlacesSerializer:
             for zona_name, infos in groupby(qs, lambda i: i.distrito.zona):
                 infos = list(infos)
                 total_pĺaces = sum(info.budget_total for info in infos)
-                pĺaces.append({'name': zona_name, 'total': total_pĺaces})
+                params = {
+                    **self.query_params,
+                    'zona': zona_name,
+                }
+                pĺaces.append({
+                    'name': zona_name,
+                    'total': total_pĺaces,
+                    'url': self.url(params),
+                })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
         elif self.level == 1:
@@ -43,8 +62,16 @@ class PlacesSerializer:
             for dre, infos in groupby(qs, lambda i: i.dre):
                 infos = list(infos)
                 total_pĺaces = sum(info.budget_total for info in infos)
-                pĺaces.append({'code': dre.code, 'name': dre.name,
-                               'total': total_pĺaces})
+                params = {
+                    **self.query_params,
+                    'dre': dre.code,
+                }
+                pĺaces.append({
+                    'code': dre.code,
+                    'name': dre.name,
+                    'total': total_pĺaces,
+                    'url': self.url(params),
+                })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
         elif self.level == 2:
@@ -52,8 +79,16 @@ class PlacesSerializer:
             for distrito, infos in groupby(qs, lambda i: i.distrito):
                 infos = list(infos)
                 total_pĺaces = sum(info.budget_total for info in infos)
-                pĺaces.append({'code': distrito.coddist, 'name': distrito.name,
-                               'total': total_pĺaces})
+                params = {
+                    **self.query_params,
+                    'distrito': distrito.coddist,
+                }
+                pĺaces.append({
+                    'code': distrito.coddist,
+                    'name': distrito.name,
+                    'total': total_pĺaces,
+                    'url': self.url(params),
+                })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
         elif self.level == 3:

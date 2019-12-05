@@ -38,9 +38,12 @@ class TestHomeView(APITestCase):
             budget_total=55, tipoesc=tipo_i, year=year,
             rede='DIR')
 
+    @property
+    def url(self):
+        return reverse('regionalizacao:home')
+
     def get(self, **kwargs):
-        url = reverse('regionalizacao:home')
-        return self.client.get(url, kwargs)
+        return self.client.get(self.url, kwargs)
 
     def test_render_correct_template(self):
         response = self.get()
@@ -52,8 +55,16 @@ class TestHomeView(APITestCase):
         expected = {
             'total': 355,
             'places': [
-                {'name': 'Sul', 'total': 300},
-                {'name': 'Norte', 'total': 55},
+                {
+                    'name': 'Sul',
+                    'total': 300,
+                    'url': f'{self.url}?zona=Sul',
+                },
+                {
+                    'name': 'Norte',
+                    'total': 55,
+                    'url': f'{self.url}?zona=Norte',
+                },
             ],
             'etapas': [
                 {
@@ -77,8 +88,18 @@ class TestHomeView(APITestCase):
         expected = {
             'total': 300,
             'places': [
-                {'code': 'y', 'name': 'Dre y', 'total': 200},
-                {'code': 'x', 'name': 'Dre x', 'total': 100},
+                {
+                    'code': 'y',
+                    'name': 'Dre y',
+                    'total': 200,
+                    'url': f'{self.url}?zona=Sul&dre=y',
+                },
+                {
+                    'code': 'x',
+                    'name': 'Dre x',
+                    'total': 100,
+                    'url': f'{self.url}?zona=Sul&dre=x',
+                },
             ],
             'etapas': [
                 {
@@ -103,8 +124,18 @@ class TestHomeView(APITestCase):
         expected = {
             'total': 255,
             'places': [
-                {'code': 1, 'name': 'Distrito s', 'total': 200},
-                {'code': 2, 'name': 'Distrito n', 'total': 55},
+                {
+                    'code': 1,
+                    'name': 'Distrito s',
+                    'total': 200,
+                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1',
+                },
+                {
+                    'code': 2,
+                    'name': 'Distrito n',
+                    'total': 55,
+                    'url': f'{self.url}?zona=Sul&dre=y&distrito=2',
+                },
             ],
             'etapas': [
                 {
