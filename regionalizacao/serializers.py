@@ -5,6 +5,7 @@ from django.http import QueryDict
 from django.urls import reverse
 from rest_framework import serializers
 
+from regionalizacao.constants import ETAPA_SLUGS
 from regionalizacao.models import EscolaInfo
 
 
@@ -100,12 +101,16 @@ class PlacesSerializer:
     def build_etapas_data(self):
         etapas = []
         qs = self.queryset.order_by('tipoesc__etapa')
-        for etapa_name, infos in groupby(qs, lambda i: i.tipoesc.etapa):
+        for etapa, infos in groupby(qs, lambda i: i.tipoesc.etapa):
             infos = list(infos)
             total_etapas = sum(info.budget_total for info in infos)
             unidades = len(infos)
-            etapas.append({'name': etapa_name, 'unidades': unidades,
-                           'total': total_etapas})
+            etapas.append({
+                'name': etapa,
+                'unidades': unidades,
+                'total': total_etapas,
+                'slug': ETAPA_SLUGS.get(etapa, None),
+            })
         etapas.sort(key=lambda e: (e['unidades'], e['total']), reverse=True)
         return etapas
 

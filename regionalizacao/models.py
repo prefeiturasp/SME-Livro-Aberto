@@ -101,7 +101,7 @@ class TipoEscola(models.Model):
     etapa = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f'{self.code}'
+        return f'{self.code} - {self.etapa}'
 
 
 class Distrito(models.Model):

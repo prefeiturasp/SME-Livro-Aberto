@@ -71,11 +71,13 @@ class TestHomeView(APITestCase):
                     'name': 'Ensino Infantil',
                     'unidades': 2,
                     'total': 155,
+                    'slug': 'infantil',
                 },
                 {
                     'name': 'Ensino Fundamental',
                     'unidades': 1,
                     'total': 200,
+                    'slug': 'fundamental',
                 }
             ]
         }
@@ -106,11 +108,13 @@ class TestHomeView(APITestCase):
                     'name': 'Ensino Fundamental',
                     'unidades': 1,
                     'total': 200,
+                    'slug': 'fundamental',
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 100,
+                    'slug': 'infantil',
                 },
             ]
         }
@@ -120,7 +124,6 @@ class TestHomeView(APITestCase):
     def test_returns_dre_data(self):
         response = self.get(zona='Sul', dre='y')
 
-        # TODO: botar slug
         expected = {
             'total': 255,
             'places': [
@@ -142,11 +145,13 @@ class TestHomeView(APITestCase):
                     'name': 'Ensino Fundamental',
                     'unidades': 1,
                     'total': 200,
+                    'slug': 'fundamental',
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 55,
+                    'slug': 'infantil',
                 },
             ]
         }
