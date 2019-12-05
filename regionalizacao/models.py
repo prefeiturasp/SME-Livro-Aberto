@@ -70,13 +70,13 @@ class Recurso(models.Model):
 
 class Subgrupo(models.Model):
     grupo = models.ForeignKey('Grupo', on_delete=models.CASCADE)
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, null=True, blank=True)
 
     class Meta:
         unique_together = ('grupo', 'name')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.grupo.name} - {self.name}'
 
 
 class Grupo(models.Model):
