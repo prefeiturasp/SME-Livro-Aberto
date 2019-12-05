@@ -358,7 +358,6 @@ class BudgetDao:
         for grupo_name, recursos_g \
                 in groupby(recursos, lambda r: r.subgrupo.grupo.name):
             recursos_g = list(recursos_g)
-            recursos_g.sort(key=lambda r: r.cost, reverse=True)
 
             subgrupos, total_s = self._build_subgrupos_data(recursos_g)
             grupo_dict = {
@@ -391,6 +390,7 @@ class BudgetDao:
             subgrupos_list.append(subgrupo_dict)
             total += cost
 
+        subgrupos_list.sort(key=lambda s: s['cost'], reverse=True)
         return subgrupos_list, total
 
 
