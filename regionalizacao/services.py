@@ -1,7 +1,7 @@
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
-    BudgetDao,
+    BudgetDao, EscolaInfoDao,
 )
 
 
@@ -56,3 +56,15 @@ def apply_unidade_recursos_fromto():
             subgrupo_name=ft.subgrupo,
             valor=ft.valor,
             label=ft.label)
+
+
+def populate_escola_info_budget_data():
+    budget_dao = BudgetDao()
+    info_dao = EscolaInfoDao()
+
+    budgets = budget_dao.get_all()
+    for budget in budgets:
+        recursos, total = budget_dao.build_recursos_data(budget)
+        info_dao.update(
+            escola_id=budget.escola.id, year=budget.year,
+            budget_total=total, recursos=recursos)
