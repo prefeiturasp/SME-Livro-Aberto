@@ -1,8 +1,29 @@
+from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
     BudgetDao, EscolaInfoDao,
 )
+
+
+def update_regionalizacao_data():
+    print('## Updating regionalizacao data from EOL API ##')
+    update_data_from_eol_api()
+    print('## Applying from-tos ##')
+    apply_fromtos()
+    print('## Populating escola_info table with budget data ##')
+    populate_escola_info_budget_data()
+
+
+def update_data_from_eol_api():
+    eol_api_dao.update_escola_table()
+
+
+def apply_fromtos():
+    apply_distrito_zona_fromto()
+    apply_etapa_tipo_escola_fromto()
+    apply_ptrf_fromto()
+    apply_unidade_recursos_fromto()
 
 
 def apply_distrito_zona_fromto():
