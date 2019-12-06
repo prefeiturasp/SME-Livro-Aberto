@@ -9,6 +9,29 @@ body > header h1 + p {
     color: #5F6B6D;
 }
 
+#mapa{
+  position: relative;
+}
+
+svg.map-container{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+svg.map-container path{
+  fill: #7fa785;
+  stroke: #fff;
+  cursor: pointer;
+  stroke-width: 4;
+}
+
+svg.map-container path:hover{
+  fill: #65c55a;
+}
+
 aside{
   display: flex;
   justify-content: flex-end;

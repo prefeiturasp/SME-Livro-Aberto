@@ -5,7 +5,6 @@ let px = n => parseFloat(n) + 'px';
 function height(el){
     let baseHeight = el.getClientRects()[0].height
     let margins = margin('Top', el) + margin('Bottom', el);
-    console.log(baseHeight, margins);
     return baseHeight + margins;
 }
 
@@ -50,4 +49,33 @@ window.addEventListener("DOMContentLoaded", function(){
     let localidadeOrderSwitch = document.querySelector('#localidade-order');
     localidadeOrderSwitch.addEventListener('change', sortOnChange);
     sortOnChange.call(localidadeOrderSwitch)
+});
+
+let baseUrl = '/static/regionalizacao/maps/'
+
+window.addEventListener("DOMContentLoaded", function(){
+    var width = document.body.clientWidth,
+        height = document.body.clientHeight;
+
+    var svg = d3.select('svg.map-container')
+        .attr('viewBox', '0 0 ' + width + ' ' + height);
+
+    var gMap = svg.select('g.map');
+
+    d3.json(baseUrl + 'distritos.topojson').then(function (data){
+        let features = topojson.feature(data, data.objects.Distritos);
+
+        projection = d3.geoMercator()
+            .fitSize([width / 2, height], features)
+
+        var path = d3.geoPath().projection(projection)
+        function title(d){ return d.properties.NOME; }
+        gMap.selectAll('path')
+            .data(features.features)
+            .enter()
+            .append('path')
+            .attr('d', path)
+            .append('title')
+            .text(title);
+    });
 });
