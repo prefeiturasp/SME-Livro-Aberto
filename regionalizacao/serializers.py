@@ -94,9 +94,19 @@ class PlacesSerializer:
                 })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
-        # elif self.level == 3:
-        #     qs = self.queryset.order_by('-budget_total')
-        #     return EscolaInfoSerializer(qs, many=True).data
+        elif self.level == 3:
+            for info in self.queryset.all():
+                params = {
+                    **self.query_params,
+                    'escola': info.escola.codesc,
+                }
+                pĺaces.append({
+                    'code': info.escola.codesc,
+                    'name': info.nomesc,
+                    'total': info.budget_total,
+                    'url': self.url(params),
+                })
+            pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
         elif self.level == 4:
             if not self.queryset.count() == 1:
