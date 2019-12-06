@@ -11,7 +11,7 @@ from regionalizacao.models import (
 class TestHomeView(APITestCase):
 
     def setUp(self):
-        year = date.today().year
+        self.year = date.today().year
         escola1 = mommy.make(Escola, codesc='01')
         escola2 = mommy.make(Escola, codesc='02')
         escola3 = mommy.make(Escola, codesc='03')
@@ -27,15 +27,20 @@ class TestHomeView(APITestCase):
 
         self.info1 = mommy.make(
             EscolaInfo, escola=escola1, nomesc='Escola 1', distrito=distrito_s,
-            dre=dre_x, budget_total=100, tipoesc=tipo_i, year=year,
+            dre=dre_x, budget_total=100, tipoesc=tipo_i, year=self.year,
             rede='DIR')
         self.info2 = mommy.make(
             EscolaInfo, escola=escola2,  nomesc='Escola 2', distrito=distrito_s,
-            dre=dre_y, budget_total=200, tipoesc=tipo_f, year=year,
+            dre=dre_y, budget_total=200, tipoesc=tipo_f, year=self.year,
             rede='DIR')
         self.info3 = mommy.make(
             EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
-            budget_total=55, tipoesc=tipo_i, year=year,
+            budget_total=55, tipoesc=tipo_i, year=self.year, rede='DIR')
+
+        # escola 1 info from previous year
+        self.info1_b = mommy.make(
+            EscolaInfo, escola=escola1, nomesc='Escola 1', distrito=distrito_s,
+            dre=dre_x, budget_total=2, tipoesc=tipo_i, year=self.year-1,
             rede='DIR')
 
     @property
@@ -58,12 +63,12 @@ class TestHomeView(APITestCase):
                 {
                     'name': 'Sul',
                     'total': 300,
-                    'url': f'{self.url}?zona=Sul',
+                    'url': f'{self.url}?year={self.year}&zona=Sul',
                 },
                 {
                     'name': 'Norte',
                     'total': 55,
-                    'url': f'{self.url}?zona=Norte',
+                    'url': f'{self.url}?year={self.year}&zona=Norte',
                 },
             ],
             'etapas': [
@@ -94,13 +99,13 @@ class TestHomeView(APITestCase):
                     'code': 'y',
                     'name': 'Dre y',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y',
+                    'url': f'{self.url}?zona=Sul&year={self.year}&dre=y',
                 },
                 {
                     'code': 'x',
                     'name': 'Dre x',
                     'total': 100,
-                    'url': f'{self.url}?zona=Sul&dre=x',
+                    'url': f'{self.url}?zona=Sul&year={self.year}&dre=x',
                 },
             ],
             'etapas': [
@@ -131,13 +136,15 @@ class TestHomeView(APITestCase):
                     'code': 1,
                     'name': 'Distrito s',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1',
+                    'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                            f'&distrito=1'),
                 },
                 {
                     'code': 2,
                     'name': 'Distrito n',
                     'total': 55,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=2',
+                    'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                            f'&distrito=2'),
                 },
             ],
             'etapas': [
@@ -168,13 +175,15 @@ class TestHomeView(APITestCase):
                     'code': '02',
                     'name': 'Escola 2',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1&escola=02',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=02'),
                 },
                 {
                     'code': '01',
                     'name': 'Escola 1',
                     'total': 100,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1&escola=01',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=01'),
                 },
             ],
             'etapas': [
@@ -208,8 +217,6 @@ class TestHomeView(APITestCase):
         self.info1.recursos = escola1_recursos
         self.info1.save()
 
-        self.info1.refresh_from_db()
-
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
@@ -221,6 +228,30 @@ class TestHomeView(APITestCase):
                 'recursos': escola1_recursos,
                 'latitude': str(self.info1.latitude),
                 'longitude': str(self.info1.longitude),
+            },
+        }
+
+        assert expected == response.data
+
+    def test_filters_data_by_year(self):
+        self.info1_b.endereco = "Rua 1b"
+        self.info1_b.numero = 10
+        self.info1_b.bairro = 'Bairro 1b'
+        self.info1_b.cep = '10100000'
+        self.info1_b.save()
+
+        response = self.get(year=self.year-1, zona='Sul', dre='y', distrito=1,
+                            escola='01')
+
+        expected = {
+            'escola': {
+                'name': 'TI - Escola 1',
+                'address': 'Rua 1b, 10 - Bairro 1b',
+                'cep': 10100000,
+                'total': 2,
+                'recursos': None,
+                'latitude': str(self.info1_b.latitude),
+                'longitude': str(self.info1_b.longitude),
             },
         }
 

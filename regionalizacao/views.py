@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import date
 
 from django_filters import rest_framework as filters
 from rest_framework import generics
@@ -14,8 +15,12 @@ class EscolaInfoFilter(filters.FilterSet):
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
+    year = filters.NumberFilter()
 
     def filter_queryset(self, queryset):
+        if not self.form.cleaned_data['year']:
+            self.form.cleaned_data['year'] = date.today().year
+
         query_params = deepcopy(self.form.cleaned_data)
 
         if self.form.cleaned_data['dre']:
