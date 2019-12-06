@@ -1,5 +1,6 @@
 from collections import namedtuple
 from datetime import date
+from itertools import groupby
 
 from django.db import IntegrityError, transaction
 from openpyxl import load_workbook
@@ -258,7 +259,10 @@ class EscolaInfoDao:
         self.model = EscolaInfo
 
     def get(self, escola_id, year):
-        return self.model.objects.get(escola__id=escola_id, year=year)
+        try:
+            return self.model.objects.get(escola__id=escola_id, year=year)
+        except self.model.DoesNotExist:
+            return None
 
     def update_or_create(self, **data):
         try:
@@ -278,6 +282,8 @@ class EscolaInfoDao:
         escola_id = data.pop('escola_id')
         year = data.pop('year')
         info = self.get(escola_id=escola_id, year=year)
+        if not info:
+            return None
 
         for field_name, value in data.items():
             setattr(info, field_name, value)
@@ -291,6 +297,9 @@ class BudgetDao:
     def __init__(self):
         self.model = Budget
         self.escola_dao = EscolaDao()
+
+    def get_all(self):
+        return self.model.objects.all()
 
     def get(self, escola_id, year):
         try:
@@ -328,6 +337,61 @@ class BudgetDao:
             setattr(budget, field_name, value)
         budget.save()
         return budget
+
+    def build_recursos_data(self, budget):
+        qs = budget.recursos.all().order_by('subgrupo__grupo__name')
+        total = 0
+
+        grupos, total_g = self._build_grupos_data(qs)
+        ptrf = budget.ptrf if budget.ptrf else 0
+        total += total_g + ptrf
+        recursos_dict = {
+            'ptrf': ptrf,
+            'grupos': grupos,
+        }
+
+        return recursos_dict, total
+
+    def _build_grupos_data(self, recursos):
+        grupos_list = []
+        total = 0
+        for grupo_name, recursos_g \
+                in groupby(recursos, lambda r: r.subgrupo.grupo.name):
+            recursos_g = list(recursos_g)
+
+            subgrupos, total_s = self._build_subgrupos_data(recursos_g)
+            grupo_dict = {
+                "name": grupo_name,
+                "total": total_s,
+                "subgrupos": subgrupos,
+            }
+            grupos_list.append(grupo_dict)
+            total += total_s
+
+        grupos_list.sort(key=lambda g: g['total'], reverse=True)
+        return grupos_list, total
+
+    def _build_subgrupos_data(self, recursos):
+        subgrupos_list = []
+        total = 0
+        if len(recursos) == 1:
+            recurso = recursos[0]
+            total = recurso.cost if recurso.cost else 0
+            return subgrupos_list, total
+
+        for recurso in recursos:
+            cost = recurso.cost if recurso.cost else 0
+            subgrupo_dict = {
+                'name': recurso.subgrupo.name,
+                'cost': cost,
+                'amount': recurso.amount,
+                'label': recurso.label,
+            }
+            subgrupos_list.append(subgrupo_dict)
+            total += cost
+
+        subgrupos_list.sort(key=lambda s: s['cost'], reverse=True)
+        return subgrupos_list, total
 
 
 class RecursoDao:

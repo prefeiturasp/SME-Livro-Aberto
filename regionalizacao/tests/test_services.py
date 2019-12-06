@@ -8,12 +8,14 @@ from model_mommy import mommy
 
 from regionalizacao.models import (
     Distrito, DistritoZonaFromTo, Escola, EtapaTipoEscolaFromTo, PtrfFromTo,
-    TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget)
+    TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget,
+    EscolaInfo)
 from regionalizacao.services import (
     apply_distrito_zona_fromto,
     apply_etapa_tipo_escola_fromto,
     apply_ptrf_fromto,
     apply_unidade_recursos_fromto,
+    populate_escola_info_budget_data,
 )
 
 
@@ -155,3 +157,89 @@ class TestApplyUnidadeRecursosFromTo(TestCase):
         assert 15 == recurso.amount
         assert 'Unidades' == recurso.label
         assert 50.23 == recurso.cost
+
+
+@pytest.mark.django_db
+class TestPopulateEscolaInfoBudgetData(TestCase):
+
+    # TODO: test when subgrupo is null
+    def test_populate_escola_info(self):
+        year = date.today().year
+
+        escola = mommy.make(Escola, codesc='01')
+        info = mommy.make(EscolaInfo, escola=escola, nomesc="Escolesc",
+                          year=year)
+
+        budget = mommy.make(Budget, escola=escola, year=year, ptrf=10)
+
+        grupo1 = mommy.make(Grupo, name='Repasses')
+        subgrupo1 = mommy.make(Subgrupo, grupo=grupo1, name='IPTU')
+        subgrupo2 = mommy.make(Subgrupo, grupo=grupo1, name='Locação')
+        mommy.make(Recurso, budget=budget, subgrupo=subgrupo1, cost=100)
+        mommy.make(Recurso, budget=budget, subgrupo=subgrupo2, cost=200)
+
+        grupo2 = mommy.make(Grupo, name='Material escolar')
+        subgrupo2 = mommy.make(Subgrupo, grupo=grupo2, name='Kit fundamental')
+        subgrupo3 = mommy.make(Subgrupo, grupo=grupo2, name='Livros')
+        mommy.make(Recurso, budget=budget, subgrupo=subgrupo2, cost=1000,
+                   amount=1500, label='kits')
+        mommy.make(Recurso, budget=budget, subgrupo=subgrupo3, cost=2000,
+                   amount=120, label='livros')
+
+        grupo3 = mommy.make(Grupo, name='Outros')
+        subgrupo3 = mommy.make(Subgrupo, grupo=grupo3, name='')
+        mommy.make(Recurso, budget=budget, subgrupo=subgrupo3, cost=1)
+
+        populate_escola_info_budget_data()
+
+        info.refresh_from_db()
+        assert info.budget_total == 3311
+
+        expected = {
+            'ptrf': 10,
+            'grupos': [
+                {
+                    "name": "Material escolar",
+                    "total": 3000,
+                    'subgrupos': [
+                        {
+                            'name': 'Livros',
+                            'cost': 2000,
+                            'amount': 120,
+                            'label': 'livros',
+                        },
+                        {
+                            'name': 'Kit fundamental',
+                            'cost': 1000,
+                            'amount': 1500,
+                            'label': 'kits',
+                        },
+                    ],
+                },
+                {
+                    "name": "Repasses",
+                    "total": 300,
+                    'subgrupos': [
+                        {
+                            'name': 'Locação',
+                            'cost': 200,
+                            'amount': None,
+                            'label': None,
+                        },
+                        {
+                            'name': 'IPTU',
+                            'cost': 100,
+                            'amount': None,
+                            'label': None,
+                        },
+                    ],
+                },
+                {
+                    "name": "Outros",
+                    "total": 1,
+                    'subgrupos': [],
+                },
+            ],
+        }
+
+        assert expected == info.recursos

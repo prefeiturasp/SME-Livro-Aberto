@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 
@@ -29,6 +29,9 @@ class EscolaInfo(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     total_vagas = models.IntegerField()
+    # populated after from-tos are applied
+    budget_total = models.FloatField(null=True, blank=True)
+    recursos = JSONField(null=True, blank=True)
 
     class Meta:
         unique_together = ('escola', 'year')
@@ -67,13 +70,13 @@ class Recurso(models.Model):
 
 class Subgrupo(models.Model):
     grupo = models.ForeignKey('Grupo', on_delete=models.CASCADE)
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, null=True, blank=True)
 
     class Meta:
         unique_together = ('grupo', 'name')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.grupo.name} - {self.name}'
 
 
 class Grupo(models.Model):
@@ -98,7 +101,7 @@ class TipoEscola(models.Model):
     etapa = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f'{self.code}'
+        return f'{self.code} - {self.etapa}'
 
 
 class Distrito(models.Model):
