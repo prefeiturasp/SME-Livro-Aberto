@@ -79,7 +79,7 @@ class PtrfFromToDao(FromToDao):
         self.model = PtrfFromTo
         self.sheet_columns = [
             SheetColumn('codesc', 'a'),
-            SheetColumn('vlrepasse', 'd'),
+            SheetColumn('vlrepasse', 'b'),
         ]
 
     def extract_spreadsheet(self, sheet):
@@ -97,7 +97,7 @@ class DistritoZonaFromToDao(FromToDao):
         self.model = DistritoZonaFromTo
         self.sheet_columns = [
             SheetColumn('coddist', 'a'),
-            SheetColumn('zona', 'c'),
+            SheetColumn('zona', 'b'),
         ]
 
     def get_all(self):
