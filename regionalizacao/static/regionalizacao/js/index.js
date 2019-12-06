@@ -5,7 +5,6 @@ let px = n => parseFloat(n) + 'px';
 function height(el){
     let baseHeight = el.getClientRects()[0].height
     let margins = margin('Top', el) + margin('Bottom', el);
-    console.log(baseHeight, margins);
     return baseHeight + margins;
 }
 
