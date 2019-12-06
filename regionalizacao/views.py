@@ -13,6 +13,7 @@ class EscolaInfoFilter(filters.FilterSet):
     zona = filters.CharFilter(field_name='distrito__zona')
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
+    escola = filters.CharFilter(field_name='escola__codesc')
 
     def filter_queryset(self, queryset):
         query_params = deepcopy(self.form.cleaned_data)
@@ -42,6 +43,8 @@ class HomeView(generics.ListAPIView):
             level = 2
         if 'distrito' in request.query_params:
             level = 3
+        if 'escola' in request.query_params:
+            level = 4
         serializer = self.get_serializer(queryset, level=level,
                                          query_params=query_params)
 
