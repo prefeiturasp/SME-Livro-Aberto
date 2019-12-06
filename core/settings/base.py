@@ -181,6 +181,12 @@ categoria_from_to_json = config(
 )
 CATEGORIA_FROM_TO_SLUG = json.loads(categoria_from_to_json)
 
+
+# REGIONALIZACAO CONFIG
+EOL_API_URL = config(
+    'EOL_API_URL',
+    'https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/')
+
 SENTRY_URL = config('SENTRY_URL', None)
 if SENTRY_URL:
     import sentry_sdk

@@ -1,5 +1,4 @@
 body > header {
-  background-color: #65C55A;
   background-image: url('../img/bg-header.svg');
   background-repeat: no-repeat;
   background-position: center 80%;
@@ -8,4 +7,216 @@ body > header {
 
 body > header h1 + p {
     color: #5F6B6D;
+}
+
+#mapa{
+  position: relative;
+}
+
+svg.map-container{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+svg.map-container path{
+  fill: #7fa785;
+  stroke: #fff;
+  cursor: pointer;
+  stroke-width: 4;
+}
+
+svg.map-container path:hover{
+  fill: #65c55a;
+}
+
+aside{
+  display: flex;
+  justify-content: flex-end;
+}
+
+aside > .card{
+  width: calc(100%/3);
+}
+
+aside > .card > header,
+aside > .card > .body{
+  padding: 1.5em;
+}
+
+aside > .card > header > h3{
+  text-transform: uppercase;
+  font-size: 1.5em;
+  margin: 0;
+}
+
+aside > .card > header > .numbers{
+  display: flex;
+  justify-content: space-between;
+  font-weight: bolder;
+}
+
+aside > .card > header > .numbers > .cell > .bignumber{
+  font-size: 1.25em;
+}
+
+aside > .card .bignumber .number{
+  font-size: 1.75em;
+}
+
+aside > .card .description{
+  text-transform: uppercase;
+  font-size: 0.75em;
+  margin-top: -0.5em
+}
+
+aside > .card > header > p{
+  line-height: 1;
+}
+
+aside > .card > * > :last-child{
+  margin-bottom: 0;
+}
+
+aside > .card > .body > h3{
+  font-weight: lighter;
+  margin: 0 0 1em;
+}
+
+aside > .card > .body > .total{
+  font-size: 1.25em;
+}
+
+aside > .card > .body{
+  color: #222b34;
+}
+
+.bar{
+  font-size: 0.75rem;
+}
+
+.bg-infantil{
+  background-color: #e94363;
+  color: #fff;
+}
+
+.bg-infantil.tooltip::after,
+.fg-infantil{
+  color: #e94363;
+}
+
+.bg-fundamental{
+  background-color: #edb93b;
+  color: #fff;
+}
+
+.bg-fundamental.tooltip::after,
+.fg-fundamental{
+  color: #edb93b;
+}
+
+.bg-medio{
+  background-color: #277fcd;
+  color: #fff;
+}
+
+.bg-medio.tooltip::after,
+.fg-medio{
+  color: #277fcd;
+}
+
+.bg-especial{
+  background-color: #73379e;
+  color: #fff;
+}
+
+.bg-especial.tooltip::after,
+.fg-especial{
+  color: #73379e;
+}
+
+aside > .card td{
+  text-align: left;
+  padding: 1em 0;
+  vertical-align: top;
+  border-bottom: 2px solid #e2ebe3;
+}
+
+aside > .card tr:last-child td{
+  border-bottom-width: 0px;
+}
+
+#localidade .bar,
+body > header {
+  background-color: #65C55A;
+}
+
+#localidade .bar{
+  transition: all 0.5s ease;
+}
+
+#localidade .bar{
+  padding: 0.5rem 0;
+  border-radius: 3px;
+  margin: 0 0 .25rem 0;
+  font-size: 0.75em;
+  white-space: nowrap;
+}
+
+#localidade .bar > *{
+  padding: 0 1rem;
+}
+
+#localidade .bar .label{
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+svg.icon .stroke{
+  stroke: currentColor;
+}
+
+aside > .card svg.icon {
+  cursor: help;
+}
+
+aside > .card .tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+aside > .card svg.icon + .tooltip {
+  opacity: 0;
+  position: absolute;
+  transition: all 0.5s ease;
+  border-radius: 3px;
+  margin: -5em -5em 0 0;
+  padding: 1em;
+  pointer-events: none;
+  width: 10em;
+}
+
+aside > .card svg.icon:hover + .tooltip {
+  opacity: 1;
+  margin: -5em 0 0 2em;
+}
+
+aside > .card .tooltip-container .tooltip::after {
+  content: ' ';
+  position: absolute;
+  top: 4em;
+  right: 100%;
+  border-width: .25em;
+  border-style: solid;
+  border-color: transparent currentColor transparent transparent;
+}
+
+aside > .card svg.icon + .tooltip > :first-child {
+  margin-top: 0;
+}
+
+aside > .card svg.icon + .tooltip > :last-child {
+  margin-bottom: 0;
 }
