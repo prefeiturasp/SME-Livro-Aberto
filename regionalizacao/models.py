@@ -98,7 +98,7 @@ class Dre(models.Model):
 class TipoEscola(models.Model):
     code = models.CharField(max_length=15, unique=True)
     desc = models.CharField(max_length=100, null=True)
-    etapa = models.CharField(max_length=50, null=True)
+    etapa = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return f'{self.code} - {self.etapa}'
@@ -221,7 +221,7 @@ class DistritoZonaFromTo(models.Model):
 class EtapaTipoEscolaFromTo(models.Model):
     tipoesc = models.CharField(max_length=10, unique=True)
     desctipoesc = models.CharField(max_length=100)
-    etapa = models.CharField(max_length=20)
+    etapa = models.CharField(max_length=100)
 
     class Meta:
         verbose_name = 'De-Para: Etapa-Tipo Escola'
