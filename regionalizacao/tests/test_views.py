@@ -268,7 +268,42 @@ class TestHomeView(HomeViewTestCase):
 
 
 class TestHomeViewLocationsGraphData(HomeViewTestCase):
-    pass
+
+    def test_returns_locations_data(self):
+        response = self.get()
+        expected = [
+            {
+                'name': 'Sul',
+                'total': 300,
+            },
+            {
+                'name': 'Norte',
+                'total': 55,
+            },
+        ]
+
+        assert expected == response.data['locations']
+
+    def test_map_level_does_not_affect_locations_data(self):
+        expected = [
+            {
+                'name': 'Sul',
+                'total': 300,
+            },
+            {
+                'name': 'Norte',
+                'total': 55,
+            },
+        ]
+
+        response = self.get(zona='Sul')
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y')
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y', distrito=1)
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
+        assert expected == response.data['locations']
 
 
 class TestSaibaMaisView(APITestCase):

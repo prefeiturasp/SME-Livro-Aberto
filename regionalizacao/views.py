@@ -27,7 +27,14 @@ class EscolaInfoFilter(filters.FilterSet):
             self.form.cleaned_data['zona'] = ''
         if self.form.cleaned_data['distrito']:
             self.form.cleaned_data['dre'] = ''
-        return query_params, super().filter_queryset(queryset)
+        map_qs = super().filter_queryset(queryset)
+
+        self.form.cleaned_data['zona'] = ''
+        self.form.cleaned_data['dre'] = ''
+        self.form.cleaned_data['distrito'] = ''
+        self.form.cleaned_data['escola'] = ''
+        locations_qs = super().filter_queryset(queryset)
+        return query_params, map_qs, locations_qs
 
 
 class HomeView(generics.ListAPIView):
@@ -39,7 +46,8 @@ class HomeView(generics.ListAPIView):
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):
-        query_params, queryset = self.filter_queryset(self.get_queryset())
+        query_params, map_qs, locations_qs = self.filter_queryset(
+            self.get_queryset())
 
         level = 0
         if 'zona' in request.query_params:
@@ -50,7 +58,8 @@ class HomeView(generics.ListAPIView):
             level = 3
         if 'escola' in request.query_params:
             level = 4
-        serializer = self.get_serializer(queryset, level=level,
-                                         query_params=query_params)
+        serializer = self.get_serializer(
+            map_queryset=map_qs, locations_queryset=locations_qs, level=level,
+            query_params=query_params)
 
         return Response(serializer.data)
