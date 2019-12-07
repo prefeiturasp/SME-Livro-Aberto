@@ -8,7 +8,7 @@ from regionalizacao.models import (
     Escola, EscolaInfo, TipoEscola, Distrito, Dre)
 
 
-class TestHomeView(APITestCase):
+class HomeViewTestCase(APITestCase):
 
     def setUp(self):
         self.year = date.today().year
@@ -50,6 +50,9 @@ class TestHomeView(APITestCase):
     def get(self, **kwargs):
         return self.client.get(self.url, kwargs)
 
+
+class TestHomeView(HomeViewTestCase):
+
     def test_render_correct_template(self):
         response = self.get()
         self.assertTemplateUsed(response, 'regionalizacao/home.html')
@@ -87,6 +90,7 @@ class TestHomeView(APITestCase):
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_zona_data(self):
@@ -124,6 +128,7 @@ class TestHomeView(APITestCase):
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_dre_data(self):
@@ -163,6 +168,7 @@ class TestHomeView(APITestCase):
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
@@ -202,6 +208,7 @@ class TestHomeView(APITestCase):
             ],
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -231,6 +238,7 @@ class TestHomeView(APITestCase):
             },
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_filters_data_by_year(self):
@@ -255,7 +263,12 @@ class TestHomeView(APITestCase):
             },
         }
 
+        response.data.pop('locations')
         assert expected == response.data
+
+
+class TestHomeViewLocationsGraphData(HomeViewTestCase):
+    pass
 
 
 class TestSaibaMaisView(APITestCase):

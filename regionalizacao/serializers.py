@@ -18,18 +18,24 @@ class PlacesSerializer:
 
     @property
     def data(self):
+        places = self.build_places_data()
+        locations = []
+
         if self.level == 4:
-            return self.build_places_data()
+            return {
+                'escola': places,
+                'locations': locations,
+            }
 
         total = self.queryset.aggregate(total=Sum('budget_total'))['total']
-        places = self.build_places_data()
+        etapas = self.build_etapas_data()
 
         ret = {
             'total': total,
             'places': places,
+            'etapas': etapas,
+            'locations': locations,
         }
-
-        ret['etapas'] = self.build_etapas_data()
 
         return ret
 
@@ -112,10 +118,7 @@ class PlacesSerializer:
             if not self.queryset.count() == 1:
                 raise Exception
             escola = self.queryset.first()
-            ret = {
-                'escola': EscolaInfoSerializer(escola).data,
-            }
-            return ret
+            return EscolaInfoSerializer(escola).data
 
         return pĺaces
 
