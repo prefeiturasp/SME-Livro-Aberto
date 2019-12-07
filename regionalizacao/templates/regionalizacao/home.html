@@ -86,151 +86,47 @@
                       </div>
                   </div>
                   <table>
+                  {% for etapa in etapas %}
                       <tr>
                           <td>
                               <strong class="number">
-                                  50.000
+                                  {{etapa.unidades}}
                               </strong>
                               unidades
                               <div class="tooltip-container">
                                   <svg class="icon">
                                       <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
                                   </svg>
-                                  <div class="tooltip bg-infantil">
+                                  <div class="tooltip bg-{{etapa.slug}}">
                                       <h4>Tipos de unidades</h4>
                                       <h5>EMEFM</h4>
                                       <p>Escola Municipal de Ensino Fundamental</p>
                                   </div>
                               </div>
-                              <div class="description fg-infantil">
+                              <div class="description fg-{{etapa.slug}}">
                                   <strong>
-                                      Ensino infantil
+                                      {{etapa.name}}
                                   </strong>
                               </div>
                           </td>
                           <td>
                               <strong>
-                                  R$ 50.000,00
+                                  R$ {{etapa.total|floatformat:2}}
                               </strong>
                               <div class="description">
                                   em recursos
                               </div>
+                              {% if etapa.vagas %}
                               <strong>
-                                      421
+                                  {{etapa.vagas}}
                               </strong>
                               <div class="description">
                                   vagas oferecidas
                               </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  25.000
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-fundamental">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-fundamental">
-                                  <strong>
-                                      Ensino fundamental
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  12.500
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-medio">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-medio">
-                                  <strong>
-                                      Ensino médio
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                 12.500
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-especial">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-especial">
-                                  <strong>
-                                      Ensino especial
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
+                              {% endif %}
                           </td>
                       </tr>
+                  {% endfor %}
                   </table>
               </div>
           </div>
