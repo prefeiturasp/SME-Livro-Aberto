@@ -258,26 +258,13 @@
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>
           <div class="barchart">
-              <div class="bar" data-label="Leste" data-value="100993" data-percentage="100">
-                  <div class="label">Leste</div>
-                  <div class="value">R$ 100.993,00</div>
-              </div>
-              <div class="bar" data-label="Oeste" data-value="75993" data-percentage="75" style="width: 75%">
-                  <div class="label">Oeste</div>
-                  <div class="value">R$ 75.993,00</div>
-              </div>
-              <div class="bar" data-label="Centro" data-value="50993" data-percentage="50" style="width: 50%">
-                  <div class="label">Centro</div>
-                  <div class="value">R$ 50.993,00</div>
-              </div>
-              <div class="bar" data-label="Norte" data-value="50993" data-percentage="50" style="width: 50%">
-                  <div class="label">Norte</div>
-                  <div class="value">R$ 50.993,00</div>
-              </div>
-              <div class="bar" data-label="Sul" data-value="5993" data-percentage="5" style="width: 5%">
-                  <div class="label">Sul</div>
-                  <div class="value">R$ 5.993,00</div>
-              </div>
+              {% for location in locations %}
+                  {% widthratio location.total total 100 as percentage %}
+                  <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
+                      <div class="label">{{location.name}}</div>
+                      <div class="value">R$ {{location.total|floatformat:2}}</div>
+                  </div>
+              {% endfor %}
           </div>
       </div>
   </section>
