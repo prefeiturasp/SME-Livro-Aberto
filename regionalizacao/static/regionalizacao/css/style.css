@@ -35,6 +35,8 @@ svg.map-container path:hover{
 aside{
   display: flex;
   justify-content: flex-end;
+  position: relative;
+  z-index: 2;
 }
 
 aside > .card{
