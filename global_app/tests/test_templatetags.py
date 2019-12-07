@@ -1,4 +1,4 @@
-from global_app.templatetags.utils import sum_of
+from global_app.templatetags.utils import sum_of, split
 
 
 class TestSumOf:
@@ -13,3 +13,12 @@ class TestSumOf:
     def test_missing_attr(self):
         iterable = [dict(a=1), dict(a=2), dict(a=3)]
         assert None == sum_of(iterable, 'missing_key')
+
+
+class TestSplit:
+    def test_base(self):
+        assert  ['2', 'million'] == split('2 million')
+
+    def test_diffent_separator(self):
+        assert  ['2', 'million'] == split('2-million', sep='-')
+        assert  ['2 million'] == split('2 million', sep='-')

@@ -9,3 +9,8 @@ register = template.Library()
 def sum_of(value, attr_name):
     with suppress(KeyError):
         return sum(map(itemgetter(attr_name), value))
+
+
+@register.filter(name='split')
+def split(value, sep=None):
+    return value.split(sep=sep)
