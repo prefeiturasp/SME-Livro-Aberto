@@ -2,7 +2,7 @@
 
 {%block header %}
     <h1>Regionalização</h1>
-    <p>Execução de Contratos da Educação em São Paulo</p>
+    <p>Saiba onde está o orçamento da educação de São Paulo</p>
     {% include '_header_nav.html' with about='regionalizacao:saiba_mais' %}
 {% endblock %}
 
@@ -14,11 +14,13 @@
             <div class="sidebar">
                 <div class="card sobre">
                     <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
-                    <h1>
-                        So<br />
-                        bre<br />
-                    </h1>
+                        <h1>So<br />bre<br /></h1>
+                        <p>O objetivo da ferramenta <strong>Regionalização</strong> é mostrar <strong>como estão distribuídos geograficamente</strong> alguns dos recursos destinados à Educação na cidade de São Paulo.</p>
                 </div>
+                <ul>
+                    <li class="active"><a href="{% url 'contratos:sobre' %}">Sobre</a></li>
+                    <li><a href="{% url 'contratos:tutorial' %}">Tutorial</a></li>
+                </ul>
             </div>
             <div class="main verde txt">
             </div>
