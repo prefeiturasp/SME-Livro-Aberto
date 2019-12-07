@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'fullurl',
-    'global',
+    'global_app',
     'mosaico',
     'geologia',
     'contratos',

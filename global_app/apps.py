@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class UtilConfig(AppConfig):
-    name = 'global'
+    name = 'global_app'
