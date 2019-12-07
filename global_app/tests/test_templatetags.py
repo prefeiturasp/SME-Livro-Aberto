@@ -1,4 +1,5 @@
 from global_app.templatetags.utils import sum_of, split
+from global_app.templatetags.format import small_intword
 
 
 class TestSumOf:
@@ -26,3 +27,15 @@ class TestSplit:
     def test_ignore_non_str(self):
         assert [2] == split(2)
         assert [42] == split(42)
+
+
+class TestSmallIntWord:
+    def test_big_numbers(self):
+        assert '2,0 milhões' == small_intword(2000000)
+
+    def test_thousands(self):
+        assert '2,2 mil' == small_intword(2200)
+
+    def test_small_numbers(self):
+        assert 200 == small_intword(200)
+        assert 2 == small_intword(2)

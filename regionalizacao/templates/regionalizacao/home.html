@@ -1,5 +1,6 @@
 {% extends 'regionalizacao/base.html'  %}
 {% load utils %}
+{% load format %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -48,9 +49,9 @@
                           <strong class="bignumber">
                               R$
                               <span class="number">
-                                  {{total|intword|split|first}}
+                                  {{total|small_intword|split|first}}
                               </span>
-                              {{total|intword|split|last}}
+                              {{total|small_intword|split|last}}
                           </strong>
                           <div class="description">
                               em recursos
