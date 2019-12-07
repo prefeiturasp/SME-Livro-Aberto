@@ -1,0 +1,46 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Regionalização{% endblock %}
+
+{%block head %}
+<link rel="stylesheet" href="{% static 'regionalizacao/css/style.css' %}">
+
+{% endblock %}
+
+{%block header %}
+  <h1>Contrato Social</h1>
+  <p>Execução de contratos da Educação em São Paulo</p>
+  {% include '_header_nav.html' with about='regionalizacao:metodologia'%}
+{% endblock %}
+
+{%block sections %}
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+                <div class="card sobre">
+                    <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                        <h1>So<br />bre<br /></h1>
+                        <p>O objetivo da ferramenta <strong>Regionalização</strong> é mostrar <strong>como estão distribuídos geograficamente</strong> alguns dos recursos destinados à Educação na cidade de São Paulo.</p>
+                </div>
+                <ul>
+                    <li><a href="{% url 'regionalizacao:saiba_mais' %}">Sobre</a></li>
+                    <li class="active"><a href="{% url 'regionalizacao:tutorial' %}">Tutorial</a></li>
+                </ul>
+            </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+                <div class="tutorial">
+                    <div class="metodologia_mosaico verde">
+                            <h2><strong>Metodologia</strong> ❯ Regionalização</h2>
+
+                    </div>
+                </div>            
+            </div>
+        </div>
+    {% endblock %}
+        
