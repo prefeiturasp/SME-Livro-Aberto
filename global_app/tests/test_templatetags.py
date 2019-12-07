@@ -17,8 +17,12 @@ class TestSumOf:
 
 class TestSplit:
     def test_base(self):
-        assert  ['2', 'million'] == split('2 million')
+        assert ['2', 'million'] == split('2 million')
 
     def test_diffent_separator(self):
-        assert  ['2', 'million'] == split('2-million', sep='-')
-        assert  ['2 million'] == split('2 million', sep='-')
+        assert ['2', 'million'] == split('2-million', sep='-')
+        assert ['2 million'] == split('2 million', sep='-')
+
+    def test_ignore_non_str(self):
+        assert [2] == split(2)
+        assert [42] == split(42)

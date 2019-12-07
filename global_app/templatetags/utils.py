@@ -13,4 +13,7 @@ def sum_of(value, attr_name):
 
 @register.filter(name='split')
 def split(value, sep=None):
-    return value.split(sep=sep)
+    if hasattr(value, 'split'):
+        return value.split(sep=sep)
+    else:
+        return [value]
