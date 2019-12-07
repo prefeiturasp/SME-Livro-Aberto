@@ -12,11 +12,12 @@ from regionalizacao.models import EscolaInfo
 class PlacesSerializer:
 
     def __init__(self, map_queryset, locations_queryset, level, query_params,
-                 *args, **kwargs):
+                 locations_graph_type, *args, **kwargs):
         self.map_queryset = map_queryset
         self.locations_queryset = locations_queryset
         self.level = level
         self.query_params = {k: v for k, v in query_params.items() if v}
+        self.locations_type = locations_graph_type
 
     @property
     def data(self):
@@ -46,7 +47,7 @@ class PlacesSerializer:
         if params:
             qdict = QueryDict('', mutable=True)
             qdict.update(params)
-            url = f'{url}?{qdict.urlencode()}'
+            url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
 
     def build_places_data(self):
@@ -142,6 +143,19 @@ class PlacesSerializer:
 
     def build_locations_data(self):
         locations = []
+        if self.locations_type == 'distrito':
+            qs = self.locations_queryset.order_by('distrito__name')
+            for distrito_name, infos in groupby(qs, lambda i: i.distrito.name):
+                infos = list(infos)
+                total_locations = sum(info.budget_total for info in infos)
+                locations.append({
+                    'name': distrito_name,
+                    'total': total_locations,
+                })
+            locations.sort(key=lambda z: z['total'], reverse=True)
+            return locations
+
+        # locations_type == 'zona'
         qs = self.locations_queryset.order_by('distrito__zona')
         for zona_name, infos in groupby(qs, lambda i: i.distrito.zona):
             infos = list(infos)
@@ -151,7 +165,6 @@ class PlacesSerializer:
                 'total': total_locations,
             })
         locations.sort(key=lambda z: z['total'], reverse=True)
-
         return locations
 
 

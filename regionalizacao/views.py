@@ -58,8 +58,11 @@ class HomeView(generics.ListAPIView):
             level = 3
         if 'escola' in request.query_params:
             level = 4
+
+        locations_graph_type = request.query_params.get('localidade', 'zona')
         serializer = self.get_serializer(
             map_queryset=map_qs, locations_queryset=locations_qs, level=level,
-            query_params=query_params)
+            query_params=query_params,
+            locations_graph_type=locations_graph_type)
 
         return Response(serializer.data)
