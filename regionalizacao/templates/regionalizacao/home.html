@@ -1,4 +1,5 @@
 {% extends 'regionalizacao/base.html'  %}
+{% load utils %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -74,16 +75,18 @@
                       por tipo de unidade educacional
                   </h3>
                   <div class="total bignumber">
-                      <strong class="number">
-                          100.000
-                      </strong>
-                      unidades diretas
-                      <div class="bar">
-                          <span class="value fg-infantil" data-execution="0.5" style="width: 50%">50%</span>
-                          <span class="value fg-fundamental" data-execution="0.25" style="width: 25%">25%</span>
-                          <span class="value fg-medio" data-execution="0.125" style="width: 12.5%">12.5%</span>
-                          <span class="value fg-especial" data-execution="0.125" style="width: 12.5%">12.5%</span>
-                      </div>
+                      {% with total_unidades=etapas|sum_of:'unidades' %}
+                          <strong class="number">
+                              {{total_unidades}}
+                          </strong>
+                          unidades diretas
+                          <div class="bar">
+                          {% for etapa in etapas %}
+                              {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
+                              <span class="value fg-{{etapa.slug}}" style="width: {{unidades_percentage}}%">{{unidades_percentage}}%</span>
+                          {% endfor %}
+                          </div>
+                      {% endwith %}
                   </div>
                   <table>
                   {% for etapa in etapas %}
