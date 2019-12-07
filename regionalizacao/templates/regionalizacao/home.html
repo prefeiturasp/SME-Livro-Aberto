@@ -57,14 +57,18 @@
                           </div>
                       </div>
                       <div class="cell">
-                          <strong class="bignumber">
-                              <span class="number">
-                                  15.920
-                              </span>
-                          </strong>
-                          <div class="description">
-                              vagas oferecidas
-                          </div>
+                      {% with total_vagas=etapas|sum_of:'vagas' %}
+                          {% if total_vagas%}
+                              <strong class="bignumber">
+                                  <span class="number">
+                                      {{total_vagas}}
+                                  </span>
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          {% endif %}
+                          {% endwith %}
                       </div>
                   </div>
                   <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
