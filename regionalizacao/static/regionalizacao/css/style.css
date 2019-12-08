@@ -180,6 +180,10 @@ svg.icon .stroke{
   stroke: currentColor;
 }
 
+#mapa .card{
+  overflow: visible;
+}
+
 aside > .card svg.icon {
   cursor: help;
 }
@@ -195,14 +199,29 @@ aside > .card svg.icon + .tooltip {
   transition: all 0.5s ease;
   border-radius: 3px;
   margin: -5em -5em 0 0;
-  padding: 1em;
   pointer-events: none;
-  width: 10em;
+  width: 12em;
 }
 
-aside > .card svg.icon:hover + .tooltip {
+aside > .card svg.icon + .tooltip > div{
+  min-height: 3em;
+  max-height: 12em;
+  overflow: auto;
+  padding: 1em;
+}
+
+aside > .card svg.icon + .tooltip > div > *{
+  margin: 0;
+}
+
+aside > .card svg.icon + .tooltip > div h5{
+  margin-top: 1em;
+}
+
+aside > .card .tooltip-container:hover svg.icon + .tooltip {
   opacity: 1;
-  margin: -5em 0 0 2em;
+  margin: -5em 0 0 1.5em;
+  pointer-events: all;
 }
 
 aside > .card .tooltip-container .tooltip::after {

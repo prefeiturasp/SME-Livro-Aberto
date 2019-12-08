@@ -106,9 +106,13 @@
                                       <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
                                   </svg>
                                   <div class="tooltip bg-{{etapa.slug}}">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
+                                      <div>
+                                          <h4>Tipos de unidades</h4>
+                                          {% for tipo in etapa.tipos %}
+                                              <h5>{{tipo.code}}</h5>
+                                              <p>{{tipo.desc}}</p>
+                                          {% endfor %}
+                                      </div>
                                   </div>
                               </div>
                               <div class="description fg-{{etapa.slug}}">
