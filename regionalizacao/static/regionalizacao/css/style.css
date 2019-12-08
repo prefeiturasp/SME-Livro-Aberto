@@ -11,6 +11,11 @@ body > header h1 + p {
 
 #mapa{
   position: relative;
+  background-color: #f9faf9;
+}
+
+#mapa + section{
+  background-color: #fff;
 }
 
 #mapa .wrapper > * {
@@ -43,15 +48,14 @@ aside {
 }
 
 svg.map-container path{
-  fill: #7fa785;
+  fill: #f9faf9;
   stroke: #fff;
   cursor: help;
   stroke-width: 4;
-  opacity: .5;
 }
 
 svg.map-container a path{
-  opacity: 1;
+  fill: #7fa785;
 }
 
 svg.map-container a path:hover{
