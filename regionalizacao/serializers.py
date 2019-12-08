@@ -1,3 +1,4 @@
+from copy import deepcopy
 from itertools import groupby
 
 from django.db.models import Sum
@@ -21,19 +22,27 @@ class PlacesSerializer:
 
     @property
     def data(self):
+        current_level = self.get_current_level()
+        breadcrumb = self.build_breadcrumb()
         places = self.build_places_data()
         locations = self.build_locations_data()
 
+        ret = {
+            'current_level': current_level,
+            'breadcrumb': breadcrumb,
+            'escola': places,
+            'locations': locations,
+        }
+
         if self.level == 4:
-            return {
-                'escola': places,
-                'locations': locations,
-            }
+            return ret
 
         total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         etapas = self.build_etapas_data()
 
         ret = {
+            'current_level': current_level,
+            'breadcrumb': breadcrumb,
             'total': total,
             'places': places,
             'etapas': etapas,
@@ -49,6 +58,62 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
+
+    def get_current_level(self):
+        params = deepcopy(self.query_params)
+        info1 = self.map_queryset.first()
+
+        current_level = 'São Paulo'
+        if 'zona' in params:
+            current_level = params['zona']
+        if 'dre' in params:
+            current_level = info1.dre.name
+        if 'distrito' in params:
+            current_level = info1.distrito.name
+        if 'escola' in params:
+            current_level = f'{info1.tipoesc.code} - {info1.nomesc}'
+
+        return current_level
+
+    def build_breadcrumb(self):
+        params = deepcopy(self.query_params)
+        info1 = self.map_queryset.first()
+        ret = []
+        if 'escola' in params:
+            ret.append({
+                'name': f'{info1.tipoesc.code} - {info1.nomesc}',
+                'url': self.url(params),
+            })
+            params.pop('escola')
+
+        if 'distrito' in params:
+            ret.append({
+                'name': info1.distrito.name,
+                'url': self.url(params),
+            })
+            params.pop('distrito')
+
+        if 'dre' in params:
+            ret.append({
+                'name': info1.dre.name,
+                'url': self.url(params),
+            })
+            params.pop('dre')
+
+        if 'zona' in params:
+            ret.append({
+                'name': params['zona'],
+                'url': self.url(params),
+            })
+            params.pop('zona')
+
+        ret.append({
+            'name': 'São Paulo',
+            'url': self.url(params),
+        })
+
+        ret.reverse()
+        return ret
 
     def build_places_data(self):
         pĺaces = []

@@ -65,6 +65,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get()
 
         expected = {
+            'current_level': 'São Paulo',
             'years': [2018, 2019],
             'total': 355,
             'places': [
@@ -105,12 +106,14 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_zona_data(self):
         response = self.get(zona='Sul')
 
         expected = {
+            'current_level': 'Sul',
             'years': [2018, 2019],
             'total': 300,
             'places': [
@@ -152,12 +155,14 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_dre_data(self):
         response = self.get(zona='Sul', dre='y')
 
         expected = {
+            'current_level': 'Dre y',
             'years': [2018, 2019],
             'total': 255,
             'places': [
@@ -199,12 +204,14 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
         response = self.get(zona='Sul', dre='y', distrito=1)
 
         expected = {
+            'current_level': 'Distrito s',
             'years': [2018, 2019],
             'total': 300,
             'places': [
@@ -250,6 +257,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -268,6 +276,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
+            'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
@@ -281,6 +290,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_filters_data_by_year(self):
@@ -294,6 +304,7 @@ class TestHomeView(HomeViewTestCase):
                             escola='01')
 
         expected = {
+            'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
@@ -307,6 +318,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
 
@@ -372,6 +384,40 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
         assert expected == response.data['locations']
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
         assert expected == response.data['locations']
+
+
+class TestHomeViewBreadcrumb(HomeViewTestCase):
+
+    def test_returns_breadcrumb(self):
+        response = self.get(zona='Sul', dre='x', distrito=1, escola='01')
+        expected = [
+            {
+                'name': 'São Paulo',
+                'url': f'{self.url}?year={self.year}&localidade=zona',
+            },
+            {
+                'name': 'Sul',
+                'url': (f'{self.url}?zona=Sul&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': 'Dre x',
+                'url': (f'{self.url}?zona=Sul&dre=x&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': 'Distrito s',
+                'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': 'TI - Escola 1',
+                'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&escola=01'
+                        f'&year={self.year}&localidade=zona'),
+            },
+        ]
+
+        assert expected == response.data['breadcrumb']
 
 
 class TestSaibaMaisView(APITestCase):
