@@ -137,9 +137,17 @@ class PlacesSerializer:
                 'unidades': unidades,
                 'total': total_etapas,
                 'slug': ETAPA_SLUGS.get(etapa, None),
+                'tipos': self._build_tipos(infos),
             })
         etapas.sort(key=lambda e: (e['unidades'], e['total']), reverse=True)
         return etapas
+
+    def _build_tipos(self, infos):
+        tipos = []
+        for tipo, infos in groupby(infos, lambda i: i.tipoesc):
+            tipos.append({'code': tipo.code, 'desc': tipo.desc})
+        tipos.sort(key=lambda t: t['code'])
+        return tipos
 
     def build_locations_data(self):
         locations = []
