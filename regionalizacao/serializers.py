@@ -111,11 +111,13 @@ class PlacesSerializer:
                 }
                 pĺaces.append({
                     'code': info.escola.codesc,
-                    'name': info.nomesc,
-                    'total': info.budget_total,
+                    'name': f'{info.tipoesc.code} - {info.nomesc}',
+                    'latitude': str(info.latitude),
+                    'longitude': str(info.longitude),
+                    'slug': ETAPA_SLUGS.get(info.tipoesc.etapa, None),
                     'url': self.url(params),
                 })
-            pĺaces.sort(key=lambda z: z['total'], reverse=True)
+            pĺaces.sort(key=lambda z: z['name'], reverse=True)
 
         elif self.level == 4:
             if not self.map_queryset.count() == 1:

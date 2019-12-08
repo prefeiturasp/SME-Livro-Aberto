@@ -209,18 +209,22 @@ class TestHomeView(HomeViewTestCase):
             'total': 300,
             'places': [
                 {
-                    'code': '02',
-                    'name': 'Escola 2',
-                    'total': 200,
-                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=02&localidade=zona'),
-                },
-                {
                     'code': '01',
-                    'name': 'Escola 1',
-                    'total': 100,
+                    'name': 'TI - Escola 1',
+                    'latitude': str(self.info1.latitude),
+                    'longitude': str(self.info1.longitude),
+                    'slug': 'infantil',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
                             f'&year={self.year}&escola=01&localidade=zona'),
+                },
+                {
+                    'code': '02',
+                    'name': 'TF - Escola 2',
+                    'latitude': str(self.info2.latitude),
+                    'longitude': str(self.info2.longitude),
+                    'slug': 'fundamental',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=02&localidade=zona'),
                 },
             ],
             'etapas': [
