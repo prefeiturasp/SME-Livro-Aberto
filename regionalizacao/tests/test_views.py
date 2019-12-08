@@ -8,10 +8,10 @@ from regionalizacao.models import (
     Escola, EscolaInfo, TipoEscola, Distrito, Dre)
 
 
-class TestHomeView(APITestCase):
+class HomeViewTestCase(APITestCase):
 
     def setUp(self):
-        year = date.today().year
+        self.year = date.today().year
         escola1 = mommy.make(Escola, codesc='01')
         escola2 = mommy.make(Escola, codesc='02')
         escola3 = mommy.make(Escola, codesc='03')
@@ -20,22 +20,31 @@ class TestHomeView(APITestCase):
                                 coddist=1)
         distrito_n = mommy.make(Distrito, zona='Norte', name='Distrito n',
                                 coddist=2)
-        tipo_i = mommy.make(TipoEscola, code='TI', etapa='Ensino Infantil')
-        tipo_f = mommy.make(TipoEscola, code='TF', etapa='Ensino Fundamental')
+        tipo_i = mommy.make(TipoEscola, code='TI', etapa='Ensino Infantil',
+                            desc='desc TI')
+        tipo_f = mommy.make(TipoEscola, code='TF', etapa='Ensino Fundamental',
+                            desc='desc TF')
+        tipo_i2 = mommy.make(TipoEscola, code='EI', etapa='Ensino Infantil',
+                             desc='desc EI')
         dre_x = mommy.make(Dre, name='Dre x', code='x')
         dre_y = mommy.make(Dre, name='Dre y', code='y')
 
         self.info1 = mommy.make(
             EscolaInfo, escola=escola1, nomesc='Escola 1', distrito=distrito_s,
-            dre=dre_x, budget_total=100, tipoesc=tipo_i, year=year,
+            dre=dre_x, budget_total=100, tipoesc=tipo_i, year=self.year,
             rede='DIR')
         self.info2 = mommy.make(
             EscolaInfo, escola=escola2,  nomesc='Escola 2', distrito=distrito_s,
-            dre=dre_y, budget_total=200, tipoesc=tipo_f, year=year,
+            dre=dre_y, budget_total=200, tipoesc=tipo_f, year=self.year,
             rede='DIR')
         self.info3 = mommy.make(
             EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
-            budget_total=55, tipoesc=tipo_i, year=year,
+            budget_total=55, tipoesc=tipo_i2, year=self.year, rede='DIR')
+
+        # escola 1 info from previous year
+        self.info1_b = mommy.make(
+            EscolaInfo, escola=escola1, nomesc='Escola 1', distrito=distrito_s,
+            dre=dre_x, budget_total=2, tipoesc=tipo_i, year=self.year-1,
             rede='DIR')
 
     @property
@@ -45,6 +54,9 @@ class TestHomeView(APITestCase):
     def get(self, **kwargs):
         return self.client.get(self.url, kwargs)
 
+
+class TestHomeView(HomeViewTestCase):
+
     def test_render_correct_template(self):
         response = self.get()
         self.assertTemplateUsed(response, 'regionalizacao/home.html')
@@ -53,17 +65,20 @@ class TestHomeView(APITestCase):
         response = self.get()
 
         expected = {
+            'years': [2018, 2019],
             'total': 355,
             'places': [
                 {
                     'name': 'Sul',
                     'total': 300,
-                    'url': f'{self.url}?zona=Sul',
+                    'url': (f'{self.url}?year={self.year}&zona=Sul'
+                            '&localidade=zona'),
                 },
                 {
                     'name': 'Norte',
                     'total': 55,
-                    'url': f'{self.url}?zona=Norte',
+                    'url': (f'{self.url}?year={self.year}&zona=Norte'
+                            '&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -72,35 +87,46 @@ class TestHomeView(APITestCase):
                     'unidades': 2,
                     'total': 155,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'EI', 'desc': 'desc EI'},
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
                 {
                     'name': 'Ensino Fundamental',
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 }
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_zona_data(self):
         response = self.get(zona='Sul')
 
         expected = {
+            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
                     'code': 'y',
                     'name': 'Dre y',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y',
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=y'
+                            '&localidade=zona'),
                 },
                 {
                     'code': 'x',
                     'name': 'Dre x',
                     'total': 100,
-                    'url': f'{self.url}?zona=Sul&dre=x',
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=x'
+                            '&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -109,35 +135,45 @@ class TestHomeView(APITestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 100,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_dre_data(self):
         response = self.get(zona='Sul', dre='y')
 
         expected = {
+            'years': [2018, 2019],
             'total': 255,
             'places': [
                 {
                     'code': 1,
                     'name': 'Distrito s',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1',
+                    'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                            f'&distrito=1&localidade=zona'),
                 },
                 {
                     'code': 2,
                     'name': 'Distrito n',
                     'total': 55,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=2',
+                    'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                            f'&distrito=2&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -146,35 +182,45 @@ class TestHomeView(APITestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 55,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'EI', 'desc': 'desc EI'},
+                    ],
                 },
             ]
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
         response = self.get(zona='Sul', dre='y', distrito=1)
 
         expected = {
+            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
                     'code': '02',
                     'name': 'Escola 2',
                     'total': 200,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1&escola=02',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=02&localidade=zona'),
                 },
                 {
                     'code': '01',
                     'name': 'Escola 1',
                     'total': 100,
-                    'url': f'{self.url}?zona=Sul&dre=y&distrito=1&escola=01',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=01&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -183,16 +229,23 @@ class TestHomeView(APITestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 100,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
             ],
         }
 
+        response.data.pop('locations')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -208,11 +261,10 @@ class TestHomeView(APITestCase):
         self.info1.recursos = escola1_recursos
         self.info1.save()
 
-        self.info1.refresh_from_db()
-
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
+            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
                 'address': 'Rua 1, 10 - Bairro 1',
@@ -224,7 +276,98 @@ class TestHomeView(APITestCase):
             },
         }
 
+        response.data.pop('locations')
         assert expected == response.data
+
+    def test_filters_data_by_year(self):
+        self.info1_b.endereco = "Rua 1b"
+        self.info1_b.numero = 10
+        self.info1_b.bairro = 'Bairro 1b'
+        self.info1_b.cep = '10100000'
+        self.info1_b.save()
+
+        response = self.get(year=self.year-1, zona='Sul', dre='y', distrito=1,
+                            escola='01')
+
+        expected = {
+            'years': [2018, 2019],
+            'escola': {
+                'name': 'TI - Escola 1',
+                'address': 'Rua 1b, 10 - Bairro 1b',
+                'cep': 10100000,
+                'total': 2,
+                'recursos': None,
+                'latitude': str(self.info1_b.latitude),
+                'longitude': str(self.info1_b.longitude),
+            },
+        }
+
+        response.data.pop('locations')
+        assert expected == response.data
+
+
+class TestHomeViewLocationsGraphData(HomeViewTestCase):
+
+    def test_returns_locations_data(self):
+        response = self.get()
+        expected = [
+            {
+                'name': 'Sul',
+                'total': 300,
+            },
+            {
+                'name': 'Norte',
+                'total': 55,
+            },
+        ]
+
+        assert expected == response.data['locations']
+
+    def test_show_data_by_distrito(self):
+        distrito_x = mommy.make(Distrito, zona='Sul', name='Distrito x',
+                                coddist=3)
+        mommy.make(
+            EscolaInfo, distrito=distrito_x, budget_total=10, year=self.year,
+            rede='DIR')
+
+        response = self.get(localidade='distrito')
+        expected = [
+            {
+                'name': 'Distrito s',
+                'total': 300,
+            },
+            {
+                'name': 'Distrito n',
+                'total': 55,
+            },
+            {
+                'name': 'Distrito x',
+                'total': 10,
+            },
+        ]
+
+        assert expected == response.data['locations']
+
+    def test_map_level_does_not_affect_locations_data(self):
+        expected = [
+            {
+                'name': 'Sul',
+                'total': 300,
+            },
+            {
+                'name': 'Norte',
+                'total': 55,
+            },
+        ]
+
+        response = self.get(zona='Sul')
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y')
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y', distrito=1)
+        assert expected == response.data['locations']
+        response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
+        assert expected == response.data['locations']
 
 
 class TestSaibaMaisView(APITestCase):
