@@ -25,12 +25,18 @@ svg.map-container{
 svg.map-container path{
   fill: #7fa785;
   stroke: #fff;
-  cursor: pointer;
+  cursor: help;
   stroke-width: 4;
+  opacity: .5;
 }
 
-svg.map-container path:hover{
+svg.map-container a path{
+  opacity: 1;
+}
+
+svg.map-container a path:hover{
   fill: #65c55a;
+  cursor: pointer;
 }
 
 svg.map-container a:active,
