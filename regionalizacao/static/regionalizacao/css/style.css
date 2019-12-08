@@ -40,12 +40,12 @@ svg.map-container a{
 aside{
   display: flex;
   justify-content: flex-end;
-  position: relative;
-  z-index: 2;
 }
 
 aside > .card{
   width: calc(100%/3);
+  position: relative;
+  z-index: 2;
 }
 
 aside > .card > header,
