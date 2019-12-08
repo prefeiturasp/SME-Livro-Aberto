@@ -58,24 +58,25 @@ class PlacesSerializer:
 
     def build_breadcrumb(self):
         params = deepcopy(self.query_params)
+        info1 = self.map_queryset.first()
         ret = []
         if 'escola' in params:
             ret.append({
-                'name': str(params['escola']),
+                'name': f'{info1.tipoesc.code} - {info1.nomesc}',
                 'url': self.url(params),
             })
             params.pop('escola')
 
         if 'distrito' in params:
             ret.append({
-                'name': str(params['distrito']),
+                'name': info1.distrito.name,
                 'url': self.url(params),
             })
             params.pop('distrito')
 
         if 'dre' in params:
             ret.append({
-                'name': params['dre'],
+                'name': info1.dre.name,
                 'url': self.url(params),
             })
             params.pop('dre')

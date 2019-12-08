@@ -383,7 +383,7 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
 class TestHomeViewBreadcrumb(HomeViewTestCase):
 
     def test_returns_breadcrumb(self):
-        response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
+        response = self.get(zona='Sul', dre='x', distrito=1, escola='01')
         expected = [
             {
                 'name': 'São Paulo',
@@ -395,18 +395,18 @@ class TestHomeViewBreadcrumb(HomeViewTestCase):
                         '&localidade=zona'),
             },
             {
-                'name': 'y',
-                'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                'name': 'Dre x',
+                'url': (f'{self.url}?zona=Sul&dre=x&year={self.year}'
                         '&localidade=zona'),
             },
             {
-                'name': '1',
-                'url': (f'{self.url}?zona=Sul&dre=y&distrito=1&year={self.year}'
+                'name': 'Distrito s',
+                'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&year={self.year}'
                         '&localidade=zona'),
             },
             {
-                'name': '01',
-                'url': (f'{self.url}?zona=Sul&dre=y&distrito=1&escola=01'
+                'name': 'TI - Escola 1',
+                'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&escola=01'
                         f'&year={self.year}&localidade=zona'),
             },
         ]
