@@ -105,6 +105,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_zona_data(self):
@@ -152,6 +153,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_dre_data(self):
@@ -199,6 +201,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
@@ -250,6 +253,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -281,6 +285,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
     def test_filters_data_by_year(self):
@@ -307,6 +312,7 @@ class TestHomeView(HomeViewTestCase):
         }
 
         response.data.pop('locations')
+        response.data.pop('breadcrumb')
         assert expected == response.data
 
 
@@ -372,6 +378,40 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
         assert expected == response.data['locations']
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
         assert expected == response.data['locations']
+
+
+class TestHomeViewBreadcrumb(HomeViewTestCase):
+
+    def test_returns_breadcrumb(self):
+        response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
+        expected = [
+            {
+                'name': 'São Paulo',
+                'url': f'{self.url}?year={self.year}&localidade=zona',
+            },
+            {
+                'name': 'Sul',
+                'url': (f'{self.url}?zona=Sul&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': 'y',
+                'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': '1',
+                'url': (f'{self.url}?zona=Sul&dre=y&distrito=1&year={self.year}'
+                        '&localidade=zona'),
+            },
+            {
+                'name': '01',
+                'url': (f'{self.url}?zona=Sul&dre=y&distrito=1&escola=01'
+                        f'&year={self.year}&localidade=zona'),
+            },
+        ]
+
+        assert expected == response.data['breadcrumb']
 
 
 class TestSaibaMaisView(APITestCase):

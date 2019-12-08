@@ -1,3 +1,4 @@
+from copy import deepcopy
 from itertools import groupby
 
 from django.db.models import Sum
@@ -21,19 +22,24 @@ class PlacesSerializer:
 
     @property
     def data(self):
+        breadcrumb = self.build_breadcrumb()
         places = self.build_places_data()
         locations = self.build_locations_data()
 
+        ret = {
+            'breadcrumb': breadcrumb,
+            'escola': places,
+            'locations': locations,
+        }
+
         if self.level == 4:
-            return {
-                'escola': places,
-                'locations': locations,
-            }
+            return ret
 
         total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         etapas = self.build_etapas_data()
 
         ret = {
+            'breadcrumb': breadcrumb,
             'total': total,
             'places': places,
             'etapas': etapas,
@@ -49,6 +55,45 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
+
+    def build_breadcrumb(self):
+        params = deepcopy(self.query_params)
+        ret = []
+        if 'escola' in params:
+            ret.append({
+                'name': str(params['escola']),
+                'url': self.url(params),
+            })
+            params.pop('escola')
+
+        if 'distrito' in params:
+            ret.append({
+                'name': str(params['distrito']),
+                'url': self.url(params),
+            })
+            params.pop('distrito')
+
+        if 'dre' in params:
+            ret.append({
+                'name': params['dre'],
+                'url': self.url(params),
+            })
+            params.pop('dre')
+
+        if 'zona' in params:
+            ret.append({
+                'name': params['zona'],
+                'url': self.url(params),
+            })
+            params.pop('zona')
+
+        ret.append({
+            'name': 'São Paulo',
+            'url': self.url(params),
+        })
+
+        ret.reverse()
+        return ret
 
     def build_places_data(self):
         pĺaces = []
