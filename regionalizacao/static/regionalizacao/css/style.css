@@ -246,3 +246,19 @@ aside > .card svg.icon + .tooltip > :first-child {
 aside > .card svg.icon + .tooltip > :last-child {
   margin-bottom: 0;
 }
+
+.breadcrumb{
+  text-transform: uppercase;
+}
+
+.breadcrumb > li:first-child > ::before{
+  content: '';
+}
+
+.breadcrumb a{
+  color: inherit;
+}
+
+.breadcrumb .active{
+  font-weight: bold;
+}

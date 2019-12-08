@@ -36,7 +36,7 @@
           </div>
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
-      <h2>São Paulo</h2>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
       <svg class="map-container">
           <g class="map"></g>
       </svg>
