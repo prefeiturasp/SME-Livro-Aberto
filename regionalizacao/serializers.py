@@ -154,13 +154,13 @@ class PlacesSerializer:
 
     def build_locations_data(self):
         locations = []
-        if self.locations_type == 'distrito':
-            qs = self.locations_queryset.order_by('distrito__name')
-            for distrito_name, infos in groupby(qs, lambda i: i.distrito.name):
+        if self.locations_type == 'dre':
+            qs = self.locations_queryset.order_by('dre__name')
+            for dre_name, infos in groupby(qs, lambda i: i.dre.name):
                 infos = list(infos)
                 total_locations = sum(info.budget_total for info in infos)
                 locations.append({
-                    'name': distrito_name,
+                    'name': dre_name,
                     'total': total_locations,
                 })
             locations.sort(key=lambda z: z['total'], reverse=True)
