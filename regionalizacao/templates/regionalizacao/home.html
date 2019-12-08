@@ -38,7 +38,15 @@
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
       <svg class="map-container">
-          <g class="map"></g>
+          <g class="map">
+          </g>
+          <g class="focus">
+          {% for place in places %}
+              <a href="{{place.url}}">
+              <path data-id="{% if place.code %}{{place.code}}{% else %}{{place.name}}{% endif%}"></path>
+              </a>
+          {% endfor %}
+          </g>
       </svg>
       <aside>
           <div class="card">

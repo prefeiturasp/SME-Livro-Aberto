@@ -53,7 +53,25 @@ window.addEventListener("DOMContentLoaded", function(){
 
 let baseUrl = '/static/regionalizacao/maps/'
 
+
+let levels = [
+    {
+        filename: 'zonas.topojson',
+        objName: 'zonas',
+    },
+    {
+        filename: 'dre.topojson',
+        objName: 'dre',
+    },
+    {
+        filename: 'distritos.topojson',
+        objName: 'distritos',
+    },
+]
+
 window.addEventListener("DOMContentLoaded", function(){
+    let levelIndex = document.querySelectorAll('#mapa .breadcrumb li').length - 1;
+    let level = levels[levelIndex];
     var width = document.body.clientWidth,
         height = document.body.clientHeight;
 
@@ -62,18 +80,21 @@ window.addEventListener("DOMContentLoaded", function(){
 
     var gMap = svg.select('g.map');
 
-    d3.json(baseUrl + 'distritos.topojson').then(function (data){
-        let features = topojson.feature(data, data.objects.Distritos);
+    d3.json(baseUrl + level.filename).then(function (data){
+        let features = topojson.feature(data, data.objects[level.objName]);
 
         projection = d3.geoMercator()
             .fitSize([width / 2, height], features)
 
         var path = d3.geoPath().projection(projection)
-        function title(d){ return d.properties.NOME; }
-        gMap.selectAll('path')
+        function title(d){ return d.properties.name; }
+
+        let bg = gMap.selectAll('path')
             .data(features.features)
-            .enter()
-            .append('path')
+            .enter().append('path')
+        let focus = svg.selectAll('.focus path')
+            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
+            .merge(bg)
             .attr('d', path)
             .append('title')
             .text(title);
