@@ -35,6 +35,8 @@ svg.map-container path:hover{
 aside{
   display: flex;
   justify-content: flex-end;
+  position: relative;
+  z-index: 2;
 }
 
 aside > .card{
@@ -117,13 +119,13 @@ aside > .card > .body{
   color: #edb93b;
 }
 
-.bg-medio{
+.bg-fundamental_medio{
   background-color: #277fcd;
   color: #fff;
 }
 
-.bg-medio.tooltip::after,
-.fg-medio{
+.bg-fundamental_medio.tooltip::after,
+.fg-fundamental_medio{
   color: #277fcd;
 }
 
