@@ -146,6 +146,7 @@ class PlacesSerializer:
 
     def _build_tipos(self, infos):
         tipos = []
+        infos.sort(key=lambda i: i.tipoesc.code)
         for tipo, infos in groupby(infos, lambda i: i.tipoesc):
             tipos.append({'code': tipo.code, 'desc': tipo.desc})
         tipos.sort(key=lambda t: t['code'])
