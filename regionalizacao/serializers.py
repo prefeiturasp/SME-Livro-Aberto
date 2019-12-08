@@ -20,34 +20,36 @@ class PlacesSerializer:
         self.query_params = {k: v for k, v in query_params.items() if v}
         self.locations_type = locations_graph_type
 
+        self.rede = self.map_queryset.first().rede
+
     @property
     def data(self):
         current_level = self.get_current_level()
         breadcrumb = self.build_breadcrumb()
+        total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         places = self.build_places_data()
         locations = self.build_locations_data()
 
         ret = {
             'current_level': current_level,
             'breadcrumb': breadcrumb,
-            'escola': places,
+            'total': total,
             'locations': locations,
         }
 
         if self.level == 4:
+            ret['escola'] = places
             return ret
 
-        total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         etapas = self.build_etapas_data()
 
-        ret = {
-            'current_level': current_level,
-            'breadcrumb': breadcrumb,
-            'total': total,
-            'places': places,
-            'etapas': etapas,
-            'locations': locations,
-        }
+        ret['places'] = places
+        ret['etapas'] = etapas
+
+        if self.rede == 'CON':
+            vagas = self.map_queryset.aggregate(
+                total=Sum('total_vagas'))['total']
+            ret['vagas'] = vagas
 
         return ret
 
@@ -199,13 +201,17 @@ class PlacesSerializer:
             infos = list(infos)
             total_etapas = sum(info.budget_total for info in infos)
             unidades = len(infos)
-            etapas.append({
+            etapa_dict = {
                 'name': etapa,
                 'unidades': unidades,
                 'total': total_etapas,
                 'slug': ETAPA_SLUGS.get(etapa, None),
                 'tipos': self._build_tipos(infos),
-            })
+            }
+            if self.rede == 'CON':
+                vagas = sum(info.total_vagas for info in infos)
+                etapa_dict['vagas'] = vagas
+            etapas.append(etapa_dict)
         etapas.sort(key=lambda e: (e['unidades'], e['total']), reverse=True)
         return etapas
 
@@ -248,14 +254,20 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
     total = serializers.FloatField(source='budget_total')
+    vagas = serializers.SerializerMethodField()
 
     class Meta:
         model = EscolaInfo
         fields = ('name', 'address', 'cep', 'total', 'recursos', 'latitude',
-                  'longitude')
+                  'longitude', 'vagas')
 
     def get_name(self, obj):
         return f'{obj.tipoesc.code} - {obj.nomesc}'
 
     def get_address(self, obj):
         return f'{obj.endereco}, {obj.numero} - {obj.bairro}'
+
+    def get_vagas(self, obj):
+        if obj.rede == 'CON':
+            return obj.total_vagas
+        return None

@@ -47,6 +47,20 @@ class HomeViewTestCase(APITestCase):
             dre=dre_x, budget_total=2, tipoesc=tipo_i, year=self.year-1,
             rede='DIR')
 
+        # escolas contratadas
+        escola4 = mommy.make(Escola, codesc='04')
+        escola5 = mommy.make(Escola, codesc='05')
+
+        self.info4 = mommy.make(
+            EscolaInfo, escola=escola4, nomesc='Escola 4', distrito=distrito_s,
+            dre=dre_x, budget_total=3000, tipoesc=tipo_i, year=self.year,
+            total_vagas=10, rede='CON')
+
+        self.info5 = mommy.make(
+            EscolaInfo, escola=escola5, nomesc='Escola 5', distrito=distrito_n,
+            dre=dre_y, budget_total=1000, tipoesc=tipo_f, year=self.year,
+            total_vagas=100, rede='CON')
+
     @property
     def url(self):
         return reverse('regionalizacao:home')
@@ -72,13 +86,13 @@ class TestHomeView(HomeViewTestCase):
                 {
                     'name': 'Sul',
                     'total': 300,
-                    'url': (f'{self.url}?year={self.year}&zona=Sul'
+                    'url': (f'{self.url}?year={self.year}&rede=DIR&zona=Sul'
                             '&localidade=zona'),
                 },
                 {
                     'name': 'Norte',
                     'total': 55,
-                    'url': (f'{self.url}?year={self.year}&zona=Norte'
+                    'url': (f'{self.url}?year={self.year}&rede=DIR&zona=Norte'
                             '&localidade=zona'),
                 },
             ],
@@ -107,6 +121,7 @@ class TestHomeView(HomeViewTestCase):
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
     def test_returns_zona_data(self):
@@ -121,15 +136,15 @@ class TestHomeView(HomeViewTestCase):
                     'code': 'y',
                     'name': 'Dre y',
                     'total': 200,
-                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=y'
-                            '&localidade=zona'),
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&rede=DIR'
+                            '&dre=y&localidade=zona'),
                 },
                 {
                     'code': 'x',
                     'name': 'Dre x',
                     'total': 100,
-                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=x'
-                            '&localidade=zona'),
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&rede=DIR'
+                            '&dre=x&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -156,6 +171,7 @@ class TestHomeView(HomeViewTestCase):
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
     def test_returns_dre_data(self):
@@ -171,14 +187,14 @@ class TestHomeView(HomeViewTestCase):
                     'name': 'Distrito s',
                     'total': 200,
                     'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
-                            f'&distrito=1&localidade=zona'),
+                            f'&rede=DIR&distrito=1&localidade=zona'),
                 },
                 {
                     'code': 2,
                     'name': 'Distrito n',
                     'total': 55,
                     'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
-                            f'&distrito=2&localidade=zona'),
+                            f'&rede=DIR&distrito=2&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -205,6 +221,7 @@ class TestHomeView(HomeViewTestCase):
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
@@ -222,7 +239,8 @@ class TestHomeView(HomeViewTestCase):
                     'longitude': str(self.info1.longitude),
                     'slug': 'infantil',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=01&localidade=zona'),
+                            f'&year={self.year}&rede=DIR&escola=01'
+                            '&localidade=zona'),
                 },
                 {
                     'code': '02',
@@ -231,7 +249,8 @@ class TestHomeView(HomeViewTestCase):
                     'longitude': str(self.info2.longitude),
                     'slug': 'fundamental',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=02&localidade=zona'),
+                            f'&year={self.year}&rede=DIR&escola=02'
+                            '&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -258,6 +277,7 @@ class TestHomeView(HomeViewTestCase):
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -276,6 +296,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
+            'total': 100,
             'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
@@ -286,11 +307,13 @@ class TestHomeView(HomeViewTestCase):
                 'recursos': escola1_recursos,
                 'latitude': str(self.info1.latitude),
                 'longitude': str(self.info1.longitude),
+                'vagas': None,
             },
         }
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
     def test_filters_data_by_year(self):
@@ -304,6 +327,7 @@ class TestHomeView(HomeViewTestCase):
                             escola='01')
 
         expected = {
+            'total': 2,
             'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
@@ -314,11 +338,13 @@ class TestHomeView(HomeViewTestCase):
                 'recursos': None,
                 'latitude': str(self.info1_b.latitude),
                 'longitude': str(self.info1_b.longitude),
+                'vagas': None,
             },
         }
 
         response.data.pop('locations')
         response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
         assert expected == response.data
 
 
@@ -386,6 +412,91 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
         assert expected == response.data['locations']
 
 
+class TestHomeViewFilterByRede(HomeViewTestCase):
+
+    def test_filter_by_rede(self):
+        response = self.get(rede='CON')
+
+        expected = {
+            'current_level': 'São Paulo',
+            'years': [2018, 2019],
+            'total': 4000,
+            'vagas': 110,
+            'places': [
+                {
+                    'name': 'Sul',
+                    'total': 3000,
+                    'url': (f'{self.url}?year={self.year}&rede=CON&zona=Sul'
+                            '&localidade=zona'),
+                },
+                {
+                    'name': 'Norte',
+                    'total': 1000,
+                    'url': (f'{self.url}?year={self.year}&rede=CON&zona=Norte'
+                            '&localidade=zona'),
+                },
+            ],
+            'etapas': [
+                {
+                    'name': 'Ensino Infantil',
+                    'unidades': 1,
+                    'total': 3000,
+                    'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
+                    'vagas': 10,
+                },
+                {
+                    'name': 'Ensino Fundamental',
+                    'unidades': 1,
+                    'total': 1000,
+                    'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
+                    'vagas': 100,
+                },
+            ]
+        }
+
+        response.data.pop('locations')
+        response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
+        assert expected == response.data
+
+    def test_returns_escola_data(self):
+        self.info4.endereco = "Rua 4"
+        self.info4.numero = 40
+        self.info4.bairro = 'Bairro 4'
+        self.info4.cep = '40400000'
+        self.info4.save()
+
+        response = self.get(rede='CON', zona='Sul', dre='x', distrito=1,
+                            escola='04')
+
+        expected = {
+            'total': 3000,
+            'current_level': 'TI - Escola 4',
+            'years': [2018, 2019],
+            'escola': {
+                'name': 'TI - Escola 4',
+                'address': 'Rua 4, 40 - Bairro 4',
+                'cep': 40400000,
+                'total': 3000,
+                'recursos': None,
+                'latitude': str(self.info4.latitude),
+                'longitude': str(self.info4.longitude),
+                'vagas': 10,
+            },
+        }
+
+        response.data.pop('locations')
+        response.data.pop('breadcrumb')
+        response.data.pop('filter_form')
+        assert expected == response.data
+
+
 class TestHomeViewBreadcrumb(HomeViewTestCase):
 
     def test_returns_breadcrumb(self):
@@ -393,27 +504,27 @@ class TestHomeViewBreadcrumb(HomeViewTestCase):
         expected = [
             {
                 'name': 'São Paulo',
-                'url': f'{self.url}?year={self.year}&localidade=zona',
+                'url': f'{self.url}?year={self.year}&rede=DIR&localidade=zona',
             },
             {
                 'name': 'Sul',
                 'url': (f'{self.url}?zona=Sul&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'Dre x',
                 'url': (f'{self.url}?zona=Sul&dre=x&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'Distrito s',
                 'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'TI - Escola 1',
                 'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&escola=01'
-                        f'&year={self.year}&localidade=zona'),
+                        f'&year={self.year}&rede=DIR&localidade=zona'),
             },
         ]
 
