@@ -209,18 +209,22 @@ class TestHomeView(HomeViewTestCase):
             'total': 300,
             'places': [
                 {
-                    'code': '02',
-                    'name': 'Escola 2',
-                    'total': 200,
-                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=02&localidade=zona'),
-                },
-                {
                     'code': '01',
-                    'name': 'Escola 1',
-                    'total': 100,
+                    'name': 'TI - Escola 1',
+                    'latitude': str(self.info1.latitude),
+                    'longitude': str(self.info1.longitude),
+                    'slug': 'infantil',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
                             f'&year={self.year}&escola=01&localidade=zona'),
+                },
+                {
+                    'code': '02',
+                    'name': 'TF - Escola 2',
+                    'latitude': str(self.info2.latitude),
+                    'longitude': str(self.info2.longitude),
+                    'slug': 'fundamental',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&year={self.year}&escola=02&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -323,25 +327,25 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
 
         assert expected == response.data['locations']
 
-    def test_show_data_by_distrito(self):
-        distrito_x = mommy.make(Distrito, zona='Sul', name='Distrito x',
-                                coddist=3)
+    def test_show_data_by_dre(self):
+        dre_z = mommy.make(Dre, name='Dre z', code='z')
+
         mommy.make(
-            EscolaInfo, distrito=distrito_x, budget_total=10, year=self.year,
+            EscolaInfo, dre=dre_z, budget_total=10, year=self.year,
             rede='DIR')
 
-        response = self.get(localidade='distrito')
+        response = self.get(localidade='dre')
         expected = [
             {
-                'name': 'Distrito s',
-                'total': 300,
+                'name': 'Dre y',
+                'total': 255,
             },
             {
-                'name': 'Distrito n',
-                'total': 55,
+                'name': 'Dre x',
+                'total': 100,
             },
             {
-                'name': 'Distrito x',
+                'name': 'Dre z',
                 'total': 10,
             },
         ]

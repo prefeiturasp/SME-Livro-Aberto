@@ -111,11 +111,13 @@ class PlacesSerializer:
                 }
                 pĺaces.append({
                     'code': info.escola.codesc,
-                    'name': info.nomesc,
-                    'total': info.budget_total,
+                    'name': f'{info.tipoesc.code} - {info.nomesc}',
+                    'latitude': str(info.latitude),
+                    'longitude': str(info.longitude),
+                    'slug': ETAPA_SLUGS.get(info.tipoesc.etapa, None),
                     'url': self.url(params),
                 })
-            pĺaces.sort(key=lambda z: z['total'], reverse=True)
+            pĺaces.sort(key=lambda z: z['name'], reverse=True)
 
         elif self.level == 4:
             if not self.map_queryset.count() == 1:
@@ -144,6 +146,7 @@ class PlacesSerializer:
 
     def _build_tipos(self, infos):
         tipos = []
+        infos.sort(key=lambda i: i.tipoesc.code)
         for tipo, infos in groupby(infos, lambda i: i.tipoesc):
             tipos.append({'code': tipo.code, 'desc': tipo.desc})
         tipos.sort(key=lambda t: t['code'])
@@ -151,13 +154,13 @@ class PlacesSerializer:
 
     def build_locations_data(self):
         locations = []
-        if self.locations_type == 'distrito':
-            qs = self.locations_queryset.order_by('distrito__name')
-            for distrito_name, infos in groupby(qs, lambda i: i.distrito.name):
+        if self.locations_type == 'dre':
+            qs = self.locations_queryset.order_by('dre__name')
+            for dre_name, infos in groupby(qs, lambda i: i.dre.name):
                 infos = list(infos)
                 total_locations = sum(info.budget_total for info in infos)
                 locations.append({
-                    'name': distrito_name,
+                    'name': dre_name,
                     'total': total_locations,
                 })
             locations.sort(key=lambda z: z['total'], reverse=True)
