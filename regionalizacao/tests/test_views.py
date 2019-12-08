@@ -65,6 +65,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get()
 
         expected = {
+            'current_level': 'São Paulo',
             'years': [2018, 2019],
             'total': 355,
             'places': [
@@ -112,6 +113,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul')
 
         expected = {
+            'current_level': 'Sul',
             'years': [2018, 2019],
             'total': 300,
             'places': [
@@ -160,6 +162,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y')
 
         expected = {
+            'current_level': 'Dre y',
             'years': [2018, 2019],
             'total': 255,
             'places': [
@@ -208,6 +211,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1)
 
         expected = {
+            'current_level': 'Distrito s',
             'years': [2018, 2019],
             'total': 300,
             'places': [
@@ -272,6 +276,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
+            'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
@@ -299,6 +304,7 @@ class TestHomeView(HomeViewTestCase):
                             escola='01')
 
         expected = {
+            'current_level': 'TI - Escola 1',
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',

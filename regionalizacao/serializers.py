@@ -22,11 +22,13 @@ class PlacesSerializer:
 
     @property
     def data(self):
+        current_level = self.get_current_level()
         breadcrumb = self.build_breadcrumb()
         places = self.build_places_data()
         locations = self.build_locations_data()
 
         ret = {
+            'current_level': current_level,
             'breadcrumb': breadcrumb,
             'escola': places,
             'locations': locations,
@@ -39,6 +41,7 @@ class PlacesSerializer:
         etapas = self.build_etapas_data()
 
         ret = {
+            'current_level': current_level,
             'breadcrumb': breadcrumb,
             'total': total,
             'places': places,
@@ -55,6 +58,22 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
+
+    def get_current_level(self):
+        params = deepcopy(self.query_params)
+        info1 = self.map_queryset.first()
+
+        current_level = 'São Paulo'
+        if 'zona' in params:
+            current_level = params['zona']
+        if 'dre' in params:
+            current_level = info1.dre.name
+        if 'distrito' in params:
+            current_level = info1.distrito.name
+        if 'escola' in params:
+            current_level = f'{info1.tipoesc.code} - {info1.nomesc}'
+
+        return current_level
 
     def build_breadcrumb(self):
         params = deepcopy(self.query_params)
