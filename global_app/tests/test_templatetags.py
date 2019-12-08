@@ -39,3 +39,6 @@ class TestSmallIntWord:
     def test_small_numbers(self):
         assert 200 == small_intword(200)
         assert 2 == small_intword(2)
+
+    def test_do_nothing_if_it_is_not_a_number(self):
+        assert 'not a number' == small_intword('not a number')

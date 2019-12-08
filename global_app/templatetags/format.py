@@ -18,6 +18,11 @@ def percentage(value):
 
 @register.filter(name='small_intword')
 def small_intword(value):
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        return value
+
     if 1000 < value < 1000000:
         new_value = value / 1000
         formated = defaultfilters.floatformat(new_value, 1)
