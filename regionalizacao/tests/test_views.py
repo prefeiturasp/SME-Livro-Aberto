@@ -20,8 +20,12 @@ class HomeViewTestCase(APITestCase):
                                 coddist=1)
         distrito_n = mommy.make(Distrito, zona='Norte', name='Distrito n',
                                 coddist=2)
-        tipo_i = mommy.make(TipoEscola, code='TI', etapa='Ensino Infantil')
-        tipo_f = mommy.make(TipoEscola, code='TF', etapa='Ensino Fundamental')
+        tipo_i = mommy.make(TipoEscola, code='TI', etapa='Ensino Infantil',
+                            desc='desc TI')
+        tipo_f = mommy.make(TipoEscola, code='TF', etapa='Ensino Fundamental',
+                            desc='desc TF')
+        tipo_i2 = mommy.make(TipoEscola, code='EI', etapa='Ensino Infantil',
+                             desc='desc EI')
         dre_x = mommy.make(Dre, name='Dre x', code='x')
         dre_y = mommy.make(Dre, name='Dre y', code='y')
 
@@ -35,7 +39,7 @@ class HomeViewTestCase(APITestCase):
             rede='DIR')
         self.info3 = mommy.make(
             EscolaInfo, escola=escola3, distrito=distrito_n, dre=dre_y,
-            budget_total=55, tipoesc=tipo_i, year=self.year, rede='DIR')
+            budget_total=55, tipoesc=tipo_i2, year=self.year, rede='DIR')
 
         # escola 1 info from previous year
         self.info1_b = mommy.make(
@@ -61,6 +65,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get()
 
         expected = {
+            'years': [2018, 2019],
             'total': 355,
             'places': [
                 {
@@ -82,12 +87,19 @@ class TestHomeView(HomeViewTestCase):
                     'unidades': 2,
                     'total': 155,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'EI', 'desc': 'desc EI'},
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
                 {
                     'name': 'Ensino Fundamental',
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 }
             ]
         }
@@ -99,6 +111,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul')
 
         expected = {
+            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
@@ -122,12 +135,18 @@ class TestHomeView(HomeViewTestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 100,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
             ]
         }
@@ -139,6 +158,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y')
 
         expected = {
+            'years': [2018, 2019],
             'total': 255,
             'places': [
                 {
@@ -162,12 +182,18 @@ class TestHomeView(HomeViewTestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 55,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'EI', 'desc': 'desc EI'},
+                    ],
                 },
             ]
         }
@@ -179,6 +205,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1)
 
         expected = {
+            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
@@ -202,12 +229,18 @@ class TestHomeView(HomeViewTestCase):
                     'unidades': 1,
                     'total': 200,
                     'slug': 'fundamental',
+                    'tipos': [
+                        {'code': 'TF', 'desc': 'desc TF'},
+                    ],
                 },
                 {
                     'name': 'Ensino Infantil',
                     'unidades': 1,
                     'total': 100,
                     'slug': 'infantil',
+                    'tipos': [
+                        {'code': 'TI', 'desc': 'desc TI'},
+                    ],
                 },
             ],
         }
@@ -231,6 +264,7 @@ class TestHomeView(HomeViewTestCase):
         response = self.get(zona='Sul', dre='y', distrito=1, escola='01')
 
         expected = {
+            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
                 'address': 'Rua 1, 10 - Bairro 1',
@@ -256,6 +290,7 @@ class TestHomeView(HomeViewTestCase):
                             escola='01')
 
         expected = {
+            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
                 'address': 'Rua 1b, 10 - Bairro 1b',
