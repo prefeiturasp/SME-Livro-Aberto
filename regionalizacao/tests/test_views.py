@@ -47,6 +47,20 @@ class HomeViewTestCase(APITestCase):
             dre=dre_x, budget_total=2, tipoesc=tipo_i, year=self.year-1,
             rede='DIR')
 
+        # escolas contratadas
+        escola4 = mommy.make(Escola, codesc='04')
+        escola5 = mommy.make(Escola, codesc='05')
+
+        self.info4 = mommy.make(
+            EscolaInfo, escola=escola4, nomesc='Escola 4', distrito=distrito_s,
+            dre=dre_x, budget_total=1000, tipoesc=tipo_i, year=self.year,
+            total_vagas=10, rede='CON')
+
+        self.info5 = mommy.make(
+            EscolaInfo, escola=escola5, nomesc='Escola 5', distrito=distrito_n,
+            dre=dre_y, budget_total=3000, tipoesc=tipo_i, year=self.year,
+            total_vagas=100, rede='CON')
+
     @property
     def url(self):
         return reverse('regionalizacao:home')
@@ -72,13 +86,13 @@ class TestHomeView(HomeViewTestCase):
                 {
                     'name': 'Sul',
                     'total': 300,
-                    'url': (f'{self.url}?year={self.year}&zona=Sul'
+                    'url': (f'{self.url}?year={self.year}&rede=DIR&zona=Sul'
                             '&localidade=zona'),
                 },
                 {
                     'name': 'Norte',
                     'total': 55,
-                    'url': (f'{self.url}?year={self.year}&zona=Norte'
+                    'url': (f'{self.url}?year={self.year}&rede=DIR&zona=Norte'
                             '&localidade=zona'),
                 },
             ],
@@ -121,15 +135,15 @@ class TestHomeView(HomeViewTestCase):
                     'code': 'y',
                     'name': 'Dre y',
                     'total': 200,
-                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=y'
-                            '&localidade=zona'),
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&rede=DIR'
+                            '&dre=y&localidade=zona'),
                 },
                 {
                     'code': 'x',
                     'name': 'Dre x',
                     'total': 100,
-                    'url': (f'{self.url}?zona=Sul&year={self.year}&dre=x'
-                            '&localidade=zona'),
+                    'url': (f'{self.url}?zona=Sul&year={self.year}&rede=DIR'
+                            '&dre=x&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -171,14 +185,14 @@ class TestHomeView(HomeViewTestCase):
                     'name': 'Distrito s',
                     'total': 200,
                     'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
-                            f'&distrito=1&localidade=zona'),
+                            f'&rede=DIR&distrito=1&localidade=zona'),
                 },
                 {
                     'code': 2,
                     'name': 'Distrito n',
                     'total': 55,
                     'url': (f'{self.url}?zona=Sul&dre=y&year={self.year}'
-                            f'&distrito=2&localidade=zona'),
+                            f'&rede=DIR&distrito=2&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -222,7 +236,8 @@ class TestHomeView(HomeViewTestCase):
                     'longitude': str(self.info1.longitude),
                     'slug': 'infantil',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=01&localidade=zona'),
+                            f'&year={self.year}&rede=DIR&escola=01'
+                            '&localidade=zona'),
                 },
                 {
                     'code': '02',
@@ -231,7 +246,8 @@ class TestHomeView(HomeViewTestCase):
                     'longitude': str(self.info2.longitude),
                     'slug': 'fundamental',
                     'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
-                            f'&year={self.year}&escola=02&localidade=zona'),
+                            f'&year={self.year}&rede=DIR&escola=02'
+                            '&localidade=zona'),
                 },
             ],
             'etapas': [
@@ -393,27 +409,27 @@ class TestHomeViewBreadcrumb(HomeViewTestCase):
         expected = [
             {
                 'name': 'São Paulo',
-                'url': f'{self.url}?year={self.year}&localidade=zona',
+                'url': f'{self.url}?year={self.year}&rede=DIR&localidade=zona',
             },
             {
                 'name': 'Sul',
                 'url': (f'{self.url}?zona=Sul&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'Dre x',
                 'url': (f'{self.url}?zona=Sul&dre=x&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'Distrito s',
                 'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&year={self.year}'
-                        '&localidade=zona'),
+                        '&rede=DIR&localidade=zona'),
             },
             {
                 'name': 'TI - Escola 1',
                 'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&escola=01'
-                        f'&year={self.year}&localidade=zona'),
+                        f'&year={self.year}&rede=DIR&localidade=zona'),
             },
         ]
 

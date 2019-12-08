@@ -16,10 +16,13 @@ class EscolaInfoFilter(filters.FilterSet):
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.NumberFilter()
+    rede = filters.CharFilter()
 
     def filter_queryset(self, queryset):
         if not self.form.cleaned_data['year']:
             self.form.cleaned_data['year'] = date.today().year
+        if not self.form.cleaned_data['rede']:
+            self.form.cleaned_data['rede'] = 'DIR'
 
         query_params = deepcopy(self.form.cleaned_data)
 
