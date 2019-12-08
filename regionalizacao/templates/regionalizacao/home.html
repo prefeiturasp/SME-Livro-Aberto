@@ -1,4 +1,6 @@
 {% extends 'regionalizacao/base.html'  %}
+{% load utils %}
+{% load format %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -47,23 +49,27 @@
                           <strong class="bignumber">
                               R$
                               <span class="number">
-                                  189,3
+                                  {{total|small_intword|split|first}}
                               </span>
-                              mil
+                              {{total|small_intword|split|last}}
                           </strong>
                           <div class="description">
                               em recursos
                           </div>
                       </div>
                       <div class="cell">
-                          <strong class="bignumber">
-                              <span class="number">
-                                  15.920
-                              </span>
-                          </strong>
-                          <div class="description">
-                              vagas oferecidas
-                          </div>
+                      {% with total_vagas=etapas|sum_of:'vagas' %}
+                          {% if total_vagas%}
+                              <strong class="bignumber">
+                                  <span class="number">
+                                      {{total_vagas}}
+                                  </span>
+                              </strong>
+                              <div class="description">
+                                  vagas oferecidas
+                              </div>
+                          {% endif %}
+                          {% endwith %}
                       </div>
                   </div>
                   <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
@@ -74,163 +80,61 @@
                       por tipo de unidade educacional
                   </h3>
                   <div class="total bignumber">
-                      <strong class="number">
-                          100.000
-                      </strong>
-                      unidades diretas
-                      <div class="bar">
-                          <span class="value fg-infantil" data-execution="0.5" style="width: 50%">50%</span>
-                          <span class="value fg-fundamental" data-execution="0.25" style="width: 25%">25%</span>
-                          <span class="value fg-medio" data-execution="0.125" style="width: 12.5%">12.5%</span>
-                          <span class="value fg-especial" data-execution="0.125" style="width: 12.5%">12.5%</span>
-                      </div>
+                      {% with total_unidades=etapas|sum_of:'unidades' %}
+                          <strong class="number">
+                              {{total_unidades}}
+                          </strong>
+                          unidades diretas
+                          <div class="bar">
+                          {% for etapa in etapas %}
+                              {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
+                              <span class="value fg-{{etapa.slug}}" style="width: {{unidades_percentage}}%">{{unidades_percentage}}%</span>
+                          {% endfor %}
+                          </div>
+                      {% endwith %}
                   </div>
                   <table>
+                  {% for etapa in etapas %}
                       <tr>
                           <td>
                               <strong class="number">
-                                  50.000
+                                  {{etapa.unidades}}
                               </strong>
                               unidades
                               <div class="tooltip-container">
                                   <svg class="icon">
                                       <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
                                   </svg>
-                                  <div class="tooltip bg-infantil">
+                                  <div class="tooltip bg-{{etapa.slug}}">
                                       <h4>Tipos de unidades</h4>
                                       <h5>EMEFM</h4>
                                       <p>Escola Municipal de Ensino Fundamental</p>
                                   </div>
                               </div>
-                              <div class="description fg-infantil">
+                              <div class="description fg-{{etapa.slug}}">
                                   <strong>
-                                      Ensino infantil
+                                      {{etapa.name}}
                                   </strong>
                               </div>
                           </td>
                           <td>
                               <strong>
-                                  R$ 50.000,00
+                                  R$ {{etapa.total|floatformat:2}}
                               </strong>
                               <div class="description">
                                   em recursos
                               </div>
+                              {% if etapa.vagas %}
                               <strong>
-                                      421
+                                  {{etapa.vagas}}
                               </strong>
                               <div class="description">
                                   vagas oferecidas
                               </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  25.000
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-fundamental">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-fundamental">
-                                  <strong>
-                                      Ensino fundamental
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  12.500
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-medio">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-medio">
-                                  <strong>
-                                      Ensino médio
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          </td>
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                 12.500
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-especial">
-                                      <h4>Tipos de unidades</h4>
-                                      <h5>EMEFM</h4>
-                                      <p>Escola Municipal de Ensino Fundamental</p>
-                                  </div>
-                              </div>
-                              <div class="description fg-especial">
-                                  <strong>
-                                      Ensino especial
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ 50.000,00
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              <strong>
-                                      421
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
+                              {% endif %}
                           </td>
                       </tr>
+                  {% endfor %}
                   </table>
               </div>
           </div>
@@ -245,9 +149,9 @@
                   Visualizar por:
               </div>
               <div class="form-item">
-                  <select name="">
-                      <option value="">Zona</option>
-                      <option value="">Diretoria Regional de Ensino</option>
+                  <select name="localidade">
+                      <option value="zona">Zona</option>
+                      <option value="distrito">Diretoria Regional de Ensino</option>
                   </select>
               </div>
               <div class="form-item switch">
@@ -258,26 +162,13 @@
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>
           <div class="barchart">
-              <div class="bar" data-label="Leste" data-value="100993" data-percentage="100">
-                  <div class="label">Leste</div>
-                  <div class="value">R$ 100.993,00</div>
-              </div>
-              <div class="bar" data-label="Oeste" data-value="75993" data-percentage="75" style="width: 75%">
-                  <div class="label">Oeste</div>
-                  <div class="value">R$ 75.993,00</div>
-              </div>
-              <div class="bar" data-label="Centro" data-value="50993" data-percentage="50" style="width: 50%">
-                  <div class="label">Centro</div>
-                  <div class="value">R$ 50.993,00</div>
-              </div>
-              <div class="bar" data-label="Norte" data-value="50993" data-percentage="50" style="width: 50%">
-                  <div class="label">Norte</div>
-                  <div class="value">R$ 50.993,00</div>
-              </div>
-              <div class="bar" data-label="Sul" data-value="5993" data-percentage="5" style="width: 5%">
-                  <div class="label">Sul</div>
-                  <div class="value">R$ 5.993,00</div>
-              </div>
+              {% for location in locations %}
+                  {% widthratio location.total total 100 as percentage %}
+                  <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
+                      <div class="label">{{location.name}}</div>
+                      <div class="value">R$ {{location.total|floatformat:2}}</div>
+                  </div>
+              {% endfor %}
           </div>
       </div>
   </section>

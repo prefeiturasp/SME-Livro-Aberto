@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'fullurl',
+    'global_app',
     'mosaico',
     'geologia',
     'contratos',
@@ -78,7 +79,6 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['core/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
