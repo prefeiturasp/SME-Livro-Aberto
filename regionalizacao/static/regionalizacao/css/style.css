@@ -13,7 +13,27 @@ body > header h1 + p {
   position: relative;
 }
 
-svg.map-container{
+#mapa .wrapper > * {
+  position: relative;
+  z-index: 1;
+}
+
+#mapa .chart{
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+}
+
+aside {
+  width: calc(100%/3);
+}
+
+#mapa .chart > * {
+  position: relative;
+  z-index: 0;
+}
+
+#mapa svg.map-container{
   position: absolute;
   z-index: 0;
   width: 100%;
@@ -42,17 +62,6 @@ svg.map-container a path:hover{
 svg.map-container a:active,
 svg.map-container a{
   outline: none;
-}
-
-aside{
-  display: flex;
-  justify-content: flex-end;
-}
-
-aside > .card{
-  width: calc(100%/3);
-  position: relative;
-  z-index: 2;
 }
 
 aside > .card > header,
@@ -256,8 +265,6 @@ aside > .card svg.icon + .tooltip > :last-child {
 
 .breadcrumb{
   text-transform: uppercase;
-  position: relative;
-  z-index: 1;
 }
 
 .breadcrumb > li:first-child > ::before{
