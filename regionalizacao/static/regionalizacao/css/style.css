@@ -32,6 +32,11 @@ svg.map-container path:hover{
   fill: #65c55a;
 }
 
+svg.map-container a:active,
+svg.map-container a{
+  outline: none;
+}
+
 aside{
   display: flex;
   justify-content: flex-end;
