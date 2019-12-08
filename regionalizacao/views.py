@@ -40,8 +40,28 @@ class EscolaInfoFilter(filters.FilterSet):
         return query_params, map_qs, locations_qs
 
 
+class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_context(self, data, renderer_context):
+        data = super().get_template_context(data, renderer_context)
+        view = renderer_context['view']
+        request = renderer_context['request']
+
+        filter_backend = view.filter_backends[0]()
+        qs = view.get_queryset()
+        filterset = filter_backend.get_filterset(request, qs, view)
+
+        filter_form = deepcopy(filterset.form)
+        filter_form.fields.pop('zona')
+        filter_form.fields.pop('dre')
+        filter_form.fields.pop('distrito')
+        filter_form.fields.pop('escola')
+        data['filter_form'] = filter_form
+
+        return data
+
+
 class HomeView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
