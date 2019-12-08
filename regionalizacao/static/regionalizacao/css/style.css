@@ -13,8 +13,29 @@ body > header h1 + p {
   position: relative;
 }
 
-svg.map-container{
+#mapa .wrapper > * {
+  position: relative;
+  z-index: 1;
+}
+
+#mapa .chart{
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+}
+
+aside {
+  width: calc(100%/3);
+}
+
+#mapa .chart > * {
+  position: relative;
+  z-index: 0;
+}
+
+#mapa svg.map-container{
   position: absolute;
+  z-index: 0;
   width: 100%;
   height: 100%;
   left: 0;
@@ -24,23 +45,23 @@ svg.map-container{
 svg.map-container path{
   fill: #7fa785;
   stroke: #fff;
-  cursor: pointer;
+  cursor: help;
   stroke-width: 4;
+  opacity: .5;
 }
 
-svg.map-container path:hover{
+svg.map-container a path{
+  opacity: 1;
+}
+
+svg.map-container a path:hover{
   fill: #65c55a;
+  cursor: pointer;
 }
 
-aside{
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
-  z-index: 2;
-}
-
-aside > .card{
-  width: calc(100%/3);
+svg.map-container a:active,
+svg.map-container a{
+  outline: none;
 }
 
 aside > .card > header,
@@ -240,4 +261,20 @@ aside > .card svg.icon + .tooltip > :first-child {
 
 aside > .card svg.icon + .tooltip > :last-child {
   margin-bottom: 0;
+}
+
+.breadcrumb{
+  text-transform: uppercase;
+}
+
+.breadcrumb > li:first-child > ::before{
+  content: '';
+}
+
+.breadcrumb a{
+  color: inherit;
+}
+
+.breadcrumb .active{
+  font-weight: bold;
 }

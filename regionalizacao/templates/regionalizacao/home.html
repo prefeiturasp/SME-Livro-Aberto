@@ -36,14 +36,23 @@
           </div>
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
-      <h2>São Paulo</h2>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
+      <div class="chart">
       <svg class="map-container">
-          <g class="map"></g>
+          <g class="map">
+          </g>
+          <g class="focus">
+          {% for place in places %}
+              <a href="{{place.url}}">
+              <path data-id="{% if place.code %}{{place.code}}{% else %}{{place.name}}{% endif%}"></path>
+              </a>
+          {% endfor %}
+          </g>
       </svg>
       <aside>
           <div class="card">
               <header>
-                  <h3>São Paulo</h3>
+                  <h3>{{current_level}}</h3>
                   <div class="numbers">
                       <div class="cell">
                           <strong class="bignumber">
@@ -143,6 +152,7 @@
               </div>
           </div>
       </aside>
+      </div>
     </div>
   </section>
   <section id="localidade">
@@ -155,7 +165,7 @@
               <div class="form-item">
                   <select name="localidade">
                       <option value="zona">Zona</option>
-                      <option value="distrito">Diretoria Regional de Ensino</option>
+                      <option value="dre">Diretoria Regional de Ensino</option>
                   </select>
               </div>
               <div class="form-item switch">
