@@ -44,7 +44,11 @@
       <strong class="number">
         {{total_unidades}}
       </strong>
+      {% if not rede or rede == 'DIR' %}
       unidades diretas
+      {% elif rede == 'CON' %}
+      unidades parceiras
+      {% endif %}
       <div class="bar">
         {% for etapa in etapas %}
         {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
