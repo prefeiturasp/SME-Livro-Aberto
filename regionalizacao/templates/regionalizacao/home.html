@@ -52,6 +52,18 @@
           {% endfor %}
           {% endif%}
           </g>
+          {% if filter_form.distrito.value %}
+          <g class="schools">
+          {% for place in places %}
+              <a href="{{place.url}}#mapa">
+                  <circle r="5" data-id="{{place.code}}"
+                                class="bg-{{place.slug}}"
+                                data-lat="{{place.latitude}}"
+                                data-long="{{place.longitude}}"></circle>
+              </a>
+          {% endfor %}
+          </g>
+          {% endif %}
       </svg>
       <aside>
           <div class="card">

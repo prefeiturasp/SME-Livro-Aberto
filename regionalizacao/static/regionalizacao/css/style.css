@@ -130,6 +130,7 @@ aside > .card > .body{
 
 .bg-infantil{
   background-color: #e94363;
+  fill: #e94363;
   color: #fff;
 }
 
@@ -140,6 +141,7 @@ aside > .card > .body{
 
 .bg-fundamental{
   background-color: #edb93b;
+  fill: #edb93b;
   color: #fff;
 }
 
@@ -150,6 +152,7 @@ aside > .card > .body{
 
 .bg-fundamental_medio{
   background-color: #277fcd;
+  fill: #277fcd;
   color: #fff;
 }
 
@@ -160,6 +163,7 @@ aside > .card > .body{
 
 .bg-especial{
   background-color: #73379e;
+  fill: #73379e;
   color: #fff;
 }
 

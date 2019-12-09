@@ -106,7 +106,11 @@ window.addEventListener("DOMContentLoaded", function(){
             .merge(bg)
             .attr('d', path)
             .append('title')
-            .text(d => d.properties.name)
-        ;
+            .text(d => d.properties.name);
+
+        let schools = svg.selectAll('.schools circle')
+            .attr('cx', function(){ return projection([this.dataset.long, this.dataset.lat])[0];})
+            .attr('cy', function(){ return projection([this.dataset.long, this.dataset.lat])[1];})
+            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
