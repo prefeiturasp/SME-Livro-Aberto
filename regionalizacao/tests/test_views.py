@@ -530,6 +530,32 @@ class TestHomeViewBreadcrumb(HomeViewTestCase):
 
         assert expected == response.data['breadcrumb']
 
+    def test_returns_correct_zona_breadcrumb_for_distrito(self):
+        response = self.get(zona='Sul', dre='y', distrito=2)
+        expected = [
+            {
+                'name': 'São Paulo',
+                'url': f'{self.url}?year={self.year}&rede=DIR&localidade=zona',
+            },
+            {
+                'name': 'Norte',
+                'url': (f'{self.url}?zona=Norte&year={self.year}'
+                        '&rede=DIR&localidade=zona'),
+            },
+            {
+                'name': 'Dre y',
+                'url': (f'{self.url}?zona=Norte&dre=y&year={self.year}'
+                        '&rede=DIR&localidade=zona'),
+            },
+            {
+                'name': 'Distrito n',
+                'url': (f'{self.url}?zona=Norte&dre=y&distrito=2'
+                        f'&year={self.year}&rede=DIR&localidade=zona'),
+            },
+        ]
+
+        assert expected == response.data['breadcrumb']
+
 
 class TestSaibaMaisView(APITestCase):
 

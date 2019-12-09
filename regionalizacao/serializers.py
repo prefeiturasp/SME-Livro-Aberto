@@ -89,6 +89,7 @@ class PlacesSerializer:
             params.pop('escola')
 
         if 'distrito' in params:
+            params['zona'] = info1.distrito.zona
             ret.append({
                 'name': info1.distrito.name,
                 'url': self.url(params),
