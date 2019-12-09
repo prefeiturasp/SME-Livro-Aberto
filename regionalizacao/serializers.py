@@ -24,6 +24,7 @@ class PlacesSerializer:
 
     @property
     def data(self):
+        dt_updated = self.get_dt_updated()
         current_level = self.get_current_level()
         breadcrumb = self.build_breadcrumb()
         total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
@@ -36,6 +37,7 @@ class PlacesSerializer:
             'total': total,
             'locations': locations,
             'places': places,
+            'dt_updated': dt_updated,
         }
 
         if self.level == 4:
@@ -60,6 +62,9 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
+
+    def get_dt_updated(self):
+        return '09/12/2019'
 
     def get_current_level(self):
         params = deepcopy(self.query_params)
@@ -89,6 +94,7 @@ class PlacesSerializer:
             params.pop('escola')
 
         if 'distrito' in params:
+            params['zona'] = info1.distrito.zona
             ret.append({
                 'name': info1.distrito.name,
                 'url': self.url(params),
