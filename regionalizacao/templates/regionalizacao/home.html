@@ -46,7 +46,7 @@
               <path data-id="{{filter_form.distrito.value}}" class="active"></path>
           {% else %}
           {% for place in places %}
-              <a href="{{place.url}}">
+              <a href="{{place.url}}#mapa">
               <path data-id="{% if place.code %}{{place.code}}{% else %}{{place.name}}{% endif%}"></path>
               </a>
           {% endfor %}
