@@ -122,6 +122,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_returns_zona_data(self):
@@ -172,6 +173,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_returns_dre_data(self):
@@ -222,6 +224,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_returns_distrito_data(self):
@@ -278,6 +281,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -314,6 +318,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_filters_data_by_year(self):
@@ -345,6 +350,7 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
 
@@ -463,6 +469,7 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
     def test_returns_escola_data(self):
@@ -494,6 +501,7 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
         response.data.pop('locations')
         response.data.pop('breadcrumb')
         response.data.pop('filter_form')
+        response.data.pop('dt_updated')
         assert expected == response.data
 
 
@@ -524,6 +532,32 @@ class TestHomeViewBreadcrumb(HomeViewTestCase):
             {
                 'name': 'TI - Escola 1',
                 'url': (f'{self.url}?zona=Sul&dre=x&distrito=1&escola=01'
+                        f'&year={self.year}&rede=DIR&localidade=zona'),
+            },
+        ]
+
+        assert expected == response.data['breadcrumb']
+
+    def test_returns_correct_zona_breadcrumb_for_distrito(self):
+        response = self.get(zona='Sul', dre='y', distrito=2)
+        expected = [
+            {
+                'name': 'São Paulo',
+                'url': f'{self.url}?year={self.year}&rede=DIR&localidade=zona',
+            },
+            {
+                'name': 'Norte',
+                'url': (f'{self.url}?zona=Norte&year={self.year}'
+                        '&rede=DIR&localidade=zona'),
+            },
+            {
+                'name': 'Dre y',
+                'url': (f'{self.url}?zona=Norte&dre=y&year={self.year}'
+                        '&rede=DIR&localidade=zona'),
+            },
+            {
+                'name': 'Distrito n',
+                'url': (f'{self.url}?zona=Norte&dre=y&distrito=2'
                         f'&year={self.year}&rede=DIR&localidade=zona'),
             },
         ]
