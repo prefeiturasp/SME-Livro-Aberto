@@ -53,6 +53,7 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filter_form = deepcopy(filterset.form)
         filter_form.fields.pop('zona')
         filter_form.fields.pop('dre')
+        # TODO: test presence of distrito filter at the context, we need to know what distrito is active
         filter_form.fields.pop('escola')
         data['filter_form'] = filter_form
 
