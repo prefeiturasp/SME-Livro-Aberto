@@ -77,7 +77,18 @@
   </section>
   <section id="localidade">
       <div class="wrapper">
-          <h2>Principais recursos por <em>localidade</em> em {{filter_form.year.value|default:years|first|unlocalize}}</h2>
+          <h2>Principais recursos por <em>localidade</em> em {{filter_form.year.value|default:years|unlocalize}}
+          <div class="tooltip-container">
+            <svg class="icon">
+              <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+            </svg>
+            <div class="tooltip">
+              <div>
+                   Essa ferramenta exibe apenas parte dos recursos direcionados aos territórios.
+              </div>
+            </div>
+          </div>
+          </h2>
           <form action="#localidade" method="get" class="query">
               <div class="form-item">
                   Visualizar por:
