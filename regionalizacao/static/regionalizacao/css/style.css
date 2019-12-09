@@ -299,6 +299,25 @@ address{
   margin: 0.5em 0 1em;
 }
 
+.groups .icon{
+  width: 2.5em;
+  height: 2.5em;
+  display: inline-block;
+}
+
+aside .card .groups td{
+  padding-top: 0;
+  border: none;
+}
+
+.groups td:first-child{
+  text-align: center;
+}
+
+.groups td h4{
+  margin: 0 0 0.5em;
+}
+
 .subgroup{
   margin: 1em 0;
 }

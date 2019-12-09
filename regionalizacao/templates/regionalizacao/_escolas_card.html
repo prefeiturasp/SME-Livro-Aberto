@@ -4,85 +4,108 @@
 {% load utils %}
 <div class="card">
     <header class="bg-{{escola.slug}}">
-    <h3>{{escola.name}}</h3>
-    <address>
-        {{escola.address}}
-        <br>
-        CEP {{escola.cep|unlocalize}}
-    </address>
-    </small>
-    <div class="numbers">
-      <div class="cell">
-        <strong class="bignumber">
-          R$
-          <span class="number">
-            {{total|small_intword|split|first}}
-          </span>
-          {{total|small_intword|split|last}}
-        </strong>
-        <div class="description">
-          em recursos
+        <h3>{{escola.name}}</h3>
+        <address>
+            {{escola.address}}
+            <br>
+            CEP {{escola.cep|unlocalize}}
+        </address>
+        </small>
+        <div class="numbers">
+            <div class="cell">
+                <strong class="bignumber">
+                    R$
+                    <span class="number">
+                        {{total|small_intword|split|first}}
+                    </span>
+                    {{total|small_intword|split|last}}
+                </strong>
+                <div class="description">
+                    em recursos
+                </div>
+            </div>
+            <div class="cell">
+                {% if escola.vagas%}
+                    <strong class="bignumber">
+                        <span class="number">
+                            {{escola.vagas}}
+                        </span>
+                    </strong>
+                    <div class="description">
+                        vagas oferecidas
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      </div>
-      <div class="cell">
-        {% if escola.vagas%}
-        <strong class="bignumber">
-          <span class="number">
-            {{escola.vagas}}
-          </span>
-        </strong>
-        <div class="description">
-          vagas oferecidas
-        </div>
-        {% endif %}
-      </div>
+        <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
+    </header>
+    <div class="body">
+        <h3>
+            <strong>Principais recursos</strong>
+            da unidade educacional
+        </h3>
+        <table class="groups">
+            <tbody>
+                {% if escola.recursos.ptrf %}
+                    <tr>
+                        <td>
+                            <svg class="icon" >
+                                <use xlink:href="{% static 'regionalizacao/img/ptrf.svg' %}#icon"
+                                     class="bg-{{escola.slug}}"
+                                     ></use>
+                            </svg>
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.ptrf|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Repasse PTRF
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% for grupo in escola.recursos.grupos %}
+                    <tr>
+                        <td>
+                        {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{grupo.total|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        {{grupo.name}}
+                                    </strong>
+                                </div>
+                            </h4>
+                            {% for subgrupo in grupo.subgrupos %}
+                                <div class="subgroup">
+                                    {% if subgrupo.cost %}
+                                        <strong class="number">
+                                            R$ {{subgrupo.cost|floatformat:2}}
+                                        </strong>
+                                    {% endif %}
+                                    <div class="description">
+                                        <div>
+                                            {{subgrupo.name}}
+                                        </div>
+                                        <div>
+                                            {{subgrupo.amount|default:''}} {{subgrupo.label|default:''}}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
-  </header>
-  <div class="body">
-    <h3>
-      <strong>Principais recursos</strong>
-      da unidade educacional
-    </h3>
-    <table>
-      {% for grupo in escola.recursos.grupos %}
-      <tr>
-        <td>
-
-        </td>
-        <td>
-            <h4>
-          <strong class="number">
-            R$ {{grupo.total}}
-          </strong>
-          <div class="description fg-{{escola.slug}}">
-              <strong>
-                  {{grupo.name}}
-              </strong>
-          </div>
-            </h4>
-          {% for subgrupo in grupo.subgrupos %}
-              <div class="subgroup">
-                  {% if subgrupo.cost %}
-                      <strong class="number">
-                          R$ {{subgrupo.cost}}
-                      </strong>
-                  {% endif %}
-                  <div class="description">
-                      <div>
-                          <strong>
-                              {{subgrupo.name}}
-                          </strong>
-                      </div>
-                      <div>
-                          {{subgrupo.amount|default:''}} {{subgrupo.label|default:''}}
-                      </div>
-                  </div>
-              </div>
-          {% endfor %}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
 </div>
