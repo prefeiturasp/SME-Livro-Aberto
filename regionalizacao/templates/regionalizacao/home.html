@@ -69,7 +69,7 @@
           {% if escola %}
               {% include 'regionalizacao/_escolas_card.html' with escola=escola %}
           {% else %}
-              {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total %}
+              {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total rede=filter_form.rede.value %}
           {% endif %}
       </aside>
       </div>
