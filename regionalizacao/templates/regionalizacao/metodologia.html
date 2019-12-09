@@ -1,0 +1,56 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block title %}Regionalização{% endblock %}
+
+{%block head %}
+<link rel="stylesheet" href="{% static 'regionalizacao/css/style.css' %}">
+
+{% endblock %}
+
+{%block header %}
+  <h1>Regionalização</h1>
+  <p>Saiba onde está o orçamento da educação de São Paulo</p>
+  {% include '_header_nav.html' with about='regionalizacao:saiba_mais'%}
+{% endblock %}
+
+{%block sections %}
+  <div class="wrapper container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+                <div class="card sobre">
+                    <input type="button" value="voltar" onclick="window.history.back()" class="voltar" />
+                        <h1>Meto<br />dolo<br />gia<br></h1>
+                        <p>Os dados foram retirados de diferentes fontes fornecidas pela Secretaria Municipal de Educação de São Paulo. Essas fontes são detalhadas na Nota Técnica a seguir.</p>
+                </div>
+            </div>
+        <!-- End Sidebar -->
+
+        <div class="main">
+            <div class="tutorial">
+                <div class="metodologia_mosaico verde">
+                    <h2><strong>metodologia</strong> ❯ Vis&atilde;o geral</h2>
+                    <p>Colocar metodologia aqui</p>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.
+                            Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.
+                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.
+                            Aenean nec lorem. In porttitor. Donec laoreet nonummy augue.
+                            Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.
+                            Fusce aliquet pede non pede. Suspendisse dapibus lorem pellentesque magna. Integer nulla.
+                            Donec blandit feugiat ligula. Donec hendrerit, felis et imperdiet euismod, purus ipsum pretium metus, in lacinia nulla nisl eget sapien. Donec ut est in lectus consequat consequat.
+                            Etiam eget dui. Aliquam erat volutpat. Sed at lorem in nunc porta tristique.
+                            Proin nec augue. Quisque aliquam tempor magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                            Nunc ac magna. Maecenas odio dolor, vulputate vel, auctor ac, accumsan id, felis. Pellentesque cursus sagittis felis.
+                    </p>
+
+                    <h2><strong>metodologia</strong> ❯ Deflacionamento</h2>
+                    <p>Os valores apresentados s&atilde;o nominais, isto &eacute;, est&atilde;o a pre&ccedil;os correntes de cada ano.</p>
+                </div>
+           
+            </div>            
+        </div>
+    </div>
+{% endblock %}
