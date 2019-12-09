@@ -17,6 +17,7 @@ class EscolaInfoFilter(filters.FilterSet):
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.NumberFilter()
     rede = filters.CharFilter()
+    localidade = filters.CharFilter(method='filter_localidade')
 
     def filter_queryset(self, queryset):
         if not self.form.cleaned_data['year']:
@@ -38,6 +39,9 @@ class EscolaInfoFilter(filters.FilterSet):
         self.form.cleaned_data['escola'] = ''
         locations_qs = super().filter_queryset(queryset)
         return query_params, map_qs, locations_qs
+
+    def filter_localidade(self, queryset, name, value):
+        return queryset
 
 
 class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
