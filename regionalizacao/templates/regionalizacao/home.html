@@ -66,7 +66,11 @@
           {% endif %}
       </svg>
       <aside>
-          {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total %}
+          {% if escola %}
+              {% include 'regionalizacao/_escolas_card.html' with escola=escola %}
+          {% else %}
+              {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total %}
+          {% endif %}
       </aside>
       </div>
     </div>
