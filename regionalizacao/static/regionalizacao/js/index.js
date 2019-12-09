@@ -67,15 +67,12 @@ let levels = [
         filename: 'distritos.topojson',
         objName: 'distritos',
     },
-    {
-        filename: 'distritos.topojson',
-        objName: 'distritos',
-    },
 ]
 
 window.addEventListener("DOMContentLoaded", function(){
     let levelIndex = document.querySelectorAll('#mapa .breadcrumb li').length - 1;
-    let level = levels[levelIndex];
+    let level = levels[levelIndex > 2? 2 : levelIndex];
+    console.log(levelIndex, levels[levelIndex])
 
     let svg = d3.select('svg.map-container');
 
@@ -109,7 +106,15 @@ window.addEventListener("DOMContentLoaded", function(){
             .merge(bg)
             .attr('d', path)
             .append('title')
-            .text(d => d.properties.name)
-        ;
+            .text(d => d.properties.name);
+
+        let schools = svg.selectAll('.schools use')
+            .attr('transform', function(){
+                let coord = projection([this.dataset.long, this.dataset.lat]);
+                return `translate(${coord[0]} ${coord[1]})`
+            })
+            .attr('y', -45)
+            .attr('x', -16.5)
+            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });

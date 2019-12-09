@@ -53,7 +53,6 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filter_form = deepcopy(filterset.form)
         filter_form.fields.pop('zona')
         filter_form.fields.pop('dre')
-        filter_form.fields.pop('distrito')
         filter_form.fields.pop('escola')
         data['filter_form'] = filter_form
 
