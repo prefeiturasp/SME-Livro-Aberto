@@ -11,13 +11,18 @@ from regionalizacao.serializers import PlacesSerializer
 
 
 class EscolaInfoFilter(filters.FilterSet):
+    LOCALIDADE_CHOICES = (
+        ('zona', 'Zone'),
+        ('dre', 'Diretoria Regional de Ensino'),
+    )
+
     zona = filters.CharFilter(field_name='distrito__zona')
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
-    year = filters.NumberFilter()
-    rede = filters.CharFilter()
-    localidade = filters.CharFilter(method='filter_localidade')
+    year = filters.AllValuesFilter(field_name='year', empty_label=None)
+    rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
+    localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES, method='filter_localidade', empty_label=None)
 
     def filter_queryset(self, queryset):
         if not self.form.cleaned_data['year']:

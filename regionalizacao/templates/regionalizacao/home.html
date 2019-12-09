@@ -18,9 +18,9 @@
         <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
       <form action="#mapa" method="get" class="query">
         <div class="form-item switch">
-          <input type="checkbox" name="" id="executed-switch">
-          <label for="executed-switch">Unidades diretas</label>
+          <input type="checkbox" name="rede" id="executed-switch" value="CON" {% if filter_form.rede.value == 'CON' %}checked{% endif %}>
           <label for="executed-switch">Unidades parceiras</label>
+          <label for="executed-switch">Unidades diretas</label>
         </div>
           <div class="form-item">
             <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
@@ -181,10 +181,7 @@
                   Visualizar por:
               </div>
               <div class="form-item">
-                  <select name="localidade">
-                      <option value="zona">Zona</option>
-                      <option value="dre">Diretoria Regional de Ensino</option>
-                  </select>
+                  {{ filter_form.localidade }}
               </div>
               <div class="form-item switch">
                   <input type="checkbox" name="" id="localidade-order">
