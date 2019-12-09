@@ -313,6 +313,28 @@ class TestHomeView(HomeViewTestCase):
                 'longitude': str(self.info1.longitude),
                 'vagas': None,
             },
+            'places': [
+                {
+                    'code': '01',
+                    'name': 'TI - Escola 1',
+                    'latitude': str(self.info1.latitude),
+                    'longitude': str(self.info1.longitude),
+                    'slug': 'infantil',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&escola=01&year={self.year}&rede=DIR'
+                            '&localidade=zona'),
+                },
+                {
+                    'code': '02',
+                    'name': 'TF - Escola 2',
+                    'latitude': str(self.info2.latitude),
+                    'longitude': str(self.info2.longitude),
+                    'slug': 'fundamental',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&escola=02&year={self.year}&rede=DIR'
+                            '&localidade=zona'),
+                },
+            ],
         }
 
         response.data.pop('locations')
@@ -345,6 +367,18 @@ class TestHomeView(HomeViewTestCase):
                 'longitude': str(self.info1_b.longitude),
                 'vagas': None,
             },
+            'places': [
+                {
+                    'code': '01',
+                    'name': 'TI - Escola 1',
+                    'latitude': str(self.info1_b.latitude),
+                    'longitude': str(self.info1_b.longitude),
+                    'slug': 'infantil',
+                    'url': (f'{self.url}?zona=Sul&dre=y&distrito=1'
+                            f'&escola=01&year={self.year-1}&rede=DIR'
+                            '&localidade=zona'),
+                },
+            ],
         }
 
         response.data.pop('locations')
@@ -496,6 +530,18 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
                 'longitude': str(self.info4.longitude),
                 'vagas': 10,
             },
+            'places': [
+                {
+                    'code': '04',
+                    'name': 'TI - Escola 4',
+                    'latitude': str(self.info4.latitude),
+                    'longitude': str(self.info4.longitude),
+                    'slug': 'infantil',
+                    'url': (f'{self.url}?zona=Sul&dre=x&distrito=1'
+                            f'&escola=04&year={self.year}&rede=CON'
+                            '&localidade=zona'),
+                },
+            ],
         }
 
         response.data.pop('locations')
