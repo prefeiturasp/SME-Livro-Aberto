@@ -1,9 +1,16 @@
+{% load static %}
+{% load l10n %}
 {% load format %}
 {% load utils %}
-{% load static %}
 <div class="card">
     <header class="bg-{{escola.slug}}">
     <h3>{{escola.name}}</h3>
+    <address>
+        {{escola.address}}
+        <br>
+        CEP {{escola.cep|unlocalize}}
+    </address>
+    </small>
     <div class="numbers">
       <div class="cell">
         <strong class="bignumber">
@@ -18,84 +25,61 @@
         </div>
       </div>
       <div class="cell">
-        {% with total_vagas=etapas|sum_of:'vagas' %}
-        {% if total_vagas%}
+        {% if escola.vagas%}
         <strong class="bignumber">
           <span class="number">
-            {{total_vagas}}
+            {{escola.vagas}}
           </span>
         </strong>
         <div class="description">
           vagas oferecidas
         </div>
         {% endif %}
-        {% endwith %}
       </div>
     </div>
     <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
   </header>
   <div class="body">
     <h3>
-      <strong>Principais recurso</strong>
-      por tipo de unidade educacional
+      <strong>Principais recursos</strong>
+      da unidade educacional
     </h3>
-    <div class="total bignumber">
-      {% with total_unidades=etapas|sum_of:'unidades' %}
-      <strong class="number">
-        {{total_unidades}}
-      </strong>
-      unidades diretas
-      <div class="bar">
-        {% for etapa in etapas %}
-        {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
-        <span class="value fg-{{etapa.slug}}" style="width: {{unidades_percentage}}%">{{unidades_percentage}}%</span>
-        {% endfor %}
-      </div>
-      {% endwith %}
-    </div>
     <table>
-      {% for etapa in etapas %}
+      {% for grupo in escola.recursos.grupos %}
       <tr>
         <td>
-          <strong class="number">
-            {{etapa.unidades}}
-          </strong>
-          unidades
-          <div class="tooltip-container">
-            <svg class="icon">
-              <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-            </svg>
-            <div class="tooltip bg-{{etapa.slug}}">
-              <div>
-                <h4>Tipos de unidades</h4>
-                {% for tipo in etapa.tipos %}
-                <h5>{{tipo.code}}</h5>
-                <p>{{tipo.desc}}</p>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <div class="description fg-{{etapa.slug}}">
-            <strong>
-              {{etapa.name}}
-            </strong>
-          </div>
+
         </td>
         <td>
-          <strong>
-            R$ {{etapa.total|floatformat:2}}
+            <h4>
+          <strong class="number">
+            R$ {{grupo.total}}
           </strong>
-          <div class="description">
-            em recursos
+          <div class="description fg-{{escola.slug}}">
+              <strong>
+                  {{grupo.name}}
+              </strong>
           </div>
-          {% if etapa.vagas %}
-          <strong>
-            {{etapa.vagas}}
-          </strong>
-          <div class="description">
-            vagas oferecidas
-          </div>
-          {% endif %}
+            </h4>
+          {% for subgrupo in grupo.subgrupos %}
+              <div class="subgroup">
+                  {% if subgrupo.cost %}
+                      <strong class="number">
+                          R$ {{subgrupo.cost}}
+                      </strong>
+                  {% endif %}
+                  <div class="description">
+                      <div>
+                          <strong>
+                              {{subgrupo.name}}
+                          </strong>
+                      </div>
+                      <div>
+                          {{subgrupo.amount|default:''}} {{subgrupo.label|default:''}}
+                      </div>
+                  </div>
+              </div>
+          {% endfor %}
         </td>
       </tr>
       {% endfor %}

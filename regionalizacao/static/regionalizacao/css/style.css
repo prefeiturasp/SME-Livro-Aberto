@@ -290,3 +290,15 @@ aside > .card svg.icon + .tooltip > :last-child {
 .breadcrumb .active{
   font-weight: bold;
 }
+
+address{
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0.5em 0 1em;
+}
+
+.subgroup{
+  margin: 1em 0;
+}
