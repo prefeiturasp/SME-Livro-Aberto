@@ -228,62 +228,83 @@ svg.icon .stroke{
   overflow: visible;
 }
 
-aside > .card svg.icon {
+.tooltip-container svg.icon {
   cursor: help;
 }
 
-aside > .card .tooltip-container {
+.tooltip-container {
   position: relative;
   display: inline-block;
+  font-size: 1rem;
 }
 
-aside > .card svg.icon + .tooltip {
+.tooltip-container svg.icon + .tooltip {
   opacity: 0;
   position: absolute;
   transition: all 0.5s ease;
   border-radius: 3px;
-  margin: -5em -5em 0 0;
+  margin: -8em 0 0 -5.25em;
   pointer-events: none;
   width: 12em;
 }
 
-aside > .card svg.icon + .tooltip > div{
+aside > .card .tooltip-container svg.icon + .tooltip {
+  margin: -5em -5em 0 0;
+}
+
+.tooltip{
+  background-color: #242b33;
+  color: #fff;
+}
+
+.tooltip-container:hover svg.icon + .tooltip {
+  opacity: 1;
+  margin: -10em 0 0 -5.25em;
+  pointer-events: all;
+}
+
+aside > .card .tooltip-container:hover svg.icon + .tooltip {
+  margin: -5em 0 0 1.5em;
+}
+
+.tooltip-container .tooltip::after {
+  content: ' ';
+  position: absolute;
+  top: 100%;
+  right: 50%;
+  border-width: .25em;
+  border-style: solid;
+  color: #242b33;
+  border-color: currentColor transparent transparent transparent;
+}
+
+aside > .card .tooltip-container .tooltip::after {
+  top: 4em;
+  right: 100%;
+  border-color: transparent currentColor transparent transparent;
+}
+
+svg.icon + .tooltip > :first-child {
+  margin-top: 0;
+}
+
+svg.icon + .tooltip > :last-child {
+  margin-bottom: 0;
+}
+
+svg.icon + .tooltip > div{
   min-height: 3em;
   max-height: 12em;
   overflow: auto;
   padding: 1em;
 }
 
-aside > .card svg.icon + .tooltip > div > *{
+svg.icon + .tooltip > div > *{
   margin: 0;
 }
 
-aside > .card svg.icon + .tooltip > div h5{
+svg.icon + .tooltip > div h5{
   margin-top: 1em;
-}
-
-aside > .card .tooltip-container:hover svg.icon + .tooltip {
-  opacity: 1;
-  margin: -5em 0 0 1.5em;
-  pointer-events: all;
-}
-
-aside > .card .tooltip-container .tooltip::after {
-  content: ' ';
-  position: absolute;
-  top: 4em;
-  right: 100%;
-  border-width: .25em;
-  border-style: solid;
-  border-color: transparent currentColor transparent transparent;
-}
-
-aside > .card svg.icon + .tooltip > :first-child {
-  margin-top: 0;
-}
-
-aside > .card svg.icon + .tooltip > :last-child {
-  margin-bottom: 0;
 }
 
 .breadcrumb{
@@ -331,4 +352,5 @@ aside .card .groups td{
 
 .subgroup{
   margin: 1em 0;
+  font-size: 0.8em;
 }
