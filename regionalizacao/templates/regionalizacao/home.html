@@ -1,6 +1,4 @@
 {% extends 'regionalizacao/base.html'  %}
-{% load utils %}
-{% load format %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -68,107 +66,7 @@
           {% endif %}
       </svg>
       <aside>
-          <div class="card">
-              <header>
-                  <h3>{{current_level}}</h3>
-                  <div class="numbers">
-                      <div class="cell">
-                          <strong class="bignumber">
-                              R$
-                              <span class="number">
-                                  {{total|small_intword|split|first}}
-                              </span>
-                              {{total|small_intword|split|last}}
-                          </strong>
-                          <div class="description">
-                              em recursos
-                          </div>
-                      </div>
-                      <div class="cell">
-                      {% with total_vagas=etapas|sum_of:'vagas' %}
-                          {% if total_vagas%}
-                              <strong class="bignumber">
-                                  <span class="number">
-                                      {{total_vagas}}
-                                  </span>
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          {% endif %}
-                          {% endwith %}
-                      </div>
-                  </div>
-                  <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
-              </header>
-              <div class="body">
-                  <h3>
-                      <strong>Principais recurso</strong>
-                      por tipo de unidade educacional
-                  </h3>
-                  <div class="total bignumber">
-                      {% with total_unidades=etapas|sum_of:'unidades' %}
-                          <strong class="number">
-                              {{total_unidades}}
-                          </strong>
-                          unidades diretas
-                          <div class="bar">
-                          {% for etapa in etapas %}
-                              {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
-                              <span class="value fg-{{etapa.slug}}" style="width: {{unidades_percentage}}%">{{unidades_percentage}}%</span>
-                          {% endfor %}
-                          </div>
-                      {% endwith %}
-                  </div>
-                  <table>
-                  {% for etapa in etapas %}
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  {{etapa.unidades}}
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-{{etapa.slug}}">
-                                      <div>
-                                          <h4>Tipos de unidades</h4>
-                                          {% for tipo in etapa.tipos %}
-                                              <h5>{{tipo.code}}</h5>
-                                              <p>{{tipo.desc}}</p>
-                                          {% endfor %}
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="description fg-{{etapa.slug}}">
-                                  <strong>
-                                      {{etapa.name}}
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ {{etapa.total|floatformat:2}}
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              {% if etapa.vagas %}
-                              <strong>
-                                  {{etapa.vagas}}
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                              {% endif %}
-                          </td>
-                      </tr>
-                  {% endfor %}
-                  </table>
-              </div>
-          </div>
+          {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total %}
       </aside>
       </div>
     </div>
