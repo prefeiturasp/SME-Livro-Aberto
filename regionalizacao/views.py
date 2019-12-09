@@ -20,7 +20,7 @@ class EscolaInfoFilter(filters.FilterSet):
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
-    year = filters.NumberFilter()
+    year = filters.AllValuesFilter(field_name='year', empty_label=None)
     rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
     localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES, method='filter_localidade', empty_label=None)
 
