@@ -108,9 +108,13 @@ window.addEventListener("DOMContentLoaded", function(){
             .append('title')
             .text(d => d.properties.name);
 
-        let schools = svg.selectAll('.schools circle')
-            .attr('cx', function(){ return projection([this.dataset.long, this.dataset.lat])[0];})
-            .attr('cy', function(){ return projection([this.dataset.long, this.dataset.lat])[1];})
+        let schools = svg.selectAll('.schools use')
+            .attr('transform', function(){
+                let coord = projection([this.dataset.long, this.dataset.lat]);
+                return `translate(${coord[0]} ${coord[1]})`
+            })
+            .attr('y', -45)
+            .attr('x', -16.5)
             .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
