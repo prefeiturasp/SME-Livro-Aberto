@@ -176,13 +176,15 @@
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>
           <div class="barchart">
+              {% with max_location=locations|dictsort:'total'|last%}
               {% for location in locations %}
-                  {% widthratio location.total total 100 as percentage %}
+                  {% widthratio location.total max_location.total 100 as percentage %}
                   <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
                       <div class="label">{{location.name}}</div>
                       <div class="value">R$ {{location.total|floatformat:2}}</div>
                   </div>
               {% endfor %}
+              {% endwith %}
           </div>
       </div>
   </section>
