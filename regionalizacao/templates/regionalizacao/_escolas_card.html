@@ -49,11 +49,7 @@
                 {% if escola.recursos.ptrf %}
                     <tr>
                         <td>
-                            <svg class="icon" >
-                                <use xlink:href="{% static 'regionalizacao/img/ptrf.svg' %}#icon"
-                                     class="bg-{{escola.slug}}"
-                                     ></use>
-                            </svg>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
                         </td>
                         <td>
                             <h4>
@@ -72,7 +68,7 @@
                 {% for grupo in escola.recursos.grupos %}
                     <tr>
                         <td>
-                        {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name class_name='bg-'|add:escola.slug %}
+                            {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name class_name='bg-'|add:escola.slug %}
                         </td>
                         <td>
                             <h4>
