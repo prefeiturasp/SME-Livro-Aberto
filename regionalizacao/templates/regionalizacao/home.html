@@ -42,11 +42,15 @@
           <g class="map">
           </g>
           <g class="focus">
+          {% if filter_form.distrito.value %}
+              <path data-id="{{filter_form.distrito.value}}" class="active"></path>
+          {% else %}
           {% for place in places %}
               <a href="{{place.url}}">
               <path data-id="{% if place.code %}{{place.code}}{% else %}{{place.name}}{% endif%}"></path>
               </a>
           {% endfor %}
+          {% endif%}
           </g>
       </svg>
       <aside>

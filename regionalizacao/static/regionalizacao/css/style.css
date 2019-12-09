@@ -54,6 +54,10 @@ svg.map-container path{
   stroke-width: 4;
 }
 
+svg.map-container path.active{
+  fill: #5f6b6d;
+}
+
 svg.map-container a path{
   fill: #7fa785;
 }
