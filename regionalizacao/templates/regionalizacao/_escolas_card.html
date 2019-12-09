@@ -88,6 +88,7 @@
                                             R$ {{subgrupo.cost|floatformat:2}}
                                         </strong>
                                     {% endif %}
+                                    {% if subgrupo.amount or subgrupo.cost %}
                                     <div class="description">
                                         <div>
                                             {{subgrupo.name}}
@@ -96,6 +97,7 @@
                                             {{subgrupo.amount|default:''}} {{subgrupo.label|default:''}}
                                         </div>
                                     </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                         </td>
