@@ -15,10 +15,16 @@
             <div class="cell">
                 <strong class="bignumber">
                     R$
-                    <span class="number">
-                        {{total|small_intword|split|first}}
-                    </span>
-                    {{total|small_intword|split|last}}
+                    {% if total|small_intword|split|length > 1 %}
+                        <span class="number">
+                            {{total|small_intword|split|first}}
+                        </span>
+                        {{total|small_intword|split|last}}
+                    {% else %}
+                        <span class="number">
+                            {{total|floatformat:2}}
+                        </span>
+                    {% endif %}
                 </strong>
                 <div class="description">
                     em recursos
