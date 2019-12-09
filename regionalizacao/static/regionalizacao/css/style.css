@@ -129,47 +129,47 @@ aside > .card > .body{
 }
 
 .bg-infantil{
-  background-color: #e94363;
-  fill: #e94363;
-  color: #fff;
+  background-color: #e94363 !important;
+  fill: #e94363 !important;
+  color: #fff !important;
 }
 
 .bg-infantil.tooltip::after,
 .fg-infantil{
-  color: #e94363;
+  color: #e94363 !important;
 }
 
 .bg-fundamental{
-  background-color: #edb93b;
-  fill: #edb93b;
-  color: #fff;
+  background-color: #edb93b !important;
+  fill: #edb93b !important;
+  color: #fff !important;
 }
 
 .bg-fundamental.tooltip::after,
 .fg-fundamental{
-  color: #edb93b;
+  color: #edb93b !important;
 }
 
 .bg-fundamental_medio{
-  background-color: #277fcd;
-  fill: #277fcd;
-  color: #fff;
+  background-color: #277fcd !important;
+  fill: #277fcd !important;
+  color: #fff !important;
 }
 
 .bg-fundamental_medio.tooltip::after,
 .fg-fundamental_medio{
-  color: #277fcd;
+  color: #277fcd !important;
 }
 
 .bg-especial{
-  background-color: #73379e;
-  fill: #73379e;
-  color: #fff;
+  background-color: #73379e !important;
+  fill: #73379e !important;
+  color: #fff !important;
 }
 
 .bg-especial.tooltip::after,
 .fg-especial{
-  color: #73379e;
+  color: #73379e !important;
 }
 
 aside > .card td{
@@ -289,4 +289,35 @@ aside > .card svg.icon + .tooltip > :last-child {
 
 .breadcrumb .active{
   font-weight: bold;
+}
+
+address{
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0.5em 0 1em;
+}
+
+.groups .icon{
+  width: 2.5em;
+  height: 2.5em;
+  display: inline-block;
+}
+
+aside .card .groups td{
+  padding-top: 0;
+  border: none;
+}
+
+.groups td:first-child{
+  text-align: center;
+}
+
+.groups td h4{
+  margin: 0 0 0.5em;
+}
+
+.subgroup{
+  margin: 1em 0;
 }

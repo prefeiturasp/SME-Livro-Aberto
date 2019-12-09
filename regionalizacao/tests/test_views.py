@@ -305,6 +305,7 @@ class TestHomeView(HomeViewTestCase):
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
+                'slug': 'infantil',
                 'address': 'Rua 1, 10 - Bairro 1',
                 'cep': 10100000,
                 'total': 100,
@@ -359,6 +360,7 @@ class TestHomeView(HomeViewTestCase):
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
+                'slug': 'infantil',
                 'address': 'Rua 1b, 10 - Bairro 1b',
                 'cep': 10100000,
                 'total': 2,
@@ -522,6 +524,7 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
             'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 4',
+                'slug': 'infantil',
                 'address': 'Rua 4, 40 - Bairro 4',
                 'cep': 40400000,
                 'total': 3000,

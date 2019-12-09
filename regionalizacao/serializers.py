@@ -267,10 +267,11 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
     address = serializers.SerializerMethodField()
     total = serializers.FloatField(source='budget_total')
     vagas = serializers.SerializerMethodField()
+    slug = serializers.SerializerMethodField()
 
     class Meta:
         model = EscolaInfo
-        fields = ('name', 'address', 'cep', 'total', 'recursos', 'latitude',
+        fields = ('name', 'slug', 'address', 'cep', 'total', 'recursos', 'latitude',
                   'longitude', 'vagas')
 
     def get_name(self, obj):
@@ -283,3 +284,6 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
         if obj.rede == 'CON':
             return obj.total_vagas
         return None
+
+    def get_slug(self, obj):
+        return ETAPA_SLUGS.get(obj.tipoesc.etapa, None)
