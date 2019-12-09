@@ -1,6 +1,4 @@
 {% extends 'regionalizacao/base.html'  %}
-{% load utils %}
-{% load format %}
 {% load static %}
 {% load humanize %}
 {% load l10n %}
@@ -18,9 +16,9 @@
         <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
       <form action="#mapa" method="get" class="query">
         <div class="form-item switch">
-          <input type="checkbox" name="" id="executed-switch">
-          <label for="executed-switch">Unidades diretas</label>
+          <input type="checkbox" name="rede" id="executed-switch" value="CON" {% if filter_form.rede.value == 'CON' %}checked{% endif %}>
           <label for="executed-switch">Unidades parceiras</label>
+          <label for="executed-switch">Unidades diretas</label>
         </div>
           <div class="form-item">
             <select id="{{ filter_form.year.id_for_label }}" name="{{ filter_form.year.name }}">
@@ -36,113 +34,45 @@
           </div>
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
-      <h2>São Paulo</h2>
+      {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
+      <div class="chart">
       <svg class="map-container">
-          <g class="map"></g>
+          <g class="map">
+          </g>
+          <g class="focus">
+          {% if filter_form.distrito.value %}
+              <path data-id="{{filter_form.distrito.value}}" class="active"></path>
+          {% else %}
+          {% for place in places %}
+              <a href="{{place.url}}#mapa">
+              <path data-id="{% if place.code %}{{place.code}}{% else %}{{place.name}}{% endif%}"></path>
+              </a>
+          {% endfor %}
+          {% endif%}
+          </g>
+          {% if filter_form.distrito.value %}
+          <g class="schools">
+          {% for place in places %}
+              <a href="{{place.url}}#mapa">
+                  <use xlink:href="{% static 'regionalizacao/img/marker.svg' %}#marker"
+                       data-id="{{place.code}}"
+                       class="bg-{{place.slug}}"
+                       data-lat="{{place.latitude}}"
+                       data-long="{{place.longitude}}"
+                       ></use>
+              </a>
+          {% endfor %}
+          </g>
+          {% endif %}
       </svg>
       <aside>
-          <div class="card">
-              <header>
-                  <h3>São Paulo</h3>
-                  <div class="numbers">
-                      <div class="cell">
-                          <strong class="bignumber">
-                              R$
-                              <span class="number">
-                                  {{total|small_intword|split|first}}
-                              </span>
-                              {{total|small_intword|split|last}}
-                          </strong>
-                          <div class="description">
-                              em recursos
-                          </div>
-                      </div>
-                      <div class="cell">
-                      {% with total_vagas=etapas|sum_of:'vagas' %}
-                          {% if total_vagas%}
-                              <strong class="bignumber">
-                                  <span class="number">
-                                      {{total_vagas}}
-                                  </span>
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                          {% endif %}
-                          {% endwith %}
-                      </div>
-                  </div>
-                  <p><small>Essa ferramenta exibe apenas parte dos recursos destinados às escolas.</small></p>
-              </header>
-              <div class="body">
-                  <h3>
-                      <strong>Principais recurso</strong>
-                      por tipo de unidade educacional
-                  </h3>
-                  <div class="total bignumber">
-                      {% with total_unidades=etapas|sum_of:'unidades' %}
-                          <strong class="number">
-                              {{total_unidades}}
-                          </strong>
-                          unidades diretas
-                          <div class="bar">
-                          {% for etapa in etapas %}
-                              {% widthratio etapa.unidades total_unidades 100 as unidades_percentage %}
-                              <span class="value fg-{{etapa.slug}}" style="width: {{unidades_percentage}}%">{{unidades_percentage}}%</span>
-                          {% endfor %}
-                          </div>
-                      {% endwith %}
-                  </div>
-                  <table>
-                  {% for etapa in etapas %}
-                      <tr>
-                          <td>
-                              <strong class="number">
-                                  {{etapa.unidades}}
-                              </strong>
-                              unidades
-                              <div class="tooltip-container">
-                                  <svg class="icon">
-                                      <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                                  </svg>
-                                  <div class="tooltip bg-{{etapa.slug}}">
-                                      <div>
-                                          <h4>Tipos de unidades</h4>
-                                          {% for tipo in etapa.tipos %}
-                                              <h5>{{tipo.code}}</h5>
-                                              <p>{{tipo.desc}}</p>
-                                          {% endfor %}
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="description fg-{{etapa.slug}}">
-                                  <strong>
-                                      {{etapa.name}}
-                                  </strong>
-                              </div>
-                          </td>
-                          <td>
-                              <strong>
-                                  R$ {{etapa.total|floatformat:2}}
-                              </strong>
-                              <div class="description">
-                                  em recursos
-                              </div>
-                              {% if etapa.vagas %}
-                              <strong>
-                                  {{etapa.vagas}}
-                              </strong>
-                              <div class="description">
-                                  vagas oferecidas
-                              </div>
-                              {% endif %}
-                          </td>
-                      </tr>
-                  {% endfor %}
-                  </table>
-              </div>
-          </div>
+          {% if escola %}
+              {% include 'regionalizacao/_escolas_card.html' with escola=escola %}
+          {% else %}
+              {% include 'regionalizacao/_etapas_card.html' with etapas=etapas current_level=current_level total=total %}
+          {% endif %}
       </aside>
+      </div>
     </div>
   </section>
   <section id="localidade">
@@ -153,10 +83,7 @@
                   Visualizar por:
               </div>
               <div class="form-item">
-                  <select name="localidade">
-                      <option value="zona">Zona</option>
-                      <option value="distrito">Diretoria Regional de Ensino</option>
-                  </select>
+                  {{ filter_form.localidade }}
               </div>
               <div class="form-item switch">
                   <input type="checkbox" name="" id="localidade-order">
@@ -166,13 +93,15 @@
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>
           <div class="barchart">
+              {% with max_location=locations|dictsort:'total'|last%}
               {% for location in locations %}
-                  {% widthratio location.total total 100 as percentage %}
+                  {% widthratio location.total max_location.total 100 as percentage %}
                   <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
                       <div class="label">{{location.name}}</div>
                       <div class="value">R$ {{location.total|floatformat:2}}</div>
                   </div>
               {% endfor %}
+              {% endwith %}
           </div>
       </div>
   </section>

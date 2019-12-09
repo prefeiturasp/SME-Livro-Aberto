@@ -64,7 +64,7 @@ a.btn:last-child {
   text-align: center;
 }
 
-section#mosaico .breadcrumb{
+section .breadcrumb{
   font-size: 2em;
 }
 

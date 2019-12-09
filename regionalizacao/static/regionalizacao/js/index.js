@@ -53,29 +53,68 @@ window.addEventListener("DOMContentLoaded", function(){
 
 let baseUrl = '/static/regionalizacao/maps/'
 
-window.addEventListener("DOMContentLoaded", function(){
-    var width = document.body.clientWidth,
-        height = document.body.clientHeight;
 
-    var svg = d3.select('svg.map-container')
-        .attr('viewBox', '0 0 ' + width + ' ' + height);
+let levels = [
+    {
+        filename: 'zonas.topojson',
+        objName: 'zonas',
+    },
+    {
+        filename: 'dre.topojson',
+        objName: 'dre',
+    },
+    {
+        filename: 'distritos.topojson',
+        objName: 'distritos',
+    },
+]
+
+window.addEventListener("DOMContentLoaded", function(){
+    let levelIndex = document.querySelectorAll('#mapa .breadcrumb li').length - 1;
+    let level = levels[levelIndex > 2? 2 : levelIndex];
+    console.log(levelIndex, levels[levelIndex])
+
+    let svg = d3.select('svg.map-container');
+
+    let x = svg.node().parentNode.offsetLeft,
+        y = svg.node().parentNode.offsetTop,
+        canvasWidth = svg.node().parentNode.offsetWidth * 2/3 + x,
+        canvasHeight = svg.node().parentNode.offsetHeight + y;
+
+    let width = Math.round(parseFloat(svg.style('width'))),
+        height = Math.round(parseFloat(svg.style('height')));
+
+    svg.attr('viewBox', '0 0 ' + width + ' ' + height);
 
     var gMap = svg.select('g.map');
 
-    d3.json(baseUrl + 'distritos.topojson').then(function (data){
-        let features = topojson.feature(data, data.objects.Distritos);
+    d3.json(baseUrl + level.filename).then(function (data){
+        let features = topojson.feature(data, data.objects[level.objName]);
 
-        projection = d3.geoMercator()
-            .fitSize([width / 2, height], features)
+        let bg = gMap.selectAll('path')
+            .data(features.features)
+            .enter().append('path')
+        let focus = svg.selectAll('.focus path')
+            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
+
+        let focusFeatures = {features: focus.data(), type: 'FeatureCollection'}
+        let projection = d3.geoMercator()
+            .fitExtent([[x, y], [canvasWidth, canvasHeight]], focusFeatures)
 
         var path = d3.geoPath().projection(projection)
-        function title(d){ return d.properties.NOME; }
-        gMap.selectAll('path')
-            .data(features.features)
-            .enter()
-            .append('path')
+        focus
+            .merge(bg)
             .attr('d', path)
             .append('title')
-            .text(title);
+            .text(d => d.properties.name);
+
+        let schools = svg.selectAll('.schools use')
+            .attr('transform', function(){
+                let coord = projection([this.dataset.long, this.dataset.lat]);
+                return `translate(${coord[0]} ${coord[1]})`
+            })
+            .attr('y', -45)
+            .attr('x', -16.5)
+            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });

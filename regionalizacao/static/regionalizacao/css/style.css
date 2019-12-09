@@ -11,10 +11,36 @@ body > header h1 + p {
 
 #mapa{
   position: relative;
+  background-color: #f9faf9;
 }
 
-svg.map-container{
+#mapa + section{
+  background-color: #fff;
+}
+
+#mapa .wrapper > * {
+  position: relative;
+  z-index: 1;
+}
+
+#mapa .chart{
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+}
+
+aside {
+  width: calc(100%/3);
+}
+
+#mapa .chart > * {
+  position: relative;
+  z-index: 0;
+}
+
+#mapa svg.map-container{
   position: absolute;
+  z-index: 0;
   width: 100%;
   height: 100%;
   left: 0;
@@ -22,25 +48,28 @@ svg.map-container{
 }
 
 svg.map-container path{
-  fill: #7fa785;
+  fill: #f9faf9;
   stroke: #fff;
-  cursor: pointer;
+  cursor: help;
   stroke-width: 4;
 }
 
-svg.map-container path:hover{
+svg.map-container path.active{
+  fill: #5f6b6d;
+}
+
+svg.map-container a path{
+  fill: #7fa785;
+}
+
+svg.map-container a path:hover{
   fill: #65c55a;
+  cursor: pointer;
 }
 
-aside{
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
-  z-index: 2;
-}
-
-aside > .card{
-  width: calc(100%/3);
+svg.map-container a:active,
+svg.map-container a{
+  outline: none;
 }
 
 aside > .card > header,
@@ -100,43 +129,47 @@ aside > .card > .body{
 }
 
 .bg-infantil{
-  background-color: #e94363;
-  color: #fff;
+  background-color: #e94363 !important;
+  fill: #e94363 !important;
+  color: #fff !important;
 }
 
 .bg-infantil.tooltip::after,
 .fg-infantil{
-  color: #e94363;
+  color: #e94363 !important;
 }
 
 .bg-fundamental{
-  background-color: #edb93b;
-  color: #fff;
+  background-color: #edb93b !important;
+  fill: #edb93b !important;
+  color: #fff !important;
 }
 
 .bg-fundamental.tooltip::after,
 .fg-fundamental{
-  color: #edb93b;
+  color: #edb93b !important;
 }
 
 .bg-fundamental_medio{
-  background-color: #277fcd;
-  color: #fff;
+  background-color: #277fcd !important;
+  fill: #277fcd !important;
+  color: #fff !important;
 }
 
 .bg-fundamental_medio.tooltip::after,
 .fg-fundamental_medio{
-  color: #277fcd;
+  color: #277fcd !important;
 }
 
 .bg-especial{
-  background-color: #73379e;
-  color: #fff;
+  background-color: #73379e !important;
+  fill: #73379e !important;
+  color: #fff !important;
 }
 
 .bg-especial.tooltip::after,
 .fg-especial{
-  color: #73379e;
+  color: #73379e !important;
 }
 
 aside > .card td{
@@ -240,4 +273,51 @@ aside > .card svg.icon + .tooltip > :first-child {
 
 aside > .card svg.icon + .tooltip > :last-child {
   margin-bottom: 0;
+}
+
+.breadcrumb{
+  text-transform: uppercase;
+}
+
+.breadcrumb > li:first-child > ::before{
+  content: '';
+}
+
+.breadcrumb a{
+  color: inherit;
+}
+
+.breadcrumb .active{
+  font-weight: bold;
+}
+
+address{
+  text-transform: uppercase;
+  font-size: 0.7em;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0.5em 0 1em;
+}
+
+.groups .icon{
+  width: 2.5em;
+  height: 2.5em;
+  display: inline-block;
+}
+
+aside .card .groups td{
+  padding-top: 0;
+  border: none;
+}
+
+.groups td:first-child{
+  text-align: center;
+}
+
+.groups td h4{
+  margin: 0 0 0.5em;
+}
+
+.subgroup{
+  margin: 1em 0;
 }

@@ -11,15 +11,24 @@ from regionalizacao.serializers import PlacesSerializer
 
 
 class EscolaInfoFilter(filters.FilterSet):
+    LOCALIDADE_CHOICES = (
+        ('zona', 'Zone'),
+        ('dre', 'Diretoria Regional de Ensino'),
+    )
+
     zona = filters.CharFilter(field_name='distrito__zona')
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
-    year = filters.NumberFilter()
+    year = filters.AllValuesFilter(field_name='year', empty_label=None)
+    rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
+    localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES, method='filter_localidade', empty_label=None)
 
     def filter_queryset(self, queryset):
         if not self.form.cleaned_data['year']:
             self.form.cleaned_data['year'] = date.today().year
+        if not self.form.cleaned_data['rede']:
+            self.form.cleaned_data['rede'] = 'DIR'
 
         query_params = deepcopy(self.form.cleaned_data)
 
@@ -36,13 +45,37 @@ class EscolaInfoFilter(filters.FilterSet):
         locations_qs = super().filter_queryset(queryset)
         return query_params, map_qs, locations_qs
 
+    def filter_localidade(self, queryset, name, value):
+        return queryset
+
+
+class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
+    def get_template_context(self, data, renderer_context):
+        data = super().get_template_context(data, renderer_context)
+        view = renderer_context['view']
+        request = renderer_context['request']
+
+        filter_backend = view.filter_backends[0]()
+        qs = view.get_queryset()
+        filterset = filter_backend.get_filterset(request, qs, view)
+
+        filter_form = deepcopy(filterset.form)
+        filter_form.fields.pop('zona')
+        filter_form.fields.pop('dre')
+        # TODO: test presence of distrito filter at the context, we need to know what distrito is active
+        filter_form.fields.pop('escola')
+        data['filter_form'] = filter_form
+
+        return data
+
 
 class HomeView(generics.ListAPIView):
-    renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
+    renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects.filter(budget_total__isnull=False)
+    queryset = EscolaInfo.objects.filter(budget_total__isnull=False) \
+        .select_related('dre', 'tipoesc', 'distrito')
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):
