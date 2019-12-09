@@ -35,15 +35,15 @@ class PlacesSerializer:
             'breadcrumb': breadcrumb,
             'total': total,
             'locations': locations,
+            'places': places,
         }
 
         if self.level == 4:
-            ret['escola'] = places
+            ret['escola'] = self.build_escola_data()
             return ret
 
         etapas = self.build_etapas_data()
 
-        ret['places'] = places
         ret['etapas'] = etapas
 
         if self.rede == 'CON':
@@ -170,8 +170,14 @@ class PlacesSerializer:
                 })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
 
-        elif self.level == 3:
-            for info in self.map_queryset.all():
+        else:
+            if self.level == 3:
+                qs = self.map_queryset.all()
+            else:
+                info1 = self.map_queryset.first()
+                qs = self.locations_queryset.filter(distrito=info1.distrito)
+
+            for info in qs:
                 params = {
                     **self.query_params,
                     'escola': info.escola.codesc,
@@ -186,13 +192,13 @@ class PlacesSerializer:
                 })
             pĺaces.sort(key=lambda z: z['name'], reverse=True)
 
-        elif self.level == 4:
-            if not self.map_queryset.count() == 1:
-                raise Exception
-            escola = self.map_queryset.first()
-            return EscolaInfoSerializer(escola).data
-
         return pĺaces
+
+    def build_escola_data(self):
+        if not self.map_queryset.count() == 1:
+            raise Exception
+        escola = self.map_queryset.first()
+        return EscolaInfoSerializer(escola).data
 
     def build_etapas_data(self):
         etapas = []
