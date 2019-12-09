@@ -172,6 +172,17 @@ aside > .card > .body{
   color: #73379e !important;
 }
 
+.bg-profissional{
+  background-color: #abd656 !important;
+  fill: #abd656 !important;
+  color: #fff !important;
+}
+
+.bg-profissional.tooltip::after,
+.fg-profissional{
+  color: #abd656 !important;
+}
+
 aside > .card td{
   text-align: left;
   padding: 1em 0;
