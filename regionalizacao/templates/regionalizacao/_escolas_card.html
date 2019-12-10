@@ -12,8 +12,8 @@
         </address>
         </small>
         <div class="numbers">
-            <div class="cell">
-                {% if total %}
+            {% if total %}
+                <div class="cell">
                     <strong class="bignumber">
                         R$
                         {% if total|small_intword|split|length > 1 %}
@@ -30,8 +30,8 @@
                     <div class="description">
                         em recursos
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
             <div class="cell">
                 {% if escola.vagas%}
                     <strong class="bignumber">
