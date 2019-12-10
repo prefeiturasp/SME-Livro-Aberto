@@ -15,6 +15,7 @@ class HomeViewTestCase(APITestCase):
         escola1 = mommy.make(Escola, codesc='01')
         escola2 = mommy.make(Escola, codesc='02')
         escola3 = mommy.make(Escola, codesc='03')
+        escola6 = mommy.make(Escola, codesc='06')
 
         distrito_s = mommy.make(Distrito, zona='Sul', name='Distrito s',
                                 coddist=1)
@@ -45,6 +46,11 @@ class HomeViewTestCase(APITestCase):
         self.info1_b = mommy.make(
             EscolaInfo, escola=escola1, nomesc='Escola 1', distrito=distrito_s,
             dre=dre_x, budget_total=2, tipoesc=tipo_i, year=self.year-1,
+            rede='DIR')
+
+        self.info6 = mommy.make(
+            EscolaInfo, escola=escola6, nomesc='Escola 6', distrito=distrito_n,
+            dre=dre_x, budget_total=None, tipoesc=tipo_i, year=self.year,
             rede='DIR')
 
         # escolas contratadas
@@ -99,7 +105,7 @@ class TestHomeView(HomeViewTestCase):
             'etapas': [
                 {
                     'name': 'Ensino Infantil',
-                    'unidades': 2,
+                    'unidades': 3,
                     'total': 155,
                     'slug': 'infantil',
                     'tipos': [
