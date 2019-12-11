@@ -72,7 +72,6 @@ let levels = [
 window.addEventListener("DOMContentLoaded", function(){
     let levelIndex = document.querySelectorAll('#mapa .breadcrumb li').length - 1;
     let level = levels[levelIndex > 2? 2 : levelIndex];
-    console.log(levelIndex, levels[levelIndex])
 
     let svg = d3.select('svg.map-container');
 
