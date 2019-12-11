@@ -120,6 +120,8 @@ window.addEventListener("DOMContentLoaded", function(){
                 let width = this.getClientRects()[0].width
                 return - width / 2;
             })
+            .style('visibility', 'visible')
+
             .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
