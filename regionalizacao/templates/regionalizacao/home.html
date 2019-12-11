@@ -54,7 +54,12 @@
           <g class="schools">
           {% for place in places %}
               <a href="{{place.url}}#mapa">
-                  <use xlink:href="{% static 'regionalizacao/img/marker.svg' %}#marker"
+                  <use
+                 {% if place.code == filter_form.escola.value %}
+                 xlink:href="{% static 'regionalizacao/img/marker-active.svg' %}#marker"
+                 {% else %}
+                 xlink:href="{% static 'regionalizacao/img/marker.svg' %}#marker"
+                 {% endif %}
                        data-id="{{place.code}}"
                        class="bg-{{place.slug}}"
                        data-lat="{{place.latitude}}"
