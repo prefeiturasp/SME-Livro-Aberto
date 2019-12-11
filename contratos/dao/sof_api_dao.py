@@ -75,7 +75,6 @@ def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
 
     data = response.json()
     empenhos = data['lstEmpenhos']
-    # TODO: changed in new version of sof api. add test.
     if empenhos and not isinstance(empenhos, list):
         empenhos = [empenhos]
     return empenhos
