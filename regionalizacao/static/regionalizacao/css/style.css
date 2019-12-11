@@ -12,6 +12,7 @@ body > header h1 + p {
 #mapa{
   position: relative;
   background-color: #f9faf9;
+  overflow: hidden;
 }
 
 #mapa + section{
@@ -122,6 +123,7 @@ aside > .card > .body > .total{
 
 aside > .card > .body{
   color: #222b34;
+  overflow: auto;
 }
 
 .bar{
