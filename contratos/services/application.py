@@ -6,6 +6,10 @@ from contratos.models import ExecucaoContrato
 
 
 def serialize_big_number_data(queryset):
+    """
+    Serealiza o objeto retornado do banco para exibir na página
+    :param queryset: objeto com os dados a serem serealizados
+    """
     year_sum_qs = queryset.values('year__year').annotate(
         total_empenhado=Sum('valor_empenhado'),
         total_liquidado=Sum('valor_liquidado'))
@@ -29,6 +33,10 @@ def serialize_big_number_data(queryset):
 
 
 def serialize_destinations(queryset):
+    """
+    Serealiza o objeto retornado do banco para exibir na página
+    :param queryset: objeto com os dados a serem serealizados
+    """
     empenhado_qs = queryset.values('year__year')\
         .annotate(total_empenhado=Sum('valor_empenhado')) \
         .distinct()
@@ -67,6 +75,10 @@ def serialize_destinations(queryset):
 
 
 def serialize_top5(queryset):
+    """
+    Serealiza o objeto retornado do banco para exibir na página
+    :param queryset: objeto com os dados a serem serealizados
+    """
     top5_contratos = queryset \
         .values("year__year", "cod_contrato", "fornecedor__razao_social",
                 "categoria__name", "categoria__desc", "modalidade__desc",
