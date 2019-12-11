@@ -72,7 +72,6 @@ let levels = [
 window.addEventListener("DOMContentLoaded", function(){
     let levelIndex = document.querySelectorAll('#mapa .breadcrumb li').length - 1;
     let level = levels[levelIndex > 2? 2 : levelIndex];
-    console.log(levelIndex, levels[levelIndex])
 
     let svg = d3.select('svg.map-container');
 
@@ -102,7 +101,27 @@ window.addEventListener("DOMContentLoaded", function(){
             .fitExtent([[x, y], [canvasWidth, canvasHeight]], focusFeatures)
 
         var path = d3.geoPath().projection(projection)
+        let tooltip = d3.select('#map-tooltip')
+
+        function tooltipOut(d){
+            tooltip.node().classList.remove('over');
+        }
         focus
+            .on("mouseover", function (d){
+                if(!(this.dataset.name && this.dataset.total)) return
+                tooltip.node().classList.add('over');
+                let point = projection(d3.geoCentroid(d)),
+                    x = point[0],
+                    y = point[1];
+
+                tooltip.style("left",  x + 'px')
+                tooltip.style("top", y + 'px')
+                tooltip.select('.content').html(
+                    `<h4>${this.dataset.name}</h4>
+                    <p>R$ ${this.dataset.total} em recursos</p>`
+                )
+            })
+            .on("mouseout", tooltipOut)
             .merge(bg)
             .attr('d', path)
             .append('title')
@@ -113,8 +132,29 @@ window.addEventListener("DOMContentLoaded", function(){
                 let coord = projection([this.dataset.long, this.dataset.lat]);
                 return `translate(${coord[0]} ${coord[1]})`
             })
-            .attr('y', -45)
-            .attr('x', -16.5)
+            .attr('y', function(){
+                return -70;
+            })
+            .attr('x', function(){
+                let width = this.getClientRects()[0].width
+                return - width / 2;
+            })
+            .on("mouseover", function(){
+                if(!this.dataset.name) return
+                tooltip.node().classList.add('over');
+                let point = projection([this.dataset.long, this.dataset.lat]),
+                    x = point[0],
+                    y = point[1];
+
+                tooltip.style("left",  x + 'px')
+                tooltip.style("top", y + 'px')
+                tooltip.select('.content').html(
+                    `<h4>${this.dataset.name}</h4>`
+                )
+            })
+            .on("mouseout", tooltipOut)
+            .style('visibility', 'visible')
+
             .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });

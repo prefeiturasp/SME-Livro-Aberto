@@ -63,7 +63,7 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filter_form.fields.pop('zona')
         filter_form.fields.pop('dre')
         # TODO: test presence of distrito filter at the context, we need to know what distrito is active
-        filter_form.fields.pop('escola')
+        # TODO: test presence of escola filter at the context, we need to know what escola is active
         data['filter_form'] = filter_form
 
         return data
