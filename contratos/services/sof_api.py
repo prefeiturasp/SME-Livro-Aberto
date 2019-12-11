@@ -64,8 +64,10 @@ def get_empenhos_for_contrato_and_save(*, contrato, empenhos_temp_dao,
                                        ano_empenho=None):
     """
     Realiza a chamada na API SOF para obter os dados de empenho de contratos:
-    :param contrato: objeto contrato
+    :param contrato: objeto contrato (contendo os atributos de contratos a serem utilizados
+    na consulta de empenho)
     :param empenhos_temp_dao: objeto de destino dos dados de empenhos
+    :param ano_empenho: ano do empenho correspondente ao contrato a ser baixado da API.
     """
     cod_contrato = contrato.codContrato
     ano_exercicio = contrato.anoExercicioContrato
@@ -90,6 +92,10 @@ def get_empenhos_for_contrato_and_save(*, contrato, empenhos_temp_dao,
 
 
 def build_empenhos_data(*, sof_data, contrato):
+    """
+    Este método faz a junção das bases de contrato e os empenhos 
+    recolhidos da API SOF
+    """
     empenhos_data = sof_data.copy()
     for data in empenhos_data:
         for field in contrato._meta.fields:
@@ -100,6 +106,10 @@ def build_empenhos_data(*, sof_data, contrato):
 
 
 def save_empenhos_sof_cache(*, empenhos_data, empenhos_temp_dao):
+    """
+    Salva os dados de empenhos em tabela temporária para fazer a comparação dos 
+    dados obtidos de contratos comparados ao período anterior.
+    """
     for data in empenhos_data:
         empenhos_temp_dao.create(data=data)
 
@@ -108,6 +118,10 @@ def save_empenhos_sof_cache(*, empenhos_data, empenhos_temp_dao):
 
 def retry_empenhos_sof_failed_api_requests(
         contratos_raw_dao, empenhos_failed_requests_dao, empenhos_temp_dao):
+    """
+    Este método conecta à api sof para tentar novamente a consulta por empenhos 
+    que falharam na primeira tentativa.
+    """
     for failed_request in empenhos_failed_requests_dao.get_all():
         contrato = contratos_raw_dao.get(
             codContrato=failed_request.cod_contrato,
