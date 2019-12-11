@@ -63,7 +63,7 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filter_form.fields.pop('zona')
         filter_form.fields.pop('dre')
         # TODO: test presence of distrito filter at the context, we need to know what distrito is active
-        filter_form.fields.pop('escola')
+        # TODO: test presence of escola filter at the context, we need to know what escola is active
         data['filter_form'] = filter_form
 
         return data
@@ -74,8 +74,8 @@ class HomeView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects.filter(budget_total__isnull=False) \
-        .select_related('dre', 'tipoesc', 'distrito')
+    queryset = EscolaInfo.objects.all().select_related('dre', 'tipoesc',
+                                                       'distrito')
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):

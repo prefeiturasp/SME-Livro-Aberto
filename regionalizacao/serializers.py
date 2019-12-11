@@ -20,7 +20,8 @@ class PlacesSerializer:
         self.query_params = {k: v for k, v in query_params.items() if v}
         self.locations_type = locations_graph_type
 
-        self.rede = self.map_queryset.first().rede
+        info1 = self.map_queryset.first()
+        self.rede = info1.rede if info1 else 'DIR'
 
     @property
     def data(self):
@@ -130,7 +131,8 @@ class PlacesSerializer:
             qs = self.map_queryset.order_by('distrito__zona')
             for zona_name, infos in groupby(qs, lambda i: i.distrito.zona):
                 infos = list(infos)
-                total_pĺaces = sum(info.budget_total for info in infos)
+                total_pĺaces = sum(info.budget_total if info.budget_total else 0
+                                   for info in infos)
                 params = {
                     **self.query_params,
                     'zona': zona_name,
@@ -146,7 +148,8 @@ class PlacesSerializer:
             qs = self.map_queryset.order_by('dre')
             for dre, infos in groupby(qs, lambda i: i.dre):
                 infos = list(infos)
-                total_pĺaces = sum(info.budget_total for info in infos)
+                total_pĺaces = sum(info.budget_total if info.budget_total else 0
+                                   for info in infos)
                 params = {
                     **self.query_params,
                     'dre': dre.code,
@@ -163,7 +166,8 @@ class PlacesSerializer:
             qs = self.map_queryset.order_by('distrito')
             for distrito, infos in groupby(qs, lambda i: i.distrito):
                 infos = list(infos)
-                total_pĺaces = sum(info.budget_total for info in infos)
+                total_pĺaces = sum(info.budget_total if info.budget_total else 0
+                                   for info in infos)
                 params = {
                     **self.query_params,
                     'distrito': distrito.coddist,
@@ -211,7 +215,8 @@ class PlacesSerializer:
         qs = self.map_queryset.order_by('tipoesc__etapa')
         for etapa, infos in groupby(qs, lambda i: i.tipoesc.etapa):
             infos = list(infos)
-            total_etapas = sum(info.budget_total for info in infos)
+            total_etapas = sum(info.budget_total if info.budget_total else 0
+                               for info in infos)
             unidades = len(infos)
             etapa_dict = {
                 'name': etapa,
@@ -241,7 +246,9 @@ class PlacesSerializer:
             qs = self.locations_queryset.order_by('dre__name')
             for dre_name, infos in groupby(qs, lambda i: i.dre.name):
                 infos = list(infos)
-                total_locations = sum(info.budget_total for info in infos)
+                total_locations = sum(
+                    info.budget_total if info.budget_total else 0
+                    for info in infos)
                 locations.append({
                     'name': dre_name,
                     'total': total_locations,
@@ -253,7 +260,8 @@ class PlacesSerializer:
         qs = self.locations_queryset.order_by('distrito__zona')
         for zona_name, infos in groupby(qs, lambda i: i.distrito.zona):
             infos = list(infos)
-            total_locations = sum(info.budget_total for info in infos)
+            total_locations = sum(info.budget_total if info.budget_total else 0
+                                  for info in infos)
             locations.append({
                 'name': zona_name,
                 'total': total_locations,
@@ -271,8 +279,8 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EscolaInfo
-        fields = ('name', 'slug', 'address', 'cep', 'total', 'recursos', 'latitude',
-                  'longitude', 'vagas')
+        fields = ('name', 'slug', 'address', 'cep', 'total', 'recursos',
+                  'latitude', 'longitude', 'vagas')
 
     def get_name(self, obj):
         return f'{obj.tipoesc.code} - {obj.nomesc}'
