@@ -35,6 +35,11 @@ class ExecucaoContratoFilter(filters.FilterSet):
 
 class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
     def get_template_context(self, data, renderer_context):
+        """
+        Exibe os componentes com os dados filtrados na página
+        :param data: Dados a serem incluídos na página
+        :param renderer_context: objeto request 
+        """
         data = super().get_template_context(data, renderer_context)
         view = renderer_context['view']
         request = renderer_context['request']
@@ -56,6 +61,10 @@ class HomeView(generics.ListAPIView):
     template_name = 'contratos/home.html'
 
     def get_serializer(self, qs_category_filtered, *args, **kwargs):
+        """
+        Serealiza o objeto filtrado recebido do banco
+        :param qs_category_filtered: categoria filtrada
+        """
         original_qs = self.queryset
         year = self.request.GET.get('year')
         if not year:
@@ -68,6 +77,11 @@ class HomeView(generics.ListAPIView):
 
 
 def download_view(request):
+    """
+    Inicia o download do arquivo gerado no servidor contendo os dados
+    extendidos utilizados na ferramenta.
+    :param request: objeto HTTP request.
+    """
     if 'year' in request.GET:
         year = request.GET['year']
     else:
