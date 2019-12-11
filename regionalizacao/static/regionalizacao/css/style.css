@@ -230,6 +230,7 @@ svg.icon .stroke{
 
 #map-tooltip{
   position: absolute !important;
+  z-index: 1 !important;
 }
 
 .tooltip-container svg.icon {
