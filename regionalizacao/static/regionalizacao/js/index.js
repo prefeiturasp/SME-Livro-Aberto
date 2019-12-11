@@ -113,8 +113,13 @@ window.addEventListener("DOMContentLoaded", function(){
                 let coord = projection([this.dataset.long, this.dataset.lat]);
                 return `translate(${coord[0]} ${coord[1]})`
             })
-            .attr('y', -45)
-            .attr('x', -16.5)
+            .attr('y', function(){
+                return -70;
+            })
+            .attr('x', function(){
+                let width = this.getClientRects()[0].width
+                return - width / 2;
+            })
             .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
