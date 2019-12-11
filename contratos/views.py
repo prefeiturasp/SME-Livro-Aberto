@@ -51,7 +51,6 @@ class HomeView(generics.ListAPIView):
     renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ExecucaoContratoFilter
-    # TODO: add view tests
     queryset = ExecucaoContrato.objects.filter(categoria__isnull=False)
     serializer_class = ExecucaoContratoSerializer
     template_name = 'contratos/home.html'
@@ -59,7 +58,6 @@ class HomeView(generics.ListAPIView):
     def get_serializer(self, qs_category_filtered, *args, **kwargs):
         original_qs = self.queryset
         year = self.request.GET.get('year')
-        # TODO: refactor it. couldn't find a way to avoid repeating this code
         if not year:
             ordered = qs_category_filtered.order_by('-year__year')
             year = ordered.values_list('year__year', flat=True).first()
@@ -69,7 +67,6 @@ class HomeView(generics.ListAPIView):
         return serializer_class(qs_year_filtered, qs_category_filtered)
 
 
-# TODO: add download view tests
 def download_view(request):
     if 'year' in request.GET:
         year = request.GET['year']
