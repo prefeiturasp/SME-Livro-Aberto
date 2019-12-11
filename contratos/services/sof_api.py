@@ -45,6 +45,15 @@ def get_empenhos_for_contratos_from_sof_api():
 
 def fetch_empenhos_from_sof_and_save_to_temp_table(
         contratos_raw_dao, empenhos_temp_dao):
+    """
+    Para cada registro de contrato, realiza a conexão com API SOF
+    e baixa os dados de empenhos em /getempenhos e salva na tabela
+    empenhos_sof_cache (tabela temporária criada para, antes de 
+    exibir os dados, validar se há discrepância percentual dos 
+    resultados).
+    :param contrato: objeto contrato
+    :param empenhos_temp_dao: objeto de destino dos dados de empenhos
+    """
     for contrato in contratos_raw_dao.get_all():
         count = get_empenhos_for_contrato_and_save(
             contrato=contrato, empenhos_temp_dao=empenhos_temp_dao)
@@ -53,6 +62,11 @@ def fetch_empenhos_from_sof_and_save_to_temp_table(
 
 def get_empenhos_for_contrato_and_save(*, contrato, empenhos_temp_dao,
                                        ano_empenho=None):
+    """
+    Realiza a chamada na API SOF para obter os dados de empenho de contratos:
+    :param contrato: objeto contrato
+    :param empenhos_temp_dao: objeto de destino dos dados de empenhos
+    """
     cod_contrato = contrato.codContrato
     ano_exercicio = contrato.anoExercicioContrato
 
