@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load l10n %}
 
-{% block title %}Mosaico{% endblock %}
+{% block title %}Contrato Social{% endblock %}
 
 {%block head %}
 <link rel="stylesheet" href="{% static 'contratos/css/contratos.css' %}">
@@ -37,10 +37,32 @@
 
         <div class="main">
             <div class="tutorial">
-
+                <div class="metodologia_mosaico verde">
+                    <h2>Tutorial <span>❯ Navegação da Ferramenta</span></h2>
+                    <p>Na primeira parte, &eacute; poss&iacute;vel visualizar o montante total de empenhos vinculados aos contratos da Educa&ccedil;&atilde;o para o ano corrente (<strong>Figura 1</strong>). Caso o usu&aacute;rio queira acessar essa informa&ccedil;&atilde;o para um ano diferente do atual, basta selecionar o ano em destaque, e todas as informa&ccedil;&otilde;es apresentadas na ferramenta ser&atilde;o atualizadas para o ano selecionado. Abaixo da frase &ldquo;foram previstos em contratos para a Educa&ccedil;&atilde;o da cidade de S&atilde;o Paulo em 2019&rdquo;, &eacute; apresentada a barra de progress&atilde;o do montante total de empenhos, em que s&atilde;o exibidos o total empenhado (representado pela barra em tom mais claro) e o total liquidado (representado pela barra em tom mais escuro) dos contratos da Educa&ccedil;&atilde;o. Ao passar o cursor sobre a barra, &eacute; poss&iacute;vel visualizar os totais empenhados e liquidados em n&uacute;meros absolutos e em percentual de execu&ccedil;&atilde;o, de acordo com a data da &uacute;ltima atualiza&ccedil;&atilde;o da ferramenta.</p>
+                    <p><strong>Figura 1 -&nbsp;Montante total de empenhos vinculados aos contratos da Educa&ccedil;&atilde;o</strong></p>
+                    <img src="{% static 'contratos/img/contratos-figura-1.png' %}" alt="Figura 1" width="100%">
+                    
+                    <p>Na segunda parte, &eacute; poss&iacute;vel visualizar o montante de gastos (empenhados e liquidados) por categoria de contrato (<strong>Figura 2.2.2.1.2</strong>). Por exemplo, para saber o montante gasto com Alimenta&ccedil;&atilde;o em Educa&ccedil;&atilde;o, basta clicar na categoria Alimenta&ccedil;&atilde;o e a barra de execu&ccedil;&atilde;o logo abaixo do quadro de categorias apresentar&aacute; o montante total empenhado e liquidado na categoria Alimenta&ccedil;&atilde;o (representado pelo tom mais claro) e a propor&ccedil;&atilde;o do valor empenhado essa mesma categoria (representada pelo tom mais escuro) em rela&ccedil;&atilde;o ao total empenhado de contratos categorizados e exibidos na <strong>Figura 2.2.2.1.1</strong>.</p>
+                    <p><strong>Figura 2 -&nbsp;Montante total de empenhos vinculados aos contratos da Educa&ccedil;&atilde;o, por categoria</strong></p>
+                    <img src="{% static 'contratos/img/contratos-figura-2.png' %}" alt="Figura 2" width="100%">
+                    
+                    <p>Ao final da p&aacute;gina, na terceira parte, &eacute; poss&iacute;vel consultar, em uma tabela, os cinco contratos de maior valor empenhado de acordo com o <strong>ano selecionado </strong>(<strong>Figura 2.2.2.1.3</strong>). A tabela apresenta os seguintes dados: nome do fornecedor, categoria dos contratos, modalidade de aquisi&ccedil;&atilde;o do objeto do contrato e valor do contrato. Al&eacute;m disso, tamb&eacute;m &eacute; poss&iacute;vel saber quais foram os cinco contratos de maior valor empenhado de acordo com <strong>cada categoria</strong>. Por fim, &eacute; poss&iacute;vel baixar uma base em formato aberto que cont&eacute;m os dados apresentados na ferramenta por ano selecionado.</p>
+                    <p><strong>Figura 3 -&nbsp;Tabela Top 5 Contratos</strong></p>
+                    <img src="{% static 'contratos/img/contratos-figura-3.png' %}" alt="Figura 3" width="100%">
+                </div>
 
                 <div class="metodologia_mosaico verde">
-                    <h2>Contrato Social <span>❯ Obtenção das íntegras no Portal da Transparência</span></h2>
+                        <h2>Tutorial <span>❯ Pesquisa de Contratos, Conv&ecirc;nios e Parcerias*</span></h2>
+                        <p>*Texto adaptado do Portal da Transpar&ecirc;ncia da Prefeitura de S&atilde;o Paulo: <a href="http://transparencia.prefeitura.sp.gov.br/contas/Paginas/Contratos-v2.aspx">http://transparencia.prefeitura.sp.gov.br/contas/Paginas/Contratos-v2.aspx</a>.</p>
+                        <p>O processo de compras e contrata&ccedil;&otilde;es p&uacute;blicas possui v&aacute;rias etapas que devem ser seguidas at&eacute; chegar na assinatura do termo de contrato que sela o compromisso entre a prefeitura municipal de S&atilde;o Paulo e o fornecedor.</p>
+                        <p>Essas etapas s&atilde;o, pelo menos, (1) abertura do processo, (2) publica&ccedil;&atilde;o do edital, (3) resultado da licita&ccedil;&atilde;o (ata de sess&atilde;o p&uacute;blica) e, por fim, (4) contrata&ccedil;&atilde;o.</p>
+                        <p>Para encontrar mais informa&ccedil;&otilde;es sobre as etapas listadas, acesse o portal E-Neg&oacute;ciosCidadeSP (http://e-negocioscidadesp.prefeitura.sp.gov.br/BuscaLicitacao.aspx). Nesse <em>link</em>, est&atilde;o dispon&iacute;veis o edital na &iacute;ntegra e, tamb&eacute;m, o compilado de publica&ccedil;&otilde;es feitas no Di&aacute;rio Oficial da Uni&atilde;o para cada processo licitat&oacute;rio. A seguir, apresentamos tutoriais de como utilizar informa&ccedil;&otilde;es obtidas na ferramenta Contrato Social para localizar um contrato no Portal da Transpar&ecirc;ncia ou no portal E-Neg&oacute;cios.</p>
+                        <p>Apresentamos, tamb&eacute;m, um tutorial para obten&ccedil;&atilde;o das &iacute;ntegras de contratos, bem como outros documentos, tais como nota de empenho, carta-contrato etc. a partir do Portal da Transpar&ecirc;ncia da prefeitura de S&atilde;o Paulo.</p>                        
+                </div>
+
+                <div class="metodologia_mosaico verde">
+                    <h2>Tutorial <span>❯ Obtenção das íntegras no Portal da Transparência</span></h2>
                     <p>
                     O Portal da Transparência, disponível neste link, pode ser utilizado para consultar a íntegra de um contrato efetuado pela prefeitura. Na página principal do portal, selecione “Contratos, convênios e parcerias” (Figura 1):
                     </p>
