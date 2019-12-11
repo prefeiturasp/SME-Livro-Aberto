@@ -228,6 +228,10 @@ svg.icon .stroke{
   overflow: visible;
 }
 
+#map-tooltip{
+  position: absolute !important;
+}
+
 .tooltip-container svg.icon {
   cursor: help;
 }
@@ -238,7 +242,7 @@ svg.icon .stroke{
   font-size: 1rem;
 }
 
-.tooltip-container svg.icon + .tooltip {
+.tooltip-container .tooltip {
   opacity: 0;
   position: absolute;
   transition: all 0.5s ease;
@@ -248,7 +252,7 @@ svg.icon .stroke{
   width: 12em;
 }
 
-aside > .card .tooltip-container svg.icon + .tooltip {
+aside > .card .tooltip-container .tooltip {
   margin: -5em -5em 0 0;
 }
 
@@ -257,13 +261,32 @@ aside > .card .tooltip-container svg.icon + .tooltip {
   color: #fff;
 }
 
-.tooltip-container:hover svg.icon + .tooltip {
+#map-tooltip.over .tooltip,
+.tooltip-container:hover .tooltip {
   opacity: 1;
+}
+
+#map-tooltip .tooltip{
+  margin: -5em 0 0 -5.75em;
+  width: 15em;
+  pointer-events: none;
+}
+
+#map-tooltip .tooltip .content{
+  font-size: 0.8em;
+  text-align: center;
+}
+
+#map-tooltip.over .tooltip{
+  margin: -7em 0 0 -5.75em;
+}
+
+.tooltip-container:hover .tooltip {
   margin: -10em 0 0 -5.25em;
   pointer-events: all;
 }
 
-aside > .card .tooltip-container:hover svg.icon + .tooltip {
+aside > .card .tooltip-container:hover .tooltip {
   margin: -5em 0 0 1.5em;
 }
 
@@ -292,18 +315,18 @@ svg.icon + .tooltip > :last-child {
   margin-bottom: 0;
 }
 
-svg.icon + .tooltip > div{
+.tooltip > div{
   min-height: 3em;
   max-height: 12em;
   overflow: auto;
   padding: 1em;
 }
 
-svg.icon + .tooltip > div > *{
+.tooltip > div > *{
   margin: 0;
 }
 
-svg.icon + .tooltip > div h5{
+.tooltip > div h5{
   margin-top: 1em;
 }
 

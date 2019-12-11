@@ -102,7 +102,25 @@ window.addEventListener("DOMContentLoaded", function(){
             .fitExtent([[x, y], [canvasWidth, canvasHeight]], focusFeatures)
 
         var path = d3.geoPath().projection(projection)
+        let tooltip = d3.select('#map-tooltip')
         focus
+            .on("mouseover", function(d){
+                if(!(this.dataset.name && this.dataset.total)) return
+                tooltip.node().classList.add('over');
+                let point = projection(d3.geoCentroid(d)),
+                    x = point[0],
+                    y = point[1];
+
+                tooltip.style("left",  x + 'px')
+                tooltip.style("top", y + 'px')
+                tooltip.select('.content').html(
+                    `<h4>${this.dataset.name}</h4>
+                    <p>R$ ${this.dataset.total} em recursos</p>`
+                )
+            })
+            .on("mouseout", function(d){
+                tooltip.node().classList.remove('over');
+            })
             .merge(bg)
             .attr('d', path)
             .append('title')
