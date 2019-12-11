@@ -23,6 +23,16 @@ def get_by_codcontrato_and_anoexercicio(*, cod_contrato, ano_exercicio):
 
 
 def get_by_ano_empenho(*, cod_contrato, ano_exercicio, ano_empenho):
+    """
+    Método responsável por executar a conexão com a API SOF e obter os 
+    dados de empenhos, realizando os tratamentos de acordo com a resposta
+    da API.
+    Caso ocorrer algum erro, os dados são salvos no objeto empenhos_failed_requests_dao
+    para posterior nova tentativa de consulta.
+    :param cod_contrato: codigo do contrato a ser baixado da API
+    :param ano_exercicio: ano do exercicio do contrato para compor chave composta na base
+    :param ano_empenho: ano de empenho do contrato
+    """
     empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
     url = (
         f'{PRODAM_URL}?anoEmpenho={ano_empenho}&mesEmpenho=12'
