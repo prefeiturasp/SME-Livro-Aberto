@@ -10,6 +10,12 @@ from contratos.exceptions import ContratosEmpenhosDifferenceOverLimit
 
 
 def get_empenhos_for_contratos_from_sof_api():
+    """
+    Este método tem como principal responsabilidade 
+    realizar a junção entre os dados de contratos disponibilizados 
+    pelo Airflow na tabela contratos_raw e capturar os dados de 
+    empenhos de acordo com o código do contrato e o ano de empenho.
+    """
     contratos_raw_dao = ContratosRawDao()
     empenhos_dao = EmpenhosSOFCacheDao()
     empenhos_temp_dao = EmpenhosSOFCacheTempDao()
