@@ -267,7 +267,7 @@ aside > .card .tooltip-container .tooltip {
 }
 
 #map-tooltip .tooltip{
-  margin: -5em 0 0 -5.75em;
+  margin: -5em 0 0 -7.25em;
   width: 15em;
   pointer-events: none;
 }
@@ -278,7 +278,7 @@ aside > .card .tooltip-container .tooltip {
 }
 
 #map-tooltip.over .tooltip{
-  margin: -7em 0 0 -5.75em;
+  margin-top: -7em;
 }
 
 .tooltip-container:hover .tooltip {
