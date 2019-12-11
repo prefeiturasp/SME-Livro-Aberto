@@ -102,8 +102,12 @@ window.addEventListener("DOMContentLoaded", function(){
 
         var path = d3.geoPath().projection(projection)
         let tooltip = d3.select('#map-tooltip')
+
+        function tooltipOut(d){
+            tooltip.node().classList.remove('over');
+        }
         focus
-            .on("mouseover", function(d){
+            .on("mouseover", function (d){
                 if(!(this.dataset.name && this.dataset.total)) return
                 tooltip.node().classList.add('over');
                 let point = projection(d3.geoCentroid(d)),
@@ -117,9 +121,7 @@ window.addEventListener("DOMContentLoaded", function(){
                     <p>R$ ${this.dataset.total} em recursos</p>`
                 )
             })
-            .on("mouseout", function(d){
-                tooltip.node().classList.remove('over');
-            })
+            .on("mouseout", tooltipOut)
             .merge(bg)
             .attr('d', path)
             .append('title')
@@ -137,6 +139,20 @@ window.addEventListener("DOMContentLoaded", function(){
                 let width = this.getClientRects()[0].width
                 return - width / 2;
             })
+            .on("mouseover", function(){
+                if(!this.dataset.name) return
+                tooltip.node().classList.add('over');
+                let point = projection([this.dataset.long, this.dataset.lat]),
+                    x = point[0],
+                    y = point[1];
+
+                tooltip.style("left",  x + 'px')
+                tooltip.style("top", y + 'px')
+                tooltip.select('.content').html(
+                    `<h4>${this.dataset.name}</h4>`
+                )
+            })
+            .on("mouseout", tooltipOut)
             .style('visibility', 'visible')
 
             .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
