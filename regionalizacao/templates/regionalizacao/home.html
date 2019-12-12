@@ -61,14 +61,26 @@
           {% endif%}
           </g>
           {% if filter_form.distrito.value %}
+        <defs>
+            <filter x="-1.611" y="-1.16" width="4.222" height="3.32" filterUnits="objectBoundingBox" id="shadow-filter">
+                <feOffset dy="10" in="SourceAlpha" result="shadowOffsetOuter1"/>
+                <feGaussianBlur stdDeviation="10" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+                <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0" in="shadowBlurOuter1" result="shadowMatrixOuter1"/>
+                <feMerge>
+                    <feMergeNode in="shadowMatrixOuter1"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
           <g class="schools">
           {% for place in places %}
               <a href="{{place.url}}#mapa">
                   <use
                  {% if place.code == filter_form.escola.value %}
-                 xlink:href="{% static 'regionalizacao/img/marker-active.svg' %}#marker"
+                       xlink:href="{% static 'regionalizacao/img/marker-active.svg' %}#marker"
+                       filter="url(#shadow-filter)"
                  {% else %}
-                 xlink:href="{% static 'regionalizacao/img/marker.svg' %}#marker"
+                       xlink:href="{% static 'regionalizacao/img/marker.svg' %}#marker"
                  {% endif %}
                        data-id="{{place.code}}"
                        class="bg-{{place.slug}}"

@@ -132,13 +132,8 @@ window.addEventListener("DOMContentLoaded", function(){
                 let coord = projection([this.dataset.long, this.dataset.lat]);
                 return `translate(${coord[0]} ${coord[1]})`
             })
-            .attr('y', function(){
-                return -70;
-            })
-            .attr('x', function(){
-                let width = this.getClientRects()[0].width
-                return - width / 2;
-            })
+            .attr('y', -70)
+            .attr('x', -45)
             .on("mouseover", function(){
                 if(!this.dataset.name) return
                 tooltip.node().classList.add('over');
@@ -154,7 +149,5 @@ window.addEventListener("DOMContentLoaded", function(){
             })
             .on("mouseout", tooltipOut)
             .style('visibility', 'visible')
-
-            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
