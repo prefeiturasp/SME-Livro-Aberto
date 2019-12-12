@@ -75,7 +75,6 @@ class ApplyCategoriasContratosFromToUseCase:
             self.execucoes_dao.update_with(execucao=execucao, **data)
 
 
-# TODO: add tests for generate xlsx use case
 class GenerateXlsxFilesUseCase:
 
     def __init__(self, empenhos_dao, data_handler):
