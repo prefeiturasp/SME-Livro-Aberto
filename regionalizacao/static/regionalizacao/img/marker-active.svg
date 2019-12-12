@@ -1,63 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   width="90"
-   height="90"
-   id="marker"
-   version="1.1">
-  <defs
-     id="defs11">
-    <filter
-       x="-1.6110001"
-       y="-1.16"
-       width="4.2220001"
-       height="3.3199999"
-       filterUnits="objectBoundingBox"
-       id="filter-5">
-      <feOffset
-         dx="0"
-         dy="10"
-         in="SourceAlpha"
-         result="shadowOffsetOuter1"
-         id="feOffset7258" />
-      <feGaussianBlur
-         stdDeviation="10"
-         in="shadowOffsetOuter1"
-         result="shadowBlurOuter1"
-         id="feGaussianBlur7260" />
-      <feColorMatrix
-         values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0"
-         type="matrix"
-         in="shadowBlurOuter1"
-         result="shadowMatrixOuter1"
-         id="feColorMatrix7262" />
-      <feMerge
-         id="feMerge7268">
-        <feMergeNode
-           in="shadowMatrixOuter1"
-           id="feMergeNode7264" />
-        <feMergeNode
-           in="SourceGraphic"
-           id="feMergeNode7266" />
-      </feMerge>
-    </filter>
-  </defs>
-  <g
-     id="Group-2-Copy-8"
-     transform="matrix(1.187963,0,0,1.187963,23.616666,5.597916)"
-     style="fill-rule:evenodd;stroke:none;stroke-width:1;filter:url(#filter-5)">
-    <path
-       d="M 9.8439553,39.251626 C 6.7189913,34.611565 4.6563876,31.485068 3.6561442,29.873776 2.2186926,27.553746 1.2503042,25.6041 0.7501825,24.024837 0.25006083,22.445573 0,20.624863 0,18.562705 0,15.211186 0.81229952,12.117538 2.437695,9.2817633 4.062294,6.4451671 6.2499281,4.1900156 8.9998009,2.5138451 11.75047,0.83849587 14.750404,0 18.000398,0 c 3.249995,0 6.249928,0.83849587 8.999801,2.5138451 2.749873,1.6761705 4.937507,3.931322 6.562902,6.7679182 C 35.1877,12.117538 36,15.211186 36,18.562705 c 0,2.062158 -0.250061,3.882868 -0.750183,5.462132 -0.500121,1.579263 -1.46851,3.528909 -2.905961,5.848939 -0.999447,1.611292 -3.062051,4.737789 -6.187811,9.37785 l -6.280987,9.281763 C 19.43785,49.177249 18.812698,49.5 18.000398,49.5 c -0.812299,0 -1.437451,-0.322751 -1.875456,-0.966611 -1.624599,-2.449787 -3.718261,-5.543435 -6.2809867,-9.281763"
-       id="path7403" />
-    <circle
-       id="circle7405"
-       cx="18"
-       cy="18"
-       r="9"
-       style="fill:#ffffff;fill-opacity:0.3" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" id="marker">
+    <g transform="matrix(1.18796 0 0 1.18796 23.617 5.598)" fill-rule="evenodd">
+        <path d="M9.844 39.252c-3.125-4.64-5.188-7.767-6.188-9.378-1.437-2.32-2.406-4.27-2.906-5.85-.5-1.578-.75-3.4-.75-5.461 0-3.352.812-6.445 2.438-9.281C4.062 6.445 6.25 4.19 9 2.514 11.75.838 14.75 0 18 0s6.25.838 9 2.514c2.75 1.676 4.938 3.931 6.563 6.768 1.625 2.836 2.437 5.93 2.437 9.28 0 2.063-.25 3.884-.75 5.463-.5 1.58-1.469 3.529-2.906 5.849-1 1.611-3.062 4.738-6.188 9.378l-6.28 9.281c-.438.644-1.063.967-1.876.967-.812 0-1.437-.323-1.875-.967a755.325 755.325 0 0 0-6.281-9.281"/>
+        <circle cx="18" cy="18" r="9" fill="#fff" fill-opacity=".3"/>
+    </g>
 </svg>
