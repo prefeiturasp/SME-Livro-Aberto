@@ -149,7 +149,5 @@ window.addEventListener("DOMContentLoaded", function(){
             })
             .on("mouseout", tooltipOut)
             .style('visibility', 'visible')
-
-            .data(features.features, function(d) { return d ? d.id : this.dataset.id; })
     });
 });
