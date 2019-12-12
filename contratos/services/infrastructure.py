@@ -13,6 +13,11 @@ from contratos.models import (
 
 
 def populate_contratos_raw_load_with_dump():
+    """
+    Carrega informações pré-processadas de contratos_raw_load (tabela contendo 
+    dados de contratos do AirFlow) no banco de dados para instalação
+    do app Contrato Social.
+    """
     filepath = f'{CONTRATOS_RAW_DUMP_DIR_PATH}{CONTRATOS_RAW_DUMP_FILENAME}'
     with zipfile.ZipFile(filepath, "r") as zip_ref:
         zip_ref.extractall(CONTRATOS_RAW_DUMP_DIR_PATH)
@@ -29,6 +34,10 @@ def populate_contratos_raw_load_with_dump():
 
 
 def populate_execucoes_contratos_with_dump():
+    """
+    Carrega informações pré-processadas de contratos 
+    no banco de dados para instalação do app Contrato Social.
+    """
     filepath = (f'{EXECUCOES_CONTRATOS_DUMP_DIR_PATH}'
                 f'{EXECUCOES_CONTRATOS_DUMP_FILENAME}')
     with zipfile.ZipFile(filepath, "r") as zip_ref:

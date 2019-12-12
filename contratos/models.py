@@ -280,7 +280,6 @@ class EmpenhoSOFCacheTemp(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # TODO: test it or make EmpenhoSOFCache.indexer generic for both classes
     @property
     def indexer(self):
         cod_modalidade = str(self.codModalidade)

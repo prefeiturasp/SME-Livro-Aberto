@@ -11,6 +11,11 @@ from contratos.use_cases import (
 
 
 def generate_execucoes_contratos_and_apply_fromto():
+    """
+    Método que gera as execuções (dados a serem exibidos na ferramenta)
+    e aplica as junções dos arquivos, gerando ao final a planilha para
+    download dos dados
+    """
     print("Generating execucões contratos")
     generate_execucoes_uc = GenerateExecucoesContratosUseCase(
         empenhos_dao=EmpenhosSOFCacheDao(),
@@ -27,7 +32,6 @@ def generate_execucoes_contratos_and_apply_fromto():
         categorias_dao=CategoriasContratosDao())
     apply_fromto_uc.execute()
 
-    # TODO: add tests
     print("Generating xlsx files")
     generate_xlsx_uc = GenerateXlsxFilesUseCase(
         empenhos_dao=EmpenhosSOFCacheDao(),
