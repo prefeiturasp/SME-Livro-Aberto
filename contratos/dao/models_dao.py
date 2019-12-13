@@ -23,14 +23,15 @@ class EmpenhosSOFCacheDao:
     def get_all(self):
         return self.model.objects.all()
 
-    def filter_by_ano_exercicio_and_categoria(self, year):
+    def filter_by_ano_empenho_and_categoria(self, year):
         """
-        Este método é utilizado para filtrar e agrupar os dados de contratos 
+        Este método é utilizado para filtrar e agrupar os dados de contratos
         por ano para gerar o arquivo para download.
         """
         return self.model.objects.filter(
-            anoExercicioContrato=year,
+            anoEmpenho=year,
             execucaocontrato__categoria__isnull=False) \
+            .select_related('execucaocontrato__categoria') \
             .order_by('anoEmpenho', 'codContrato')
 
     def create(self, data):
