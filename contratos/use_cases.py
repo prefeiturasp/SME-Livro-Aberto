@@ -87,7 +87,7 @@ class GenerateXlsxFilesUseCase:
             print(f'Genarating for year {year}')
 
             empenhos = self.empenhos_dao \
-                .filter_by_ano_exercicio_and_categoria(year) \
+                .filter_by_ano_empenho_and_categoria(year) \
                 .order_by('codContrato').values()
             if not empenhos:
                 return
