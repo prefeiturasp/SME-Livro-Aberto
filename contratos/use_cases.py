@@ -1,5 +1,6 @@
 import os
 
+from copy import deepcopy
 from datetime import datetime, date
 
 from django.core.paginator import Paginator
@@ -88,7 +89,7 @@ class GenerateXlsxFilesUseCase:
 
             empenhos = self.empenhos_dao \
                 .filter_by_ano_empenho_and_categoria(year) \
-                .order_by('codContrato').values()
+                .order_by('codContrato')
             if not empenhos:
                 return
 
@@ -99,7 +100,9 @@ class GenerateXlsxFilesUseCase:
 
             fields_names = [field.name for field in empenhos.model._meta.fields]
             fields_names.pop(0)
-            sheet.append(fields_names)
+            fields_list = deepcopy(fields_names)
+            fields_list.append('Categoria')
+            sheet.append(fields_list)
 
             paginator = Paginator(empenhos, 5000)
             for page_num in range(paginator.num_pages):
@@ -107,7 +110,14 @@ class GenerateXlsxFilesUseCase:
                 empenhos = page.object_list
                 print(f'getting chunk {page_num + 1}/{paginator.num_pages}')
                 for empenho in empenhos:
-                    empenho_row = [empenho.get(field) for field in fields_names]
+                    empenho_row = [getattr(empenho, field)
+                                   for field in fields_names]
+                    execucao = empenho.execucaocontrato
+                    if execucao and execucao.categoria:
+                        categoria = execucao.categoria.name
+                    else:
+                        categoria = ""
+                    empenho_row.append(categoria)
                     sheet.append(empenho_row)
             print('Writing to file')
             workbook.save(filepath)
