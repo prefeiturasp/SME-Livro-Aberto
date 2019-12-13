@@ -31,6 +31,7 @@ class EmpenhosSOFCacheDao:
         return self.model.objects.filter(
             anoEmpenho=year,
             execucaocontrato__categoria__isnull=False) \
+            .select_related('execucaocontrato__categoria') \
             .order_by('anoEmpenho', 'codContrato')
 
     def create(self, data):

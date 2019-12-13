@@ -1,6 +1,5 @@
 import os
 
-from copy import deepcopy
 from datetime import datetime, date
 
 from django.core.paginator import Paginator
@@ -99,8 +98,10 @@ class GenerateXlsxFilesUseCase:
             sheet = workbook.create_sheet(index=0, title=str(year))
 
             fields_names = [field.name for field in empenhos.model._meta.fields]
-            fields_names.pop(0)
-            fields_list = deepcopy(fields_names)
+            fields_names.pop(0)  # removing id
+
+            fields_list = [field if 'Contrato' in field else f'{field}_empenho'
+                           for field in fields_names]
             fields_list.append('Categoria')
             sheet.append(fields_list)
 
