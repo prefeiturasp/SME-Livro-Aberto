@@ -32,6 +32,10 @@ def generate_execucoes_contratos_and_apply_fromto():
         categorias_dao=CategoriasContratosDao())
     apply_fromto_uc.execute()
 
+    generate_xlsx_files()
+
+
+def generate_xlsx_files():
     print("Generating xlsx files")
     generate_xlsx_uc = GenerateXlsxFilesUseCase(
         empenhos_dao=EmpenhosSOFCacheDao(),
