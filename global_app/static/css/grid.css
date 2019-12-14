@@ -210,7 +210,6 @@ tr > *:first-child::before{
   footer ul{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     padding: 0;
   }
 
@@ -223,7 +222,11 @@ tr > *:first-child::before{
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
   footer ul {
-    justify-content: space-between;
+    display: flex;
+    justify-content: center;
+  }
+  footer li{
+    padding: 0 10% 0 10%;
   }
 }
 
