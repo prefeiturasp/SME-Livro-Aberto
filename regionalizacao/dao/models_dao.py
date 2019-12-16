@@ -10,6 +10,8 @@ from regionalizacao.models import (
     EtapaTipoEscolaFromTo,
     PtrfFromTo,
     UnidadeRecursosFromTo,
+    PtrfFromToSpreadsheet,
+    UnidadeRecursosFromToSpreadsheet,
     Dre,
     TipoEscola,
     Distrito,
@@ -137,6 +139,27 @@ class UnidadeRecursosFromToDao(FromToDao):
 
     def get_all(self):
         return self.model.objects.all().order_by('year', 'codesc')
+
+
+class FromToSpreadsheetDao:
+
+    def extract_new_spreadsheets(self):
+        sheets = self.model.objects.filter(extracted=False) \
+            .order_by('created_at')
+        for sheet in sheets:
+            sheet.extract_data()
+
+
+class PtrfFromToSpreadsheetDao(FromToSpreadsheetDao):
+
+    def __init__(self):
+        self.model = PtrfFromToSpreadsheet
+
+
+class UnidadeRecursosFromToSpreadsheetDao(FromToSpreadsheetDao):
+
+    def __init__(self):
+        self.model = UnidadeRecursosFromToSpreadsheet
 
 
 class DreDao:

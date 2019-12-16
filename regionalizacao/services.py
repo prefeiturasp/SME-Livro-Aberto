@@ -2,17 +2,30 @@ from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
-    BudgetDao, EscolaInfoDao,
+    BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
+    PtrfFromToSpreadsheetDao
 )
 
 
 def update_regionalizacao_data():
+    print('## Extracting PTRF and UnidadeRecursos spreadsheets ##')
+    extract_ptrf_and_recursos_spreadsheets()
     print('## Updating regionalizacao data from EOL API ##')
     update_data_from_eol_api()
     print('## Applying from-tos ##')
     apply_fromtos()
     print('## Populating escola_info table with budget data ##')
     populate_escola_info_budget_data()
+
+
+def extract_ptrf_and_recursos_spreadsheets():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_sheet_dao.extract_new_spreadsheets()
+    recursos_sheet_dao.extract_new_spreadsheets()
+    # TODO: return created_at of newest spreadsheet to be saved
+    # in EscolaInfo
 
 
 def update_data_from_eol_api():

@@ -1,22 +1,68 @@
+import os
+
 import pytest
 
 from datetime import date
 from itertools import cycle
 from unittest import TestCase
 
+from django.core.files import File
 from model_mommy import mommy
 
 from regionalizacao.models import (
     Distrito, DistritoZonaFromTo, Escola, EtapaTipoEscolaFromTo, PtrfFromTo,
     TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget,
-    EscolaInfo)
+    EscolaInfo, PtrfFromToSpreadsheet, UnidadeRecursosFromToSpreadsheet)
 from regionalizacao.services import (
     apply_distrito_zona_fromto,
     apply_etapa_tipo_escola_fromto,
     apply_ptrf_fromto,
     apply_unidade_recursos_fromto,
     populate_escola_info_budget_data,
+    extract_ptrf_and_recursos_spreadsheets,
 )
+
+
+@pytest.mark.django_db
+class TestExtractPtrfAndRecursosSpreadsheet():
+
+    @pytest.fixture()
+    def ptrf_file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_PtrfFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in PtrfFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    @pytest.fixture()
+    def recursos_file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_UnidadeRecursosFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in UnidadeRecursosFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    def test_extract_spreadsheets(self, ptrf_file_fixture,
+                                  recursos_file_fixture):
+        ptrf_sheet = mommy.make(PtrfFromToSpreadsheet,
+                                spreadsheet=File(ptrf_file_fixture))
+        recursos_sheet = mommy.make(UnidadeRecursosFromToSpreadsheet,
+                                    spreadsheet=File(recursos_file_fixture))
+        assert not ptrf_sheet.extracted
+        assert not recursos_sheet.extracted
+
+        extract_ptrf_and_recursos_spreadsheets()
+
+        ptrf_sheet.refresh_from_db()
+        recursos_sheet.refresh_from_db()
+        assert ptrf_sheet.extracted
+        assert recursos_sheet.extracted
 
 
 @pytest.mark.django_db
