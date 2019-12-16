@@ -136,7 +136,6 @@ class FromToSpreadsheet(models.Model):
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
     year = models.IntegerField('Ano dos dados')
-    extracted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Planilha PTRF'
@@ -188,7 +187,6 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
     year = models.IntegerField('Ano dos dados')
-    extracted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
