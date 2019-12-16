@@ -180,6 +180,37 @@ class EmpenhoSOFCache(models.Model):
 
     class Meta:
         verbose_name_plural = 'Empenhos SOF Cache'
+        unique_together = (
+            'codContrato',
+            'anoExercicioContrato',
+            'anoEmpenho',
+            'codCategoria',
+            'codElemento',
+            'codEmpenho',
+            'codEmpresa',
+            'codFonteRecurso',
+            'codFuncao',
+            'codGrupo',
+            'codItemDespesa',
+            'codModalidade',
+            'codOrgao',
+            'codProcesso',
+            'codPrograma',
+            'codProjetoAtividade',
+            'codSubElemento',
+            'codSubFuncao',
+            'codUnidade',
+            'datEmpenho',
+            'mesEmpenho',
+            'numCpfCnpj',
+            'numReserva',
+            'valAnuladoEmpenho',
+            'valEmpenhadoLiquido',
+            'valLiquidado',
+            'valPagoExercicio',
+            'valPagoRestos',
+            'valTotalEmpenhado',
+        )
 
     @property
     def indexer(self):
@@ -280,6 +311,40 @@ class EmpenhoSOFCacheTemp(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name_plural = 'Empenhos SOF Cache (Temp table)'
+        unique_together = (
+            'codContrato',
+            'anoExercicioContrato',
+            'anoEmpenho',
+            'codCategoria',
+            'codElemento',
+            'codEmpenho',
+            'codEmpresa',
+            'codFonteRecurso',
+            'codFuncao',
+            'codGrupo',
+            'codItemDespesa',
+            'codModalidade',
+            'codOrgao',
+            'codProcesso',
+            'codPrograma',
+            'codProjetoAtividade',
+            'codSubElemento',
+            'codSubFuncao',
+            'codUnidade',
+            'datEmpenho',
+            'mesEmpenho',
+            'numCpfCnpj',
+            'numReserva',
+            'valAnuladoEmpenho',
+            'valEmpenhadoLiquido',
+            'valLiquidado',
+            'valPagoExercicio',
+            'valPagoRestos',
+            'valTotalEmpenhado',
+        )
+
     @property
     def indexer(self):
         cod_modalidade = str(self.codModalidade)
@@ -300,9 +365,6 @@ class EmpenhoSOFCacheTemp(models.Model):
             f'{s.codCategoria}.{s.codGrupo}.{cod_modalidade}.'
             f'{cod_elemento}.{cod_fonte}'
         )
-
-    class Meta:
-        verbose_name_plural = 'Empenhos SOF Cache (Temp table)'
 
 
 class EmpenhoSOFFailedAPIRequest(models.Model):

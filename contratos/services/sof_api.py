@@ -1,3 +1,5 @@
+from django.db.utils import IntegrityError
+
 from contratos.constants import CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
 from contratos.dao import sof_api_dao
 from contratos.dao.models_dao import (
@@ -107,11 +109,15 @@ def build_empenhos_data(*, sof_data, contrato):
 
 def save_empenhos_sof_cache(*, empenhos_data, empenhos_temp_dao):
     """
-    Salva os dados de empenhos em tabela temporária para fazer a comparação dos 
+    Salva os dados de empenhos em tabela temporária para fazer a comparação dos
     dados obtidos de contratos comparados ao período anterior.
     """
     for data in empenhos_data:
-        empenhos_temp_dao.create(data=data)
+        try:
+            empenhos_temp_dao.create(data=data)
+        except IntegrityError:
+            # duplicate data is not saved
+            pass
 
     return len(empenhos_data)
 
@@ -147,7 +153,12 @@ def update_empenho_sof_cache_from_temp_table(*, empenhos_dao,
 
 
 def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
-    limit = CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT
+    try:
+        limit = int(CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT)
+    except ValueError:
+        raise Exception(
+            'CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT shoud be integer. '
+            f'Current value: {CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT}')
     empenhos_count = empenhos_dao.count_all()
     empenhos_temp_count = empenhos_temp_dao.count_all()
 

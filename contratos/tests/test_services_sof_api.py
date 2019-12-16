@@ -108,6 +108,47 @@ def test_save_empenhos_sof_cache():
     assert call(data=empenhos_data[1]) in calls_list
 
 
+@pytest.mark.django_db
+def test_save_empenhos_sof_cache_with_duplicates():
+    empenho_data = {
+        'codContrato': 1,
+        'anoExercicioContrato': 1,
+        'anoEmpenho': 1,
+        'codCategoria': 1,
+        'codElemento': 1,
+        'codEmpenho': 1,
+        'codEmpresa': 1,
+        'codFonteRecurso': 1,
+        'codFuncao': 1,
+        'codGrupo': 1,
+        'codItemDespesa': 1,
+        'codModalidade': 1,
+        'codOrgao': 1,
+        'codProcesso': 1,
+        'codPrograma': 1,
+        'codProjetoAtividade': 1,
+        'codSubElemento': 1,
+        'codSubFuncao': 1,
+        'codUnidade': 1,
+        'datEmpenho': 1,
+        'mesEmpenho': 1,
+        'numCpfCnpj': 1,
+        'numReserva': 1,
+        'valAnuladoEmpenho': 1,
+        'valEmpenhadoLiquido': 1,
+        'valLiquidado': 1,
+        'valPagoExercicio': 1,
+        'valPagoRestos': 1,
+        'valTotalEmpenhado': 1,
+    }
+    mommy.make(EmpenhoSOFCacheTemp, **empenho_data)
+
+    empenhos_temp_dao = EmpenhosSOFCacheTempDao()
+
+    services.save_empenhos_sof_cache(
+        empenhos_data=[empenho_data], empenhos_temp_dao=empenhos_temp_dao)
+
+
 MockedFailedRequest = namedtuple(
     'MockedFailedRequest',
     ['cod_contrato', 'ano_exercicio', 'ano_empenho'])
