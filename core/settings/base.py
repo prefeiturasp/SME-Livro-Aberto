@@ -144,19 +144,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_REPORT_RECIPIENT= config('EMAIL_REPORT_RECIPIENT')
-ADMINS = (('Admin', EMAIL_REPORT_RECIPIENT),)
-EMAIL_SUBJECT_PREFIX = '[Livro Aberto]'
-if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
-    EMAIL_HOST = config('EMAIL_HOST')
-    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
-    SERVER_EMAIL = DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
 # Project config
 ORCADO_DIFFERENCE_PERCENT_LIMIT = config(
     'ORCADO_DIFFERENCE_PERCENT_LIMIT', default=0.2)
@@ -214,3 +201,15 @@ if SENTRY_URL:
         dsn=SENTRY_URL,
         integrations=[DjangoIntegration(), CeleryIntegration()]
     )
+else:
+    EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+    EMAIL_REPORT_RECIPIENT= config('EMAIL_REPORT_RECIPIENT')
+    ADMINS = (('Admin', EMAIL_REPORT_RECIPIENT),)
+    EMAIL_SUBJECT_PREFIX = '[Livro Aberto]'
+    if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
+        EMAIL_HOST = config('EMAIL_HOST')
+        EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+        EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+        EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+        EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+        SERVER_EMAIL = DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
