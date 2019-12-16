@@ -130,17 +130,13 @@ class FromToSpreadsheet(models.Model):
     def __str__(self):
         return f'{self.spreadsheet.name.split("/")[-1]}'
 
-    def save(self, *args, **kwargs):
-        super().save(*args, *kwargs)
-        if not self.extracted:
-            self.extract_data()
-
     def extract_data(self):
         return NotImplemented
 
 
 class PtrfFromToSpreadsheet(FromToSpreadsheet):
     year = models.IntegerField('Ano dos dados')
+    extracted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Planilha PTRF'
@@ -162,6 +158,11 @@ class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Distrito-Zona'
         verbose_name_plural = 'Planilhas Distrito-Zona'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
+
     def extract_data(self):
         from regionalizacao.dao.models_dao import DistritoZonaFromToDao
         dao = DistritoZonaFromToDao()
@@ -174,6 +175,11 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Etapa-TipoEscola'
         verbose_name_plural = 'Planilhas Etapa-TipoEscola'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
+
     def extract_data(self):
         from regionalizacao.dao.models_dao import EtapaTipoEscolaFromToDao
         dao = EtapaTipoEscolaFromToDao()
@@ -182,6 +188,7 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
 
 class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
     year = models.IntegerField('Ano dos dados')
+    extracted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Planilha Unidade-Recursos'
