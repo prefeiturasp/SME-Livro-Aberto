@@ -145,39 +145,44 @@ STATIC_URL = '/static/'
 
 
 # Project config
-ORCADO_DIFFERENCE_PERCENT_LIMIT = config('ORCADO_DIFFERENCE_PERCENT_LIMIT', 0.2)
+ORCADO_DIFFERENCE_PERCENT_LIMIT = config(
+    'ORCADO_DIFFERENCE_PERCENT_LIMIT', default=0.2)
 EMPENHADO_DIFFERENCE_PERCENT_LIMIT = config(
-    'EMPENHADO_DIFFERENCE_PERCENT_LIMIT', 0.2)
+    'EMPENHADO_DIFFERENCE_PERCENT_LIMIT', default=0.2)
 
 # If you just want to run tests, set `PRODAM_KEY` as empty
 PRODAM_URL = config(
     'PRODAM_URL',
-    'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v3.0.1/empenhos')  # noqa
+    default='https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v3.0.1/empenhos')  # noqa
 PRODAM_KEY = config('PRODAM_KEY')
 CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT = config(
-    'CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT', 0.3)
+    'CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT', default=0.3)
 CONTRATOS_RAW_DUMP_DIR_PATH = config(
-    'CONTRATOS_RAW_DUMP_DIR_PATH', f'{BASE_DIR}/../contratos/data/')
+    'CONTRATOS_RAW_DUMP_DIR_PATH', default=f'{BASE_DIR}/../contratos/data/')
 CONTRATOS_RAW_DUMP_FILENAME = config(
-    'CONTRATOS_RAW_DUMP_FILENAME', 'contratos_raw_dump.zip')
+    'CONTRATOS_RAW_DUMP_FILENAME', default='contratos_raw_dump.zip')
 EXECUCOES_CONTRATOS_DUMP_DIR_PATH = config(
-    'EXECUCOES_CONTRATOS_DUMP_DIR_PATH', f'{BASE_DIR}/../contratos/data/')
+    'EXECUCOES_CONTRATOS_DUMP_DIR_PATH',
+    default=f'{BASE_DIR}/../contratos/data/')
 EXECUCOES_CONTRATOS_DUMP_FILENAME = config(
-    'EXECUCOES_CONTRATOS_DUMP_FILENAME', 'execucaocontrato_and_fks_dump.zip')
+    'EXECUCOES_CONTRATOS_DUMP_FILENAME',
+    default='execucaocontrato_and_fks_dump.zip')
 ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH = config(
     'ORCAMENTO_EMPENHOS_RAW_DUMP_DIR_PATH',
-    f'{BASE_DIR}/../budget_execution/data/')
+    default=f'{BASE_DIR}/../budget_execution/data/')
 ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME = config(
-    'ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME', 'orcamento_empenhos_dump.zip')
+    'ORCAMENTO_EMPENHOS_RAW_DUMP_FILENAME',
+    default='orcamento_empenhos_dump.zip')
 categoria_from_to_json = config(
     'CATEGORIA_FROM_TO_SLUG_STR',
-    ('{"Eventos Culturais e Esportivos em CEUs": "acoes-culturais", '
-     '"Alimentação": "alimentacao", '
-     '"Obras": "contrucoes", "Parcerias": "parcerias", "Pedagógico": '
-     '"pedagogico", "Manutenção e Operação de Unidades": "manutencao", '
-     '"Serviços Contínuos": "servicos", "Transporte": "transportes", '
-     '"Uniforme e Material Escolar": "uniformes", "Outras Aquisições": '
-     '"outros"}')
+    default=(
+        '{"Eventos Culturais e Esportivos em CEUs": "acoes-culturais", '
+        '"Alimentação": "alimentacao", '
+        '"Obras": "contrucoes", "Parcerias": "parcerias", "Pedagógico": '
+        '"pedagogico", "Manutenção e Operação de Unidades": "manutencao", '
+        '"Serviços Contínuos": "servicos", "Transporte": "transportes", '
+        '"Uniforme e Material Escolar": "uniformes", "Outras Aquisições": '
+        '"outros"}')
 )
 CATEGORIA_FROM_TO_SLUG = json.loads(categoria_from_to_json)
 
