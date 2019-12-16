@@ -154,7 +154,7 @@ def update_empenho_sof_cache_from_temp_table(*, empenhos_dao,
 
 def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
     try:
-        limit = int(CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT)
+        limit = float(CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT)
     except ValueError:
         raise Exception(
             'CONTRATOS_EMPENHOS_DIFFERENCE_PERCENT_LIMIT shoud be integer. '
