@@ -139,7 +139,6 @@ class UnidadeRecursosFromToDao(FromToDao):
         return self.model.objects.all().order_by('year', 'codesc')
 
 
-# TODO: add unit tests
 class DreDao:
 
     def __init__(self):
@@ -166,7 +165,6 @@ class DreDao:
         return dre
 
 
-# TODO: add unit tests
 class TipoEscolaDao:
 
     def __init__(self):
@@ -182,7 +180,6 @@ class TipoEscolaDao:
         return self.model.objects.get_or_create(code=code)
 
 
-# TODO: add unit tests
 class DistritoDao:
 
     def __init__(self):
@@ -199,7 +196,6 @@ class DistritoDao:
             coddist=coddist, defaults={'name': name})
 
 
-# TODO: add unit tests
 class EscolaDao:
 
     def __init__(self):
@@ -252,7 +248,6 @@ class EscolaDao:
         return self.model.objects.create(**data)
 
 
-# TODO: add unit tests
 class EscolaInfoDao:
 
     def __init__(self):
@@ -291,7 +286,6 @@ class EscolaInfoDao:
         return info
 
 
-# TODO: add unit tests
 class BudgetDao:
 
     def __init__(self):
