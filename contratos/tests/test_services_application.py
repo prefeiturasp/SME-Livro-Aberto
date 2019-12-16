@@ -79,79 +79,37 @@ class TestApplicationServices(TestCase):
 
         assert expected == ret
 
-    # TODO: fix tests
-    # def test_serialize_top5(self):
-    #     exec_pos3 = mommy.make(ExecucaoContrato, valor_empenhado=300.0,
-    #                            _fill_optional=True)
-    #     exec_pos1 = mommy.make(ExecucaoContrato, valor_empenhado=500.0,
-    #                            _fill_optional=True)
-    #     exec_pos2 = mommy.make(ExecucaoContrato, valor_empenhado=400.0,
-    #                            _fill_optional=True)
-    #     exec_pos5 = mommy.make(ExecucaoContrato, valor_empenhado=100.0,
-    #                            _fill_optional=True)
-    #     exec_pos4 = mommy.make(ExecucaoContrato, valor_empenhado=200.0,
-    #                            _fill_optional=True)
-    #     execucoes_top5 = [exec_pos1, exec_pos2, exec_pos3, exec_pos4, exec_pos5]
-    #     # not expected
-    #     mommy.make(ExecucaoContrato, valor_empenhado=50, _fill_optional=True)
+    def test_serialize_top5(self):
+        exec_pos3 = mommy.make(ExecucaoContrato, valor_empenhado=300.0,
+                               _fill_optional=True)
+        exec_pos1 = mommy.make(ExecucaoContrato, valor_empenhado=500.0,
+                               _fill_optional=True)
+        exec_pos2 = mommy.make(ExecucaoContrato, valor_empenhado=400.0,
+                               _fill_optional=True)
+        exec_pos5 = mommy.make(ExecucaoContrato, valor_empenhado=100.0,
+                               _fill_optional=True)
+        exec_pos4 = mommy.make(ExecucaoContrato, valor_empenhado=200.0,
+                               _fill_optional=True)
+        execucoes_top5 = [exec_pos1, exec_pos2, exec_pos3, exec_pos4, exec_pos5]
+        # not expected
+        mommy.make(ExecucaoContrato, valor_empenhado=50, _fill_optional=True)
 
-    #     expected = []
-    #     for execucao in execucoes_top5:
-    #         expected.append(
-    #             {
-    #                 'year': execucao.year.year,
-    #                 'fornecedor': execucao.fornecedor.razao_social,
-    #                 'categoria_name': execucao.categoria.name,
-    #                 'categoria_id': execucao.categoria.id,
-    #                 'objeto_contrato': execucao.objeto_contrato.desc,
-    #                 'modalidade': execucao.modalidade.desc,
-    #                 'empenhado': execucao.valor_empenhado,
-    #             }
-    #         )
+        expected = []
+        for execucao in execucoes_top5:
+            expected.append(
+                {
+                    'year': execucao.year.year,
+                    'cod_contrato': execucao.cod_contrato,
+                    'categoria_name': execucao.categoria.name,
+                    'categoria_desc': execucao.categoria.desc,
+                    'fornecedor': execucao.fornecedor.razao_social,
+                    'objeto_contrato': execucao.objeto_contrato.desc,
+                    'modalidade': execucao.modalidade.desc,
+                    'empenhado': execucao.valor_empenhado,
+                }
+            )
 
-    #     queryset = ExecucaoContrato.objects.all()
-    #     ret = services.serialize_top5(queryset)
+        queryset = ExecucaoContrato.objects.all()
+        ret = services.serialize_top5(queryset)
 
-    #     assert expected == ret
-
-    # def test_serialize_top5_filters_categoria(self):
-    #     year = date(2018, 1, 1)
-    #     categoria = mommy.make(CategoriaContrato)
-    #     exec_pos3 = mommy.make(
-    #         ExecucaoContrato, year=year, cod_contrato=1, valor_empenhado=300.0,
-    #         categoria=categoria, _fill_optional=True, _quantity=2)
-    #     exec_pos1 = mommy.make(
-    #         ExecucaoContrato, year=year, cod_contrato=2, valor_empenhado=500.0,
-    #         categoria=categoria, _fill_optional=True, _quantity=2)
-    #     exec_pos2 = mommy.make(
-    #         ExecucaoContrato, year=year, cod_contrato=3, valor_empenhado=400.0,
-    #         categoria=categoria, _fill_optional=True, _quantity=2)
-    #     exec_pos5 = mommy.make(
-    #         ExecucaoContrato, year=year, cod_contrato=4, valor_empenhado=100.0,
-    #         categoria=categoria, _fill_optional=True, _quantity=2)
-    #     exec_pos4 = mommy.make(
-    #         ExecucaoContrato, year=year, cod_contrato=5, valor_empenhado=200.0,
-    #         categoria=categoria, _fill_optional=True, _quantity=2)
-    #     execucoes_top5 = [exec_pos1, exec_pos2, exec_pos3, exec_pos4, exec_pos5]
-    #     # not expected
-    #     mommy.make(ExecucaoContrato, valor_empenhado=50, _fill_optional=True)
-    #     mommy.make(ExecucaoContrato, valor_empenhado=10000, _fill_optional=True)
-
-    #     expected = []
-    #     for execucao in execucoes_top5:
-    #         expected.append(
-    #             {
-    #                 'year': execucao[0].year.year,
-    #                 'fornecedor': execucao[0].fornecedor.razao_social,
-    #                 'categoria_name': execucao[0].categoria.name,
-    #                 'categoria_id': execucao[0].categoria.id,
-    #                 'objeto_contrato': execucao[0].objeto_contrato.desc,
-    #                 'modalidade': execucao[0].modalidade.desc,
-    #                 'empenhado': execucao[0].valor_empenhado * 2,
-    #             }
-    #         )
-
-    #     queryset = ExecucaoContrato.objects.all()
-    #     ret = services.serialize_top5(queryset, categoria_id=categoria.id)
-
-    #     assert expected == ret
+        assert expected == ret

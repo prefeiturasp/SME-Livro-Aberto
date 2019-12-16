@@ -350,6 +350,9 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('dt_updated')
         assert expected == response.data
 
+
+class TestHomeViewFilterByYear(HomeViewTestCase):
+
     def test_filters_data_by_year(self):
         self.info1_b.endereco = "Rua 1b"
         self.info1_b.numero = 10
@@ -394,6 +397,14 @@ class TestHomeView(HomeViewTestCase):
         response.data.pop('filter_form')
         response.data.pop('dt_updated')
         assert expected == response.data
+
+    def test_filters_by_default_year_when_theres_no_data_of_current_year(self):
+        EscolaInfo.objects.all().delete()
+        mommy.make(EscolaInfo, year=self.year-2, rede='DIR')
+
+        response = self.get()
+
+        assert 1 == len(response.data['places'])
 
 
 class TestHomeViewLocationsGraphData(HomeViewTestCase):
