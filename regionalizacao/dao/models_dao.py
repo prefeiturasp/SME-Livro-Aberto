@@ -267,6 +267,36 @@ class EscolaDao:
 
         return escola, created
 
+    def create_for_previous_year(self, **kwargs):
+        escola, _ = self.get_or_create(codesc=kwargs['codesc'])
+
+        dre, _ = self.dre_dao.update_or_create(
+            code=kwargs['dre'], name=kwargs['diretoria'].strip())
+        tipo, _ = self.tipo_dao.get_or_create(code=kwargs['tipoesc'])
+        distrito, _ = self.distrito_dao.get_or_create(
+            coddist=kwargs['coddist'], name=kwargs['distrito'].strip())
+
+        escola_info = dict(
+            escola_id=escola.id,
+            year=kwargs['year'],
+            dre=dre,
+            tipoesc=tipo,
+            distrito=distrito,
+            nomesc=kwargs['nomesc'].strip(),
+            endereco=kwargs['endereco'].strip(),
+            numero=kwargs['numero'].strip(),
+            bairro=kwargs['bairro'].strip(),
+            cep=kwargs['cep'],
+            rede=kwargs['rede'],
+            latitude=kwargs['latitude'],
+            longitude=kwargs['longitude'],
+            total_vagas=kwargs['total_vagas'],
+        )
+
+        _, created = self.info_dao.get_or_create(**escola_info)
+
+        return escola, created
+
     def create(self, **data):
         return self.model.objects.create(**data)
 
@@ -292,6 +322,12 @@ class EscolaInfoDao:
             created = False
 
         return info, created
+
+    def get_or_create(self, **data):
+        escola_id = data.pop('escola_id')
+        year = data.pop('year')
+        return self.model.objects.get_or_create(
+            escola_id=escola_id, year=year, defaults=data)
 
     def create(self, **data):
         return self.model.objects.create(**data)

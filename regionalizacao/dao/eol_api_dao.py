@@ -1,5 +1,7 @@
 import requests
 
+from datetime import date
+
 from regionalizacao.constants import EOL_API_URL
 from regionalizacao.dao.models_dao import DreDao, EscolaDao, TipoEscolaDao
 
@@ -44,7 +46,7 @@ def update_tipo_escola_table():
     return created_count
 
 
-def update_escola_table():
+def update_escola_table(years):
     escola_dao = EscolaDao()
     url = f'{EOL_API_URL}livroaberto_escolas/'
 
@@ -55,7 +57,7 @@ def update_escola_table():
     print('Saving data')
     created_count = 0
     for escola_dict in results:
-        _, created = escola_dao.update_or_create(
+        escola_data = dict(
             dre=escola_dict["dre"],
             codesc=escola_dict["codesc"],
             tipoesc=escola_dict["tipoesc"],
@@ -73,6 +75,15 @@ def update_escola_table():
             longitude=escola_dict["longitude"],
             total_vagas=escola_dict["total_vagas"],
         )
+
+        current_year = date.today().year
+        for year in years:
+            if year == current_year:
+                _, created = escola_dao.update_or_create(**escola_data)
+            else:
+                created = escola_dao.create_for_previous_year(
+                    **escola_data, year=year)
+
         if created:
             created_count += 1
 
