@@ -22,11 +22,18 @@ class EscolaInfoFilter(filters.FilterSet):
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.AllValuesFilter(field_name='year', empty_label=None)
     rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
-    localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES, method='filter_localidade', empty_label=None)
+    localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES,
+                                      method='filter_localidade',
+                                      empty_label=None)
 
     def filter_queryset(self, queryset):
         if not self.form.cleaned_data['year']:
-            self.form.cleaned_data['year'] = date.today().year
+            if queryset:
+                year = queryset.order_by('-year').first().year
+            else:
+                year = date.today().year
+            self.form.cleaned_data['year'] = year
+
         if not self.form.cleaned_data['rede']:
             self.form.cleaned_data['rede'] = 'DIR'
 
@@ -62,8 +69,6 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filter_form = deepcopy(filterset.form)
         filter_form.fields.pop('zona')
         filter_form.fields.pop('dre')
-        # TODO: test presence of distrito filter at the context, we need to know what distrito is active
-        # TODO: test presence of escola filter at the context, we need to know what escola is active
         data['filter_form'] = filter_form
 
         return data
