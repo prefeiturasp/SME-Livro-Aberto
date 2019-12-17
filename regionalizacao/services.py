@@ -114,3 +114,19 @@ def populate_escola_info_budget_data():
         info_dao.update(
             escola_id=budget.escola.id, year=budget.year,
             budget_total=total, recursos=recursos)
+
+
+def get_dt_updated():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_date = ptrf_sheet_dao.get_last_created_at()
+    recursos_date = recursos_sheet_dao.get_last_created_at()
+
+    if ptrf_date and recursos_date:
+        return max([ptrf_date, recursos_date])
+    elif ptrf_date:
+        return ptrf_date
+    elif recursos_date:
+        return recursos_date
+    return None

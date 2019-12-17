@@ -158,6 +158,12 @@ class FromToSpreadsheetDao:
         for sheet in sheets:
             sheet.extract_data()
 
+    def get_last_created_at(self):
+        sheet = self.model.objects.filter(extracted=True) \
+            .order_by('-created_at').first()
+        if sheet:
+            return sheet.created_at.date()
+
 
 class PtrfFromToSpreadsheetDao(FromToSpreadsheetDao):
 

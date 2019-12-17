@@ -21,6 +21,7 @@ from regionalizacao.services import (
     populate_escola_info_budget_data,
     extract_ptrf_and_recursos_spreadsheets,
     get_years_to_be_updated,
+    get_dt_updated,
 )
 
 
@@ -319,3 +320,23 @@ class TestPopulateEscolaInfoBudgetData(TestCase):
         }
 
         assert expected == info.recursos
+
+
+@pytest.mark.django_db
+class TestGetDtUpdate:
+
+    def test_returns_last_added_spreadsheet_creation_date(self):
+        sheet1 = mommy.make(PtrfFromToSpreadsheet, extracted=True)
+        sheet1.created_at = date(2019, 12, 1)
+        sheet1.save()
+
+        sheet2 = mommy.make(PtrfFromToSpreadsheet, extracted=True)
+        sheet2.created_at = date(2017, 1, 1)
+        sheet2.save()
+
+        sheet3 = mommy.make(UnidadeRecursosFromToSpreadsheet,
+                            extracted=True)
+        sheet3.created_at = date(2018, 1, 17)
+        sheet3.save()
+
+        assert date(2019, 12, 1) == get_dt_updated()
