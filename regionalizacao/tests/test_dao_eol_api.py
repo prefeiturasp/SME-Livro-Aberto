@@ -260,43 +260,28 @@ class TestUpdateEscolaTable(TestCase):
 
     @patch.object(requests, 'get')
     def test_populate_escola_table_of_previous_year(self, mock_get):
+        mommy.make(EscolaInfo, escola__codesc="000191", year=date.today().year,
+                   _fill_optional=True)
+        mommy.make(EscolaInfo, escola__codesc="000477", year=date.today().year,
+                   _fill_optional=True)
         api_return = self.escolas_fixture()
         mock_get.return_value.json.return_value = api_return
 
         year = date.today().year-1
+
         created = update_escola_table(years=[year])
         assert 2 == created
 
-        dres = Dre.objects.all()
-        assert 1 == dres.count()
+        assert 4 == EscolaInfo.objects.count()
+        assert 2 == Escola.objects.count()
 
-        tipos = TipoEscola.objects.all()
-        assert 1 == tipos.count()
-
-        distritos = Distrito.objects.all().order_by('-coddist')
-        assert 2 == distritos.count()
-
-        escolas = Escola.objects.all().order_by('codesc')
-        assert 2 == escolas.count()
-
-        infos = EscolaInfo.objects.all().order_by('escola__codesc')
+        infos = EscolaInfo.objects.filter(year=year).order_by('escola__codesc')
         assert 2 == infos.count()
-
-        dre = dres.first()
-        assert 'BT' == dre.code
-        assert 'DIRETORIA REGIONAL DE EDUCACAO BUTANTA' == dre.name
-
-        tipo = tipos.first()
-        assert 'EMEF' == tipo.code
-
-        for distrito, expected in zip(distritos, api_return['results']):
-            assert distrito.coddist == int(expected['coddist'])
-            assert distrito.name == expected['distrito']
 
         for info, expected in zip(infos, api_return['results']):
             assert info.escola.codesc == expected['codesc']
-            assert info.dre == dre
-            assert info.tipoesc == tipo
+            assert info.dre.code == expected['dre']
+            assert info.tipoesc.code == expected['tipoesc']
             assert info.distrito.coddist == int(expected['coddist'])
             assert info.nomesc == expected['nomesc']
             assert info.endereco == expected['endereco']
