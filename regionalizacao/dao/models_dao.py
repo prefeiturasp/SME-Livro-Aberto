@@ -10,6 +10,8 @@ from regionalizacao.models import (
     EtapaTipoEscolaFromTo,
     PtrfFromTo,
     UnidadeRecursosFromTo,
+    PtrfFromToSpreadsheet,
+    UnidadeRecursosFromToSpreadsheet,
     Dre,
     TipoEscola,
     Distrito,
@@ -139,6 +141,42 @@ class UnidadeRecursosFromToDao(FromToDao):
         return self.model.objects.all().order_by('year', 'codesc')
 
 
+class FromToSpreadsheetDao:
+
+    def get_sheets_to_be_extracted(self):
+        return self.model.objects.filter(extracted=False) \
+            .order_by('created_at')
+
+    def get_years_to_be_updated(self):
+        sheets = self.get_sheets_to_be_extracted()
+        years = sheets.order_by('year').values_list('year', flat=True) \
+            .distinct()
+        return list(years)
+
+    def extract_new_spreadsheets(self):
+        sheets = self.get_sheets_to_be_extracted()
+        for sheet in sheets:
+            sheet.extract_data()
+
+    def get_last_created_at(self):
+        sheet = self.model.objects.filter(extracted=True) \
+            .order_by('-created_at').first()
+        if sheet:
+            return sheet.created_at.date()
+
+
+class PtrfFromToSpreadsheetDao(FromToSpreadsheetDao):
+
+    def __init__(self):
+        self.model = PtrfFromToSpreadsheet
+
+
+class UnidadeRecursosFromToSpreadsheetDao(FromToSpreadsheetDao):
+
+    def __init__(self):
+        self.model = UnidadeRecursosFromToSpreadsheet
+
+
 class DreDao:
 
     def __init__(self):
@@ -244,6 +282,36 @@ class EscolaDao:
 
         return escola, created
 
+    def create_for_previous_year(self, **kwargs):
+        escola, _ = self.get_or_create(codesc=kwargs['codesc'])
+
+        dre, _ = self.dre_dao.update_or_create(
+            code=kwargs['dre'], name=kwargs['diretoria'].strip())
+        tipo, _ = self.tipo_dao.get_or_create(code=kwargs['tipoesc'])
+        distrito, _ = self.distrito_dao.get_or_create(
+            coddist=kwargs['coddist'], name=kwargs['distrito'].strip())
+
+        escola_info = dict(
+            escola_id=escola.id,
+            year=kwargs['year'],
+            dre=dre,
+            tipoesc=tipo,
+            distrito=distrito,
+            nomesc=kwargs['nomesc'].strip(),
+            endereco=kwargs['endereco'].strip(),
+            numero=kwargs['numero'].strip(),
+            bairro=kwargs['bairro'].strip(),
+            cep=kwargs['cep'],
+            rede=kwargs['rede'],
+            latitude=kwargs['latitude'],
+            longitude=kwargs['longitude'],
+            total_vagas=kwargs['total_vagas'],
+        )
+
+        _, created = self.info_dao.get_or_create(**escola_info)
+
+        return escola, created
+
     def create(self, **data):
         return self.model.objects.create(**data)
 
@@ -269,6 +337,12 @@ class EscolaInfoDao:
             created = False
 
         return info, created
+
+    def get_or_create(self, **data):
+        escola_id = data.pop('escola_id')
+        year = data.pop('year')
+        return self.model.objects.get_or_create(
+            escola_id=escola_id, year=year, defaults=data)
 
     def create(self, **data):
         return self.model.objects.create(**data)

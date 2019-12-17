@@ -130,11 +130,6 @@ class FromToSpreadsheet(models.Model):
     def __str__(self):
         return f'{self.spreadsheet.name.split("/")[-1]}'
 
-    def save(self, *args, **kwargs):
-        super().save(*args, *kwargs)
-        if not self.extracted:
-            self.extract_data()
-
     def extract_data(self):
         return NotImplemented
 
@@ -162,6 +157,11 @@ class DistritoZonaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Distrito-Zona'
         verbose_name_plural = 'Planilhas Distrito-Zona'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
+
     def extract_data(self):
         from regionalizacao.dao.models_dao import DistritoZonaFromToDao
         dao = DistritoZonaFromToDao()
@@ -173,6 +173,11 @@ class EtapaTipoEscolaFromToSpreadsheet(FromToSpreadsheet):
     class Meta:
         verbose_name = 'Planilha Etapa-TipoEscola'
         verbose_name_plural = 'Planilhas Etapa-TipoEscola'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
 
     def extract_data(self):
         from regionalizacao.dao.models_dao import EtapaTipoEscolaFromToDao
