@@ -18,6 +18,16 @@ def update_regionalizacao_data():
     populate_escola_info_budget_data()
 
 
+
+def get_years_to_be_updated():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_years = ptrf_sheet_dao.get_years_to_be_updated()
+    recursos_years = recursos_sheet_dao.get_years_to_be_updated()
+
+    return list(set(ptrf_years + recursos_years))
+
 def extract_ptrf_and_recursos_spreadsheets():
     ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
     recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()

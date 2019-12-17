@@ -143,9 +143,18 @@ class UnidadeRecursosFromToDao(FromToDao):
 
 class FromToSpreadsheetDao:
 
-    def extract_new_spreadsheets(self):
-        sheets = self.model.objects.filter(extracted=False) \
+    def get_sheets_to_be_extracted(self):
+        return self.model.objects.filter(extracted=False) \
             .order_by('created_at')
+
+    def get_years_to_be_updated(self):
+        sheets = self.get_sheets_to_be_extracted()
+        years = sheets.order_by('year').values_list('year', flat=True) \
+            .distinct()
+        return list(years)
+
+    def extract_new_spreadsheets(self):
+        sheets = self.get_sheets_to_be_extracted()
         for sheet in sheets:
             sheet.extract_data()
 

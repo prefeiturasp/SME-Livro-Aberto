@@ -20,11 +20,12 @@ from regionalizacao.services import (
     apply_unidade_recursos_fromto,
     populate_escola_info_budget_data,
     extract_ptrf_and_recursos_spreadsheets,
+    get_years_to_be_updated,
 )
 
 
 @pytest.mark.django_db
-class TestExtractPtrfAndRecursosSpreadsheet():
+class PtrfAndRecursosSpreadsheetTestCase():
 
     @pytest.fixture()
     def ptrf_file_fixture(self, db):
@@ -47,6 +48,35 @@ class TestExtractPtrfAndRecursosSpreadsheet():
 
         for ssheet_obj in UnidadeRecursosFromToSpreadsheet.objects.all():
             ssheet_obj.spreadsheet.delete()
+
+
+@pytest.mark.django_db
+class TestGetYearsToBeUpdated(PtrfAndRecursosSpreadsheetTestCase):
+
+    def test_return_years_to_be_updated(self, ptrf_file_fixture,
+                                        recursos_file_fixture):
+        current_year = date.today().year
+        mommy.make(
+            PtrfFromToSpreadsheet, spreadsheet=File(ptrf_file_fixture),
+            year=2017, _quantity=2)
+        mommy.make(
+            PtrfFromToSpreadsheet, spreadsheet=File(ptrf_file_fixture),
+            year=2018)
+        mommy.make(
+            UnidadeRecursosFromToSpreadsheet,
+            spreadsheet=File(recursos_file_fixture),
+            year=2018)
+        mommy.make(
+            UnidadeRecursosFromToSpreadsheet,
+            spreadsheet=File(recursos_file_fixture),
+            year=current_year)
+
+        years = get_years_to_be_updated()
+        assert [2017, 2018, current_year] == years
+
+
+@pytest.mark.django_db
+class TestExtractPtrfAndRecursosSpreadsheet(PtrfAndRecursosSpreadsheetTestCase):
 
     def test_extract_spreadsheets(self, ptrf_file_fixture,
                                   recursos_file_fixture):
