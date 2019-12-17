@@ -1,22 +1,99 @@
+import os
+
 import pytest
 
 from datetime import date
 from itertools import cycle
 from unittest import TestCase
 
+from django.core.files import File
 from model_mommy import mommy
 
 from regionalizacao.models import (
     Distrito, DistritoZonaFromTo, Escola, EtapaTipoEscolaFromTo, PtrfFromTo,
     TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget,
-    EscolaInfo)
+    EscolaInfo, PtrfFromToSpreadsheet, UnidadeRecursosFromToSpreadsheet)
 from regionalizacao.services import (
     apply_distrito_zona_fromto,
     apply_etapa_tipo_escola_fromto,
     apply_ptrf_fromto,
     apply_unidade_recursos_fromto,
     populate_escola_info_budget_data,
+    extract_ptrf_and_recursos_spreadsheets,
+    get_years_to_be_updated,
+    get_dt_updated,
 )
+
+
+@pytest.mark.django_db
+class PtrfAndRecursosSpreadsheetTestCase():
+
+    @pytest.fixture()
+    def ptrf_file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_PtrfFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in PtrfFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+    @pytest.fixture()
+    def recursos_file_fixture(self, db):
+        filepath = os.path.join(
+            os.path.dirname(__file__),
+            'data/test_UnidadeRecursosFromToSpreadsheet.xlsx')
+        with open(filepath, 'rb') as f:
+            yield f
+
+        for ssheet_obj in UnidadeRecursosFromToSpreadsheet.objects.all():
+            ssheet_obj.spreadsheet.delete()
+
+
+@pytest.mark.django_db
+class TestGetYearsToBeUpdated(PtrfAndRecursosSpreadsheetTestCase):
+
+    def test_return_years_to_be_updated(self, ptrf_file_fixture,
+                                        recursos_file_fixture):
+        current_year = date.today().year
+        mommy.make(
+            PtrfFromToSpreadsheet, spreadsheet=File(ptrf_file_fixture),
+            year=2017, _quantity=2)
+        mommy.make(
+            PtrfFromToSpreadsheet, spreadsheet=File(ptrf_file_fixture),
+            year=2018)
+        mommy.make(
+            UnidadeRecursosFromToSpreadsheet,
+            spreadsheet=File(recursos_file_fixture),
+            year=2018)
+        mommy.make(
+            UnidadeRecursosFromToSpreadsheet,
+            spreadsheet=File(recursos_file_fixture),
+            year=current_year)
+
+        years = get_years_to_be_updated()
+        assert [2017, 2018, current_year] == years
+
+
+@pytest.mark.django_db
+class TestExtractPtrfAndRecursosSpreadsheet(PtrfAndRecursosSpreadsheetTestCase):
+
+    def test_extract_spreadsheets(self, ptrf_file_fixture,
+                                  recursos_file_fixture):
+        ptrf_sheet = mommy.make(PtrfFromToSpreadsheet,
+                                spreadsheet=File(ptrf_file_fixture))
+        recursos_sheet = mommy.make(UnidadeRecursosFromToSpreadsheet,
+                                    spreadsheet=File(recursos_file_fixture))
+        assert not ptrf_sheet.extracted
+        assert not recursos_sheet.extracted
+
+        extract_ptrf_and_recursos_spreadsheets()
+
+        ptrf_sheet.refresh_from_db()
+        recursos_sheet.refresh_from_db()
+        assert ptrf_sheet.extracted
+        assert recursos_sheet.extracted
 
 
 @pytest.mark.django_db
@@ -243,3 +320,23 @@ class TestPopulateEscolaInfoBudgetData(TestCase):
         }
 
         assert expected == info.recursos
+
+
+@pytest.mark.django_db
+class TestGetDtUpdate:
+
+    def test_returns_last_added_spreadsheet_creation_date(self):
+        sheet1 = mommy.make(PtrfFromToSpreadsheet, extracted=True)
+        sheet1.created_at = date(2019, 12, 1)
+        sheet1.save()
+
+        sheet2 = mommy.make(PtrfFromToSpreadsheet, extracted=True)
+        sheet2.created_at = date(2017, 1, 1)
+        sheet2.save()
+
+        sheet3 = mommy.make(UnidadeRecursosFromToSpreadsheet,
+                            extracted=True)
+        sheet3.created_at = date(2018, 1, 17)
+        sheet3.save()
+
+        assert date(2019, 12, 1) == get_dt_updated()

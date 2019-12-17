@@ -8,6 +8,7 @@ from rest_framework import serializers
 
 from regionalizacao.constants import ETAPA_SLUGS
 from regionalizacao.models import EscolaInfo
+from regionalizacao.services import get_dt_updated
 
 
 class PlacesSerializer:
@@ -64,9 +65,6 @@ class PlacesSerializer:
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
 
-    def get_dt_updated(self):
-        return '09/12/2019'
-
     def get_current_level(self):
         params = deepcopy(self.query_params)
         info1 = self.map_queryset.first()
@@ -82,6 +80,13 @@ class PlacesSerializer:
             current_level = f'{info1.tipoesc.code} - {info1.nomesc}'
 
         return current_level
+
+    def get_dt_updated(self):
+        dt_updated = get_dt_updated()
+        if dt_updated:
+            return dt_updated.strftime('%d/%m/%Y')
+        else:
+            return ''
 
     def build_breadcrumb(self):
         params = deepcopy(self.query_params)

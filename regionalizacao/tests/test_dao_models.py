@@ -37,7 +37,7 @@ class TestPtrfFromToDao:
     def test_extract_spreadsheet(self, file_fixture):
         sheet = mommy.make(
             PtrfFromToSpreadsheet, spreadsheet=File(file_fixture))
-        # data is extracted on save
+        sheet.extract_data()
 
         fts = PtrfFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
@@ -61,9 +61,9 @@ class TestPtrfFromToDao:
         mommy.make(PtrfFromTo, year=2018, _quantity=1)
         mommy.make(PtrfFromTo, year=2019, _quantity=2)
 
-        mommy.make(
+        sheet = mommy.make(
             PtrfFromToSpreadsheet, spreadsheet=File(file_fixture), year=2019)
-        # data is extracted on save
+        sheet.extract_data()
 
         fts = PtrfFromTo.objects.all().order_by('id')
         assert 3 == len(fts)
@@ -207,7 +207,7 @@ class TestUnidadeRecursosFromToDao:
     def test_extract_spreadsheet(self, file_fixture):
         sheet = mommy.make(
             UnidadeRecursosFromToSpreadsheet, spreadsheet=File(file_fixture))
-        # data is extracted on save
+        sheet.extract_data()
 
         fts = UnidadeRecursosFromTo.objects.all().order_by('id')
         assert 2 == len(fts)
@@ -237,10 +237,10 @@ class TestUnidadeRecursosFromToDao:
         mommy.make(UnidadeRecursosFromTo, year=2018, _quantity=1)
         mommy.make(UnidadeRecursosFromTo, year=2019, _quantity=2)
 
-        mommy.make(
+        sheet = mommy.make(
             UnidadeRecursosFromToSpreadsheet, spreadsheet=File(file_fixture),
             year=2019)
-        # data is extracted on save
+        sheet.extract_data()
 
         fts = UnidadeRecursosFromTo.objects.all().order_by('id')
         assert 3 == len(fts)

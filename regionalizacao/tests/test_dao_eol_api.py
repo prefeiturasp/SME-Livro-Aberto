@@ -164,7 +164,8 @@ class TestUpdateEscolaTable(TestCase):
         api_return = self.escolas_fixture()
         mock_get.return_value.json.return_value = api_return
 
-        created = update_escola_table()
+        year = date.today().year
+        created = update_escola_table(years=[year])
         assert 2 == created
 
         dres = Dre.objects.all()
@@ -207,7 +208,7 @@ class TestUpdateEscolaTable(TestCase):
             assert str(info.latitude) == str(expected['latitude'])
             assert str(info.longitude) == str(expected['longitude'])
             assert info.total_vagas == expected['total_vagas']
-            assert info.year == date.today().year
+            assert info.year == year
 
     @patch.object(requests, 'get')
     def test_updates_existing_escola(self, mock_get):
@@ -222,7 +223,8 @@ class TestUpdateEscolaTable(TestCase):
         api_return = self.escolas_fixture()
         mock_get.return_value.json.return_value = api_return
 
-        created = update_escola_table()
+        year = date.today().year
+        created = update_escola_table(years=[year])
         assert 1 == created
 
         dres = Dre.objects.all()
@@ -255,3 +257,39 @@ class TestUpdateEscolaTable(TestCase):
             assert str(info.longitude) == str(expected['longitude'])
             assert info.total_vagas == expected['total_vagas']
             assert info.year == date.today().year
+
+    @patch.object(requests, 'get')
+    def test_populate_escola_table_of_previous_year(self, mock_get):
+        mommy.make(EscolaInfo, escola__codesc="000191", year=date.today().year,
+                   _fill_optional=True)
+        mommy.make(EscolaInfo, escola__codesc="000477", year=date.today().year,
+                   _fill_optional=True)
+        api_return = self.escolas_fixture()
+        mock_get.return_value.json.return_value = api_return
+
+        year = date.today().year-1
+
+        created = update_escola_table(years=[year])
+        assert 2 == created
+
+        assert 4 == EscolaInfo.objects.count()
+        assert 2 == Escola.objects.count()
+
+        infos = EscolaInfo.objects.filter(year=year).order_by('escola__codesc')
+        assert 2 == infos.count()
+
+        for info, expected in zip(infos, api_return['results']):
+            assert info.escola.codesc == expected['codesc']
+            assert info.dre.code == expected['dre']
+            assert info.tipoesc.code == expected['tipoesc']
+            assert info.distrito.coddist == int(expected['coddist'])
+            assert info.nomesc == expected['nomesc']
+            assert info.endereco == expected['endereco']
+            assert info.numero == expected['numero'].strip()
+            assert info.bairro == expected['bairro']
+            assert info.cep == expected['cep']
+            assert info.rede == expected['rede']
+            assert str(info.latitude) == str(expected['latitude'])
+            assert str(info.longitude) == str(expected['longitude'])
+            assert info.total_vagas == expected['total_vagas']
+            assert info.year == year
