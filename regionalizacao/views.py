@@ -79,8 +79,9 @@ class HomeView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects.all().select_related('dre', 'tipoesc',
-                                                       'distrito')
+    queryset = EscolaInfo.objects \
+        .filter(tipoesc__etapa__isnull=False) \
+        .select_related('dre', 'tipoesc', 'distrito')
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):
