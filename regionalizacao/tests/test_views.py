@@ -400,6 +400,10 @@ class TestHomeViewFilterByYear(HomeViewTestCase):
 
     def test_filters_by_default_year_when_theres_no_data_of_current_year(self):
         EscolaInfo.objects.all().delete()
+        mommy.make(EscolaInfo, year=self.year-2, rede='DIR',
+                   tipoesc__etapa='Infantil')
+
+        # shouldn't be considered
         mommy.make(EscolaInfo, year=self.year-2, rede='DIR')
 
         response = self.get()
@@ -429,6 +433,11 @@ class TestHomeViewLocationsGraphData(HomeViewTestCase):
 
         mommy.make(
             EscolaInfo, dre=dre_z, budget_total=10, year=self.year,
+            tipoesc__etapa='Infantil', rede='DIR')
+
+        # shouldn't be considered
+        mommy.make(
+            EscolaInfo, dre=dre_z, budget_total=5, year=self.year,
             rede='DIR')
 
         response = self.get(localidade='dre')
