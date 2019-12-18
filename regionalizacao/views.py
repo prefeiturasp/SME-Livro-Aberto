@@ -2,12 +2,14 @@ from copy import deepcopy
 from datetime import date
 
 from django_filters import rest_framework as filters
+from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from regionalizacao.models import EscolaInfo
-from regionalizacao.serializers import PlacesSerializer
+from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
+                                        PlacesSerializer)
 
 
 class EscolaInfoFilter(filters.FilterSet):
@@ -107,3 +109,28 @@ class HomeView(generics.ListAPIView):
         years = list(self.queryset.values_list('year', flat=True).distinct())
         years.sort()
         return Response({'years': years, **serializer.data})
+
+
+class DownloadView(generics.ListAPIView):
+    renderer_classes = [XLSXRenderer]
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = EscolaInfoFilter
+    queryset = EscolaInfo.objects \
+        .filter(tipoesc__etapa__isnull=False) \
+        .select_related('dre', 'tipoesc', 'distrito')
+    serializer_class = EscolaInfoDownloadSerializer
+
+    def list(self, request, *args, **kwargs):
+        _, queryset, _ = self.filter_queryset(self.get_queryset())
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        filename = f'regionalizacao'
+        file_extension = request.accepted_renderer.format
+        filename += f'.{file_extension}'
+
+        headers = {
+            'Content-Disposition': f'attachment; filename={filename}'
+        }
+        response = Response(serializer.data, headers=headers)
+        return response
