@@ -67,8 +67,6 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filterset = filter_backend.get_filterset(request, qs, view)
 
         filter_form = deepcopy(filterset.form)
-        filter_form.fields.pop('zona')
-        filter_form.fields.pop('dre')
         data['filter_form'] = filter_form
 
         return data
@@ -79,8 +77,9 @@ class HomeView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects.all().select_related('dre', 'tipoesc',
-                                                       'distrito')
+    queryset = EscolaInfo.objects \
+        .filter(tipoesc__etapa__isnull=False) \
+        .select_related('dre', 'tipoesc', 'distrito')
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):

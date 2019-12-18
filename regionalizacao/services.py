@@ -2,21 +2,46 @@ from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
-    BudgetDao, EscolaInfoDao,
+    BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
+    PtrfFromToSpreadsheetDao
 )
 
 
 def update_regionalizacao_data():
+    print('## Verifying new data from spreadsheets ##')
+    years = get_years_to_be_updated()
     print('## Updating regionalizacao data from EOL API ##')
-    update_data_from_eol_api()
+    update_data_from_eol_api(years)
+    print('## Extracting PTRF and UnidadeRecursos spreadsheets ##')
+    extract_ptrf_and_recursos_spreadsheets()
     print('## Applying from-tos ##')
     apply_fromtos()
     print('## Populating escola_info table with budget data ##')
     populate_escola_info_budget_data()
 
 
-def update_data_from_eol_api():
-    eol_api_dao.update_escola_table()
+def update_data_from_eol_api(years):
+    eol_api_dao.update_escola_table(years)
+
+
+def get_years_to_be_updated():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_years = ptrf_sheet_dao.get_years_to_be_updated()
+    recursos_years = recursos_sheet_dao.get_years_to_be_updated()
+
+    return list(set(ptrf_years + recursos_years))
+
+
+def extract_ptrf_and_recursos_spreadsheets():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_sheet_dao.extract_new_spreadsheets()
+    recursos_sheet_dao.extract_new_spreadsheets()
+    # TODO: return created_at of newest spreadsheet to be saved
+    # in EscolaInfo
 
 
 def apply_fromtos():
@@ -89,3 +114,19 @@ def populate_escola_info_budget_data():
         info_dao.update(
             escola_id=budget.escola.id, year=budget.year,
             budget_total=total, recursos=recursos)
+
+
+def get_dt_updated():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_date = ptrf_sheet_dao.get_last_created_at()
+    recursos_date = recursos_sheet_dao.get_last_created_at()
+
+    if ptrf_date and recursos_date:
+        return max([ptrf_date, recursos_date])
+    elif ptrf_date:
+        return ptrf_date
+    elif recursos_date:
+        return recursos_date
+    return None

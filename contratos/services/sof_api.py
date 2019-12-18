@@ -170,7 +170,7 @@ def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
             msg = (
                 f'O número de linhas na tabela temporária é {percent_limit}% '
                 'maior que o da tabela de produção. Os valores não serão '
-                'atualizados'
+                'atualizados.'
             )
             raise ContratosEmpenhosDifferenceOverLimit(msg)
 
@@ -178,6 +178,6 @@ def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
             msg = (
                 f'O número de linhas na tabela temporária é {percent_limit}% '
                 'menor que o da tabela de produção. Os valores não serão '
-                'atualizados'
+                'atualizados.'
             )
             raise ContratosEmpenhosDifferenceOverLimit(msg)
