@@ -14,22 +14,26 @@ from .models import (
 
 @admin.register(PtrfFromToSpreadsheet)
 class PtrfFromToSpreadsheetAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted')
+    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted',
+                    'created_at')
 
 
 @admin.register(DistritoZonaFromToSpreadsheet)
 class DistritoZonaFromToSpreadsheetAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted')
+    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted',
+                    'created_at')
 
 
 @admin.register(EtapaTipoEscolaFromToSpreadsheet)
 class EtapaTipoEscolaFromToSpreadsheetAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted')
+    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted',
+                    'created_at')
 
 
 @admin.register(UnidadeRecursosFromToSpreadsheet)
 class UnidadeRecursosFromToSpreadsheetAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted')
+    list_display = ('__str__', 'added_fromtos', 'updated_fromtos', 'extracted',
+                    'created_at')
 
 
 @admin.register(PtrfFromTo)
