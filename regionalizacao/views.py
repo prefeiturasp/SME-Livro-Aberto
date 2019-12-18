@@ -67,8 +67,6 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
         filterset = filter_backend.get_filterset(request, qs, view)
 
         filter_form = deepcopy(filterset.form)
-        filter_form.fields.pop('zona')
-        filter_form.fields.pop('dre')
         data['filter_form'] = filter_form
 
         return data
