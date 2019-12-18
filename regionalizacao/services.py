@@ -40,8 +40,6 @@ def extract_ptrf_and_recursos_spreadsheets():
 
     ptrf_sheet_dao.extract_new_spreadsheets()
     recursos_sheet_dao.extract_new_spreadsheets()
-    # TODO: return created_at of newest spreadsheet to be saved
-    # in EscolaInfo
 
 
 def apply_fromtos():
