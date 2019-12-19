@@ -44,7 +44,6 @@
     <h3>
       <strong>Principais recursos</strong>
       por tipo de Unidade Educacional.
-      {% if rede == 'CON' %}
       <div class="tooltip-container">
         <svg class="icon">
           <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
@@ -55,7 +54,6 @@
           </div>
         </div>
       </div>
-      {% endif %}
     </h3>
     <div class="total bignumber">
       {% with total_unidades=etapas|sum_of:'unidades' %}
