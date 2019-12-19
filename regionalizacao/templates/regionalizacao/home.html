@@ -64,7 +64,7 @@
                         {% if place.total|small_intword|split|length > 1 %}
                             data-total="{{place.total|small_intword}}"
                         {% else %}
-                            data-total="{{total|floatformat:2}}"
+                            data-total="{{place.total|floatformat:2}}"
                         {% endif %}
                         ></path>
                   </a>
