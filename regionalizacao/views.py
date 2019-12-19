@@ -12,7 +12,7 @@ from regionalizacao.serializers import PlacesSerializer
 
 class EscolaInfoFilter(filters.FilterSet):
     LOCALIDADE_CHOICES = (
-        ('zona', 'Zona'),
+        ('zona', 'Região'),
         ('dre', 'Diretoria Regional de Educação'),
     )
 
