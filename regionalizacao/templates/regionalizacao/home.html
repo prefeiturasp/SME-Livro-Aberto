@@ -16,7 +16,7 @@
 {%block sections %}
   <section id="mapa">
     <div class="wrapper">
-        <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de despesas e transferências nas regiões, Diretorias Regionais e unidades da Educação municipal.</p>
+        <p>Clique sobre o mapa de São Paulo e utilize os controles abaixo para explorar a distribuição de recursos nas Regiões, Diretorias Regionais de Educação, Distritos, e Unidades Educacionais.</p>
       <form action="#mapa" method="get" class="query">
         <div class="form-item switch">
             {% localize off %}
@@ -64,7 +64,7 @@
                         {% if place.total|small_intword|split|length > 1 %}
                             data-total="{{place.total|small_intword}}"
                         {% else %}
-                            data-total="{{total|floatformat:2}}"
+                            data-total="{{place.total|floatformat:2}}"
                         {% endif %}
                         ></path>
                   </a>
@@ -146,7 +146,7 @@
               <div class="form-item switch">
                   <input type="checkbox" name="" id="localidade-order">
                   <label for="localidade-order">Ordem Alfabética</label>
-                  <label for="localidade-order">Ordem Crescente</label>
+                  <label for="localidade-order">Ordem Decrescente</label>
               </div>
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>

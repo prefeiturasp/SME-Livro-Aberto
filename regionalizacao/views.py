@@ -14,8 +14,8 @@ from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
 
 class EscolaInfoFilter(filters.FilterSet):
     LOCALIDADE_CHOICES = (
-        ('zona', 'Zona'),
-        ('dre', 'Diretoria Regional de Ensino'),
+        ('zona', 'Região'),
+        ('dre', 'Diretoria Regional de Educação'),
     )
 
     zona = filters.CharFilter(field_name='distrito__zona')
