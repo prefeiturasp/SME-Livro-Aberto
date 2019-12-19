@@ -51,33 +51,15 @@
         {% if total %}
             <h3>
                 <strong>Principais recursos</strong>
-                da unidade educacional
+                da Unidade Educacional
             </h3>
         {% else %}
         <small>Não foram encontrados dados correspondentes para este nível de detalhamento ou filtro aplicado.</small>
         {% endif %}
         <table class="groups">
             <tbody>
-                {% if escola.recursos.ptrf %}
-                    <tr>
-                        <td>
-                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
-                        </td>
-                        <td>
-                            <h4>
-                                <strong class="number">
-                                    R$ {{escola.recursos.ptrf|floatformat:2}}
-                                </strong>
-                                <div class="description fg-{{escola.slug}}">
-                                    <strong>
-                                        Repasse PTRF
-                                    </strong>
-                                </div>
-                            </h4>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% for grupo in escola.recursos.grupos %}
+                
+                {% for grupo in escola.recursos.grupos|dictsort:"name" %}
                     <tr>
                         <td>
                             {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name class_name='bg-'|add:escola.slug %}
@@ -115,6 +97,25 @@
                         </td>
                     </tr>
                 {% endfor %}
+                {% if escola.recursos.ptrf %}
+                    <tr>
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.ptrf|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Repasse PTRF
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
