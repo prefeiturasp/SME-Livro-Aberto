@@ -62,7 +62,7 @@
                 {% for grupo in escola.recursos.grupos|dictsort:"name" %}
                     <tr>
                         <td>
-                            {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name class_name='bg-'|add:escola.slug|lower %}
+                            {% include '_legend_icon.html' with app='regionalizacao' slug=grupo.name|lower class_name='bg-'|add:escola.slug %}
                         </td>
                         <td>
                             <h4>
