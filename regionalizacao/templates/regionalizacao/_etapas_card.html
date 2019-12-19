@@ -43,7 +43,19 @@
   <div class="body">
     <h3>
       <strong>Principais recursos</strong>
-      por tipo de Unidade Educacional
+      por tipo de Unidade Educacional.
+      {% if rede == 'CON' %}
+      <div class="tooltip-container">
+        <svg class="icon">
+          <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+        </svg>
+        <div class="tooltip">
+          <div>
+            As unidades educacionais podem oferecer vagas em etapas/modalidades de ensino diferentes de sua classificação.
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </h3>
     <div class="total bignumber">
       {% with total_unidades=etapas|sum_of:'unidades' %}
