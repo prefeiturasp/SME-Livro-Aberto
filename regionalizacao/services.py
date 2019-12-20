@@ -1,5 +1,7 @@
 import openpyxl
 
+from datetime import date
+
 from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
@@ -32,11 +34,19 @@ def update_data_from_eol_api(years):
 def get_years_to_be_updated():
     ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
     recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+    escola_info_dao = EscolaInfoDao()
 
     ptrf_years = ptrf_sheet_dao.get_years_to_be_updated()
     recursos_years = recursos_sheet_dao.get_years_to_be_updated()
+    years_list = ptrf_years + recursos_years
 
-    return list(set(ptrf_years + recursos_years))
+    # current year escola info should always be updated if there's already data
+    # saved, even though theres no new resource or ptrf data.
+    newest_year = escola_info_dao.get_newest_year()
+    if newest_year == date.today().year:
+        years_list.append(newest_year)
+
+    return list(set(years_list))
 
 
 def extract_ptrf_and_recursos_spreadsheets():
