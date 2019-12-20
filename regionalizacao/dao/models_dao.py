@@ -327,6 +327,9 @@ class EscolaInfoDao:
         except self.model.DoesNotExist:
             return None
 
+    def filter(self, **filters):
+        return self.model.objects.filter(**filters)
+
     def update_or_create(self, **data):
         try:
             with transaction.atomic():

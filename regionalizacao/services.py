@@ -1,3 +1,5 @@
+import openpyxl
+
 from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
@@ -5,6 +7,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao
 )
+from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
 def update_regionalizacao_data():
@@ -128,3 +131,15 @@ def get_dt_updated():
     elif recursos_date:
         return recursos_date
     return None
+
+
+def generate_xlsx_files():
+    from regionalizacao.serializers import EscolaInfoDownloadSerializer
+    info_dao = EscolaInfoDao()
+    uc = GenerateXlsxFilesUseCase(
+        dao=info_dao,
+        serializer_class=EscolaInfoDownloadSerializer,
+        data_handler=openpyxl,
+    )
+
+    uc.execute(year=2018, rede='DIR')
