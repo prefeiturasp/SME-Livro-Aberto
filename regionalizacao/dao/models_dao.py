@@ -29,6 +29,12 @@ SheetColumn = namedtuple('SheetColumn', ['name', 'letter'])
 
 class FromToDao:
 
+    def get_all(self):
+        return self.model.objects.all()
+
+    def filter(self, **filters):
+        return self.model.objects.filter(**filters)
+
     def extract_spreadsheet(self, sheet):
         filepath = sheet.spreadsheet.path
         wb = load_workbook(filepath)
@@ -326,6 +332,12 @@ class EscolaInfoDao:
             return self.model.objects.get(escola__id=escola_id, year=year)
         except self.model.DoesNotExist:
             return None
+
+    def get_all(self):
+        return self.model.objects.all()
+
+    def filter(self, **filters):
+        return self.model.objects.filter(**filters)
 
     def update_or_create(self, **data):
         try:

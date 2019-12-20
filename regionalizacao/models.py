@@ -213,7 +213,7 @@ class PtrfFromTo(models.Model):
 
 class DistritoZonaFromTo(models.Model):
     coddist = models.IntegerField(unique=True)
-    zona = models.CharField(max_length=10)
+    zona = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = 'De-Para: Distrito-Zona'
