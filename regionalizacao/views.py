@@ -1,11 +1,15 @@
+import os
+
 from copy import deepcopy
 from datetime import date
 
+from django.http import HttpResponse, Http404
 from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
+from regionalizacao.constants import GENERATED_XLSX_PATH
 from regionalizacao.models import EscolaInfo
 from regionalizacao.serializers import PlacesSerializer
 
@@ -105,3 +109,27 @@ class HomeView(generics.ListAPIView):
         years = list(self.queryset.values_list('year', flat=True).distinct())
         years.sort()
         return Response({'years': years, **serializer.data})
+
+
+def download_view(request):
+    """
+    Inicia o download do arquivo gerado no servidor contendo os dados
+    extendidos utilizados na ferramenta.
+    :param request: objeto HTTP request.
+    """
+    if 'year' in request.GET:
+        year = request.GET['year']
+    else:
+        year = date.today().year
+
+    filename = f'regionalizacao_{year}.xlsx'
+    filepath = os.path.join(GENERATED_XLSX_PATH, filename)
+    if not os.path.exists(filepath):
+        raise Http404
+
+    with open(filepath, 'rb') as fh:
+        response = HttpResponse(
+            fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = (
+            'inline; filename=' + os.path.basename(filepath))
+        return response

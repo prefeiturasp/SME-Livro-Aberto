@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 
 
@@ -25,3 +27,6 @@ ETAPA_SLUGS = {
     'Educação Fundamental e Médio': 'fundamental_medio',
     'Educação de Jovens e Adultos e Profissional': 'profissional',
 }
+
+REGIONALIZACAO_BASE_DIR = os.path.join(settings.BASE_DIR, '../regionalizacao')
+GENERATED_XLSX_PATH = os.path.join(REGIONALIZACAO_BASE_DIR, 'data')
