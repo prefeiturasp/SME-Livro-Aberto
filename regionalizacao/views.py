@@ -10,7 +10,6 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from regionalizacao.constants import GENERATED_XLSX_PATH
-from regionalizacao.models import EscolaInfo
 from regionalizacao.dao.models_dao import EscolaInfoDao
 from regionalizacao.serializers import PlacesSerializer
 
@@ -82,9 +81,7 @@ class HomeView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects \
-        .filter(tipoesc__etapa__isnull=False) \
-        .select_related('dre', 'tipoesc', 'distrito')
+    queryset = EscolaInfoDao().filter_etapa_is_not_null()
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):

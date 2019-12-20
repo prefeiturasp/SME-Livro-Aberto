@@ -345,6 +345,11 @@ class EscolaInfoDao:
         if years:
             return years[0]
 
+    def filter_etapa_is_not_null(self):
+        return self.model.objects \
+            .filter(tipoesc__etapa__isnull=False) \
+            .select_related('dre', 'tipoesc', 'distrito')
+
     def update_or_create(self, **data):
         try:
             with transaction.atomic():
