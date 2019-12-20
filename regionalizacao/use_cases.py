@@ -56,6 +56,9 @@ class GenerateXlsxFilesUseCase:
         serializer = self.recursos_serializer_class(recursos_qs, many=True)
         data = serializer.data
 
+        if not data:
+            return
+
         recurso1 = data[0]
         fields_list = list(recurso1.keys())
         sheet.append(fields_list)
