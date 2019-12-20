@@ -1,15 +1,17 @@
+import os
+
 from copy import deepcopy
 from datetime import date
 
+from django.http import HttpResponse, Http404
 from django_filters import rest_framework as filters
-from drf_renderer_xlsx.renderers import XLSXRenderer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
+from regionalizacao.constants import GENERATED_XLSX_PATH
 from regionalizacao.models import EscolaInfo
-from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
-                                        PlacesSerializer)
+from regionalizacao.serializers import PlacesSerializer
 
 
 class EscolaInfoFilter(filters.FilterSet):
@@ -109,26 +111,25 @@ class HomeView(generics.ListAPIView):
         return Response({'years': years, **serializer.data})
 
 
-class DownloadView(generics.ListAPIView):
-    renderer_classes = [XLSXRenderer]
-    filter_backends = (filters.DjangoFilterBackend, )
-    filterset_class = EscolaInfoFilter
-    queryset = EscolaInfo.objects \
-        .filter(tipoesc__etapa__isnull=False) \
-        .select_related('dre', 'tipoesc', 'distrito')
-    serializer_class = EscolaInfoDownloadSerializer
+def download_view(request):
+    """
+    Inicia o download do arquivo gerado no servidor contendo os dados
+    extendidos utilizados na ferramenta.
+    :param request: objeto HTTP request.
+    """
+    if 'year' in request.GET:
+        year = request.GET['year']
+    else:
+        year = date.today().year
 
-    def list(self, request, *args, **kwargs):
-        _, queryset, _ = self.filter_queryset(self.get_queryset())
+    filename = f'regionalizacao_{year}.xlsx'
+    filepath = os.path.join(GENERATED_XLSX_PATH, filename)
+    if not os.path.exists(filepath):
+        raise Http404
 
-        serializer = self.get_serializer(queryset, many=True)
-
-        filename = f'regionalizacao'
-        file_extension = request.accepted_renderer.format
-        filename += f'.{file_extension}'
-
-        headers = {
-            'Content-Disposition': f'attachment; filename={filename}'
-        }
-        response = Response(serializer.data, headers=headers)
+    with open(filepath, 'rb') as fh:
+        response = HttpResponse(
+            fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = (
+            'inline; filename=' + os.path.basename(filepath))
         return response
