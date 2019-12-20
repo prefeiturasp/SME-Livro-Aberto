@@ -147,4 +147,4 @@ def generate_xlsx_files():
         data_handler=openpyxl,
     )
 
-    uc.execute(year=2018, rede='DIR')
+    uc.execute()

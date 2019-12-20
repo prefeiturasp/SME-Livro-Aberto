@@ -29,6 +29,9 @@ SheetColumn = namedtuple('SheetColumn', ['name', 'letter'])
 
 class FromToDao:
 
+    def get_all(self):
+        return self.model.objects.all()
+
     def filter(self, **filters):
         return self.model.objects.filter(**filters)
 
@@ -329,6 +332,9 @@ class EscolaInfoDao:
             return self.model.objects.get(escola__id=escola_id, year=year)
         except self.model.DoesNotExist:
             return None
+
+    def get_all(self):
+        return self.model.objects.all()
 
     def filter(self, **filters):
         return self.model.objects.filter(**filters)

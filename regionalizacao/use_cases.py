@@ -13,40 +13,45 @@ class GenerateXlsxFilesUseCase:
         self.recursos_serializer_class = recursos_serializer_class
         self.data_handler = data_handler
 
-    def execute(self, **filters):
+        self.escolas_qs = self.info_dao.get_all()
+        self.recursos_qs = self.recursos_dao.get_all()
+
+    def execute(self):
+        years = self.escolas_qs.values_list('year', flat=True).distinct()
+
+        for year in years:
+            self._generate_spreadsheet_for_year(year)
+
+    def _generate_spreadsheet_for_year(self, year):
         workbook = self.data_handler.Workbook(write_only=True)
 
-        escolas_qs = self.info_dao.filter(**filters)
-        serializer = self.info_serializer_class(escolas_qs, many=True)
-        data = serializer.data
-
-        year, rede = self._create_unidades_sheet(workbook, data)
+        self._create_unidades_sheet(workbook, year)
         self._create_recursos_sheet(workbook, year)
 
-        filename = f'regionalizacao_{year}_{rede}.xlsx'
+        filename = f'regionalizacao_{year}.xlsx'
         filepath = os.path.join(GENERATED_XLSX_PATH, filename)
         workbook.save(filepath)
 
         print(f'Spreadsheet generated: {filepath}')
 
-    def _create_unidades_sheet(self, workbook, data):
+    def _create_unidades_sheet(self, workbook, year):
         sheet = workbook.create_sheet(index=0, title='unidades')
 
-        escola1 = data[0]
-        year = escola1['ano']
-        rede = 'diretas' if escola1['rede'] == 'DIR' else 'contradas'
+        escolas_qs = self.escolas_qs.filter(year=year)
+        serializer = self.info_serializer_class(escolas_qs, many=True)
+        data = serializer.data
 
+        escola1 = data[0]
         fields_list = list(escola1.keys())
         sheet.append(fields_list)
 
         for escola in data:
             sheet.append(list(escola.values()))
-        return year, rede
 
     def _create_recursos_sheet(self, workbook, year):
         sheet = workbook.create_sheet(index=1, title='recursos')
 
-        recursos_qs = self.recursos_dao.filter(year=year)
+        recursos_qs = self.recursos_qs.filter(year=year)
         serializer = self.recursos_serializer_class(recursos_qs, many=True)
         data = serializer.data
 
