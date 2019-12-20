@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from regionalizacao.constants import GENERATED_XLSX_PATH
 from regionalizacao.models import EscolaInfo
+from regionalizacao.dao.models_dao import EscolaInfoDao
 from regionalizacao.serializers import PlacesSerializer
 
 
@@ -120,7 +121,8 @@ def download_view(request):
     if 'year' in request.GET:
         year = request.GET['year']
     else:
-        year = date.today().year
+        escolas_info_dao = EscolaInfoDao()
+        year = escolas_info_dao.get_newest_year()
 
     filename = f'regionalizacao_{year}.xlsx'
     filepath = os.path.join(GENERATED_XLSX_PATH, filename)

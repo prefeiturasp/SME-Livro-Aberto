@@ -339,6 +339,12 @@ class EscolaInfoDao:
     def filter(self, **filters):
         return self.model.objects.filter(**filters)
 
+    def get_newest_year(self):
+        years = self.model.objects.all().order_by('-year') \
+            .values_list('year', flat=True).distinct()
+        if years:
+            return years[0]
+
     def update_or_create(self, **data):
         try:
             with transaction.atomic():
