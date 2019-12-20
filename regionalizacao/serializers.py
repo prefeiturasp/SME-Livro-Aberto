@@ -7,7 +7,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from regionalizacao.constants import ETAPA_SLUGS
-from regionalizacao.models import EscolaInfo
+from regionalizacao.models import EscolaInfo, UnidadeRecursosFromTo
 from regionalizacao.services import get_dt_updated
 
 
@@ -300,3 +300,40 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
 
     def get_slug(self, obj):
         return ETAPA_SLUGS.get(obj.tipoesc.etapa, None)
+
+
+class EscolaInfoDownloadSerializer(serializers.ModelSerializer):
+    ano = serializers.IntegerField(source='year')
+    codesc = serializers.CharField(source='escola.codesc')
+    tipoesc = serializers.CharField(source='tipoesc.code')
+    dre = serializers.CharField(source='dre.name')
+    distrito = serializers.CharField(source='distrito.name')
+    etapa = serializers.CharField(source='tipoesc.etapa')
+    total = serializers.FloatField(source='budget_total')
+    vagas = serializers.SerializerMethodField()
+    ptrf = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EscolaInfo
+        fields = ('ano', 'codesc', 'tipoesc', 'nomesc', 'etapa', 'dre',
+                  'distrito', 'endereco', 'numero', 'bairro', 'cep', 'rede',
+                  'latitude', 'longitude', 'vagas', 'total', 'ptrf')
+
+    def get_vagas(self, obj):
+        if obj.rede == 'CON':
+            return obj.total_vagas
+        return None
+
+    def get_ptrf(self, obj):
+        budget = obj.escola.budgets.filter(year=obj.year).first()
+        if budget:
+            return budget.ptrf
+        return None
+
+
+class UnidadeRecursosFromToSerializer(serializers.ModelSerializer):
+    ano = serializers.IntegerField(source='year')
+
+    class Meta:
+        model = UnidadeRecursosFromTo
+        fields = ('ano', 'codesc', 'grupo', 'subgrupo', 'valor', 'label')

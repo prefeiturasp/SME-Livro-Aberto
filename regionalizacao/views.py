@@ -1,12 +1,16 @@
+import os
+
 from copy import deepcopy
 from datetime import date
 
+from django.http import HttpResponse, Http404
 from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 
-from regionalizacao.models import EscolaInfo
+from regionalizacao.constants import GENERATED_XLSX_PATH
+from regionalizacao.dao.models_dao import EscolaInfoDao
 from regionalizacao.serializers import PlacesSerializer
 
 
@@ -77,9 +81,7 @@ class HomeView(generics.ListAPIView):
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
-    queryset = EscolaInfo.objects \
-        .filter(tipoesc__etapa__isnull=False) \
-        .select_related('dre', 'tipoesc', 'distrito')
+    queryset = EscolaInfoDao().filter_etapa_is_not_null()
     serializer_class = PlacesSerializer
 
     def list(self, request, *args, **kwargs):
@@ -105,3 +107,28 @@ class HomeView(generics.ListAPIView):
         years = list(self.queryset.values_list('year', flat=True).distinct())
         years.sort()
         return Response({'years': years, **serializer.data})
+
+
+def download_view(request):
+    """
+    Inicia o download do arquivo gerado no servidor contendo os dados
+    extendidos utilizados na ferramenta.
+    :param request: objeto HTTP request.
+    """
+    if 'year' in request.GET:
+        year = request.GET['year']
+    else:
+        escolas_info_dao = EscolaInfoDao()
+        year = escolas_info_dao.get_newest_year()
+
+    filename = f'regionalizacao_{year}.xlsx'
+    filepath = os.path.join(GENERATED_XLSX_PATH, filename)
+    if not os.path.exists(filepath):
+        raise Http404
+
+    with open(filepath, 'rb') as fh:
+        response = HttpResponse(
+            fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = (
+            'inline; filename=' + os.path.basename(filepath))
+        return response

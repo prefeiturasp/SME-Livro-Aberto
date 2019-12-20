@@ -1,3 +1,7 @@
+import openpyxl
+
+from datetime import date
+
 from regionalizacao.dao import eol_api_dao
 from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
@@ -5,6 +9,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao
 )
+from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
 def update_regionalizacao_data():
@@ -18,6 +23,8 @@ def update_regionalizacao_data():
     apply_fromtos()
     print('## Populating escola_info table with budget data ##')
     populate_escola_info_budget_data()
+    print('## Generating download spreadsheets ##')
+    generate_xlsx_files()
 
 
 def update_data_from_eol_api(years):
@@ -27,11 +34,19 @@ def update_data_from_eol_api(years):
 def get_years_to_be_updated():
     ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
     recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+    escola_info_dao = EscolaInfoDao()
 
     ptrf_years = ptrf_sheet_dao.get_years_to_be_updated()
     recursos_years = recursos_sheet_dao.get_years_to_be_updated()
+    years_list = ptrf_years + recursos_years
 
-    return list(set(ptrf_years + recursos_years))
+    # current year escola info should always be updated if there's already data
+    # saved, even though theres no new resource or ptrf data.
+    newest_year = escola_info_dao.get_newest_year()
+    if newest_year == date.today().year:
+        years_list.append(newest_year)
+
+    return list(set(years_list))
 
 
 def extract_ptrf_and_recursos_spreadsheets():
@@ -128,3 +143,20 @@ def get_dt_updated():
     elif recursos_date:
         return recursos_date
     return None
+
+
+def generate_xlsx_files():
+    from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
+                                            UnidadeRecursosFromToSerializer)
+    info_dao = EscolaInfoDao()
+    recursos_dao = UnidadeRecursosFromToDao()
+
+    uc = GenerateXlsxFilesUseCase(
+        info_dao=info_dao,
+        recursos_dao=recursos_dao,
+        info_serializer_class=EscolaInfoDownloadSerializer,
+        recursos_serializer_class=UnidadeRecursosFromToSerializer,
+        data_handler=openpyxl,
+    )
+
+    uc.execute()

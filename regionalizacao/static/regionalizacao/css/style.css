@@ -101,7 +101,7 @@ aside > .card .bignumber .number{
 aside > .card .description{
   text-transform: uppercase;
   font-size: 0.75em;
-  margin-top: -0.5em
+  margin-right: 1em;
 }
 
 aside > .card > header > p{
