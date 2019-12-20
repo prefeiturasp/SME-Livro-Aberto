@@ -37,16 +37,13 @@ def update_escola_table(years):
             total_vagas=escola_dict["total_vagas"],
         )
 
-        # current year info should always be updated
-        _, created = escola_dao.update_or_create(**escola_data)
-        if created:
-            created_count += 1
-
         for year in years:
             if year != current_year:
                 created = escola_dao.create_for_previous_year(
                     **escola_data, year=year)
-                if created:
-                    created_count += 1
+            else:
+                _, created = escola_dao.update_or_create(**escola_data)
+            if created:
+                created_count += 1
 
     return created_count
