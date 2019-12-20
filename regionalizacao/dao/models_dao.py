@@ -29,6 +29,9 @@ SheetColumn = namedtuple('SheetColumn', ['name', 'letter'])
 
 class FromToDao:
 
+    def filter(self, **filters):
+        return self.model.objects.filter(**filters)
+
     def extract_spreadsheet(self, sheet):
         filepath = sheet.spreadsheet.path
         wb = load_workbook(filepath)

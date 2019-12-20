@@ -7,7 +7,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from regionalizacao.constants import ETAPA_SLUGS
-from regionalizacao.models import EscolaInfo
+from regionalizacao.models import EscolaInfo, UnidadeRecursosFromTo
 from regionalizacao.services import get_dt_updated
 
 
@@ -329,3 +329,11 @@ class EscolaInfoDownloadSerializer(serializers.ModelSerializer):
         if budget:
             return budget.ptrf
         return None
+
+
+class UnidadeRecursosFromToSerializer(serializers.ModelSerializer):
+    ano = serializers.IntegerField(source='year')
+
+    class Meta:
+        model = UnidadeRecursosFromTo
+        fields = ('ano', 'codesc', 'grupo', 'subgrupo', 'valor', 'label')

@@ -134,11 +134,16 @@ def get_dt_updated():
 
 
 def generate_xlsx_files():
-    from regionalizacao.serializers import EscolaInfoDownloadSerializer
+    from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
+                                            UnidadeRecursosFromToSerializer)
     info_dao = EscolaInfoDao()
+    recursos_dao = UnidadeRecursosFromToDao()
+
     uc = GenerateXlsxFilesUseCase(
-        dao=info_dao,
-        serializer_class=EscolaInfoDownloadSerializer,
+        info_dao=info_dao,
+        recursos_dao=recursos_dao,
+        info_serializer_class=EscolaInfoDownloadSerializer,
+        recursos_serializer_class=UnidadeRecursosFromToSerializer,
         data_handler=openpyxl,
     )
 
