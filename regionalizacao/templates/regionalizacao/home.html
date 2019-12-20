@@ -162,5 +162,8 @@
               {% endwith %}
           </div>
       </div>
+      <div class="actions">
+        <a class="btn" href="{% url 'regionalizacao:download' %}?year={{ filter_form.year.value|unlocalize }}">Download dos Dados</a>
+    </div>
   </section>
 {% endblock %}
