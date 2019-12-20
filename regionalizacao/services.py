@@ -21,6 +21,8 @@ def update_regionalizacao_data():
     apply_fromtos()
     print('## Populating escola_info table with budget data ##')
     populate_escola_info_budget_data()
+    print('## Generating download spreadsheets ##')
+    generate_xlsx_files()
 
 
 def update_data_from_eol_api(years):

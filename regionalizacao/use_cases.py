@@ -20,6 +20,7 @@ class GenerateXlsxFilesUseCase:
         years = self.escolas_qs.values_list('year', flat=True).distinct()
 
         for year in years:
+            print(f'Generating spreadsheet for {year}')
             self._generate_spreadsheet_for_year(year)
 
     def _generate_spreadsheet_for_year(self, year):
