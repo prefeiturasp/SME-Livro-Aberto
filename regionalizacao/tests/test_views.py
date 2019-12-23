@@ -405,6 +405,7 @@ class TestHomeViewFilterByYear(HomeViewTestCase):
 #        assert 1 == len(response.data['places'])
 #
     def test_year_choices(self):
+        EscolaInfo.objects.all().delete()
         year = 2042
         last_year = year - 1
         mommy.make(EscolaInfo, year=year, rede='DIR',
@@ -419,6 +420,7 @@ class TestHomeViewFilterByYear(HomeViewTestCase):
         assert choices == tuple(filter_form.fields['year'].choices)
 
     def test_year_default_value(self):
+        EscolaInfo.objects.all().delete()
         year = 2042
         last_year = year - 1
         mommy.make(EscolaInfo, year=year, rede='DIR',
