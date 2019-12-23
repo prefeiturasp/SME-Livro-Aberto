@@ -52,15 +52,13 @@ class EscolaInfoFilter(InitialFilter):
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.AllValuesFilter(field_name='year', empty_label=None,
             initial=newest_year)
-    rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
+    rede = filters.AllValuesFilter(field_name='rede', empty_label=None,
+            initial='DIR')
     localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES,
                                       method='filter_localidade',
                                       empty_label=None)
 
     def filter_queryset(self, queryset):
-        if not self.form.cleaned_data['rede']:
-            self.form.cleaned_data['rede'] = 'DIR'
-
         query_params = deepcopy(self.form.cleaned_data)
 
         if self.form.cleaned_data['dre']:
