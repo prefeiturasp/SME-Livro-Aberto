@@ -86,7 +86,6 @@ class TestHomeView(HomeViewTestCase):
 
         expected = {
             'current_level': 'São Paulo',
-            'years': [2018, 2019],
             'total': 355,
             'places': [
                 {
@@ -136,7 +135,6 @@ class TestHomeView(HomeViewTestCase):
 
         expected = {
             'current_level': 'Sul',
-            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
@@ -187,7 +185,6 @@ class TestHomeView(HomeViewTestCase):
 
         expected = {
             'current_level': 'Dre y',
-            'years': [2018, 2019],
             'total': 255,
             'places': [
                 {
@@ -238,7 +235,6 @@ class TestHomeView(HomeViewTestCase):
 
         expected = {
             'current_level': 'Distrito s',
-            'years': [2018, 2019],
             'total': 300,
             'places': [
                 {
@@ -308,7 +304,6 @@ class TestHomeView(HomeViewTestCase):
         expected = {
             'total': 100,
             'current_level': 'TI - Escola 1',
-            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
                 'slug': 'infantil',
@@ -366,7 +361,6 @@ class TestHomeViewFilterByYear(HomeViewTestCase):
         expected = {
             'total': 2,
             'current_level': 'TI - Escola 1',
-            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 1',
                 'slug': 'infantil',
@@ -487,7 +481,6 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
 
         expected = {
             'current_level': 'São Paulo',
-            'years': [2018, 2019],
             'total': 4000,
             'vagas': 110,
             'places': [
@@ -547,7 +540,6 @@ class TestHomeViewFilterByRede(HomeViewTestCase):
         expected = {
             'total': 3000,
             'current_level': 'TI - Escola 4',
-            'years': [2018, 2019],
             'escola': {
                 'name': 'TI - Escola 4',
                 'slug': 'infantil',

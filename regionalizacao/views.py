@@ -104,9 +104,7 @@ class HomeView(generics.ListAPIView):
             query_params=query_params,
             locations_graph_type=locations_graph_type)
 
-        years = list(self.queryset.values_list('year', flat=True).distinct())
-        years.sort()
-        return Response({'years': years, **serializer.data})
+        return Response({**serializer.data})
 
 
 def download_view(request):
