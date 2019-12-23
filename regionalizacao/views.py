@@ -28,10 +28,16 @@ class InitialFilter(filters.FilterSet):
 
                 # filter param is either missing or empty, use initial as default
                 if not data.get(name) and initial:
-                    data[name] = initial
+                    if callable(initial):
+                        data[name] = initial()
+                    else:
+                        data[name] = initial
 
         super().__init__(data, *args, **kwargs)
 
+
+def newest_year():
+    return EscolaInfoDao().get_newest_year()
 
 
 class EscolaInfoFilter(InitialFilter):
@@ -45,7 +51,7 @@ class EscolaInfoFilter(InitialFilter):
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.AllValuesFilter(field_name='year', empty_label=None,
-            initial=EscolaInfoDao().get_newest_year())
+            initial=newest_year)
     rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
     localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES,
                                       method='filter_localidade',
