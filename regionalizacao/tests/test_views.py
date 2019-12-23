@@ -392,18 +392,18 @@ class TestHomeViewFilterByYear(HomeViewTestCase):
         response.data.pop('dt_updated')
         assert expected == response.data
 
-#    def test_filters_by_default_year_when_theres_no_data_of_current_year(self):
-#        EscolaInfo.objects.all().delete()
-#        mommy.make(EscolaInfo, year=self.year-2, rede='DIR',
-#                   tipoesc__etapa='Infantil')
-#
-#        # shouldn't be considered
-#        mommy.make(EscolaInfo, year=self.year-2, rede='DIR')
-#
-#        response = self.get()
-#
-#        assert 1 == len(response.data['places'])
-#
+    def test_filters_by_default_year_when_theres_no_data_of_current_year(self):
+        EscolaInfo.objects.all().delete()
+        mommy.make(EscolaInfo, year=self.year-2, rede='DIR',
+                   tipoesc__etapa='Infantil')
+
+        # shouldn't be considered
+        mommy.make(EscolaInfo, year=self.year-2, rede='DIR')
+
+        response = self.get()
+
+        assert 1 == len(response.data['places'])
+
     def test_year_choices(self):
         EscolaInfo.objects.all().delete()
         year = 2042
