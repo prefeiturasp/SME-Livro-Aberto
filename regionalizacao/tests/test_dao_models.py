@@ -3,10 +3,13 @@ import os
 import pytest
 
 from django.core.files import File
+from rest_framework.test import APITestCase
+
 from model_mommy import mommy
 
 from regionalizacao.dao.models_dao import (
     DistritoDao,
+    EscolaInfoDao,
     TipoEscolaDao,
 )
 from regionalizacao.models import (
@@ -19,6 +22,22 @@ from regionalizacao.models import (
     UnidadeRecursosFromTo,
     UnidadeRecursosFromToSpreadsheet,
 )
+
+
+class TestEscolaInfoDao(APITestCase):
+    def test_get_newest_year(self):
+        dao = EscolaInfoDao()
+
+        assert None == EscolaInfoDao().get_newest_year()
+
+        mommy.make(dao.model, year=2019)
+        assert 2019 == EscolaInfoDao().get_newest_year()
+
+        mommy.make(dao.model, year=2042)
+        assert 2042 == EscolaInfoDao().get_newest_year()
+
+        mommy.make(dao.model, year=2020)
+        assert 2042 == EscolaInfoDao().get_newest_year()
 
 
 class TestPtrfFromToDao:

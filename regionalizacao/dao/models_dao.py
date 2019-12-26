@@ -340,10 +340,8 @@ class EscolaInfoDao:
         return self.model.objects.filter(**filters)
 
     def get_newest_year(self):
-        years = self.model.objects.all().order_by('-year') \
-            .values_list('year', flat=True).distinct()
-        if years:
-            return years[0]
+        last = self.model.objects.all().order_by('year').last()
+        return last.year if last else None
 
     def filter_etapa_is_not_null(self):
         return self.model.objects \
