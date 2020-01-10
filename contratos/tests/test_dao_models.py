@@ -72,6 +72,7 @@ class EmpenhosSOFCacheDaoTestCase(TestCase):
         mock_create.assert_called_once_with(**empenho_data)
         assert ret == empenho
 
+    @pytest.mark.django_db
     def test_create_from_temp_table_data(self):
         mocked_empenho = Mock(spec=EmpenhoSOFCache)
         self.dao.model = Mock(spec=EmpenhoSOFCache)
@@ -88,6 +89,17 @@ class EmpenhosSOFCacheDaoTestCase(TestCase):
             assert (getattr(empenho, field.name)
                     == getattr(empenho_temp, field.name))
         mocked_empenho.save.assert_called_once_with()
+
+    @pytest.mark.django_db
+    def test_create_from_temp_table_data_when_empenho_already_exists(self):
+        self.dao = EmpenhosSOFCacheDao()
+        empenho_temp = mommy.make(EmpenhoSOFCacheTemp, _fill_optional=True)
+        self.dao.create_from_temp_table_obj(empenho_temp=empenho_temp)
+
+        assert 1 == EmpenhoSOFCache.objects.count()
+
+        self.dao.create_from_temp_table_obj(empenho_temp=empenho_temp)
+        assert 1 == EmpenhoSOFCache.objects.count()
 
 
 class EmpenhosTempDaoTestCase(TestCase):
