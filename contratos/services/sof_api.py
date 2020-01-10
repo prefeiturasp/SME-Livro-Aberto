@@ -182,3 +182,28 @@ def verify_table_lines_count(*, empenhos_dao, empenhos_temp_dao):
                 'atualizados.'
             )
             raise ContratosEmpenhosDifferenceOverLimit(msg)
+
+
+def retry_failed_requests_and_update_sof_cache_table():
+    """
+    Executa as etapas pós download de empenhos (fetch_empenhos) do script
+    `get_empenhos_for_contratos_from_sof_api`. Utilizado qdo acontece algum
+    erro durante o processo, após os empenhos terem sido baixados.
+    """
+    contratos_raw_dao = ContratosRawDao()
+    empenhos_dao = EmpenhosSOFCacheDao()
+    empenhos_temp_dao = EmpenhosSOFCacheTempDao()
+    empenhos_failed_requests_dao = EmpenhosFailedRequestsDao()
+
+    while empenhos_failed_requests_dao.count_all() > 0:
+        print("Retrying failed API requests")
+        retry_empenhos_sof_failed_api_requests(
+            contratos_raw_dao, empenhos_failed_requests_dao, empenhos_temp_dao)
+
+    print("Verifying count of lines in temp table")
+    verify_table_lines_count(
+        empenhos_dao=empenhos_dao, empenhos_temp_dao=empenhos_temp_dao)
+
+    print("Moving data from temp table to the real table")
+    update_empenho_sof_cache_from_temp_table(
+        empenhos_dao=empenhos_dao, empenhos_temp_dao=empenhos_temp_dao)
