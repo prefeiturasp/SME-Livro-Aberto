@@ -14,7 +14,33 @@ from regionalizacao.dao.models_dao import EscolaInfoDao
 from regionalizacao.serializers import PlacesSerializer
 
 
-class EscolaInfoFilter(filters.FilterSet):
+class InitialFilter(filters.FilterSet):
+    # Taken from https://django-filter.readthedocs.io/en/master/guide/tips.html#using-initial-values-as-defaults
+
+    def __init__(self, data=None, *args, **kwargs):
+        # if filterset is bound, use initial values as defaults
+        if data is not None:
+            # get a mutable copy of the QueryDict
+            data = data.copy()
+
+            for name, f in self.base_filters.items():
+                initial = f.extra.get('initial')
+
+                # filter param is either missing or empty, use initial as default
+                if not data.get(name) and initial:
+                    if callable(initial):
+                        data[name] = initial()
+                    else:
+                        data[name] = initial
+
+        super().__init__(data, *args, **kwargs)
+
+
+def newest_year():
+    return EscolaInfoDao().get_newest_year()
+
+
+class EscolaInfoFilter(InitialFilter):
     LOCALIDADE_CHOICES = (
         ('zona', 'Região'),
         ('dre', 'Diretoria Regional de Educação'),
@@ -24,23 +50,15 @@ class EscolaInfoFilter(filters.FilterSet):
     dre = filters.CharFilter(field_name='dre__code')
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
-    year = filters.AllValuesFilter(field_name='year', empty_label=None)
-    rede = filters.AllValuesFilter(field_name='rede', empty_label=None)
+    year = filters.AllValuesFilter(field_name='year', empty_label=None,
+            initial=newest_year)
+    rede = filters.AllValuesFilter(field_name='rede', empty_label=None,
+            initial='DIR')
     localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES,
                                       method='filter_localidade',
                                       empty_label=None)
 
     def filter_queryset(self, queryset):
-        if not self.form.cleaned_data['year']:
-            if queryset:
-                year = queryset.order_by('-year').first().year
-            else:
-                year = date.today().year
-            self.form.cleaned_data['year'] = year
-
-        if not self.form.cleaned_data['rede']:
-            self.form.cleaned_data['rede'] = 'DIR'
-
         query_params = deepcopy(self.form.cleaned_data)
 
         if self.form.cleaned_data['dre']:
@@ -104,9 +122,7 @@ class HomeView(generics.ListAPIView):
             query_params=query_params,
             locations_graph_type=locations_graph_type)
 
-        years = list(self.queryset.values_list('year', flat=True).distinct())
-        years.sort()
-        return Response({'years': years, **serializer.data})
+        return Response({**serializer.data})
 
 
 def download_view(request):

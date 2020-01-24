@@ -46,7 +46,14 @@ class EmpenhosSOFCacheDao:
             if field.primary_key is True:
                 continue
             setattr(empenho, field.name, getattr(empenho_temp, field.name))
-        empenho.save()
+
+        try:
+            with transaction.atomic():
+                empenho.save()
+        except IntegrityError:
+            # duplicate empenho
+            return None
+
         return empenho
 
 

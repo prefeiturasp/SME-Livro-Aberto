@@ -308,6 +308,7 @@ class EscolaInfoDownloadSerializer(serializers.ModelSerializer):
     tipoesc = serializers.CharField(source='tipoesc.code')
     dre = serializers.CharField(source='dre.name')
     distrito = serializers.CharField(source='distrito.name')
+    zona = serializers.CharField(source='distrito.zona')
     etapa = serializers.CharField(source='tipoesc.etapa')
     total = serializers.FloatField(source='budget_total')
     vagas = serializers.SerializerMethodField()
@@ -316,8 +317,8 @@ class EscolaInfoDownloadSerializer(serializers.ModelSerializer):
     class Meta:
         model = EscolaInfo
         fields = ('ano', 'codesc', 'tipoesc', 'nomesc', 'etapa', 'dre',
-                  'distrito', 'endereco', 'numero', 'bairro', 'cep', 'rede',
-                  'latitude', 'longitude', 'vagas', 'total', 'ptrf')
+                  'distrito', 'zona', 'endereco', 'numero', 'bairro', 'cep',
+                  'rede', 'latitude', 'longitude', 'vagas', 'total', 'ptrf')
 
     def get_vagas(self, obj):
         if obj.rede == 'CON':
