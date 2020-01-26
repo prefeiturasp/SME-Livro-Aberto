@@ -29,6 +29,9 @@
             {%if filter_form.distrito.value %}
                 <input type="hidden" name="{{ filter_form.distrito.name }}" value="{{filter_form.distrito.value}}">
             {%endif%}
+            {%if filter_form.localidade.value %}
+                <input type="hidden" name="{{ filter_form.localidade.name }}" value="{{filter_form.localidade.value}}">
+            {%endif%}
             {% endlocalize %}
           <input type="checkbox" name="rede" id="executed-switch" value="CON" {% if filter_form.rede.value == 'CON' %}checked{% endif %}>
           <label for="executed-switch">Unidades parceiras</label>
@@ -148,6 +151,26 @@
                   <label for="localidade-order">Ordem Alfabética</label>
                   <label for="localidade-order">Ordem Decrescente</label>
               </div>
+            {% localize off %}
+            {%if filter_form.zona.value %}
+                <input type="hidden" name="{{ filter_form.zona.name }}" value="{{filter_form.zona.value}}">
+            {%endif%}
+            {%if filter_form.dre.value %}
+                <input type="hidden" name="{{ filter_form.dre.name }}" value="{{filter_form.dre.value}}">
+            {%endif%}
+            {%if filter_form.distrito.value %}
+                <input type="hidden" name="{{ filter_form.distrito.name }}" value="{{filter_form.distrito.value}}">
+            {%endif%}
+            {%if filter_form.rede.value %}
+              <input type="hidden" name="{{ filter_form.rede.name}}" value="{{ filter_form.rede.value }}">
+            {%endif%}
+            {%if filter_form.escola.value %}
+              <input type="hidden" name="{{ filter_form.escola.name}}" value="{{ filter_form.escola.value }}">
+            {%endif%}
+            {%if filter_form.year.value %}
+              <input type="hidden" name="{{ filter_form.year.name}}" value="{{ filter_form.year.value }}">
+            {%endif%}
+            {% endlocalize %}
               <input class="submit" type="submit" value="Filtrar" name="go">
           </form>
           <div class="barchart">
