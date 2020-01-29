@@ -13,6 +13,35 @@ from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
 def update_regionalizacao_data():
+    """
+    Verifica se há novas planilhas importadas. Se sim, extrai as planilhas e
+    faz todo o resto do processo de atualização. Se não, termina o script
+    sem alterar a Data de Atualização que aparece na interface.
+    """
+    print('## Extracting PTRF and UnidadeRecursos spreadsheets ##')
+    new_data_added = extract_ptrf_and_recursos_spreadsheets()
+    if not new_data_added:
+        print('No new spreadsheets were found. Exiting script.')
+        return
+
+    print('## Verifying new data from spreadsheets ##')
+    years = get_years_to_be_updated()
+    print('## Updating regionalizacao data from EOL API ##')
+    update_data_from_eol_api(years)
+    print('## Applying from-tos ##')
+    apply_fromtos()
+    print('## Populating escola_info table with budget data ##')
+    populate_escola_info_budget_data()
+    print('## Generating download spreadsheets ##')
+    generate_xlsx_files()
+
+
+def update_regionalizacao_data_forced():
+    """
+    Faz todo o resto do processo de atualização independente se há novas
+    planilhas importadas ou não. Altera a Data de Atualização mesmo que
+    nada tenha sido atualizado.
+    """
     print('## Verifying new data from spreadsheets ##')
     years = get_years_to_be_updated()
     print('## Updating regionalizacao data from EOL API ##')
@@ -53,8 +82,10 @@ def extract_ptrf_and_recursos_spreadsheets():
     ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
     recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
 
-    ptrf_sheet_dao.extract_new_spreadsheets()
-    recursos_sheet_dao.extract_new_spreadsheets()
+    ptrf_extracted = ptrf_sheet_dao.extract_new_spreadsheets()
+    recursos_extracted = recursos_sheet_dao.extract_new_spreadsheets()
+
+    return bool(ptrf_extracted or recursos_extracted)
 
 
 def apply_fromtos():

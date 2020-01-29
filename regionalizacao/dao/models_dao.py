@@ -161,8 +161,12 @@ class FromToSpreadsheetDao:
 
     def extract_new_spreadsheets(self):
         sheets = self.get_sheets_to_be_extracted()
+        if not sheets:
+            return False
+
         for sheet in sheets:
             sheet.extract_data()
+        return True
 
     def get_last_created_at(self):
         sheet = self.model.objects.filter(extracted=True) \
