@@ -21,6 +21,7 @@ from regionalizacao.models import (
     Subgrupo,
     Budget,
     Grupo,
+    UpdateHistory,
 )
 
 
@@ -555,3 +556,18 @@ class GrupoDao:
 
     def get_or_create(self, name):
         return self.model.objects.get_or_create(name=name)
+
+
+class UpdateHistoryDao:
+
+    def __init__(self):
+        self.model = UpdateHistory
+
+    def create(self):
+        self.model.objects.create()
+
+    def get_last_update_date(self):
+        last_register = self.model.objects.order_by('created_at').last()
+        if not last_register:
+            return None
+        return last_register.created_at.date()
