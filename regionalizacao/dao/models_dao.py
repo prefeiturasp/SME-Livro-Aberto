@@ -21,6 +21,7 @@ from regionalizacao.models import (
     Subgrupo,
     Budget,
     Grupo,
+    UpdateHistory,
 )
 
 
@@ -161,8 +162,12 @@ class FromToSpreadsheetDao:
 
     def extract_new_spreadsheets(self):
         sheets = self.get_sheets_to_be_extracted()
+        if not sheets:
+            return False
+
         for sheet in sheets:
             sheet.extract_data()
+        return True
 
     def get_last_created_at(self):
         sheet = self.model.objects.filter(extracted=True) \
@@ -551,3 +556,18 @@ class GrupoDao:
 
     def get_or_create(self, name):
         return self.model.objects.get_or_create(name=name)
+
+
+class UpdateHistoryDao:
+
+    def __init__(self):
+        self.model = UpdateHistory
+
+    def create(self):
+        self.model.objects.create()
+
+    def get_last_update_date(self):
+        last_register = self.model.objects.order_by('created_at').last()
+        if not last_register:
+            return None
+        return last_register.created_at.date()

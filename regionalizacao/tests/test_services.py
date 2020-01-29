@@ -12,7 +12,8 @@ from model_mommy import mommy
 from regionalizacao.models import (
     Distrito, DistritoZonaFromTo, Escola, EtapaTipoEscolaFromTo, PtrfFromTo,
     TipoEscola, UnidadeRecursosFromTo, Recurso, Grupo, Subgrupo, Budget,
-    EscolaInfo, PtrfFromToSpreadsheet, UnidadeRecursosFromToSpreadsheet)
+    EscolaInfo, PtrfFromToSpreadsheet, UnidadeRecursosFromToSpreadsheet,
+    UpdateHistory)
 from regionalizacao.services import (
     apply_distrito_zona_fromto,
     apply_etapa_tipo_escola_fromto,
@@ -325,7 +326,13 @@ class TestPopulateEscolaInfoBudgetData(TestCase):
 @pytest.mark.django_db
 class TestGetDtUpdate:
 
-    def test_returns_last_added_spreadsheet_creation_date(self):
+    def test_returns_newest_register_in_update_history_table(self):
+        mommy.make(UpdateHistory)
+        assert date.today() == get_dt_updated()
+
+    def test_return_last_added_sheet_creation_date_when_history_is_empty(self):
+        assert 0 == UpdateHistory.objects.count()
+
         sheet1 = mommy.make(PtrfFromToSpreadsheet, extracted=True)
         sheet1.created_at = date(2019, 12, 1)
         sheet1.save()

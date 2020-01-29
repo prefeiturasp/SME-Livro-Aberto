@@ -250,3 +250,8 @@ class UnidadeRecursosFromTo(models.Model):
 
     def __str__(self):
         return f'{self.codesc} - {self.grupo} - {self.subgrupo}'
+
+
+class UpdateHistory(models.Model):
+    """ Salva as datas em que os dados foram atualizados """
+    created_at = models.DateTimeField(auto_now_add=True)

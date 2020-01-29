@@ -7,12 +7,42 @@ from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
-    PtrfFromToSpreadsheetDao
+    PtrfFromToSpreadsheetDao, UpdateHistoryDao
 )
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
 def update_regionalizacao_data():
+    """
+    Verifica se há novas planilhas importadas. Se sim, extrai as planilhas e
+    faz todo o resto do processo de atualização. Se não, termina o script
+    sem alterar a Data de Atualização que aparece na interface.
+    """
+    print('## Extracting PTRF and UnidadeRecursos spreadsheets ##')
+    new_data_added = extract_ptrf_and_recursos_spreadsheets()
+    if not new_data_added:
+        print('No new spreadsheets were found. Exiting script.')
+        return
+
+    print('## Verifying new data from spreadsheets ##')
+    years = get_years_to_be_updated()
+    print('## Updating regionalizacao data from EOL API ##')
+    update_data_from_eol_api(years)
+    print('## Applying from-tos ##')
+    apply_fromtos()
+    print('## Populating escola_info table with budget data ##')
+    populate_escola_info_budget_data()
+    print('## Generating download spreadsheets ##')
+    generate_xlsx_files()
+    update_updated_at_date()
+
+
+def update_regionalizacao_data_forced():
+    """
+    Faz todo o resto do processo de atualização independente se há novas
+    planilhas importadas ou não. Altera a Data de Atualização mesmo que
+    nada tenha sido atualizado.
+    """
     print('## Verifying new data from spreadsheets ##')
     years = get_years_to_be_updated()
     print('## Updating regionalizacao data from EOL API ##')
@@ -25,6 +55,7 @@ def update_regionalizacao_data():
     populate_escola_info_budget_data()
     print('## Generating download spreadsheets ##')
     generate_xlsx_files()
+    update_updated_at_date()
 
 
 def update_data_from_eol_api(years):
@@ -53,8 +84,10 @@ def extract_ptrf_and_recursos_spreadsheets():
     ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
     recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
 
-    ptrf_sheet_dao.extract_new_spreadsheets()
-    recursos_sheet_dao.extract_new_spreadsheets()
+    ptrf_extracted = ptrf_sheet_dao.extract_new_spreadsheets()
+    recursos_extracted = recursos_sheet_dao.extract_new_spreadsheets()
+
+    return bool(ptrf_extracted or recursos_extracted)
 
 
 def apply_fromtos():
@@ -129,22 +162,6 @@ def populate_escola_info_budget_data():
             budget_total=total, recursos=recursos)
 
 
-def get_dt_updated():
-    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
-    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
-
-    ptrf_date = ptrf_sheet_dao.get_last_created_at()
-    recursos_date = recursos_sheet_dao.get_last_created_at()
-
-    if ptrf_date and recursos_date:
-        return max([ptrf_date, recursos_date])
-    elif ptrf_date:
-        return ptrf_date
-    elif recursos_date:
-        return recursos_date
-    return None
-
-
 def generate_xlsx_files():
     from regionalizacao.serializers import (EscolaInfoDownloadSerializer,
                                             UnidadeRecursosFromToSerializer)
@@ -160,3 +177,32 @@ def generate_xlsx_files():
     )
 
     uc.execute()
+
+
+def update_updated_at_date():
+    dao = UpdateHistoryDao()
+    dao.create()
+
+
+def get_dt_updated():
+    dao = UpdateHistoryDao()
+    dt_updated = dao.get_last_update_date()
+    if not dt_updated:
+        return get_sheets_last_created_at()
+    return dt_updated
+
+
+def get_sheets_last_created_at():
+    ptrf_sheet_dao = PtrfFromToSpreadsheetDao()
+    recursos_sheet_dao = UnidadeRecursosFromToSpreadsheetDao()
+
+    ptrf_date = ptrf_sheet_dao.get_last_created_at()
+    recursos_date = recursos_sheet_dao.get_last_created_at()
+
+    if ptrf_date and recursos_date:
+        return max([ptrf_date, recursos_date])
+    elif ptrf_date:
+        return ptrf_date
+    elif recursos_date:
+        return recursos_date
+    return None
