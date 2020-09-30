@@ -22,6 +22,7 @@ requests = "*"
 sentry-sdk = "*"
 celery = "*"
 django-fullurl = "*"
+ipdb = "*"
 
 [dev-packages]
 ipdb = "*"
