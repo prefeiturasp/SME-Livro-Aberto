@@ -88,7 +88,7 @@ class Grupo(models.Model):
 
 class Dre(models.Model):
     '''Diretoria Regional Escolar'''
-    code = models.CharField(max_length=3, unique=True)
+    code = models.CharField(max_length=5, unique=True)
     name = models.CharField(max_length=100)
 
     def __str__(self):

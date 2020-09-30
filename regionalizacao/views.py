@@ -60,9 +60,6 @@ class EscolaInfoFilter(InitialFilter):
 
     def filter_queryset(self, queryset):
         query_params = deepcopy(self.form.cleaned_data)
-
-        if self.form.cleaned_data['dre']:
-            self.form.cleaned_data['zona'] = ''
         if self.form.cleaned_data['distrito']:
             self.form.cleaned_data['dre'] = ''
         map_qs = super().filter_queryset(queryset)
@@ -105,7 +102,6 @@ class HomeView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         query_params, map_qs, locations_qs = self.filter_queryset(
             self.get_queryset())
-
         level = 0
         if 'zona' in request.query_params:
             level = 1
@@ -121,7 +117,6 @@ class HomeView(generics.ListAPIView):
             map_queryset=map_qs, locations_queryset=locations_qs, level=level,
             query_params=query_params,
             locations_graph_type=locations_graph_type)
-
         return Response({**serializer.data})
 
 
