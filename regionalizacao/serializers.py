@@ -252,7 +252,6 @@ class PlacesSerializer:
             for dre_name, infos in groupby(qs, lambda i: i.dre.name):
                 infos = list(infos)
                 unidades = len(infos)
-                print('unidades', unidades)
                 total_locations = sum(
                     info.budget_total if info.budget_total else 0
                     for info in infos)
@@ -261,7 +260,6 @@ class PlacesSerializer:
                     'total': total_locations,
                     'unidades': unidades,
                 })
-            # locations.sort(key=lambda z: z['name'], reverse=False)
             return locations
 
         # locations_type == 'zona'
@@ -274,7 +272,6 @@ class PlacesSerializer:
                 'name': zona_name,
                 'total': total_locations,
             })
-        # locations.sort(key=lambda z: z['name'], reverse=False)
         return locations
 
 
