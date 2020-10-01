@@ -146,11 +146,6 @@
               <div class="form-item">
                   {{ filter_form.localidade }}
               </div>
-              <div class="form-item switch">
-                  <input type="checkbox" name="" id="localidade-order">
-                  <label for="localidade-order">Ordem Alfabética</label>
-                  <label for="localidade-order">Ordem Decrescente</label>
-              </div>
             {% localize off %}
             {%if filter_form.zona.value %}
                 <input type="hidden" name="{{ filter_form.zona.name }}" value="{{filter_form.zona.value}}">
@@ -180,6 +175,16 @@
                   <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
                       <div class="label">{{location.name}}</div>
                       <div class="value">R$ {{location.total|floatformat:2}}</div>
+                  <div class="tooltip-container">
+                      <svg class="icon">
+                          <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                      </svg>
+                    <div class="tooltip">
+                      <div>
+                          Unidaade diretas: {{location.unidades}} <br/>
+                      </div>
+                    </div>
+                  </div>
                   </div>
               {% endfor %}
               {% endwith %}
