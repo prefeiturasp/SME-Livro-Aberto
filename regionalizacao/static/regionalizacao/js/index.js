@@ -81,13 +81,14 @@ window.addEventListener("DOMContentLoaded", function () {
 
     let x = svg.node().parentNode.offsetLeft,
         y = svg.node().parentNode.offsetTop,
-        canvasWidth = svg.node().parentNode.offsetWidth * 2 / 3 + x,
+        canvasWidth = svg.node().parentNode.offsetWidth * 3 / 3 + x,
         canvasHeight = Math.min((svg.node().parentNode.offsetHeight + y), 957);
 
     let width = Math.round(parseFloat(svg.style('width'))),
         height = Math.round(parseFloat(svg.style('height')));
 
     svg.attr('viewBox', '0 0 ' + width + ' ' + height);
+    svg.style('position', 'relative');
 
     var gMap = svg.select('g.map');
 

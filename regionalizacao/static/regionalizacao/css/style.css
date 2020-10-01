@@ -26,13 +26,29 @@ body > header h1 + p {
 
 #mapa .chart{
   position: static;
-  display: flex;
+  display: block;
   justify-content: flex-end;
 }
 
-aside {
-  width: calc(100%/3);
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  #mapa .chart {
+    display: flex;
+  }
+  aside {
+    width: calc(100% / 3);
+  }
 }
+
+@media (max-width: 575px) {
+  #mapa svg.map-container{
+    top: -10em !important;
+  }
+  aside .card {
+    margin-top: -10em;
+  }
+}
+
 
 #mapa .chart > * {
   position: relative;
@@ -378,4 +394,9 @@ aside .card .groups td{
 .subgroup{
   margin: 1em 0;
   font-size: 0.8em;
+}
+
+div.actions {
+  margin-top: 2em;
+  text-align: center;
 }
