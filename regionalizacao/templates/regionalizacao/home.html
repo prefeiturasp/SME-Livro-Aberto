@@ -175,7 +175,7 @@
           </form>
           <div class="barchart">
               {% with max_location=locations|dictsort:'total'|last%}
-              {% for location in locations %}
+              {% for location in locations|merge_dres %}
                   {% widthratio location.total max_location.total 100 as percentage %}
                   <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
                       <div class="label">{{location.name}}</div>
