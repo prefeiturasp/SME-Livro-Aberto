@@ -42,4 +42,5 @@ def merge_dres(locations):
                           'unidades': total_unidades_dre_pirituba_jaragua})
         for location in locations_to_remove:
             locations.pop(locations.index(location))
+        locations = sorted(locations, key=lambda l: l['name'])
     return locations
