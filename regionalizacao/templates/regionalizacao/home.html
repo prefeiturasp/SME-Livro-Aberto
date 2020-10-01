@@ -175,16 +175,18 @@
                   <div class="bar" data-label="{{location.name}}" data-value="{{location.total|unlocalize}}" data-percentage="{{percentage}}" style="width: {{percentage}}%">
                       <div class="label">{{location.name}}</div>
                       <div class="value">R$ {{location.total|floatformat:2}}</div>
-                  <div class="tooltip-container">
-                      <svg class="icon">
-                          <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
-                      </svg>
-                    <div class="tooltip">
-                      <div>
-                          Unidades diretas: {{location.unidades}} <br/>
-                      </div>
-                    </div>
-                  </div>
+                      {% if location.unidades %}
+                          <div class="tooltip-container">
+                              <svg class="icon">
+                                  <use xlink:href="{% static 'regionalizacao/img/info.svg' %}#icon"></use>
+                              </svg>
+                            <div class="tooltip">
+                              <div>
+                                  Unidades diretas: {{location.unidades}} <br/>
+                              </div>
+                            </div>
+                          </div>
+                      {% endif %}
                   </div>
               {% endfor %}
               {% endwith %}
