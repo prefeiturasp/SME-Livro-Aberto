@@ -319,6 +319,8 @@ class EscolaDao:
             latitude=kwargs['latitude'],
             longitude=kwargs['longitude'],
             total_vagas=kwargs['total_vagas'],
+            qtd_matriculas=kwargs['total_matriculados'],
+            qtd_servidores=kwargs['total_servidores'],
         )
 
         _, created = self.info_dao.get_or_create(**escola_info)
