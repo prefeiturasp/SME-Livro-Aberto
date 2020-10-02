@@ -32,6 +32,8 @@ class EscolaInfo(models.Model):
     # populated after from-tos are applied
     budget_total = models.FloatField(null=True, blank=True)
     recursos = JSONField(null=True, blank=True)
+    qtd_matriculas = models.IntegerField(null=True, blank=True)
+    qtd_servidores = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ('escola', 'year')
