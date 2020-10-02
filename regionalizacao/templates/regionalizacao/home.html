@@ -183,6 +183,8 @@
                             <div class="tooltip">
                               <div>
                                   Unidades diretas: {{location.unidades}} <br/>
+                                  Matriculas: {{location.matriculas}} <br/>
+                                  Servidores: {{location.servidores}} <br/>
                               </div>
                             </div>
                           </div>
@@ -192,7 +194,7 @@
               {% endwith %}
           </div>
       </div>
-      <div class="actions">
+      <div class="actions", style="padding-top: 10px">
         <a class="btn" href="{% url 'regionalizacao:download' %}?year={{ filter_form.year.value|unlocalize }}">Download dos Dados</a>
     </div>
   </section>
