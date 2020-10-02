@@ -26,13 +26,29 @@ body > header h1 + p {
 
 #mapa .chart{
   position: static;
-  display: flex;
+  display: block;
   justify-content: flex-end;
 }
 
-aside {
-  width: calc(100%/3);
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  #mapa .chart {
+    display: flex;
+  }
+  aside {
+    width: calc(100% / 3);
+  }
 }
+
+@media (max-width: 575px) {
+  #mapa svg.map-container{
+    top: -10em !important;
+  }
+  aside .card {
+    margin-top: -10em;
+  }
+}
+
 
 #mapa .chart > * {
   position: relative;
@@ -186,10 +202,21 @@ aside > .card > .body{
 
 aside > .card td{
   text-align: left;
-  padding: 1em 0;
   vertical-align: top;
-  border-bottom: 2px solid #e2ebe3;
+  padding: 0;
 }
+
+aside > .card tr:nth-child(even) td{
+  border-bottom: 2px solid #e2ebe3;
+  padding-bottom: 0.5em;
+  padding-top: 0.25em;
+}
+
+aside > .card tr:nth-child(odd) td{
+  padding-top: 0.5em;
+}
+
+
 
 aside > .card tr:last-child td{
   border-bottom-width: 0px;
@@ -378,4 +405,9 @@ aside .card .groups td{
 .subgroup{
   margin: 1em 0;
   font-size: 0.8em;
+}
+
+div.actions {
+  margin-top: 2em;
+  text-align: center;
 }
