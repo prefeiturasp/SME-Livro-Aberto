@@ -255,10 +255,18 @@ class PlacesSerializer:
                 total_locations = sum(
                     info.budget_total if info.budget_total else 0
                     for info in infos)
+                total_matriculas = sum(
+                    info.qtd_matriculas if info.qtd_matriculas else 0
+                    for info in infos)
+                total_servidores = sum(
+                    info.qtd_servidores if info.qtd_servidores else 0
+                    for info in infos)
                 locations.append({
                     'name': dre_name,
                     'total': total_locations,
                     'unidades': unidades,
+                    'matriculas': total_matriculas,
+                    'servidores': total_servidores,
                 })
             return locations
 
