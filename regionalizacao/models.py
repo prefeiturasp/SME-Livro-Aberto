@@ -45,6 +45,11 @@ class Budget(models.Model):
                                related_name='budgets')
     year = models.PositiveSmallIntegerField(default=date.today().year)
     ptrf = models.FloatField(null=True, blank=True)
+    """
+    valor_mensal = models.FloatField(null=True, blank=True)
+    verba_locacao = models.FloatField(null=True, blank=True)
+    valor_mensal_iptu = models.FloatField(null=True, blank=True)
+    """
 
     class Meta:
         unique_together = ('escola', 'year')
@@ -198,6 +203,19 @@ class UnidadeRecursosFromToSpreadsheet(FromToSpreadsheet):
         dao.extract_spreadsheet(self)
 
 
+class UnidadeValoresVerbaFromToSpreadsheet(FromToSpreadsheet):
+    year = models.IntegerField('Ano dos dados')
+
+    class Meta:
+        verbose_name = 'Planilha Unidade-Valores-Verba'
+        verbose_name_plural = 'Planilhas Unidade-Valores-Verba'
+
+    def extract_data(self):
+        from regionalizacao.dao.models_dao import UnidadeValoresVerbaFromToDao
+        dao = UnidadeValoresVerbaFromToDao()
+        dao.extract_spreadsheet(self)
+
+
 class PtrfFromTo(models.Model):
     year = models.IntegerField('Ano dos dados')
     codesc = models.CharField(max_length=7)
@@ -250,6 +268,23 @@ class UnidadeRecursosFromTo(models.Model):
 
     def __str__(self):
         return f'{self.codesc} - {self.grupo} - {self.subgrupo}'
+
+
+class UnidadeValoresVerbaFromTo(models.Model):
+    year = models.IntegerField('Ano dos dados')
+    codigo_escola = models.CharField(null=True, blank=True, max_length=6)
+    situacao = models.CharField(null=True, blank=True, max_length=15)
+    valor_mensal = models.FloatField(null=True, blank=True)
+    verba_locacao = models.FloatField(null=True, blank=True)
+    valor_mensal_iptu = models.FloatField(null=True, blank=True)
+    data_do_encerramento = models.DateField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'De-Para: Unidade-Valores-Verba'
+        verbose_name_plural = 'De-Para: Unidade-Valores-Verba'
+
+    def __str__(self):
+        return f'{self.codigo_escola}'
 
 
 class UpdateHistory(models.Model):
