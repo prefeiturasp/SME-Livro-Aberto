@@ -9,6 +9,7 @@ from .models import (
     DistritoZonaFromTo,
     EtapaTipoEscolaFromTo,
     UnidadeRecursosFromTo,
+    Dre
 )
 
 
@@ -54,3 +55,8 @@ class EtapaTipoEscolaFromToAdmin(admin.ModelAdmin):
 @admin.register(UnidadeRecursosFromTo)
 class UnidadeRecursosFromToAdmin(admin.ModelAdmin):
     list_display = ('year', 'codesc', 'grupo', 'subgrupo', 'valor', 'label')
+
+
+@admin.register(Dre)
+class DreAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name')

@@ -26,11 +26,13 @@ body > header h1 + p{
   text-align: center;
   margin: 1rem 0;
 }
-
-body > header nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  body > header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 body > header nav li{
