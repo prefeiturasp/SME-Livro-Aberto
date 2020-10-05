@@ -98,7 +98,7 @@
                     </tr>
                 {% endfor %}
                 {% if escola.recursos.valor_mensal %}
-                    <tr>
+                    <tr class="valor-repasses">
                         <td>
                             {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
                         </td>
@@ -117,7 +117,7 @@
                     </tr>
                 {% endif %}
                 {% if escola.recursos.verba_locacao %}
-                    <tr>
+                    <tr class="valor-repasses">
                         <td>
                             {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
                         </td>
@@ -136,7 +136,7 @@
                     </tr>
                 {% endif %}
                 {% if escola.recursos.valor_mensal_iptu %}
-                    <tr>
+                    <tr class="valor-repasses">
                         <td>
                             {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
                         </td>
