@@ -97,7 +97,63 @@
                         </td>
                     </tr>
                 {% endfor %}
-                {{ escola.recursos.valor_mensal }}
+                {% if escola.recursos.valor_mensal %}
+                    <tr>
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.valor_mensal|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Valor mensal
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if escola.recursos.verba_locacao %}
+                    <tr>
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.verba_locacao|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Verba locação
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if escola.recursos.valor_mensal_iptu %}
+                    <tr>
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.valor_mensal_iptu|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Valor mensal IPTU
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
                 {% if escola.recursos.ptrf %}
                     <tr>
                         <td>
