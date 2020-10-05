@@ -32,6 +32,8 @@ class EscolaInfo(models.Model):
     # populated after from-tos are applied
     budget_total = models.FloatField(null=True, blank=True)
     recursos = JSONField(null=True, blank=True)
+    qtd_matriculas = models.IntegerField(null=True, blank=True)
+    qtd_servidores = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ('escola', 'year')
@@ -88,7 +90,7 @@ class Grupo(models.Model):
 
 class Dre(models.Model):
     '''Diretoria Regional Escolar'''
-    code = models.CharField(max_length=3, unique=True)
+    code = models.CharField(max_length=5, unique=True)
     name = models.CharField(max_length=100)
 
     def __str__(self):
