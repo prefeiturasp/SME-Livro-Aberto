@@ -9,6 +9,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao, UpdateHistoryDao
 )
+from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
@@ -206,3 +207,30 @@ def get_sheets_last_created_at():
     elif recursos_date:
         return recursos_date
     return None
+
+
+def update_recursos_com_verbas():
+    unidades_verba_valores = UnidadeValoresVerbaFromTo.objects.filter(
+        situacao__iexact='aprovado',
+        data_do_encerramento__isnull=True
+    )
+    for unidade in unidades_verba_valores:
+        try:
+            budget = Budget.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+            budget.valor_mensal = unidade.valor_mensal or 0
+            budget.verba_locacao = unidade.verba_locacao or 0
+            budget.valor_mensal_iptu = unidade.valor_mensal_iptu or 0
+            budget.save()
+            escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+            escola_info.recursos.update({
+                'valor_mensal': budget.valor_mensal,
+                'verba_locacao': budget.verba_locacao,
+                'valor_mensal_iptu': budget.valor_mensal_iptu
+            })
+            escola_info.save()
+            print('deu certo')
+        except Budget.DoesNotExist:
+            print('budget n existe')
+        except EscolaInfo.DoesNotExist:
+            print('escola info n existe')
+

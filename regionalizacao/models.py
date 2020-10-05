@@ -45,11 +45,9 @@ class Budget(models.Model):
                                related_name='budgets')
     year = models.PositiveSmallIntegerField(default=date.today().year)
     ptrf = models.FloatField(null=True, blank=True)
-    """
     valor_mensal = models.FloatField(null=True, blank=True)
     verba_locacao = models.FloatField(null=True, blank=True)
     valor_mensal_iptu = models.FloatField(null=True, blank=True)
-    """
 
     class Meta:
         unique_together = ('escola', 'year')
