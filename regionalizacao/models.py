@@ -210,6 +210,11 @@ class UnidadeValoresVerbaFromToSpreadsheet(FromToSpreadsheet):
         verbose_name = 'Planilha Unidade-Valores-Verba'
         verbose_name_plural = 'Planilhas Unidade-Valores-Verba'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, *kwargs)
+        if not self.extracted:
+            self.extract_data()
+
     def extract_data(self):
         from regionalizacao.dao.models_dao import UnidadeValoresVerbaFromToDao
         dao = UnidadeValoresVerbaFromToDao()
