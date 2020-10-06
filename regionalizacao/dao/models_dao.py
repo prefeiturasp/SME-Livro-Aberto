@@ -156,7 +156,7 @@ class UnidadeValoresVerbaFromToDao(FromToDao):
             SheetColumn('codigo_escola', 'i'),
             SheetColumn('valor_mensal', 'm'),
             SheetColumn('verba_locacao', 'n'),
-            SheetColumn('valor_mensal_iptu', 'e'),
+            SheetColumn('valor_mensal_iptu', 'o'),
             SheetColumn('situacao', 'r'),
             SheetColumn('data_do_encerramento', 'u'),
         ]

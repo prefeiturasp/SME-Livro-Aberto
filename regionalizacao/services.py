@@ -228,9 +228,10 @@ def update_recursos_com_verbas():
                 'valor_mensal_iptu': budget.valor_mensal_iptu
             })
             escola_info.save()
-            print('deu certo')
+            print(unidade.codigo_escola + ': deu certo')
         except Budget.DoesNotExist:
-            print('budget n existe')
+            print(unidade.codigo_escola + ': budget n existe')
+            
         except EscolaInfo.DoesNotExist:
-            print('escola info n existe')
+            print(unidade.codigo_escola + ': escola info n existe')
 
