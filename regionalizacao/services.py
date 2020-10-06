@@ -227,11 +227,12 @@ def update_recursos_com_verbas():
                 'verba_locacao': budget.verba_locacao,
                 'valor_mensal_iptu': budget.valor_mensal_iptu
             })
+            escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
             escola_info.save()
             print(unidade.codigo_escola + ': deu certo')
         except Budget.DoesNotExist:
             print(unidade.codigo_escola + ': budget n existe')
-            
+
         except EscolaInfo.DoesNotExist:
             print(unidade.codigo_escola + ': escola info n existe')
 

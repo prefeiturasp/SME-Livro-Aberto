@@ -101,8 +101,8 @@ aside > .card > header > h3{
 }
 
 aside > .card > header > .numbers{
-  display: flex;
-  justify-content: space-between;
+  //display: flex;
+  //justify-content: space-between;
   font-weight: bolder;
 }
 
