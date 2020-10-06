@@ -221,23 +221,23 @@ def update_recursos_com_verbas():
             budget.verba_locacao = unidade.verba_locacao or 0
             budget.valor_mensal_iptu = unidade.valor_mensal_iptu or 0
             budget.save()
-            escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
-            if not escola_info.recursos:
-                escola_info.recursos = {}
-            escola_info.recursos.update({
-                'valor_mensal': budget.valor_mensal,
-                'verba_locacao': budget.verba_locacao,
-                'valor_mensal_iptu': budget.valor_mensal_iptu
-            })
-            if not escola_info.budget_total:
-                escola_info.budget_total = 0
-            escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
-            escola_info.save()
-            print(unidade.codigo_escola + ': deu certo')
+            try:
+                escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+                if not escola_info.recursos:
+                    escola_info.recursos = {}
+                escola_info.recursos.update({
+                    'valor_mensal': budget.valor_mensal,
+                    'verba_locacao': budget.verba_locacao,
+                    'valor_mensal_iptu': budget.valor_mensal_iptu
+                })
+                if not escola_info.budget_total:
+                    escola_info.budget_total = 0
+                escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                escola_info.save()
+            except EscolaInfo.DoesNotExist:
+                pass
         except Budget.DoesNotExist:
-            print(unidade.codigo_escola + ': budget n existe')
             if EscolaInfo.objects.filter(escola__codesc=unidade.codigo_escola, year=unidade.year).exists():
-                print('TEM ESCOLA INFO')
                 escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
                 budget = Budget(
                     escola=escola_info.escola,
@@ -258,8 +258,3 @@ def update_recursos_com_verbas():
                     escola_info.budget_total = 0
                 escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
                 escola_info.save()
-            else:
-                print('nao tem escola info')
-        except EscolaInfo.DoesNotExist:
-            print(unidade.codigo_escola + ': escola info n existe')
-
