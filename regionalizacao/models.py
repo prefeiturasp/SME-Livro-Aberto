@@ -213,8 +213,8 @@ class UnidadeValoresVerbaFromToSpreadsheet(FromToSpreadsheet):
         super().save(*args, *kwargs)
         if not self.extracted:
             self.extract_data()
-            from regionalizacao.services import update_recursos_com_verbas
-            update_recursos_com_verbas()
+            # from regionalizacao.services import update_recursos_com_verbas
+            # update_recursos_com_verbas()
 
     def extract_data(self):
         from regionalizacao.dao.models_dao import UnidadeValoresVerbaFromToDao
