@@ -101,8 +101,8 @@ aside > .card > header > h3{
 }
 
 aside > .card > header > .numbers{
-  display: flex;
-  justify-content: space-between;
+  //display: flex;
+  //justify-content: space-between;
   font-weight: bolder;
 }
 
@@ -206,7 +206,7 @@ aside > .card td{
   padding: 0;
 }
 
-aside > .card tr:nth-child(even) td{
+aside > .card tr:nth-child(even):not(.valor-repasses) td{
   border-bottom: 2px solid #e2ebe3;
   padding-bottom: 0.5em;
   padding-top: 0.25em;

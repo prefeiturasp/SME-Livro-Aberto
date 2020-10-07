@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from .dao.models_dao import UnidadeValoresVerbaFromToDao
 from .models import (
     PtrfFromToSpreadsheet,
     DistritoZonaFromToSpreadsheet,
@@ -9,7 +10,7 @@ from .models import (
     DistritoZonaFromTo,
     EtapaTipoEscolaFromTo,
     UnidadeRecursosFromTo,
-    Dre
+    Dre, UnidadeValoresVerbaFromToSpreadsheet, UnidadeValoresVerbaFromTo
 )
 
 
@@ -37,6 +38,12 @@ class UnidadeRecursosFromToSpreadsheetAdmin(admin.ModelAdmin):
                     'added_fromtos', 'updated_fromtos')
 
 
+@admin.register(UnidadeValoresVerbaFromToSpreadsheet)
+class UnidadeValoresVerbaFromToSpreadsheetAdmin(admin.ModelAdmin):
+    list_display = ('__str__',  'year', 'extracted', 'created_at',
+                    'added_fromtos', 'updated_fromtos')
+
+
 @admin.register(PtrfFromTo)
 class PtrfFromToAdmin(admin.ModelAdmin):
     list_display = ('year', 'codesc', 'vlrepasse')
@@ -55,6 +62,12 @@ class EtapaTipoEscolaFromToAdmin(admin.ModelAdmin):
 @admin.register(UnidadeRecursosFromTo)
 class UnidadeRecursosFromToAdmin(admin.ModelAdmin):
     list_display = ('year', 'codesc', 'grupo', 'subgrupo', 'valor', 'label')
+
+
+@admin.register(UnidadeValoresVerbaFromTo)
+class UnidadeValoresVerbaFromToAdmin(admin.ModelAdmin):
+    list_display = ('year', 'codigo_escola', 'valor_mensal', 'verba_locacao',
+                    'valor_mensal_iptu', 'situacao', 'data_do_encerramento')
 
 
 @admin.register(Dre)
