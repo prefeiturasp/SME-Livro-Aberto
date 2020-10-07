@@ -52,6 +52,19 @@
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
+        <section id="lista-escolas">
+          <input type="checkbox" checked name="exibirlistaescolas">
+          <label>Exibir lista de escolas</label>
+          {% if filter_form.exibirlistaescolas.value %}
+              <table>
+                  <tbody>
+                      {% for place in places %}
+                        <tr><td>{{ place.name }}</td></tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          {% endif %}
+        </section>
       <div class="chart">
       <svg class="map-container">
           <g class="map">
