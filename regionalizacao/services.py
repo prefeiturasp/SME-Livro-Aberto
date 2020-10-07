@@ -9,6 +9,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao, UpdateHistoryDao
 )
+from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
@@ -206,3 +207,54 @@ def get_sheets_last_created_at():
     elif recursos_date:
         return recursos_date
     return None
+
+
+def update_recursos_com_verbas():
+    unidades_verba_valores = UnidadeValoresVerbaFromTo.objects.filter(
+        situacao__iexact='aprovado',
+        data_do_encerramento__isnull=True
+    )
+    for unidade in unidades_verba_valores:
+        try:
+            budget = Budget.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+            budget.valor_mensal = unidade.valor_mensal or 0
+            budget.verba_locacao = unidade.verba_locacao or 0
+            budget.valor_mensal_iptu = unidade.valor_mensal_iptu or 0
+            budget.save()
+            try:
+                escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+                if not escola_info.recursos:
+                    escola_info.recursos = {}
+                escola_info.recursos.update({
+                    'valor_mensal': budget.valor_mensal,
+                    'verba_locacao': budget.verba_locacao,
+                    'valor_mensal_iptu': budget.valor_mensal_iptu
+                })
+                if not escola_info.budget_total:
+                    escola_info.budget_total = 0
+                escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                escola_info.save()
+            except EscolaInfo.DoesNotExist:
+                pass
+        except Budget.DoesNotExist:
+            if EscolaInfo.objects.filter(escola__codesc=unidade.codigo_escola, year=unidade.year).exists():
+                escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+                budget = Budget(
+                    escola=escola_info.escola,
+                    year=unidade.year,
+                    valor_mensal=unidade.valor_mensal or 0,
+                    verba_locacao=unidade.verba_locacao or 0,
+                    valor_mensal_iptu=unidade.valor_mensal_iptu or 0
+                )
+                budget.save()
+                if not escola_info.recursos:
+                    escola_info.recursos = {}
+                escola_info.recursos.update({
+                    'valor_mensal': budget.valor_mensal,
+                    'verba_locacao': budget.verba_locacao,
+                    'valor_mensal_iptu': budget.valor_mensal_iptu
+                })
+                if not escola_info.budget_total:
+                    escola_info.budget_total = 0
+                escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                escola_info.save()

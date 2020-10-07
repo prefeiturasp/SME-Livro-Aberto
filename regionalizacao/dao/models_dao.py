@@ -21,7 +21,7 @@ from regionalizacao.models import (
     Subgrupo,
     Budget,
     Grupo,
-    UpdateHistory,
+    UpdateHistory, UnidadeValoresVerbaFromTo,
 )
 
 
@@ -146,6 +146,28 @@ class UnidadeRecursosFromToDao(FromToDao):
 
     def get_all(self):
         return self.model.objects.all().order_by('year', 'codesc')
+
+
+class UnidadeValoresVerbaFromToDao(FromToDao):
+
+    def __init__(self):
+        self.model = UnidadeValoresVerbaFromTo
+        self.sheet_columns = [
+            SheetColumn('codigo_escola', 'i'),
+            SheetColumn('valor_mensal', 'm'),
+            SheetColumn('verba_locacao', 'n'),
+            SheetColumn('valor_mensal_iptu', 'o'),
+            SheetColumn('situacao', 'r'),
+            SheetColumn('data_do_encerramento', 'u'),
+        ]
+
+    def extract_spreadsheet(self, sheet):
+        year_fromtos = self.model.objects.filter(year=sheet.year)
+        year_fromtos.delete()
+        return super().extract_spreadsheet(sheet)
+
+    def get_all(self):
+        return self.model.objects.all().order_by('year', 'codigo_escola')
 
 
 class FromToSpreadsheetDao:
