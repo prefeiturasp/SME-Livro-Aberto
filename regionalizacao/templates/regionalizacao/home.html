@@ -52,19 +52,6 @@
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}
-        <section id="lista-escolas">
-          <input type="checkbox" checked name="exibirlistaescolas">
-          <label>Exibir lista de escolas</label>
-          {% if filter_form.exibirlistaescolas.value %}
-              <table>
-                  <tbody>
-                      {% for place in places %}
-                        <tr><td>{{ place.name }}</td></tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-          {% endif %}
-        </section>
       <div class="chart">
       <svg class="map-container">
           <g class="map">
@@ -138,6 +125,20 @@
       </div>
     </div>
   </section>
+    {% if filter_form.distrito.value %}
+        <section id="lista-escolas">
+            <h3>LISTA DE ESCOLAS DO DISTRITO {{ distrito }}</h3>
+            <table>
+                <tbody>
+                {% for place in places reversed %}
+                    <tr>
+                        <td><a href="{{ place.url }}#mapa">{{ place.name }}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    {% endif %}
   <section id="localidade">
       <div class="wrapper">
           <h2>Principais recursos por <em>localidade</em> em {{filter_form.year.value|unlocalize}}
