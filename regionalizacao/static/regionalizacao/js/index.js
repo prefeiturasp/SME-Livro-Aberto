@@ -121,8 +121,22 @@ window.addEventListener("DOMContentLoaded", function () {
                 let point = projection(d3.geoCentroid(d)),
                     x = point[0],
                     y = point[1];
-
-                tooltip.style("left", x + 'px')
+                if (200 < y && y <= 300) {
+                    y *= 1.55
+                }
+                else if (300 < y && y <= 400) {
+                    y *= 1.4
+                }
+                else if (400 < y && y <= 500) {
+                    y *= 1.3
+                }
+                else if (500 < y && y <= 600) {
+                    y *= 1.2
+                }
+                else if (600 < y && y <= 800) {
+                    y *= 1.02
+                }
+                tooltip.style("left", x * 0.7 + 'px')
                 tooltip.style("top", y + 'px')
                 tooltip.select('.content').html(
                     `<h4>${this.dataset.name}</h4>
@@ -148,8 +162,22 @@ window.addEventListener("DOMContentLoaded", function () {
                 let point = projection([this.dataset.long, this.dataset.lat]),
                     x = point[0],
                     y = point[1];
-
-                tooltip.style("left", x + 'px')
+                if (200 < y && y <= 300) {
+                    y *= 1.5
+                }
+                if (300 < y && y <= 400) {
+                    y *= 1.4
+                }
+                else if (400 < y && y <= 500) {
+                    y *= 1.3
+                }
+                else if (500 < y && y <= 600) {
+                    y *= 1.2
+                }
+                else if (600 < y && y <= 800) {
+                    y *= 1.02
+                }
+                tooltip.style("left", x * 0.75 + 'px')
                 tooltip.style("top", y + 'px')
                 tooltip.select('.content').html(
                     `<h4>${this.dataset.name}</h4>`

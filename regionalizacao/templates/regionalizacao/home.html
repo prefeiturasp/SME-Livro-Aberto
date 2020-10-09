@@ -54,7 +54,7 @@
             <select id="{{ filter_form.escola.id_for_label }}" name="{{ filter_form.escola.name }}">
                 {% localize off %}
                 <option value="" disabled selected>Selecione uma escola</option>
-                {% for place in places %}
+                {% for place in places reversed %}
                   <option value="{{ place.code }}"
                     {% if place.code == filter_form.escola.value %}selected{% endif %}>{{ place.name }}
                   </option>

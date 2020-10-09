@@ -70,7 +70,7 @@ class PlacesSerializer:
     def get_distrito_or_none(self):
         params = deepcopy(self.query_params)
         info1 = self.map_queryset.first()
-        if 'distrito' in params:
+        if 'distrito' in params and info1.distrito:
             return info1.distrito.name
         return None
 
