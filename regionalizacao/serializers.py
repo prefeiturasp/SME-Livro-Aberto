@@ -32,9 +32,11 @@ class PlacesSerializer:
         total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         places = self.build_places_data()
         locations = self.build_locations_data()
+        distrito = self.get_distrito_or_none()
 
         ret = {
             'current_level': current_level,
+            'distrito': distrito,
             'breadcrumb': breadcrumb,
             'total': total,
             'locations': locations,
@@ -64,6 +66,13 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
+
+    def get_distrito_or_none(self):
+        params = deepcopy(self.query_params)
+        info1 = self.map_queryset.first()
+        if 'distrito' in params and info1.distrito:
+            return info1.distrito.name
+        return None
 
     def get_current_level(self):
         params = deepcopy(self.query_params)
@@ -289,14 +298,18 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
     total = serializers.FloatField(source='budget_total')
     vagas = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
+    distrito = serializers.SerializerMethodField()
 
     class Meta:
         model = EscolaInfo
         fields = ('name', 'slug', 'address', 'cep', 'total', 'recursos',
-                  'latitude', 'longitude', 'vagas')
+                  'latitude', 'longitude', 'vagas', 'distrito')
 
     def get_name(self, obj):
         return f'{obj.tipoesc.code} - {obj.nomesc}'
+
+    def get_distrito(self, obj):
+        return obj.distrito.name
 
     def get_address(self, obj):
         return f'{obj.endereco}, {obj.numero} - {obj.bairro}'

@@ -295,6 +295,24 @@ aside > .card .tooltip-container .tooltip {
   opacity: 1;
 }
 
+#lista-escolas {
+  margin: 0 10px;
+  border: 1px solid cornflowerblue;
+}
+
+#lista-escolas h3 {
+  padding-left: 16px;
+}
+
+#lista-escolas a {
+  text-decoration: none;
+}
+
+#lista-escolas a:hover {
+  font-weight: bold;
+  color: cornflowerblue;
+}
+
 #map-tooltip .tooltip{
   margin: -5em 0 0 -7.25em;
   width: 15em;
