@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from regionalizacao.constants import GENERATED_XLSX_PATH
 from regionalizacao.dao.models_dao import EscolaInfoDao
+from regionalizacao.models import EscolaInfo
 from regionalizacao.serializers import PlacesSerializer
 
 
@@ -51,24 +52,35 @@ class EscolaInfoFilter(InitialFilter):
     distrito = filters.NumberFilter(field_name='distrito__coddist')
     escola = filters.CharFilter(field_name='escola__codesc')
     year = filters.AllValuesFilter(field_name='year', empty_label=None,
-            initial=newest_year)
+                                   initial=newest_year)
     rede = filters.AllValuesFilter(field_name='rede', empty_label=None,
-            initial='DIR')
+                                   initial='DIR')
     localidade = filters.ChoiceFilter(choices=LOCALIDADE_CHOICES,
                                       method='filter_localidade',
                                       empty_label=None)
 
     def filter_queryset(self, queryset):
         query_params = deepcopy(self.form.cleaned_data)
+        if query_params.get('escola'):
+            e = EscolaInfo.objects.get(escola__codesc=query_params.get('escola'))
+            if not e.rede == query_params.get('rede'):
+                del query_params['escola']
+
         if self.form.cleaned_data['distrito']:
             self.form.cleaned_data['dre'] = ''
         map_qs = super().filter_queryset(queryset)
+        if map_qs.count() == 0:
+            map_qs = EscolaInfo.objects.filter(distrito__coddist=query_params.get('distrito'),
+                                               rede=query_params.get('rede'))
 
         self.form.cleaned_data['zona'] = ''
         self.form.cleaned_data['dre'] = ''
         self.form.cleaned_data['distrito'] = ''
         self.form.cleaned_data['escola'] = ''
         locations_qs = super().filter_queryset(queryset)
+        if locations_qs.count() == 0:
+            locations_qs = EscolaInfo.objects.filter(distrito__coddist=query_params.get('distrito'),
+                                                     rede=query_params.get('rede'))
         return query_params, map_qs, locations_qs
 
     def filter_localidade(self, queryset, name, value):
@@ -93,7 +105,7 @@ class FilteredTemplateHTMLRenderer(TemplateHTMLRenderer):
 
 class HomeView(generics.ListAPIView):
     renderer_classes = [FilteredTemplateHTMLRenderer, JSONRenderer]
-    filter_backends = (filters.DjangoFilterBackend, )
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EscolaInfoFilter
     template_name = 'regionalizacao/home.html'
     queryset = EscolaInfoDao().filter_etapa_is_not_null()
@@ -141,5 +153,5 @@ def download_view(request):
         response = HttpResponse(
             fh.read(), content_type="application/vnd.ms-excel")
         response['Content-Disposition'] = (
-            'inline; filename=' + os.path.basename(filepath))
+                'inline; filename=' + os.path.basename(filepath))
         return response
