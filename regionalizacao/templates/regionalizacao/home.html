@@ -43,12 +43,25 @@
                 {% for value, label in filter_form.year.field.choices %}
                     <option value="{{ value }}"
                             {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
-
                     </option>
                 {% endfor %}
                 {% endlocalize %}
             </select>
           </div>
+          {% if filter_form.distrito.value %}
+          <div class="form-item">
+            <select id="{{ filter_form.escola.id_for_label }}" name="{{ filter_form.escola.name }}">
+                {% localize off %}
+                <option value="" disabled selected>Selecione uma escola</option>
+                {% for place in places reversed %}
+                  <option value="{{ place.code }}"
+                    {% if place.code|unlocalize == filter_form.escola.value|unlocalize %}selected{% endif %}>{{ place.name }}
+                  </option>
+                {% endfor %}
+                {% endlocalize %}
+            </select>
+          </div>
+        {% endif %}
         <input class="submit" type="submit" value="Filtrar" name="go">
       </form>
       {% include '_breadcrumb.html' with breadcrumb=breadcrumb anchor='mapa' %}

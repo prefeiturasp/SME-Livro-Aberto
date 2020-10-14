@@ -43,8 +43,11 @@ class PlacesSerializer:
         }
 
         if self.level == 4:
-            ret['escola'] = self.build_escola_data()
-            return ret
+            try:
+                ret['escola'] = self.build_escola_data()
+            except:
+                self.level = 3
+                ret['places'] = self.build_places_data()
 
         etapas = self.build_etapas_data()
 
@@ -171,7 +174,7 @@ class PlacesSerializer:
             qs = self.map_queryset.order_by('distrito')
             for distrito, infos in groupby(qs, lambda i: i.distrito):
                 infos = list(infos)
-                total_pĺaces = sum(info.budget_total if info.budget_total else 0
+                total_places = sum(info.budget_total if info.budget_total else 0
                                    for info in infos)
                 params = {
                     **self.query_params,
@@ -180,7 +183,7 @@ class PlacesSerializer:
                 pĺaces.append({
                     'code': distrito.coddist,
                     'name': distrito.name,
-                    'total': total_pĺaces,
+                    'total': total_places,
                     'url': self.url(params),
                 })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
