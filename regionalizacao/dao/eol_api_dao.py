@@ -35,6 +35,8 @@ def update_escola_table(years):
             latitude=escola_dict["latitude"],
             longitude=escola_dict["longitude"],
             total_vagas=escola_dict["total_vagas"],
+            qtd_matriculas=escola_dict["total_matriculados"],
+            qtd_servidores=escola_dict["total_servidores"],
         )
 
         for year in years:
