@@ -9,7 +9,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao, UpdateHistoryDao
 )
-from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget
+from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget, Dre
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
@@ -232,7 +232,7 @@ def update_recursos_com_verbas():
                 })
                 if not escola_info.budget_total:
                     escola_info.budget_total = 0
-                escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                #escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
                 escola_info.save()
             except EscolaInfo.DoesNotExist:
                 pass
@@ -256,5 +256,26 @@ def update_recursos_com_verbas():
                 })
                 if not escola_info.budget_total:
                     escola_info.budget_total = 0
-                escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                #escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
                 escola_info.save()
+
+
+def update_dres_por_zona():
+    dre_pj_zn = Dre.objects.get(code="PJ ZN")
+    dre_pj_zo = Dre.objects.get(code="PJ ZO")
+    dre_ip_ce = Dre.objects.get(code="IP CE")
+    dre_ip_zl = Dre.objects.get(code="IP ZL")
+    dre_ip_zs = Dre.objects.get(code="IP ZS")
+
+    es = EscolaInfo.objects.all()
+    escolas_dre_pj_zn = es.filter(dre__code="PJ", distrito__zona="ZONA NORTE")
+    escolas_dre_pj_zo = es.filter(dre__code="PJ", distrito__zona="ZONA OESTE")
+    escolas_dre_ip_ce = es.filter(dre__code="IP", distrito__zona="CENTRO")
+    escolas_dre_ip_zl = es.filter(dre__code="IP", distrito__zona="ZONA LESTE")
+    escolas_dre_ip_zs = es.filter(dre__code="IP", distrito__zona="ZONA SUL")
+
+    escolas_dre_pj_zn.update(dre=dre_pj_zn)
+    escolas_dre_pj_zo.update(dre=dre_pj_zo)
+    escolas_dre_ip_ce.update(dre=dre_ip_ce)
+    escolas_dre_ip_zl.update(dre=dre_ip_zl)
+    escolas_dre_ip_zs.update(dre=dre_ip_zs)
