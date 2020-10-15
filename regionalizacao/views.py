@@ -62,7 +62,7 @@ class EscolaInfoFilter(InitialFilter):
     def filter_queryset(self, queryset):
         query_params = deepcopy(self.form.cleaned_data)
         if query_params.get('escola'):
-            e = EscolaInfo.objects.get(escola__codesc=query_params.get('escola'))
+            e = EscolaInfo.objects.get(year=query_params.get('year'), escola__codesc=query_params.get('escola'))
             if not e.rede == query_params.get('rede'):
                 del query_params['escola']
 
@@ -71,7 +71,8 @@ class EscolaInfoFilter(InitialFilter):
         map_qs = super().filter_queryset(queryset)
         if map_qs.count() == 0:
             map_qs = EscolaInfo.objects.filter(distrito__coddist=query_params.get('distrito'),
-                                               rede=query_params.get('rede'))
+                                               rede=query_params.get('rede'),
+                                               year=query_params.get('year'))
 
         self.form.cleaned_data['zona'] = ''
         self.form.cleaned_data['dre'] = ''
@@ -80,7 +81,8 @@ class EscolaInfoFilter(InitialFilter):
         locations_qs = super().filter_queryset(queryset)
         if locations_qs.count() == 0:
             locations_qs = EscolaInfo.objects.filter(distrito__coddist=query_params.get('distrito'),
-                                                     rede=query_params.get('rede'))
+                                                     rede=query_params.get('rede'),
+                                                     year=query_params.get('year'))
         return query_params, map_qs, locations_qs
 
     def filter_localidade(self, queryset, name, value):
