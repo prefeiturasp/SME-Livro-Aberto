@@ -7,7 +7,7 @@ from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
-    PtrfFromToSpreadsheetDao, UpdateHistoryDao
+    PtrfFromToSpreadsheetDao, UpdateHistoryDao, EscolaDao
 )
 from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget, Dre
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
@@ -279,3 +279,127 @@ def update_dres_por_zona():
     escolas_dre_ip_ce.update(dre=dre_ip_ce)
     escolas_dre_ip_zl.update(dre=dre_ip_zl)
     escolas_dre_ip_zs.update(dre=dre_ip_zs)
+
+
+def checar_escolas_que_nao_tem_escola_info_2019():
+    escola_dao = EscolaDao()
+    escola_data = dict(
+        dre="CL",
+        codesc="019251",
+        tipoesc="EMEF",
+        nomesc="CASARAO",
+        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
+        endereco="Rua MAJOR JOSÉ MARIOTO FERREIRA",
+        numero="101",
+        bairro="PARAISÓPOLIS",
+        cep=5662020,
+        situacao="EXTINTA",
+        coddist="83",
+        distrito="VILA ANDRADE",
+        rede="DIR",
+        latitude="-23.613154",
+        longitude="-46.723022",
+        total_vagas=0,
+        qtd_matriculas=0,
+        qtd_servidores=0,
+    )
+    created = escola_dao.create_for_previous_year(
+        **escola_data, year=2019)
+    print("019251, criado: ", created)
+    escola_data = dict(
+        dre="CL",
+        codesc="090301",
+        tipoesc="EMEI",
+        nomesc="DANTE MOREIRA LEITE, PROF",
+        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
+        endereco="Avenida DOUTOR SALVADOR ROCCO",
+        numero="80",
+        bairro="PARQUE FERNANDA",
+        cep=5888050,
+        situacao="ATIVA",
+        coddist="19",
+        distrito="CAPAO REDONDO",
+        rede="DIR",
+        latitude="-23.672055",
+        longitude="-46.792828",
+        total_vagas=0,
+        qtd_matriculas=0,
+        qtd_servidores=0,
+    )
+    created = escola_dao.create_for_previous_year(
+        **escola_data, year=2019)
+    print("090301, criado: ", created)
+    escola_data = dict(
+        dre="SM",
+        codesc="095451",
+        tipoesc="EMEF",
+        nomesc="TAUNAY, VISC. DE",
+        diretoria="DIRETORIA REGIONAL DE EDUCACAO SAO MATEUS",
+        endereco="Estrada CASA GRANDE",
+        numero="566",
+        bairro="VILA CUNHA BUENO",
+        cep=3260000,
+        situacao="EXTINTA",
+        coddist="76",
+        distrito="SAPOPEMBA",
+        rede="DIR",
+        latitude="-23.603757",
+        longitude="-46.514638",
+        total_vagas=0,
+        qtd_matriculas=0,
+        qtd_servidores=0,
+    )
+    created = escola_dao.create_for_previous_year(
+        **escola_data, year=2019)
+    print("095451, criado: ", created)
+    escola_data = dict(
+        dre="CL",
+        codesc="400761",
+        tipoesc="CEI INDIR",
+        nomesc="CAPAO REDONDO I",
+        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
+        endereco="Rua ARROIO TIPIAIÁ",
+        numero="S/N",
+        bairro="CONJUNTO HABITACIONAL INSTITUTO ADVENTIS",
+        cep=5868870,
+        situacao="EXTINTA",
+        coddist="19",
+        distrito="CAPAO REDONDO",
+        rede="DIR",
+        latitude="-23.661123",
+        longitude="-46.773434",
+        total_vagas=0,
+        qtd_matriculas=0,
+        qtd_servidores=0,
+    )
+    created = escola_dao.create_for_previous_year(
+        **escola_data, year=2019)
+    print("400761, criado: ", created)
+    from .models import UnidadeRecursosFromTo
+    urs = UnidadeRecursosFromTo.objects.filter(year=2019, grupo='PESSOAL')
+    codescs = []
+    for u in urs.filter(grupo='PESSOAL'):
+        if not EscolaInfo.objects.filter(year=2019, escola__codesc=u.codesc).exists():
+            if u.codesc not in codescs:
+                codescs.append(u.codesc)
+    us = UnidadeRecursosFromTo.objects.filter(year=2019, codesc__in=codescs)
+    us.delete()
+    ft_dao = UnidadeRecursosFromToDao()
+    recurso_dao = RecursoDao()
+    fts = ft_dao.get_all().filter(year=2019, codesc__in=['019251', '400761', '095451', '090301'])
+    for ft in fts:
+        recurso_dao.update_or_create(
+            codesc=ft.codesc,
+            year=ft.year,
+            grupo_name=ft.grupo,
+            subgrupo_name=ft.subgrupo,
+            valor=ft.valor,
+            label=ft.label)
+    budget_dao = BudgetDao()
+    info_dao = EscolaInfoDao()
+    budgets = budget_dao.get_all().filter(year=2019, escola__codesc__in=['019251', '400761', '095451', '090301'])
+    for budget in budgets:
+        recursos, total = budget_dao.build_recursos_data(budget)
+        info_dao.update(
+            escola_id=budget.escola.id, year=budget.year,
+            budget_total=total, recursos=recursos)
