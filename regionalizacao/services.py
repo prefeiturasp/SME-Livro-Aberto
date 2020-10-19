@@ -347,5 +347,5 @@ def normalize_ptrf():
 def normalize_dres():
     dres = Dre.objects.all()
     for d in dres:
-        d.name = d.name.replace("DIRETORIA REGIONAL", "DRE")
+        d.name = d.name.replace("DIRETORIA REGIONAL DE EDUCACAO", "DRE")
         d.save()
