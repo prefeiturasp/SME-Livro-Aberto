@@ -342,3 +342,10 @@ def normalize_ptrf():
     for p in pts:
         p.codesc = p.codesc.zfill(6)
         p.save()
+
+
+def normalize_dres():
+    dres = Dre.objects.all()
+    for d in dres:
+        d.name = d.name.replace("DIRETORIA REGIONAL", "DRE")
+        d.save()
