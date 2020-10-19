@@ -43,7 +43,6 @@
                 {% for value, label in filter_form.year.field.choices %}
                     <option value="{{ value }}"
                             {% if value|unlocalize == filter_form.year.value|unlocalize %}selected{% endif %}>{{ label }}
-
                     </option>
                 {% endfor %}
                 {% endlocalize %}
@@ -56,7 +55,7 @@
                 <option value="" disabled selected>Selecione uma escola</option>
                 {% for place in places reversed %}
                   <option value="{{ place.code }}"
-                    {% if place.code == filter_form.escola.value %}selected{% endif %}>{{ place.name }}
+                    {% if place.code|unlocalize == filter_form.escola.value|unlocalize %}selected{% endif %}>{{ place.name }}
                   </option>
                 {% endfor %}
                 {% endlocalize %}

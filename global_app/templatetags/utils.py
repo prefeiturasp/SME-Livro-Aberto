@@ -22,7 +22,7 @@ def split(value, sep=None):
 
 @register.filter(name='merge_dres')
 def merge_dres(locations):
-    if 'DRE' in locations[0]['name']:
+    if 'DIRETORIA REGIONAL' in locations[0]['name'] or 'DRE' in locations[0]['name']:
         total_dre_ipiranga = 0.0
         total_unidades_dre_ipiranga = 0
         total_matriculas_dre_ipiranga = 0

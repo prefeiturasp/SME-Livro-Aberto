@@ -309,8 +309,8 @@ class EscolaDao:
             latitude=kwargs['latitude'],
             longitude=kwargs['longitude'],
             total_vagas=kwargs['total_vagas'],
-            qtd_matriculas=kwargs['total_matriculados'],
-            qtd_servidores=kwargs['total_servidores'],
+            qtd_matriculas=kwargs['qtd_matriculas'],
+            qtd_servidores=kwargs['qtd_servidores'],
         )
 
         self.info_dao.update_or_create(**escola_info)
@@ -341,8 +341,8 @@ class EscolaDao:
             latitude=kwargs['latitude'],
             longitude=kwargs['longitude'],
             total_vagas=kwargs['total_vagas'],
-            qtd_matriculas=kwargs['total_matriculados'],
-            qtd_servidores=kwargs['total_servidores'],
+            qtd_matriculas=kwargs['qtd_matriculas'],
+            qtd_servidores=kwargs['qtd_servidores'],
         )
 
         _, created = self.info_dao.get_or_create(**escola_info)

@@ -32,11 +32,9 @@ class PlacesSerializer:
         total = self.map_queryset.aggregate(total=Sum('budget_total'))['total']
         places = self.build_places_data()
         locations = self.build_locations_data()
-        distrito = self.get_distrito_or_none()
 
         ret = {
             'current_level': current_level,
-            'distrito': distrito,
             'breadcrumb': breadcrumb,
             'total': total,
             'locations': locations,
@@ -45,8 +43,11 @@ class PlacesSerializer:
         }
 
         if self.level == 4:
-            ret['escola'] = self.build_escola_data()
-            return ret
+            try:
+                ret['escola'] = self.build_escola_data()
+            except:
+                self.level = 3
+                ret['places'] = self.build_places_data()
 
         etapas = self.build_etapas_data()
 
@@ -66,13 +67,6 @@ class PlacesSerializer:
             qdict.update(params)
             url = f'{url}?{qdict.urlencode()}&localidade={self.locations_type}'
         return url
-
-    def get_distrito_or_none(self):
-        params = deepcopy(self.query_params)
-        info1 = self.map_queryset.first()
-        if 'distrito' in params and info1.distrito:
-            return info1.distrito.name
-        return None
 
     def get_current_level(self):
         params = deepcopy(self.query_params)
@@ -180,7 +174,7 @@ class PlacesSerializer:
             qs = self.map_queryset.order_by('distrito')
             for distrito, infos in groupby(qs, lambda i: i.distrito):
                 infos = list(infos)
-                total_pĺaces = sum(info.budget_total if info.budget_total else 0
+                total_places = sum(info.budget_total if info.budget_total else 0
                                    for info in infos)
                 params = {
                     **self.query_params,
@@ -189,7 +183,7 @@ class PlacesSerializer:
                 pĺaces.append({
                     'code': distrito.coddist,
                     'name': distrito.name,
-                    'total': total_pĺaces,
+                    'total': total_places,
                     'url': self.url(params),
                 })
             pĺaces.sort(key=lambda z: z['total'], reverse=True)
@@ -298,18 +292,14 @@ class EscolaInfoSerializer(serializers.ModelSerializer):
     total = serializers.FloatField(source='budget_total')
     vagas = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
-    distrito = serializers.SerializerMethodField()
 
     class Meta:
         model = EscolaInfo
         fields = ('name', 'slug', 'address', 'cep', 'total', 'recursos',
-                  'latitude', 'longitude', 'vagas', 'distrito')
+                  'latitude', 'longitude', 'vagas')
 
     def get_name(self, obj):
         return f'{obj.tipoesc.code} - {obj.nomesc}'
-
-    def get_distrito(self, obj):
-        return obj.distrito.name
 
     def get_address(self, obj):
         return f'{obj.endereco}, {obj.numero} - {obj.bairro}'
