@@ -9,7 +9,7 @@ from regionalizacao.dao.models_dao import (
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
     PtrfFromToSpreadsheetDao, UpdateHistoryDao, EscolaDao
 )
-from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget, Dre
+from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget, Dre, PtrfFromTo
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
@@ -92,6 +92,7 @@ def extract_ptrf_and_recursos_spreadsheets():
 
 
 def apply_fromtos():
+
     apply_distrito_zona_fromto()
     apply_etapa_tipo_escola_fromto()
     apply_ptrf_fromto()
@@ -285,75 +286,6 @@ def checar_escolas_que_nao_tem_escola_info_2019():
     escola_dao = EscolaDao()
     escola_data = dict(
         dre="CL",
-        codesc="019251",
-        tipoesc="EMEF",
-        nomesc="CASARAO",
-        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
-        endereco="Rua MAJOR JOSÉ MARIOTO FERREIRA",
-        numero="101",
-        bairro="PARAISÓPOLIS",
-        cep=5662020,
-        situacao="EXTINTA",
-        coddist="83",
-        distrito="VILA ANDRADE",
-        rede="DIR",
-        latitude="-23.613154",
-        longitude="-46.723022",
-        total_vagas=0,
-        qtd_matriculas=0,
-        qtd_servidores=0,
-    )
-    created = escola_dao.create_for_previous_year(
-        **escola_data, year=2019)
-    print("019251, criado: ", created)
-    escola_data = dict(
-        dre="CL",
-        codesc="090301",
-        tipoesc="EMEI",
-        nomesc="DANTE MOREIRA LEITE, PROF",
-        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
-        endereco="Avenida DOUTOR SALVADOR ROCCO",
-        numero="80",
-        bairro="PARQUE FERNANDA",
-        cep=5888050,
-        situacao="ATIVA",
-        coddist="19",
-        distrito="CAPAO REDONDO",
-        rede="DIR",
-        latitude="-23.672055",
-        longitude="-46.792828",
-        total_vagas=0,
-        qtd_matriculas=0,
-        qtd_servidores=0,
-    )
-    created = escola_dao.create_for_previous_year(
-        **escola_data, year=2019)
-    print("090301, criado: ", created)
-    escola_data = dict(
-        dre="SM",
-        codesc="095451",
-        tipoesc="EMEF",
-        nomesc="TAUNAY, VISC. DE",
-        diretoria="DIRETORIA REGIONAL DE EDUCACAO SAO MATEUS",
-        endereco="Estrada CASA GRANDE",
-        numero="566",
-        bairro="VILA CUNHA BUENO",
-        cep=3260000,
-        situacao="EXTINTA",
-        coddist="76",
-        distrito="SAPOPEMBA",
-        rede="DIR",
-        latitude="-23.603757",
-        longitude="-46.514638",
-        total_vagas=0,
-        qtd_matriculas=0,
-        qtd_servidores=0,
-    )
-    created = escola_dao.create_for_previous_year(
-        **escola_data, year=2019)
-    print("095451, criado: ", created)
-    escola_data = dict(
-        dre="CL",
         codesc="400761",
         tipoesc="CEI INDIR",
         nomesc="CAPAO REDONDO I",
@@ -386,7 +318,7 @@ def checar_escolas_que_nao_tem_escola_info_2019():
     us.delete()
     ft_dao = UnidadeRecursosFromToDao()
     recurso_dao = RecursoDao()
-    fts = ft_dao.get_all().filter(year=2019, codesc__in=['019251', '400761', '095451', '090301'])
+    fts = ft_dao.get_all().filter(year=2019, codesc__in=['400761'])
     for ft in fts:
         recurso_dao.update_or_create(
             codesc=ft.codesc,
@@ -397,9 +329,16 @@ def checar_escolas_que_nao_tem_escola_info_2019():
             label=ft.label)
     budget_dao = BudgetDao()
     info_dao = EscolaInfoDao()
-    budgets = budget_dao.get_all().filter(year=2019, escola__codesc__in=['019251', '400761', '095451', '090301'])
+    budgets = budget_dao.get_all().filter(year=2019, escola__codesc__in=['400761'])
     for budget in budgets:
         recursos, total = budget_dao.build_recursos_data(budget)
         info_dao.update(
             escola_id=budget.escola.id, year=budget.year,
             budget_total=total, recursos=recursos)
+
+
+def normalize_ptrf():
+    pts = PtrfFromTo.objects.all()
+    for p in pts:
+        p.codesc = p.codesc.zfill(6)
+        p.save()
