@@ -101,8 +101,8 @@ aside > .card > header > h3{
 }
 
 aside > .card > header > .numbers{
-  display: flex;
-  justify-content: space-between;
+  //display: flex;
+  //justify-content: space-between;
   font-weight: bolder;
 }
 
@@ -206,7 +206,7 @@ aside > .card td{
   padding: 0;
 }
 
-aside > .card tr:nth-child(even) td{
+aside > .card tr:nth-child(even):not(.valor-repasses) td{
   border-bottom: 2px solid #e2ebe3;
   padding-bottom: 0.5em;
   padding-top: 0.25em;
@@ -278,7 +278,7 @@ svg.icon .stroke{
   border-radius: 3px;
   margin: -8em 0 0 -5.25em;
   pointer-events: none;
-  width: 12em;
+  width: 13em;
 }
 
 aside > .card .tooltip-container .tooltip {
@@ -293,6 +293,24 @@ aside > .card .tooltip-container .tooltip {
 #map-tooltip.over .tooltip,
 .tooltip-container:hover .tooltip {
   opacity: 1;
+}
+
+#lista-escolas {
+  margin: 0 10px;
+  border: 1px solid cornflowerblue;
+}
+
+#lista-escolas h3 {
+  padding-left: 16px;
+}
+
+#lista-escolas a {
+  text-decoration: none;
+}
+
+#lista-escolas a:hover {
+  font-weight: bold;
+  color: cornflowerblue;
 }
 
 #map-tooltip .tooltip{

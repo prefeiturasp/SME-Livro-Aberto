@@ -125,7 +125,7 @@ pipeline {
             
             timeout(time: 24, unit: "HOURS") {
                telegramSend("${JOB_NAME}...O Build ${BUILD_DISPLAY_NAME} - Requer uma aprovação para deploy !!!\n Consulte o log para detalhes -> [Job logs](${env.BUILD_URL}console)\n")
-               input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'bruno_buzzo'
+               input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'bruno_buzzo, calvin_rossinhole, kelwy_oliveira'
             }
             //Start JOB Rundeck para update de imagens no host homologação 
          
@@ -185,7 +185,7 @@ pipeline {
             steps {
                 timeout(time: 24, unit: "HOURS") {
                 telegramSend("${JOB_NAME}...O Build ${BUILD_DISPLAY_NAME} - Requer uma aprovação para deploy !!!\n Consulte o log para detalhes -> [Job logs](${env.BUILD_URL}console)\n")
-                input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'bruno_buzzo'
+                input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'bruno_buzzo, calvin_rossinhole, kelwy_oliveira'
                 }
                     
             

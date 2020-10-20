@@ -28,7 +28,7 @@
                         {% endif %}
                     </strong>
                     <div class="description">
-                        em recursos
+                        em recursos anuais
                     </div>
                 </div>
             {% endif %}
@@ -54,7 +54,7 @@
                 da Unidade Educacional
             </h3>
         {% else %}
-        <small>Não foram encontrados dados correspondentes para este nível de detalhamento ou filtro aplicado.</small>
+        <small>Não foram encontrados dados correspondentes de recursos anuais para este nível de detalhamento ou filtro aplicado.</small>
         {% endif %}
         <table class="groups">
             <tbody>
@@ -97,6 +97,68 @@
                         </td>
                     </tr>
                 {% endfor %}
+                {% if escola.recursos.valor_mensal or escola.recursos.verba_locacao or escola.recursos.valor_mensal_iptu%}
+                    <tr style="font-weight: bold;margin-bottom: 10px;" class="valor-repasses">
+                        <td style="text-align: right">Recursos</td> <td>&nbsp;mensais</td>
+                    </tr>
+                {% endif %}
+                {% if escola.recursos.valor_mensal %}
+                    <tr class="valor-repasses">
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.valor_mensal|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Valor mensal
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if escola.recursos.verba_locacao %}
+                    <tr class="valor-repasses">
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.verba_locacao|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Verba locação
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if escola.recursos.valor_mensal_iptu %}
+                    <tr class="valor-repasses">
+                        <td>
+                            {% include '_legend_icon.html' with app='regionalizacao' slug='ptrf' class_name='bg-'|add:escola.slug %}
+                        </td>
+                        <td>
+                            <h4>
+                                <strong class="number">
+                                    R$ {{escola.recursos.valor_mensal_iptu|floatformat:2}}
+                                </strong>
+                                <div class="description fg-{{escola.slug}}">
+                                    <strong>
+                                        Valor mensal IPTU
+                                    </strong>
+                                </div>
+                            </h4>
+                        </td>
+                    </tr>
+                {% endif %}
                 {% if escola.recursos.ptrf %}
                     <tr>
                         <td>

@@ -7,8 +7,9 @@ from regionalizacao.dao.models_dao import (
     DistritoDao, DistritoZonaFromToDao, EtapaTipoEscolaFromToDao,
     TipoEscolaDao, PtrfFromToDao, RecursoDao, UnidadeRecursosFromToDao,
     BudgetDao, EscolaInfoDao, UnidadeRecursosFromToSpreadsheetDao,
-    PtrfFromToSpreadsheetDao, UpdateHistoryDao
+    PtrfFromToSpreadsheetDao, UpdateHistoryDao, EscolaDao
 )
+from regionalizacao.models import UnidadeValoresVerbaFromTo, EscolaInfo, Budget, Dre, PtrfFromTo
 from regionalizacao.use_cases import GenerateXlsxFilesUseCase
 
 
@@ -91,6 +92,7 @@ def extract_ptrf_and_recursos_spreadsheets():
 
 
 def apply_fromtos():
+
     apply_distrito_zona_fromto()
     apply_etapa_tipo_escola_fromto()
     apply_ptrf_fromto()
@@ -206,3 +208,144 @@ def get_sheets_last_created_at():
     elif recursos_date:
         return recursos_date
     return None
+
+
+def update_recursos_com_verbas():
+    unidades_verba_valores = UnidadeValoresVerbaFromTo.objects.filter(
+        situacao__iexact='aprovado',
+        data_do_encerramento__isnull=True
+    )
+    for unidade in unidades_verba_valores:
+        try:
+            budget = Budget.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+            budget.valor_mensal = unidade.valor_mensal or 0
+            budget.verba_locacao = unidade.verba_locacao or 0
+            budget.valor_mensal_iptu = unidade.valor_mensal_iptu or 0
+            budget.save()
+            try:
+                escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+                if not escola_info.recursos:
+                    escola_info.recursos = {}
+                escola_info.recursos.update({
+                    'valor_mensal': budget.valor_mensal,
+                    'verba_locacao': budget.verba_locacao,
+                    'valor_mensal_iptu': budget.valor_mensal_iptu
+                })
+                if not escola_info.budget_total:
+                    escola_info.budget_total = 0
+                #escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                escola_info.save()
+            except EscolaInfo.DoesNotExist:
+                pass
+        except Budget.DoesNotExist:
+            if EscolaInfo.objects.filter(escola__codesc=unidade.codigo_escola, year=unidade.year).exists():
+                escola_info = EscolaInfo.objects.get(escola__codesc=unidade.codigo_escola, year=unidade.year)
+                budget = Budget(
+                    escola=escola_info.escola,
+                    year=unidade.year,
+                    valor_mensal=unidade.valor_mensal or 0,
+                    verba_locacao=unidade.verba_locacao or 0,
+                    valor_mensal_iptu=unidade.valor_mensal_iptu or 0
+                )
+                budget.save()
+                if not escola_info.recursos:
+                    escola_info.recursos = {}
+                escola_info.recursos.update({
+                    'valor_mensal': budget.valor_mensal,
+                    'verba_locacao': budget.verba_locacao,
+                    'valor_mensal_iptu': budget.valor_mensal_iptu
+                })
+                if not escola_info.budget_total:
+                    escola_info.budget_total = 0
+                #escola_info.budget_total += budget.valor_mensal + budget.verba_locacao + budget.valor_mensal_iptu
+                escola_info.save()
+
+
+def update_dres_por_zona():
+    dre_pj_zn = Dre.objects.get(code="PJ ZN")
+    dre_pj_zo = Dre.objects.get(code="PJ ZO")
+    dre_ip_ce = Dre.objects.get(code="IP CE")
+    dre_ip_zl = Dre.objects.get(code="IP ZL")
+    dre_ip_zs = Dre.objects.get(code="IP ZS")
+
+    es = EscolaInfo.objects.all()
+    escolas_dre_pj_zn = es.filter(dre__code="PJ", distrito__zona="ZONA NORTE")
+    escolas_dre_pj_zo = es.filter(dre__code="PJ", distrito__zona="ZONA OESTE")
+    escolas_dre_ip_ce = es.filter(dre__code="IP", distrito__zona="CENTRO")
+    escolas_dre_ip_zl = es.filter(dre__code="IP", distrito__zona="ZONA LESTE")
+    escolas_dre_ip_zs = es.filter(dre__code="IP", distrito__zona="ZONA SUL")
+
+    escolas_dre_pj_zn.update(dre=dre_pj_zn)
+    escolas_dre_pj_zo.update(dre=dre_pj_zo)
+    escolas_dre_ip_ce.update(dre=dre_ip_ce)
+    escolas_dre_ip_zl.update(dre=dre_ip_zl)
+    escolas_dre_ip_zs.update(dre=dre_ip_zs)
+
+
+def checar_escolas_que_nao_tem_escola_info_2019():
+    escola_dao = EscolaDao()
+    escola_data = dict(
+        dre="CL",
+        codesc="400761",
+        tipoesc="CEI INDIR",
+        nomesc="CAPAO REDONDO I",
+        diretoria="DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO",
+        endereco="Rua ARROIO TIPIAIÁ",
+        numero="S/N",
+        bairro="CONJUNTO HABITACIONAL INSTITUTO ADVENTIS",
+        cep=5868870,
+        situacao="EXTINTA",
+        coddist="19",
+        distrito="CAPAO REDONDO",
+        rede="DIR",
+        latitude="-23.661123",
+        longitude="-46.773434",
+        total_vagas=0,
+        qtd_matriculas=0,
+        qtd_servidores=0,
+    )
+    created = escola_dao.create_for_previous_year(
+        **escola_data, year=2019)
+    print("400761, criado: ", created)
+    from .models import UnidadeRecursosFromTo
+    urs = UnidadeRecursosFromTo.objects.filter(year=2019, grupo='PESSOAL')
+    codescs = []
+    for u in urs.filter(grupo='PESSOAL'):
+        if not EscolaInfo.objects.filter(year=2019, escola__codesc=u.codesc).exists():
+            if u.codesc not in codescs:
+                codescs.append(u.codesc)
+    us = UnidadeRecursosFromTo.objects.filter(year=2019, codesc__in=codescs)
+    us.delete()
+    ft_dao = UnidadeRecursosFromToDao()
+    recurso_dao = RecursoDao()
+    fts = ft_dao.get_all().filter(year=2019, codesc__in=['400761'])
+    for ft in fts:
+        recurso_dao.update_or_create(
+            codesc=ft.codesc,
+            year=ft.year,
+            grupo_name=ft.grupo,
+            subgrupo_name=ft.subgrupo,
+            valor=ft.valor,
+            label=ft.label)
+    budget_dao = BudgetDao()
+    info_dao = EscolaInfoDao()
+    budgets = budget_dao.get_all().filter(year=2019, escola__codesc__in=['400761'])
+    for budget in budgets:
+        recursos, total = budget_dao.build_recursos_data(budget)
+        info_dao.update(
+            escola_id=budget.escola.id, year=budget.year,
+            budget_total=total, recursos=recursos)
+
+
+def normalize_ptrf():
+    pts = PtrfFromTo.objects.all()
+    for p in pts:
+        p.codesc = p.codesc.zfill(6)
+        p.save()
+
+
+def normalize_dres():
+    dres = Dre.objects.all()
+    for d in dres:
+        d.name = d.name.replace("DIRETORIA REGIONAL DE EDUCACAO", "DRE")
+        d.save()
