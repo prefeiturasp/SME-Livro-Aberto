@@ -11,7 +11,7 @@
     <h1><a href="{% url 'regionalizacao_urls:home' %}">Regionalização</a></h1>
 
   <p>Saiba onde está o orçamento da educação de São Paulo</p>
-  {% include '_header_nav.html' with last_update_header='Última atualização em: ' about='regionalizacao:saiba_mais' methodology='regionalizacao:metodologia' %}
+  {% include '_header_nav.html' with last_update_header='Última atualização em: ' about='regionalizacao:saiba_mais' %} {# methodology='regionalizacao:metodologia' #}
 {% endblock %}
 {%block sections %}
   <section id="mapa">
