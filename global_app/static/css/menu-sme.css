@@ -19,12 +19,12 @@
     flex-grow: 1;
 }
 
-.navbar-logos a:first-child {
+.navbar-logos img:first-child {
     margin-top: .5rem;
     margin-right: 1rem;
 }
 
-.navbar-logos a img {
+.navbar-logos img {
     height: 2rem;
     width: auto;
 }
