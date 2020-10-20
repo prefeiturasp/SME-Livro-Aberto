@@ -195,9 +195,9 @@
                               </svg>
                             <div class="tooltip">
                               <div>
-                                  Unidades diretas: {{location.unidades}} <br/>
+                                  Unidades {% if filter_form.rede.value == 'CON' %}parceiras: {% else %}diretas: {% endif %}{{location.unidades}} <br/>
                                   Matrículas: {{location.matriculas}} <br/>
-                                  Servidores: {{location.servidores}} <br/>
+                                  {% if filter_form.rede.value != 'CON' %}Servidores: {{location.servidores}} <br/>{% endif %}
                               </div>
                             </div>
                           </div>
