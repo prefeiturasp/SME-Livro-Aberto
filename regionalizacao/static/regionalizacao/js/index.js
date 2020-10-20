@@ -81,14 +81,18 @@ window.addEventListener("DOMContentLoaded", function () {
 
     let x = svg.node().parentNode.offsetLeft,
         y = svg.node().parentNode.offsetTop,
-        canvasWidth = svg.node().parentNode.offsetWidth * 3 / 3 + x,
+        canvasWidth = svg.node().parentNode.offsetWidth * 1 / ( window.innerWidth < 576 ? 1 : 1.5) + x,
         canvasHeight = Math.min((svg.node().parentNode.offsetHeight + y), 957);
 
     let width = Math.round(parseFloat(svg.style('width'))),
         height = Math.round(parseFloat(svg.style('height')));
 
+    console.log(window.innerWidth);
+
     svg.attr('viewBox', '0 0 ' + width + ' ' + height);
-    svg.style('position', 'relative');
+    if (window.innerWidth < 576) {
+        svg.style('position', 'relative');
+    }
 
     var gMap = svg.select('g.map');
 
@@ -121,18 +125,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 let point = projection(d3.geoCentroid(d)),
                     x = point[0],
                     y = point[1];
-                if (200 < y && y <= 300) {
-                    y *= 1.55;
-                } else if (300 < y && y <= 400) {
-                    y *= 1.4;
-                } else if (400 < y && y <= 500) {
-                    y *= 1.3;
-                } else if (500 < y && y <= 600) {
-                    y *= 1.2;
-                } else if (600 < y && y <= 800) {
-                    y *= 1.02;
-                }
-                tooltip.style("left", x * 0.77 + 'px')
+                tooltip.style("left", x + 'px')
                 tooltip.style("top", y + 'px')
                 tooltip.select('.content').html(
                     `<h4>${this.dataset.name}</h4>
@@ -158,22 +151,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 let point = projection([this.dataset.long, this.dataset.lat]),
                     x = point[0],
                     y = point[1];
-                if (200 < y && y <= 300) {
-                    y *= 1.5
-                } else if (300 < y && y <= 400) {
-                    y *= 1.4
-                } else if (400 < y && y <= 500) {
-                    y *= 1.2
-                } else if (500 < y && y <= 550) {
-                    y *= 1.15
-                }else if (550 < y && y <= 600) {
-                    y *= 1.12
-                } else if (600 < y && y <= 700) {
-                    y *= 1.08
-                } else if (700 < y && y <= 800) {
-                    y *= 1.02
-                }
-                tooltip.style("left", x * 0.75 + 'px')
+                tooltip.style("left", x + 'px')
                 tooltip.style("top", y + 'px')
                 tooltip.select('.content').html(
                     `<h4>${this.dataset.name}</h4>`
