@@ -69,10 +69,14 @@ a.btn:last-child {
 }
 
 section .breadcrumb{
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .breadcrumb > li > ::before{
+
+}
+
+.breadcrumb > li:not(:last-child) > ::after{
   display: inline-block;
   padding-right: .5rem;
   padding-left: .5rem;
