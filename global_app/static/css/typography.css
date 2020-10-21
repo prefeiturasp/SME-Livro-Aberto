@@ -8,6 +8,10 @@ h1 {
   font-weight: 300;
 }
 
+h1 a {
+  text-decoration: none;
+}
+
 body > header h1 + p{
   font-size: 1.5em;
   font-weight: 700;
@@ -65,10 +69,14 @@ a.btn:last-child {
 }
 
 section .breadcrumb{
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .breadcrumb > li > ::before{
+
+}
+
+.breadcrumb > li:not(:last-child) > ::after{
   display: inline-block;
   padding-right: .5rem;
   padding-left: .5rem;

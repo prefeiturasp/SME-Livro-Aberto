@@ -13,7 +13,7 @@
 {%block header %}
   <h1>Regionalização</h1>
   <p>Saiba onde está o orçamento da educação de São Paulo</p>
-  {% include '_header_nav.html' with methodology='regionalizacao:metodologia'%}
+  {#  {% include '_header_nav.html' with methodology='regionalizacao:metodologia'%} #}
 {% endblock %}
 
 {%block sections %}
@@ -38,14 +38,14 @@
                 <div class="metodologia_mosaico verde">
                         <h2><strong>TUTORIAL</strong> ❯ Vis&atilde;o geral</h2>
 
-                        <p>A navega&ccedil;&atilde;o da ferramenta &eacute; orientada, principalmente, a partir de um mapa interativo da cidade de S&atilde;o Paulo. Como mostra a<strong> Figura 1</strong>, ao abrir a ferramenta, o usu&aacute;rio visualiza, do lado esquerdo, o mapa segmentado por regi&otilde;es (zonas) geogr&aacute;ficas e, do lado direito, um painel com os dados gerais da ferramenta agregados para a cidade de S&atilde;o Paulo: quantidade de recursos que s&atilde;o mapeados na ferramenta (em R$ milh&otilde;es correntes), n&uacute;mero de unidades de ensino e a segmenta&ccedil;&atilde;o dessas informa&ccedil;&otilde;es por etapa/modalidade de ensino (Educa&ccedil;&atilde;o Infantil, Ensino Fundamental e M&eacute;dio, Educa&ccedil;&atilde;o de Jovens e Adultos e Profissional, e Educa&ccedil;&atilde;o Especial).</p>
+                    <p>A navegação da ferramenta é orientada, principalmente, a partir de um mapa interativo da cidade de São Paulo. Como mostra a <strong>Figura 1</strong>, ao abrir a ferramenta, o usuário visualiza, do lado esquerdo, o mapa segmentado por regiões (zonas) geográficas e, do lado direito, um painel com os dados gerais da ferramenta agregados para a cidade de São Paulo: quantidade de recursos que são mapeados na ferramenta (em R$ milhões correntes), número de unidades de ensino e a segmentação dessas informações por etapa/modalidade de ensino (Educação Infantil, Ensino Fundamental e Médio, Educação de Jovens e Adultos e Profissional, e Educação Especial).</p>
                         
                         <p><strong>Figura 1</strong>: Vis&atilde;o geral da ferramenta</p>
                         <img src="{% static 'regionalizacao/img/regionalizacao-figura-1.png' %}" alt="Figura 1" width="80%">
                         
                         <p>A chave seletora logo acima da visualiza&ccedil;&atilde;o do mapa permite selecionar o tipo de rede das unidades de ensino. &Eacute; poss&iacute;vel escolher entre unidades diretas e unidades parceiras, de modo que o painel lateral responde, adaptando-se ao universo escolhido. Quando &eacute; escolhido o universo de unidades parceiras, a ficha lateral tamb&eacute;m exibe a informa&ccedil;&atilde;o de vagas contratadas.</p>
-                        <p>O usu&aacute;rio tamb&eacute;m pode escolher o ano de refer&ecirc;ncia dos dados apresentados no seletor de ano, ao lado do seletor do tipo de rede. Os anos dispon&iacute;veis s&atilde;o o de 2018 em diante. No painel superior da ferramenta, &eacute; poss&iacute;vel visualizar a data de atualiza&ccedil;&atilde;o, que &eacute; a data da &uacute;ltima vez que o administrador inseriu dados novos na ferramenta.</p>
-                        <p>Abaixo do mapa, a ferramenta exibe um gr&aacute;fico de barras horizontais com o total de recursos por regi&atilde;o no ano selecionado. H&aacute; dois seletores dispon&iacute;veis: um seletor que permite escolher entre regi&otilde;es ou DREs para exibi&ccedil;&atilde;o nas barras e um seletor do crit&eacute;rio de exibi&ccedil;&atilde;o, que pode ser por ordem alfab&eacute;tica ou decrescente em termos do volume de recursos. Um detalhe dessa visualiza&ccedil;&atilde;o se encontra na <strong>Figura 2 </strong>a seguir.</p>
+                        <p>O usuário também pode escolher o ano de referência dos dados apresentados no seletor de ano, ao lado do seletor do tipo de rede. Os anos disponíveis são o de 2018 em diante. No painel superior da ferramenta, é possível visualizar a data de atualização, que é a data da última vez que o administrador inseriu dados novos na ferramenta.</p>
+                    <p>Abaixo do mapa, a ferramenta exibe um gráfico de barras horizontais com o total de recursos por região no ano selecionado. Há dois seletores disponíveis: um seletor que permite escolher entre regiões ou DREs para exibição nas barras e um seletor do critério de exibição, que pode ser por ordem alfabética ou decrescente em termos do volume de recursos. Um detalhe dessa visualização se encontra na <strong>Figura 2</strong> a seguir.</p>
                         
                         <p><strong>Figura 2</strong>: Gr&aacute;fico de barras comparativo</p>
                         <img src="{% static 'regionalizacao/img/regionalizacao-figura-2.png' %}" alt="Figura 2" width="80%">
