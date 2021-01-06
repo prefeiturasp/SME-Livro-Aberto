@@ -69,3 +69,4 @@ E este gera as execuções, fazendo o cruzamento dos dados das duas tabelas e ap
 ```bash
 $ python manage.py runscript generate_execucoes_contratos_and_apply_fromto
 ```
+a
