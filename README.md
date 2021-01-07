@@ -134,7 +134,7 @@ Atualmente, não existem evoluções previstas para o sistema.
 # Como contribuir
 
 Contribuições são **super bem vindas**! Se você tem vontade de construir o
-curriculo digital conosco, veja o nosso [guia de contribuição](./CONTRIBUTING-GUIDE.md)
+Livro Aberto conosco, veja o nosso [guia de contribuição](./CONTRIBUTING-GUIDE.md)
 onde explicamos detalhadamente como trabalhamos e de que formas você pode nos
 ajudar a alcançar nossos objetivos. Lembrando que todos devem seguir 
 nosso [código de conduta](./CODEOFCONDUCT.md).
