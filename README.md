@@ -22,12 +22,9 @@ O [Ateliê do Software](http://forum.govit.prefeitura.sp.gov.br/uploads/default/
 
 **Conteúdo:**
  1. [Sobre o Produto](#Livro-Aberto)
- 2. [Como surgiu](#Como-surgiu)
- 3. [Funcionalidades](#Funcionalidades)
- 4. [Jornadas](#Jornadas)
- 5. [Roadmap] (#Roadmap)
- 5. [Como contribuir](#como-contribuir)
- 6. [Instalação e Configuração](#Configuracao-do-projeto)
+ 2. [Comunicação](#Comunicacao)
+ 3. [Como contribuir](#como-contribuir)
+ 4. [Instalação e Configuração](#Configuracao-do-projeto)
  
 # Livro Aberto
 
@@ -54,9 +51,7 @@ Diferentemente de **entrar em contato com os dados apenas via Lei de Acesso à I
 O Nosso produto  **permite, a partir de interface didática, que a comunidade escolar conheça os bens e serviços contratados pela SME e pelas diretorias regionais, de forma que possa apoiar a Secretaria na avaliação da qualidade e no monitoramento da execução dos contratos no território da cidade** 
 
 
-## É / Não é / Faz / Não faz: 
-
---- 
+## É / Não é / Faz / Não faz 
 
 - **É**: Sistema de consulta simplificada de dados orçamentários, contendo todas as unidades da rede, diretas e parceiras, agrupadas por zona (Centro, Norte, Leste, Sul e Oeste), diretoria regional e bairro. 
 
@@ -68,24 +63,18 @@ O Nosso produto  **permite, a partir de interface didática, que a comunidade es
 
 ## Objetivos de Negócio: 
 
---- 
-
 - Aumentar consideravelmente a transparência em relação aos dados orçamentários da SME e da Prefeitura da Cidade de São Paulo. 
 
 - Fornecedor acesso simplificado aos dados de orçamento da rede municipal de educação.  
 
 ## Personas: 
 
---- 
-
 - **Cidadão**: Qualquer pessoa que acesse o site. Como não há restrição de acesso, basta acessar o link da ferramenta, disponível através do site da SME. Pode consultar todas as informações de orçamento da rede, a partir do mapa da Cidade de São Paulo. 
 
 - **Administrador SME**: Usuário que faz a carga dos dados orçamentários de cada ano. Atualmente, a carga é feita através de scripts no servidor onde a aplicação está hospedada. 
 
 
-# Funcionalidades: 
-
---- 
+## Funcionalidades: 
 
 - **Seletor por Tipo de Rede**: filtra os dados em duas modalidades: unidades diretas e unidades parceiras. O padrão da posição do seletor por tipo de rede é a opção “unidades diretas”. 
 
@@ -105,43 +94,42 @@ Para retornar aos níveis de maior agregação, o usuário deve selecionar o ní
 
 - **Ficha Lateral**: posicionada à direita da página, apresenta a especificação dos dados de acordo com os filtros de rede e de ano e os níveis de detalhamento aplicados a partir da interação do usuário com o mapa. 
 
-# Jornadas: 
+## Jornadas: 
 
---- 
-
-
-## Seleção do Tipo de Rede 
+### Seleção do Tipo de Rede 
 
 O sistema é exibido com algumas informações selecionadas por padrão. O Tipo de Rede inicia selecionado na opção **Unidades Diretas**. Com isso, no primeiro acesso do usuário serão sempre exibidas as informações de orçamento para este tipo de rede, considerando os dados para toda a cidade de São Paulo.  
 
 O usuário tem a opção de trocar essa seleção para **Unidade Parceiras**, e assim, visualizar os dados para este outro tipo de rede. 
 
  
-## Seleção do Período 
+### Seleção do Período 
 
 O sistema é exibido com algumas informações selecionadas por padrão. O Período selecionado é o ano mais atual com dados carregados. Com isso, no primeiro acesso do usuário serão exibidas as informações de orçamento para este ano, considerando os dados para toda a cidade de São Paulo.  
 
 O usuário tem a opção de trocar o período para anos anteriores, e assim, visualizar os dados correspondentes. 
 
 
-## Navegação no Mapa 
+### Navegação no Mapa 
 
 O sistema é exibido por padrão sem nenhum ponto selecionado no mapa interativo. Assim, a Ficha Lateral exibe dados de orçamento referentes a toda a cidade de São Paulo.  
 
 O usuário pode ir avançando o nível de detalhe no mapa, selecionando primeiro uma Zona, depois DRE, Bairro, até chegar ao nível da Unidade Educacional. A cada etapa a Ficha Lateral é atualizada para corresponder a seleção, e informa dados cada vez mais específicos. A Trilha de Navegação também é atualizada, permitindo ao usuário voltar para qualquer ponto anterior da navegação. 
 
 
-## Download dos Dados 
+### Download dos Dados 
 
-A qualquer momento o usuário pode optar por baixar os dados de orçamento para o seu próprio dispositivo. O sistema leva em consideração apenas o **Período** selecionado pelo usuário e disponibiliza em formato de Planilha Eletrônica (arquivo .xlsx) todos os dados de orçamento disponíveis para a rede. 
+A qualquer momento o usuário pode optar por baixar os dados de orçamento para o seu próprio dispositivo. O sistema leva em consideração apenas o **Período** selecionado pelo usuário e disponibiliza em formato de Planilha Eletrônica (arquivo .xlsx) todos os dados de orçamento disponíveis para a rede.  
 
-  
-
-# Roadmap: 
-
---- 
+## Roadmap: 
 
 Atualmente, não existem evoluções previstas para o sistema.  
+
+# Comunicação:
+
+| Canal de comunicação | Objetivos |
+|----------------------|-----------|
+| [Issues do Github](https://github.com/prefeiturasp/SME-Livro-Aberto/issues) | - Sugestão de novas funcionalidades<br> - Reportar bugs<br> - Discussões técnicas |
 
 # Como contribuir
 
@@ -152,7 +140,6 @@ ajudar a alcançar nossos objetivos. Lembrando que todos devem seguir
 nosso [código de conduta](./CODEOFCONDUCT.md).
 
 # Configuração do Projeto
----
 
 ## Configuração inicial das aplicações Mosaico e Geologia
 
