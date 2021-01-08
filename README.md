@@ -3,10 +3,6 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/e03a41104c1e2a928c2e/maintainability)](https://codeclimate.com/github/prefeiturasp/SME-Livro-Aberto/maintainability)
 
-# Contribuições
-
-Para configurações do ambiente de desenvolvimento, acesse [CONTRIBUTING](CONTRIBUTING.md).
-
 # Estratégia de Transformação Digital e Governo Aberto na SME
 
 Como um governo pode atuar para garantir o bem comum de todos? Na SME, acreditamos que um dos meios para isso seja garantir transparência e prestação de contas e constante relação entre governo e sociedade para o desenvolvimento e implementação de políticas públicas. 
@@ -133,11 +129,9 @@ Atualmente, não existem evoluções previstas para o sistema.
 
 # Como contribuir
 
-Contribuições são **super bem vindas**! Se você tem vontade de construir o
-Livro Aberto conosco, veja o nosso [guia de contribuição](./CONTRIBUTING-GUIDE.md)
-onde explicamos detalhadamente como trabalhamos e de que formas você pode nos
-ajudar a alcançar nossos objetivos. Lembrando que todos devem seguir 
-nosso [código de conduta](./CODEOFCONDUCT.md).
+Contribuições são **super bem vindas**! Se você tem vontade de construir o Livro Aberto conosco, veja o nosso [guia de contribuição](./CONTRIBUTING-GUIDE.md) onde explicamos detalhadamente como trabalhamos e de que formas você pode nos ajudar a alcançar nossos objetivos. Lembrando que todos devem seguir nosso [código de conduta](./CODEOFCONDUCT.md).
+
+Para configurações do ambiente de desenvolvimento, acesse [CONTRIBUTING](CONTRIBUTING.md).
 
 # Configuração do Projeto
 
@@ -171,7 +165,7 @@ $ python manage.py runscript populate_orcamento_empenhos_raw_load_with_dump
 $ python manage.py runscript load_2003_2017_execucoes_and_generate_new_ones
 ```
 
-### Gerando novas execuções
+## Gerando novas execuções
 
 Após a configuração inicial da aplicação, o script abaixo deve ser rodado regularmente para atualizar a base de dados gerando as novas execuções a partir dos novos dados que a SME carrega nas tabelas `orcamento_raw_load` e `empenos`. O que será feito:
 1) Atualização da tabela `orcamento` a partir dos dados do ano corrente da tabela `orcamento_raw_load`
