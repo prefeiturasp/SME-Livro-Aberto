@@ -16,11 +16,16 @@ Com isso, pretendemos:
 
 O [Ateliê do Software](http://forum.govit.prefeitura.sp.gov.br/uploads/default/original/1X/c88a4715eb3f9fc3ceb882c1f6afe9e308805a17.pdf) é uma das ferramentas para operacionalização. Baseado em um modelo de contratação inspirado pelos movimentos ágil e de Software Craftsmanship, trabalhamos com equipes multidisciplinares para o desenvolvimento de produtos que beneficiam toda a comunidade escolar (técnicos da SME e DREs, gestores, professores, alunos e famílias) e concretizam os objetivos da Estratégia de Transformação Digital e Governo Aberto “Pátio Digital”.
 
-**Conteúdo:**
- 1. [Sobre o Produto](#Livro-Aberto)
- 2. [Comunicação](#Comunicacao)
- 3. [Como contribuir](#como-contribuir)
- 4. [Instalação e Configuração](#Configuracao-do-projeto)
+# Conteúdo
+
+ 1. [Sobre o Produto](#Sobre-o-Produto)
+ 2. [Sobre o Time](#Sobre-o-Time)
+ 3. [Como surgiu](#Como-surgiu)
+ 4. [Links Úteis](#Links-Úteis)
+ 5. [Comunicação](#Comunicação)
+ 6. [Como contribuir](#como-contribuir)
+ 7. [Repositórios](#Repositórios)
+ 8. [Instalação e Configuração](#Instalação-e-Configuração)
  
 # Livro Aberto
 
@@ -30,7 +35,7 @@ Por meio desse projeto, a SME vai apresentar uma interface didática de visualiz
 
 Por fim, um módulo de consultas deve permitir que a comunidade escolar conheça os bens e serviços contratados pela SME e pelas diretorias regionais, de forma que possa apoiar a Secretaria na avaliação da qualidade e no monitoramento da execução dos contratos no território da cidade.
 
-## **Visão de Futuro** 
+## Visão de Futuro
 
 Para **os cidadãos da cidade de São Paulo e as comunidades das unidades escolares municipais** 
 
@@ -68,7 +73,6 @@ O Nosso produto  **permite, a partir de interface didática, que a comunidade es
 - **Cidadão**: Qualquer pessoa que acesse o site. Como não há restrição de acesso, basta acessar o link da ferramenta, disponível através do site da SME. Pode consultar todas as informações de orçamento da rede, a partir do mapa da Cidade de São Paulo. 
 
 - **Administrador SME**: Usuário que faz a carga dos dados orçamentários de cada ano. Atualmente, a carga é feita através de scripts no servidor onde a aplicação está hospedada. 
-
 
 ## Funcionalidades: 
 
@@ -112,7 +116,6 @@ O sistema é exibido por padrão sem nenhum ponto selecionado no mapa interativo
 
 O usuário pode ir avançando o nível de detalhe no mapa, selecionando primeiro uma Zona, depois DRE, Bairro, até chegar ao nível da Unidade Educacional. A cada etapa a Ficha Lateral é atualizada para corresponder a seleção, e informa dados cada vez mais específicos. A Trilha de Navegação também é atualizada, permitindo ao usuário voltar para qualquer ponto anterior da navegação. 
 
-
 ### Download dos Dados 
 
 A qualquer momento o usuário pode optar por baixar os dados de orçamento para o seu próprio dispositivo. O sistema leva em consideração apenas o **Período** selecionado pelo usuário e disponibiliza em formato de Planilha Eletrônica (arquivo .xlsx) todos os dados de orçamento disponíveis para a rede.  
@@ -121,11 +124,81 @@ A qualquer momento o usuário pode optar por baixar os dados de orçamento para 
 
 Atualmente, não existem evoluções previstas para o sistema.  
 
-# Comunicação:
+# Sobre o Time:
+
+<table>
+<thead>
+<tr>
+<th>Papel</th>
+<th>Titular</th>
+<th>Suplente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product Owner</td>
+<td>Lilian Matos</td>
+<td>Gabriela Boechat</td>
+</tr>
+<tr>
+<td>Agente de Governança</td>
+<td>Guilherme Noguishi</td>
+<td></td>
+</tr>
+<tr>
+<td>Gerente de Projeto</td>
+<td>Aline F. Pinto</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Scrum Master</td>
+<td>Aline F. Pinto</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Analista UX/UI</td>
+<td>Giovanna Zanettim</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Analista Programador</td>
+<td>Bruno Buzzo</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Analista Programador</td>
+<td>Kelwy Oliveira</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+
+# Como surgiu
+
+O Livro Aberto tornou-se um projeto oficial no segundo semestre de 2018, ao ser firmado contrato entre a Fundação Getúlio Vargas - FGV e a Prefeitura do Município de São Paulo, por intermédio da Secretaria Municipal de Educação – SME. As etapas envolvidas no processo, partindo do momento inicial até a entrega final do produto foram:
+
+- Definição de tecnologia a ser adotada para o desenvolvimento da ferramenta; 
+- Levantamento e análise da base de dados de contratos da SME; 
+- Adequação da base de dados à estrutura de visualização da ferramenta, contendo informações básicas padronizadas sobre o orçamento da educação no Município; 
+- Definição de categorias; 
+- Definição dos modelos de visualização e dos respectivos níveis de detalhamento;  
+- Definição de metodologia para atualização das bases de dados;
+- Transferência de tecnologia e apoio à implantação da ferramenta;
+- Ajustes finais na ferramenta por parte da empresa AMcom, após edital que definiu a empresa responsável pelo desenvolvimento de sistemas na Secretaria. 
+
+# Comunicação
 
 | Canal de comunicação | Objetivos |
 |----------------------|-----------|
 | [Issues do Github](https://github.com/prefeiturasp/SME-Livro-Aberto/issues) | - Sugestão de novas funcionalidades<br> - Reportar bugs<br> - Discussões técnicas |
+
+# Links Úteis
+
+http://ferramentas.livroaberto.SME.prefeitura.sp.gov.br/regionalizacao/
+
+# Repositórios
+
+https://github.com/prefeiturasp/SME-Livro-Aberto
 
 # Como contribuir
 
