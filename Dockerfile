@@ -1,14 +1,15 @@
-FROM python:3.7
+FROM python:3.7-slim
 
 ENV PYTHONUNBUFFERED 1
 
-# Creating dir and copying content
+# Criando o diretório e copiando o conteúdo
 RUN mkdir -p /opt/services/livro-aberto/src
-ADD . /opt/services/livro-aberto/src
+COPY . /opt/services/livro-aberto/src
 
-# Configuring .env file
+# Configurando o arquivo .env
 WORKDIR /opt/services/livro-aberto/src
 
-RUN pip install pipenv && pipenv install --sequential
+RUN pip install pipenv && pipenv install
 
 EXPOSE 8000
+
