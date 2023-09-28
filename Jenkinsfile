@@ -3,10 +3,12 @@ pipeline {
       branchname =  env.BRANCH_NAME.toLowerCase()
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
+      namespace = "${env.branchname == 'develop' ? 'livroaberto-dev' : env.branchname == 'homolog' ? 'livroaberto-hom' : env.branchname == 'homolog-r2' ? 'livroaberto-hom2' : 'sme-livro-aberto' }"
+
     }
   
     agent {
-      node { label 'AGENT-NODES'}
+      node { label 'jenkins-slave' }
     }
 
     options {
@@ -22,7 +24,7 @@ pipeline {
         }
       
         stage('AnaliseCodigo') {
-            when { branch 'homolog' }
+	        when { branch 'homolog' }
           steps {
               withSonarQubeEnv('sonarqube-local'){
                 sh 'echo "[ INFO ] Iniciando analise Sonar..." && sonar-scanner \
@@ -49,7 +51,7 @@ pipeline {
             }
           }
         }
-        
+	    
         stage('Deploy'){
             when { anyOf {  branch 'master'; branch 'main'; branch 'develop'; branch 'release'; branch 'homolog';  } }        
             steps {
@@ -59,12 +61,18 @@ pipeline {
                         timeout(time: 24, unit: "HOURS") {
                             input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: 'rodolpho_azeredo, anderson_morais'
                         }
+                        withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+                            sh('cp $config '+"$home"+'/.kube/config')
+                            sh 'kubectl rollout restart deployment/livroaberto-backend -n ${namespace}'
+                            sh('rm -f '+"$home"+'/.kube/config')
+                        }
                     }
-                    withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-                        sh('if [ -f '+"$home"+'/.kube/config ];then rm -f '+"$home"+'/.kube/config; fi')
-                        sh('cp $config '+"$home"+'/.kube/config')
-                        sh 'kubectl rollout restart deployment/livroaberto-backend -n sme-livro-aberto'
-                        sh('if [ -f '+"$home"+'/.kube/config ];then rm -f '+"$home"+'/.kube/config; fi')
+                    else{
+                        withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+                            sh('cp $config '+"$home"+'/.kube/config')
+                            sh 'kubectl rollout restart deployment/livroaberto-backend -n ${namespace}'
+                            sh('rm -f '+"$home"+'/.kube/config')
+                        }
                     }
                 }
             }           
@@ -72,7 +80,7 @@ pipeline {
     }
 
   post {
-    always { sh('if [ -f '+"$home"+'/.kube/config ];then rm -f '+"$home"+'/.kube/config; fi')}
+    always { cleanWs notFailBuild: true }
     success { sendTelegram("🚀 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Success \nLog: \n${env.BUILD_URL}console") }
     unstable { sendTelegram("💣 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Unstable \nLog: \n${env.BUILD_URL}console") }
     failure { sendTelegram("💥 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Failure \nLog: \n${env.BUILD_URL}console") }
@@ -94,7 +102,7 @@ def sendTelegram(message) {
 def getKubeconf(branchName) {
     if("main".equals(branchName)) { return "config_prd"; }
     else if ("master".equals(branchName)) { return "config_prd"; }
-    else if ("homolog".equals(branchName)) { return "config_hom"; }
-    else if ("release".equals(branchName)) { return "config_hom"; }
-    else if ("develop".equals(branchName)) { return "config_dev"; }
+    else if ("homolog".equals(branchName)) { return "config_release"; }
+    else if ("release".equals(branchName)) { return "config_release"; }
+    else if ("develop".equals(branchName)) { return "config_release"; }
 }
