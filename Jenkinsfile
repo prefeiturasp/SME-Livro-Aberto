@@ -3,6 +3,8 @@ pipeline {
       branchname =  env.BRANCH_NAME.toLowerCase()
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
+      namespace = "${env.branchname == 'develop' ? 'livroaberto-dev' : env.branchname == 'homolog' ? 'livroaberto-hom' : env.branchname == 'homolog-r2' ? 'livroaberto-hom2' : 'sme-livro-aberto' }"
+
     }
   
     agent {
@@ -61,14 +63,14 @@ pipeline {
                         }
                         withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
                             sh('cp $config '+"$home"+'/.kube/config')
-                            sh 'kubectl rollout restart deployment/livroaberto-backend -n sme-livro-aberto'
+                            sh 'kubectl rollout restart deployment/livroaberto-backend -n ${namespace}'
                             sh('rm -f '+"$home"+'/.kube/config')
                         }
                     }
                     else{
                         withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
                             sh('cp $config '+"$home"+'/.kube/config')
-                            sh 'kubectl rollout restart deployment/livroaberto-backend -n sme-livro-aberto'
+                            sh 'kubectl rollout restart deployment/livroaberto-backend -n ${namespace}'
                             sh('rm -f '+"$home"+'/.kube/config')
                         }
                     }
@@ -100,7 +102,7 @@ def sendTelegram(message) {
 def getKubeconf(branchName) {
     if("main".equals(branchName)) { return "config_prd"; }
     else if ("master".equals(branchName)) { return "config_prd"; }
-    else if ("homolog".equals(branchName)) { return "config_hom"; }
-    else if ("release".equals(branchName)) { return "config_hom"; }
-    else if ("develop".equals(branchName)) { return "config_dev"; }
+    else if ("homolog".equals(branchName)) { return "config_release"; }
+    else if ("release".equals(branchName)) { return "config_release"; }
+    else if ("develop".equals(branchName)) { return "config_release"; }
 }
