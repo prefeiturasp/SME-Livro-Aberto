@@ -7,9 +7,11 @@ pipeline {
 
     }
   
-    agent {
-      node { label 'jenkins-slave' }
-    }
+   agent { kubernetes { 
+              label 'builder'
+              defaultContainer 'builder'
+            }
+          }
 
     options {
       buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
