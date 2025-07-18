@@ -9,3 +9,4 @@ staticfiles/
 .vscode
 .DS_Store
 .idea
+Dockerfile_old
