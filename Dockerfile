@@ -9,6 +9,6 @@ ADD . /opt/services/livro-aberto/src
 # Configuring .env file
 WORKDIR /opt/services/livro-aberto/src
 
-RUN pip install pipenv && pipenv install --sequential
+RUN pip install pipenv && pipenv install
 
 EXPOSE 8000
